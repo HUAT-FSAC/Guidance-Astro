@@ -25,7 +25,7 @@ title: 2024 预备无人系统部队员学习计划
 
 #### 🌟 WSL2（推荐）
 
-![wsl](src/assets/images/2024-learning-roadmap/wsl.png)
+![wsl](/src/assets/images/2024-learning-roadmap/wsl.png)
 
 如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
