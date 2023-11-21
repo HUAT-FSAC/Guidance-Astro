@@ -11,7 +11,7 @@ title: 2024 预备无人系统部队员学习计划
 
 ### 1.1 Linux（Ubuntu）系统的安装
 
-![ubuntu-logo](../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
+![ubuntu-logo](./../../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
 #### VMWare
 
