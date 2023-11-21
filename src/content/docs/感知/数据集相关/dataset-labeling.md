@@ -11,7 +11,7 @@ HUAT FSAC 车队采用车载摄像头（1900 × 1200 px）来实现[语义分割
 - Python 3.X 环境部署  
   下载：[https://www.python.org/downloads/](https://www.python.org/downloads/)  
 
-  ![download](/assets/images/dataset-labeling/python_download.png)
+  ![download](/./../../../../assets/images/dataset-labeling/python_download.png)
 
   点击 “Download Python 3.XX.X” 即可开始下载，之后详细安装教程可见[这里](https://zhuanlan.zhihu.com/p/111168324)。
 
@@ -19,7 +19,7 @@ HUAT FSAC 车队采用车载摄像头（1900 × 1200 px）来实现[语义分割
   官网：[https://github.com/wkentaro/labelme/release](https://github.com/wkentaro/labelme/releases)  
   蓝奏云：[https://nekorectifier.lanzouw.com/iMe0I0dk0kpe](https://nekorectifier.lanzouw.com/iMe0I0dk0kpe)
 
-  > ![labelme_releases](/assets/images/dataset-labeling/labelme_releases.png)
+  > ![labelme_releases](/./../../../../assets/images/dataset-labeling/labelme_releases.png)
   > 官网提供了 Linux、Windows、Mac OS 平台的安装包，蓝奏云网盘上有 Windows 平台的安装包。  
   > 任何平台的程序都是完全相同的，在使用上并无差异。
 
@@ -33,7 +33,7 @@ HUAT FSAC 车队采用车载摄像头（1900 × 1200 px）来实现[语义分割
 
     安装完成后，输入 `labelme` 启动程序。
 
-    ![linux-labelme](/assets/images/dataset-labeling/linux_labelme.png)
+    ![linux-labelme](/./../../../../assets/images/dataset-labeling/linux_labelme.png)
 
     左为主程序页面，右为安装过程
 
@@ -51,13 +51,13 @@ HUAT FSAC 车队采用车载摄像头（1900 × 1200 px）来实现[语义分割
 
    按 “Open Dir” 打开目录。
 
-   ![labelme_open_dir](/assets/images/dataset-labeling/labelme_open_dir.png)
+   ![labelme_open_dir](/./../../../../assets/images/dataset-labeling/labelme_open_dir.png)
 
 2. 选择“标注模式”，进行实例标注；  
 
    点击 “Create Polygons”，用鼠标🖱️圈出物体轮廓。
 
-   ![labelme_1](/assets/images/dataset-labeling/labelme_1.png)
+   ![labelme_1](/./../../../../assets/images/dataset-labeling/labelme_1.png)
 
    {: .note }
    > **标注标准操作**：  
@@ -68,7 +68,7 @@ HUAT FSAC 车队采用车载摄像头（1900 × 1200 px）来实现[语义分割
 
 4. 在弹出的窗口中，输入所标注的物体的名称；  
 
-   ![2](/assets/images/dataset-labeling/labelme_2.png)
+   ![2](/./../../../../assets/images/dataset-labeling/labelme_2.png)
 
 5. 重复以上过程直至标注完成；  
 

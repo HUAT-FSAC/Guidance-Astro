@@ -32,22 +32,22 @@ title: 在 Linux 上设置代理
   # 启动 cfw
 ```
 
-![start](/assets/images/setting-up-proxy-on-linux/start.png)
+![start](/./../../../assets/images/setting-up-proxy-on-linux/start.png)
 
 ## 设置 Clash for Windows
 
 - 启动后其窗口自动出现。  
 
 - 点击 `Profiles` 选项卡，在输入框中输入从 [QQ@NekoRectifier](https://wpa.qq.com/msgrd?v=3&uin=2182998627&site=qqq&menu=yes) 获取到的链接并点击 `Download` 开始下载配置文件。
-![profile](/assets/images/setting-up-proxy-on-linux/download_profile.png)
+![profile](/./../../../assets/images/setting-up-proxy-on-linux/download_profile.png)
 
 - 下载完成后，点击一下刚刚添加的配置文件以选中。然后切换到 `Proxies` 选项卡，点击一个有有效延迟的节点即可。
-![select_node](/assets/images/setting-up-proxy-on-linux/select_node.png)
+![select_node](/./../../../assets/images/setting-up-proxy-on-linux/select_node.png)
 
 - 打开你当前系统的设置，找到网络-代理设置选项。  
 并按照下图进行设置。
 
-    ![network_setting](/assets/images/setting-up-proxy-on-linux/network_setting.png)
+    ![network_setting](/./../../../assets/images/setting-up-proxy-on-linux/network_setting.png)
 
 - [EXTRA] 你可以勾选上 `General` 选项卡中的 `Start with Linux` 选项，实现自启动。
 
@@ -120,7 +120,7 @@ title: 在 Linux 上设置代理
 3. 使用
 
     对于有代理需求的应用，直接在前面加上 `proxychains` 再执行即可。
-    ![proxy-use](/assets/images/setting-up-proxy-on-linux/show.png)
+    ![proxy-use](/./../../../assets/images/setting-up-proxy-on-linux/show.png)
 
 4. 常见问题
 

@@ -29,7 +29,7 @@ title: 神经网络环境搭建及 MNIST 数据集训练与验证
 
     在终端输入 `nvidia-smi` 查看，如显示如下则驱动安装正常。
 
-    ![nvidia-smi](/assets/images/neural-network-train-and-vaildate-on-mnist/nvidia-smi.png)
+    ![nvidia-smi](/./../../../assets/images/neural-network-train-and-vaildate-on-mnist/nvidia-smi.png)
 
     如果没有合适显卡也可以直接跳过这步，直接采用 CPU 进行计算。
 
@@ -42,7 +42,7 @@ title: 神经网络环境搭建及 MNIST 数据集训练与验证
 3. Pytorch 安装
 
     > 虽然是叫 ‘Pytorch’ 但是它在 pip 中的包名是 ‘torch’ 不要弄错了。
-    > ![pytorch-error](/assets/images/neural-network-train-and-vaildate-on-mnist/pytorch-error.png)
+    > ![pytorch-error](/./../../../assets/images/neural-network-train-and-vaildate-on-mnist/pytorch-error.png)
     > 否则报错如图
 
     详细教程可见 <https://blog.csdn.net/qq_45281807/article/details/112442423>

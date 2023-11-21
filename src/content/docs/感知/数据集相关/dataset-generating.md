@@ -53,7 +53,7 @@ git clone https://github.com/NekoRectifier/disposable-python-snippet.git
 
 - color 是转换彩色图时所使用的颜色（不影响训练）
 
-![label-modify](/assets/images/dataset-generating/label-modify.png)
+![label-modify](/./../../../../assets/images/dataset-generating/label-modify.png)
 
 如图即为修改完成。
 
