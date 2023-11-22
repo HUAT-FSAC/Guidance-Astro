@@ -8,11 +8,16 @@ export default defineConfig({
 	integrations: [starlight({
 		title: 'FSAC AST Docs',
 		favicon: '/favicon.png',
+		lang: 'zh-CN',
 		logo: {
 			src: './src/assets/logo-canvas.png'
 		},
 		social: {
 			github: 'https://github.com/HUAT-FSAC'
+		},
+		tableOfContents: {
+			minHeadingLevel: 2,
+			maxHeadingLevel: 4,
 		},
 		sidebar: [{
 			label: '📁 感知融合',
@@ -46,10 +51,10 @@ export default defineConfig({
 			}
 		}, {
 			label: 'HUAT 无人车队开源项目',
-			link: 'root/open-source-projects'
+			link: '/open-source-projects'
 		}, {
 			label: '2024 预备无人系统部队员学习图',
-			link: 'root/2024-learning-roadmap'
+			link: '/2024-learning-roadmap'
 		}],
 		lastUpdated: true,
 		pagination: false,
