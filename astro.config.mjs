@@ -7,6 +7,7 @@ export default defineConfig({
 	trailingSlash: 'always',
 	integrations: [starlight({
 		title: 'FSAC AST Docs',
+		favicon: '/favicon.png'
 		logo: {
 			src: './src/assets/logo-canvas.png'
 		},
