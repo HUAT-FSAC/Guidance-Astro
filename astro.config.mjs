@@ -7,6 +7,9 @@ export default defineConfig({
 	trailingSlash: 'always',
 	integrations: [starlight({
 		title: 'AST Docs',
+		logo: {
+			src: './src/assets/logo-canvas.png'
+		},
 		social: {
 			github: 'https://github.com/HUAT-FSAC'
 		},

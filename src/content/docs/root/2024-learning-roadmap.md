@@ -96,7 +96,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 如果你使用 VMWare 虚拟机来安装 Ubuntu 系统的话，在安装过程中你会注意到这一选项：
 
-![](/assets/images/2024-learning-roadmap/install-choice.png)
+![install-choice](./../../../assets/images/2024-learning-roadmap/install-choice.png)
 
 选择“最小安装”即可，默认的 Firefox 浏览器会正常进行安装。
 
@@ -112,6 +112,9 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 安装的过程不多复述，你可以通过 Ubuntu 内置的应用中心或者命令来安装。  
 详细教程见[此](https://zhuanlan.zhihu.com/p/430939275)。
 
+#### 安装后配置
+
+参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
 
 ### 1.5 Linux 下代理的配置
 
