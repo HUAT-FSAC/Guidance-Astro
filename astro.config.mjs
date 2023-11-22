@@ -6,7 +6,7 @@ export default defineConfig({
 	site: 'https://huat-fsac.eu.org',
 	trailingSlash: 'always',
 	integrations: [starlight({
-		title: 'FSAC AST 文档',
+		title: 'FSAC AST Docs',
 		logo: {
 			src: './src/assets/logo-canvas.png'
 		},
