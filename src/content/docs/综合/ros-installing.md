@@ -11,6 +11,21 @@ title: ROS1 (Melodic) 安装教程
 - bash (latest)
 
 为基础进行演示。  
+
+## 安装
+
+在终端中执行
+```bash
+wget http://fishros.com/install -O fishros && . fishros
+```
+
+随后跟随终端上的提示进行 ROS Melodic 的安装即可。
+
+---
+
+## 以下部分为过时教程
+### 本质是上面教程的手动版本。非必要情况都请参考上面的教程
+
 在进行操作之前请确保你已经完成了 Ubuntu 的基础设置：语言、时区、`apt` 程序源设定。  
 
 ## 操作步骤
