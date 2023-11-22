@@ -8,7 +8,6 @@ export default defineConfig({
 	integrations: [starlight({
 		title: 'FSAC AST Docs',
 		favicon: '/favicon.png',
-		lang: 'zh-CN',
 		logo: {
 			src: './src/assets/logo-canvas.png'
 		},
