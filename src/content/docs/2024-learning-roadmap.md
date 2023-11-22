@@ -11,7 +11,7 @@ title: 2024 预备无人系统部队员学习计划
 
 ### 1.1 Linux（Ubuntu）系统的安装
 
-![ubuntu-logo](./../../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
+![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
 #### VMWare
 
@@ -25,7 +25,7 @@ title: 2024 预备无人系统部队员学习计划
 
 #### 🌟 WSL2（推荐）
 
-![wsl](./../../../assets/images/2024-learning-roadmap/wsl.png)
+![wsl](./../../assets/images/2024-learning-roadmap/wsl.png)
 
 如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
@@ -96,7 +96,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 如果你使用 VMWare 虚拟机来安装 Ubuntu 系统的话，在安装过程中你会注意到这一选项：
 
-![install-choice](./../../../assets/images/2024-learning-roadmap/install-choice.png)
+![install-choice](./../../assets/images/2024-learning-roadmap/install-choice.png)
 
 选择“最小安装”即可，默认的 Firefox 浏览器会正常进行安装。
 
@@ -114,7 +114,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 #### 安装后配置
 
-参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
+参考[这篇教程](./综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
 
 ### 1.5 Linux 下代理的配置
 
