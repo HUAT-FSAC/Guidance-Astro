@@ -20,7 +20,7 @@ title: 2024 无人系统部学习指南
 
 - Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免影响后续操作；
 - VMWare Workstation 的版本并不严格要求，16/17/18都是可以的；
-- 我们提供 Ubuntu 镜像的网盘下载（快于官方网站）[链接🔗](https://www.123pan.com/s/Cff7Vv-mQ6nH.html) 
+- 我们提供 Ubuntu 镜像的USTC镜像站链接（快于官方网站）[链接🔗](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso) 
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本
 
 #### 🌟 WSL2（推荐）
