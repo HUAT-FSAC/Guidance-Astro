@@ -2,13 +2,13 @@
 title: VSCode ROS 开发指南 (Clang)
 ---
 
-GCC 和 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显得有些力不从心。例如你可能会遇到：
+在 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显得力不从心。你可能会遇到以下情况：
 
-- 糟糕的头文件索引（cmakelist写明了是用于编译，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
+- 糟糕的头文件索引（cmakelist 写明了是用于编译，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
 
 - 由于没有良好的索引，静态代码检查完全无法工作
 
-- 完全没有用的 quick-fix 只能傻傻的提示下可能的错误
+- 完全没有用的 quick-fix 只能傻傻的提示一下可能的错误
 
 所以为了提升自己开发 C++ 的体验和节约开发时间，更加推荐使用 clang + clangd 配合 VSC 插件进行开发。
 
@@ -41,7 +41,7 @@ GCC 和 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显
 
 3. 安装 clang-format
 
-    这步不是必选，但是安装这个可以提供 clang 的代码格式化。
+    这步不是必选，但是安装这个后可以在 VSC 中使用 clang 的代码格式化。
 
     ```bash
     sudo apt install clang-format
@@ -49,9 +49,9 @@ GCC 和 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显
 
 4. 配置 clang-format
 
-    在项目根目录下添加 `.clang-format` 文件，并修改其内容。
+    ![.clang-format](./../../../assets/images/ros-vsc-setup/.clang-format.png)
 
-    ![.clang-format](/./../../../assets/images/ros-vsc-setup/.clang-format.png)
+    在项目根目录下添加 `.clang-format` 文件，并修改为以下内容。
 
     ```yaml
     Language:        Cpp
@@ -189,7 +189,7 @@ GCC 和 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显
 
 - CodeLLDB (Vadim Chugunov)
 
-![ext](/./../../../assets/images/ros-vsc-setup/exts.png)
+![ext](./../../../assets/images/ros-vsc-setup/exts.png)
 
 ### clangd 设置
 
@@ -197,14 +197,14 @@ GCC 和 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显
 然后保存。  
 此配置将会指明编译后文件的存放路径。
 
-![clangd-setting](/./../../../assets/images/ros-vsc-setup/clangd-setting.png)
+![clangd-setting](./../../../assets/images/ros-vsc-setup/clangd-setting.png)
 
 ### CMake Toools 设置 —— 生成 compile_command.json
 
 **这一步是 clangd 能够自动索引到头文件的关键。**  
 同样找到该插件的设置，并将 “Export Compile Commands File” 的选项打上钩。接着使用 `catkin_make` 或者 `catkin build` 编译一下。
 
-![cmaketool](/./../../../assets/images/ros-vsc-setup/cmaketool.png)
+![cmaketool](./../../../assets/images/ros-vsc-setup/cmaketool.png)
 
 最后在 `/build` 文件夹下看看有没有 `compile_commands.json` 文件的存在。
 
