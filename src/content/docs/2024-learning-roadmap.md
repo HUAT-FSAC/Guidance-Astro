@@ -111,8 +111,20 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 #### 安装
 
-安装的过程不多复述，你可以通过 Ubuntu 内置的应用中心或者命令来安装。  
-详细教程见[此](https://zhuanlan.zhihu.com/p/430939275)。
+> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/code_1.84.2-1699528352_amd64.deb)下载 VSCode Linux 安装包（deb）  
+> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/VSCodeUserSetup-x64-1.84.2.exe)下载 VSCode Windows（exe）
+
+Windows 安装的过程不多复述。
+
+在 Ubuntu 上进行安装首先要找到安装包。接着打开终端，输入：
+
+```bash
+sudo dpkg -i {安装包的文件名（带后缀）}
+```
+
+进行安装。
+
+在安装过程结束后，你可以通过在终端内执行 `code` 或者在应用列表内找到 VSCode 图标来打开。
 
 #### 安装后配置
 
