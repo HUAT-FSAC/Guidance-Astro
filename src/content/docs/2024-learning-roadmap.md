@@ -132,7 +132,7 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 
 ### 1.4 Linux 下代理的配置
 
-此部分请移步至[这里](./../综合/setting-up-proxy-on-linux.md)查看。
+此部分请移步至[这里](./../综合/setting-up-proxy-on-linux)查看。
 
 ## 2. 编程语言基础概念
 
@@ -177,7 +177,7 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 1. ROS 环境搭建与配置  
     - 安装 ROS **Melodic**  
-      安装教程请参考[ROS1 (Melodic) 安装教程](./../综合/ros-installing.md)
+      安装教程请参考[ROS1 (Melodic) 安装教程](./../综合/ros-installing)
     - 运行 ROS 中内置的 turtle_sim 程序包
     - **完成后上传结果至 QQ 群作业。**
 2. 创建自己的 ROS 程序包
