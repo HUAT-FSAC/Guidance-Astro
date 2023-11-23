@@ -14,14 +14,16 @@ title: 2024 无人系统部学习指南
 
 ![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
+尽管在真机上安装 Ubuntu 是避免兼容性问题的最好选择，但是更多时候安装在虚拟机上却更方便。以下是在不同虚拟机上安装 Ubuntu 的两种方式。
+
 #### VMWare
 
-关于这一部分网上资源较多，推荐参考<https://cloud.tencent.com/developer/article/2062275>的指南。
+关于这一部分网上资源较多，推荐参考<https://zhuanlan.zhihu.com/p/38797088>的教程。你也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。
 
 
 - Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免影响后续操作；
 - VMWare Workstation 的版本并不严格要求，16/17/18 都是可以的；
-- 这里有 Ubuntu 镜像的 USTC 镜像站链接（快于官方网站）[链接🔗](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso) 
+- (USTC Mirror) [Ubuntu 18.04.6 镜像](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso)  （快于官方网站）
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本
 
 #### 🌟 WSL2（推荐）
