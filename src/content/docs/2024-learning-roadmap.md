@@ -7,7 +7,8 @@ title: 2024 无人系统部学习指南
 
 ## 1. 基础环境配置
 
-首先我们从接触全新的系统环境开始,在虚拟机平台上安装Ubuntu,熟悉基本的命令行接口(CLI)操作。同时,学习浏览器、集成开发环境(IDE)的安装以及代理的使用。熟练使用命令行是后续工作的基础。
+首先我们从接触全新的系统环境开始,在虚拟机平台上安装Ubuntu,熟悉基本的命令行接口(CLI)操作。  
+同时,学习浏览器、集成开发环境(IDE)的安装以及代理的使用。熟练使用命令行是后续工作的基础。
 
 ### 1.1 Linux（Ubuntu）系统的安装
 
@@ -19,8 +20,8 @@ title: 2024 无人系统部学习指南
 
 
 - Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免影响后续操作；
-- VMWare Workstation 的版本并不严格要求，16/17/18都是可以的；
-- 我们提供 Ubuntu 镜像的USTC镜像站链接（快于官方网站）[链接🔗](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso) 
+- VMWare Workstation 的版本并不严格要求，16/17/18 都是可以的；
+- 这里有 Ubuntu 镜像的 USTC 镜像站链接（快于官方网站）[链接🔗](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso) 
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本
 
 #### 🌟 WSL2（推荐）
@@ -89,8 +90,9 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令及如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
 
-
-> 另外我们也支持你自己在搜索引擎上搜索不同的命令或者在虚拟机上亲手看看他们如何工作，毕竟**耐心与兴趣**是最能保持你对代码开发的热情的。
+:::tip
+另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
+:::
 
 ### 1.3 浏览器的安装
 
@@ -134,14 +136,16 @@ C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 
 ## 3. git使用
+ 
+git 是一个分布式的代码版本控制系统。
 
-学习理解并尝试使用 git 进行代码管理。在团队协作中,使用 git 管理代码是必不可少的技能。
+通过使用 git 你可以将自己的代码随时回退到任意先前版本而不用手动更改任何文件。而且借助 git的“分支”概念，你可以在不影响主要代码的情况下向代码添加新的功能并测试。  
 
-git 是一个分布式的代码版本控制系统。通过使用 git 你可以随时回退到任意一个先前的版本而不用手动更改任何文件。并且掌握每次代码改动的详细信息。
+学习并尝试使用 git 进行代码管理。在团队开发项目中，用 git 托管代码是必不可少的。
 
 [在网页上即刻体检 git 操作](https://learngitbranching.js.org/?locale=zh_CN)
 
-详细教程请参考[这个](https://zhuanlan.zhihu.com/p/478860779)。
+关于 git 的详细教程请参考[这个](https://zhuanlan.zhihu.com/p/478860779)。
 
 ## 4. ROS 架构熟悉
 
@@ -155,10 +159,15 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 ### 4.2 ROS 实践
 
-可以参考[官网的教程](https://wiki.ros.org/cn/ROS/Tutorials)来完成下列任务：
+建议参考[官网的教程](https://wiki.ros.org/cn/ROS/Tutorials)来完成下列任务：
+
+如果遇到未知问题，请首先尝试自行搜索报错信息等。实在无法解决则建议向车队成员寻求帮助。
 
 1. ROS 环境搭建与配置  
-    安装 ROS **Melodic** 并成功运行 turtle_sim 程序包，**完成后上传结果至 QQ 群作业。**
+    - 安装 ROS **Melodic**  
+      安装教程请参考[ROS1 (Melodic) 安装教程](./综合/ros-installing.md)
+    - 运行 ROS 中内置的 turtle_sim 程序包
+    - **完成后上传结果至 QQ 群作业。**
 2. 创建自己的 ROS 程序包
     - 在目录下创建 ROS 工作空间； 
     - 创建自己的程序包；
@@ -175,7 +184,7 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 ## 5. Github使用 
 
-注册并加入HUAT-FSAC组织,可以获得团队协作资源。
+注册并加入HUAT-FSAC组织,可以熟悉/参考车队现有代码。
 
 ## 6. FSSim
 
