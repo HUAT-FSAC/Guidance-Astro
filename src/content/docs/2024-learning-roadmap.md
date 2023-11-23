@@ -118,26 +118,60 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 ### 1.5 Linux 下代理的配置
 
-此部分请移步至[这里](https://huat-fsac.eu.org/docs/%E7%BB%BC%E5%90%88/setting-up-proxy-on-linux/)查看。
+此部分请移步至[这里](./综合/setting-up-proxy-on-linux.md)查看。
 
 ## 2. 编程语言基础概念
 
-接下来学习并熟悉C/C++基础语言框架,掌握基础代码查错技巧,深入学习cmake并理解其运行机制。C++是ROS主要使用的编程语言,对其有基本的了解非常重要。
+学习并熟悉C/C++，掌握基础代码查错技巧，了解 cmake 并理解其运行机制。  
+C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 ### 2.1 基础语言框架
 
-经过了大一的计算机/C语言课程，想必你已经对编程语言的基本框架和概念有了初步的了解。
+可以在[这里](https://www.runoob.com/cplusplus/cpp-tutorial.html)随时查询相关知识。
+
+### 2.2 cmake
+
 
 
 ## 3. git使用
 
-学习理解并尝试使用git进行代码管理。在团队协作中,使用git管理代码是必不可少的技能。
+学习理解并尝试使用 git 进行代码管理。在团队协作中,使用 git 管理代码是必不可少的技能。
 
-## 4. ROS架构熟悉
+git 是一个分布式的代码版本控制系统。通过使用 git 你可以随时回退到任意一个先前的版本而不用手动更改任何文件。并且掌握每次代码改动的详细信息。
 
-1. 安装ROS Melodic并成功运行ros turtle_sim。
-2. 创建ROS工作空间，包括创建包和编译运行hello_world程序。
-3. 通过这上面步骤，熟悉ROS的基本架构，包括ROS节点及其通信机制。
+[在网页上即刻体检 git 操作](https://learngitbranching.js.org/?locale=zh_CN)
+
+详细教程请参考[这个](https://zhuanlan.zhihu.com/p/478860779)。
+
+## 4. ROS 架构熟悉
+
+:::tip[任务]
+这一部分指南包含要完成的任务，请认真阅读下列内容并按要求完成任务。
+:::
+
+### 4.1 ROS 介绍
+
+ROS 是一个适用于机器人的开源的元操作系统。它提供了操作系统应有的服务，包括硬件抽象，底层设备控制，常用函数的实现，进程间消息传递，以及包管理。 [详情参考](https://wiki.ros.org/cn/ROS/Introduction)
+
+### 4.2 ROS 实践
+
+可以参考[官网的教程](https://wiki.ros.org/cn/ROS/Tutorials)来完成下列任务：
+
+1. ROS 环境搭建与配置  
+    安装 ROS **Melodic** 并成功运行 turtle_sim 程序包，**完成后上传结果至 QQ 群作业。**
+2. 创建自己的 ROS 程序包
+    - 在目录下创建 ROS 工作空间； 
+    - 创建自己的程序包；
+    - 在工作空间中编译运行程序包；
+    - 最后截图并上传结果至群作业。
+
+### 4.3 了解 ROS 节点通信
+
+参考以下链接，尝试理解 ROS 节点间是以何种方式实现通信。
+
+[1] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingNodes>  
+[2] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingTopics>  
+[3] <https://wiki.ros.org/cn/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29>
 
 ## 5. Github使用 
 
