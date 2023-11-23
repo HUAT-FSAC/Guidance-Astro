@@ -94,7 +94,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 :::
 
-### 1.3 浏览器的安装
+<!-- ### 1.3 浏览器的安装
 
 如果你使用 VMWare 虚拟机来安装 Ubuntu 系统的话，在安装过程中你会注意到这一选项：
 
@@ -103,9 +103,9 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 选择“最小安装”即可，默认的 Firefox 浏览器会正常进行安装。
 
 但如果使用 WSL 则安装浏览器的意义并不大，因为Windows环境下的浏览器是能直接使用的。  
-你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。
+你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。 -->
 
-### 1.4 IDE 安装及其配置
+### 1.3 IDE 安装及其配置
 
 在车队目前主要使用 C/C++ 进行开发，部分情况下使用 Python 3。因此我们推荐使用 Visual Studio Code（下称 VSC） 来进行代码教学及日常开发。
 
@@ -128,11 +128,11 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 
 #### 安装后配置
 
-参考[这篇教程](./综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
+参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
 
-### 1.5 Linux 下代理的配置
+### 1.4 Linux 下代理的配置
 
-此部分请移步至[这里](./综合/setting-up-proxy-on-linux.md)查看。
+此部分请移步至[这里](./../综合/setting-up-proxy-on-linux.md)查看。
 
 ## 2. 编程语言基础概念
 
@@ -177,7 +177,7 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 1. ROS 环境搭建与配置  
     - 安装 ROS **Melodic**  
-      安装教程请参考[ROS1 (Melodic) 安装教程](./综合/ros-installing.md)
+      安装教程请参考[ROS1 (Melodic) 安装教程](./../综合/ros-installing.md)
     - 运行 ROS 中内置的 turtle_sim 程序包
     - **完成后上传结果至 QQ 群作业。**
 2. 创建自己的 ROS 程序包
