@@ -61,7 +61,7 @@ export default defineConfig({
 			label: 'HUAT 无人车队开源项目',
 			link: '/open-source-projects'
 		}, {
-			label: '2024 预备无人系统部队员学习图',
+			label: '2024 无人系统部学习指南',
 			link: '/2024-learning-roadmap'
 		}],
 		lastUpdated: true,
