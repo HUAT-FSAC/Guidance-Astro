@@ -49,8 +49,6 @@ title: VSCode ROS 开发指南 (Clang)
 
 4. 配置 clang-format
 
-    ![.clang-format](./../../../assets/images/ros-vsc-setup/.clang-format.png)
-
     在项目根目录下添加 `.clang-format` 文件，并修改为以下内容。
 
     ```yaml
