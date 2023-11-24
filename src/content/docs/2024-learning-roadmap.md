@@ -53,7 +53,7 @@ title: 2024 无人系统部学习指南
 
 在 Ubuntu 中软件是以“软件包”的形式存在的，而我们想要下载或更新软件就首先要更新软件包列表的索引。考虑到与国外原分发服务器的连接延迟，更换成在国内架设的“镜像源”显然更为合适。
 
-Ubuntu 的包管理器是 “apt”，它的“软件源”配置文件在 `/etc/apt/sources.list` 。你可以通过执行 `sudo gedit /etc/apt/source.list` 来编辑它。
+Ubuntu 的包管  理器是 “apt”，它的“软件源”配置文件在 `/etc/apt/sources.list` 。你可以通过执行 `sudo gedit /etc/apt/sources.list` 来编辑它。
 
 :::tip
 你也可以使用[ROS1 (Melodic) 安装教程](./../综合/ros-installing)中的一键脚本来直接设置软件源，避免手动操作。
