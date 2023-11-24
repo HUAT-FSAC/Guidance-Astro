@@ -14,6 +14,12 @@ title: TigerVNC 配置指南
 sudo apt install tigervnc-common tigervnc-standalone-server tigervnc-scraping-server
 ```
 
+### 设置 vnc 用户及密码
+
+vnc 有一套依赖且独立于 Linux 用户的用户表。
+
+在终端执行： `vncpasswd`，根据提示输入两次密码（要求大于六个字符） 
+
 ### 正确设置 TigerVNC 配置
 
 编辑 `~/.vnc/` 下的 `xvncstart`

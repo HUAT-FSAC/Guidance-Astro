@@ -21,6 +21,16 @@ wget http://fishros.com/install -O fishros && . fishros
 
 随后跟随终端上的提示进行 ROS Melodic 的安装即可。
 
+## ROS 入门推荐资料
+
+以下资料作为参考，不要求全部看完。
+
+>“哪里不会看哪里就好”
+
+http://www.autolabor.com.cn/book/ROSTutorials/
+https://www.bilibili.com/video/BV1zt411G7Vn/
+https://www.bilibili.com/video/BV1Ci4y1L7ZZ/
+
 ---
 
 ## 以下部分为过时教程
