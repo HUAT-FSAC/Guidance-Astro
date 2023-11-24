@@ -9,7 +9,3 @@ title: 感知组
 ## 理论知识概述
 
 - 「强推」[那么...什么是卷积](https://www.bilibili.com/video/BV1Vd4y1e7pj)
-
-- [点云处理](https://www.bilibili.com/video/BV1f94y117vy)
-
-- [ROS入门21讲](https://www.bilibili.com/video/BV1zt411G7Vn)

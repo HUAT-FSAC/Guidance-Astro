@@ -198,10 +198,19 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 ## 5. Github使用 
 
-注册并加入HUAT-FSAC组织,可以熟悉/参考车队现有代码。
+注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。
+
+### 5.1 注册
+
+在[Github 主页](https://github.com)点击右上角的Sign up，随后按照提示完成注册。
+
+### 5.2 加入 HUAT-FSAC Github 组织
+
+向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后到[HUAT-FSAC组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。
+
 
 ## 6. FSSim
 
-最后尝试运行FSSim,实际操作一个机器人仿真环境,为后续真实机器人做准备。
+最后尝试运行 [FSSim](https://github.com/HUAT-FSAC/fssim) ,实际操作一个机器人仿真环境,为后续真实机器人做准备。
 
 通过以上学习步骤，你将逐步掌握机器人操作系统ROS的基础知识，为后续的进阶学习奠定坚实基础。实践是提升技能的关键，因此请在学习的同时多进行练习，以加深对所学知识的理解。
