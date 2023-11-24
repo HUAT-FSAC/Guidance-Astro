@@ -8,6 +8,15 @@ export default defineConfig({
 	integrations: [starlight({
 		title: 'FSAC AST Docs',
 		favicon: '/favicon.png',
+		head: [
+			{
+				tag: 'script',
+				attrs: {
+					src: 'https://analytics.eu.umami.is/script.js',
+					'data-website-id': 'e86c2669-d540-49f3-94f4-a7fe7284ccb4',
+				},
+			}
+		],
 		logo: {
 			src: './src/assets/logo-canvas.png'
 		},
