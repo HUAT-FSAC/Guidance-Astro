@@ -156,7 +156,7 @@ C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 ### 2.2 cmake
 
-
+参考 <https://www.hahack.com/codes/cmake/>
 
 ## 3. git使用
  
@@ -164,7 +164,7 @@ git 是一个分布式的代码版本控制系统。
 
 通过使用 git 你可以将自己的代码随时回退到任意先前版本而不用手动更改任何文件。而且借助 git   的“分支”概念，你可以在不影响主要代码的情况下向代码添加新的功能并测试。  
 
-学习并尝试使用 git 进行代码管理。在团队开发项目中，用 git 托管代码是必不可少的。
+学习并尝试使用 git 进行代码管理。在 HUAT - FSAC 团队开发项目中，用 git 托管代码是必不可少的。
 
 [在网页上即刻体检 git 操作](https://learngitbranching.js.org/?locale=zh_CN)
 
@@ -215,7 +215,7 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 ### 5.2 加入 HUAT-FSAC Github 组织
 
-向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后到[HUAT-FSAC组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。
+向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后在[HUAT-FSAC 组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。
 
 
 ## 6. FSSim
