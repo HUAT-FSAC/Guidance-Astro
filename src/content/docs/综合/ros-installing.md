@@ -27,9 +27,16 @@ wget http://fishros.com/install -O fishros && . fishros
 
 >“哪里不会看哪里就好”
 
-http://www.autolabor.com.cn/book/ROSTutorials/
-https://www.bilibili.com/video/BV1zt411G7Vn/
-https://www.bilibili.com/video/BV1Ci4y1L7ZZ/
+### 传智专修学院 ROS 教程
+  - <https://robot.czxy.com/docs/ros/arch/file/>
+
+### Autolabor 教程
+  - <https://www.bilibili.com/video/BV1Ci4y1L7ZZ/>
+  - <http://www.autolabor.com.cn/book/ROSTutorials/>
+
+### 其他教程
+<https://www.bilibili.com/video/BV1zt411G7Vn/>
+
 
 ---
 
