@@ -4,6 +4,11 @@ title: 2024 无人系统部学习指南
 
 欢迎来到 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。  
 
+:::caution
+## 0. 请学会正确的提问
+
+请务必在自行思考，网上寻找仍无法解决之后简明清楚的说明你所遇到的问题。具体请参考[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
+:::
 
 ## 1. 基础环境配置
 
