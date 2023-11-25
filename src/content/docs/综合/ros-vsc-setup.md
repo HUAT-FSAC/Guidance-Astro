@@ -4,11 +4,11 @@ title: VSCode ROS 开发指南 (Clang)
 
 在 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显得力不从心。你可能会遇到以下情况：
 
-- 糟糕的头文件索引（cmakelist 写明了是用于编译，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
+- 糟糕的头文件索引（CMakeList 写明了是用于编译，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
 
 - 由于没有良好的索引，静态代码检查完全无法工作
 
-- 完全没有用的 quick-fix 只能傻傻的提示一下可能的错误
+- 完全没有用的 "quick-fix" 只能傻傻的提示一下可能的错误
 
 所以为了提升自己开发 C++ 的体验和节约开发时间，更加推荐使用 clang + clangd 配合 VSC 插件进行开发。
 

@@ -43,7 +43,7 @@ https://www.bilibili.com/video/BV1Ci4y1L7ZZ/
 1. 配置 Ubuntu 软件仓库（Repositories）  
    
    你可以参考[这里（USTC）](https://mirrors.ustc.edu.cn/help/ros.html)的步骤进行。  
-   首先修改 `apt` 包管理器的 `source.list` 添加来自清华镜像的 ROS 源。
+   首先修改 `apt` 包管理器的 `sources.list` 添加来自清华镜像的 ROS 源。
 
    打开终端输入：
 
