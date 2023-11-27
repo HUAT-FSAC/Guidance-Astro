@@ -21,7 +21,7 @@ title: 2024 无人系统部学习指南
 
 尽管在真机上安装 Ubuntu 是避免兼容性问题的最好选择，但是更多时候安装在虚拟机上却更方便。以下是在不同虚拟机上安装 Ubuntu 的两种方式。
 
-#### VMWare（推荐）
+#### 🌟 VMWare（推荐）
 
 关于这一部分网上资源较多，推荐参考<https://zhuanlan.zhihu.com/p/38797088>的教程。你也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。
 
@@ -31,9 +31,13 @@ title: 2024 无人系统部学习指南
 - (USTC Mirror) [Ubuntu 18.04.6 镜像](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso)  （快于官方网站）
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本
 
-#### 🌟 WSL2
+#### WSL2（试验性）
 
 ![wsl](./../../assets/images/2024-learning-roadmap/wsl.png)
+
+:::caution
+有报告称该虚拟机使用 GUI 软件时窗口画面变形/撕裂的情况，请考虑后尝试安装。
+:::
 
 如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
@@ -58,10 +62,10 @@ title: 2024 无人系统部学习指南
 
 在 Ubuntu 中软件是以“软件包”的形式存在的，而我们想要下载或更新软件就首先要更新软件包列表的索引。考虑到与国外原分发服务器的连接延迟，更换成在国内架设的“镜像源”显然更为合适。
 
-Ubuntu 的包管  理器是 “apt”，它的“软件源”配置文件在 `/etc/apt/sources.list` 。你可以通过执行 `sudo gedit /etc/apt/sources.list` 来编辑它。
+Ubuntu 的包管理器是 “[apt](https://www.runoob.com/linux/linux-comm-apt.html)”，它的 “软件源” 配置文件在 `/etc/apt/sources.list`。你可以通过执行 `sudo gedit /etc/apt/sources.list` 来编辑它。
 
 :::tip
-你也可以使用[ROS1 (Melodic) 安装教程](./../综合/ros-installing)中的一键脚本来直接设置软件源，避免手动操作。
+你也可以使用[ROS1 (Melodic) 安装教程](./../综合/ros-installing)中的一键脚本来直接设置软件源，避免手动操作失败。
 :::
 
 将打开的文件完全替换为以下的内容：
@@ -97,6 +101,8 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 就会打开 Ubuntu 的命令行窗口，从这里输入你的命令就好。
 
+> 如果你使用[WSL](#11-linuxubuntu系统的安装)，请把 Windows Terminal 中的 WSL 终端当作 Ubuntu 的终端。 
+
 #### 什么是命令，有哪些，我要怎么学习？
 
 由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令及如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
@@ -127,6 +133,8 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 Windows 安装的过程不多复述。
 
+> 如果你想要在 Windows 平台上尝试编译运行你最拿手的 C/C++ 程序，请参考[这篇教程](https://blog.nekorect.eu.org/2022/05/17/visual-studio-code-c-c-%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/)来配置相关环境。
+
 在 Ubuntu 上进行安装首先要找到安装包。接着打开终端，输入：
 
 ```bash
@@ -147,7 +155,7 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 
 ## 2. 编程语言基础概念
 
-学习并熟悉C/C++，掌握基础代码查错技巧，了解 cmake 并理解其运行机制。  
+学习并熟悉 C/C++，掌握基础代码查错技巧，了解 cmake 并理解其运行机制。  
 C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 ### 2.1 基础语言框架
@@ -207,7 +215,7 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 ## 5. Github使用 
 
-注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。
+<!-- 注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。 -->
 
 ### 5.1 注册
 
@@ -216,6 +224,9 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 <!-- ### 5.2 加入 HUAT-FSAC Github 组织
 向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后在[HUAT-FSAC 组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。 -->
 
+:::tip
+以下部分尚未编写/规划完成，内容随时可能变动。请酌情参考。
+:::
 
 ## 6. FSSim
 
