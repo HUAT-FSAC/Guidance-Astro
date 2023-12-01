@@ -2,8 +2,6 @@
 title: 2024 无人系统部学习指南
 ---
 
-import {Tabs, TabItem} from '@astrojs/starlight/componements';
-
 欢迎来到 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。  
 
 :::caution
@@ -37,31 +35,22 @@ import {Tabs, TabItem} from '@astrojs/starlight/componements';
 
 ![wsl](./../../assets/images/2024-learning-roadmap/wsl.png)
 
-    如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
+如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
-    相比 VMWare 它具有以下优势：
-    - 无需 2.xG 的镜像文件
-    - 启动快
-    - 安装/卸载方便
-    - 与 Windows 融合度高
-    - ...
+相比 VMWare 它具有以下优势：
+- 无需 2.xG 的镜像文件
+- 启动快
+- 安装/卸载方便
+- 与 Windows 融合度高
+- ...
 
-    你可以自行参考以下链接来进行 WSL2 Ubuntu 18.04 的安装
+你可以自行参考以下链接来进行 WSL2 Ubuntu 18.04 的安装
 
-    [1] https://zhuanlan.zhihu.com/p/377263437  
-    [2] https://sspai.com/post/74167  
-    [3] https://zhuanlan.zhihu.com/p/348813745  
-    [4] https://blog.csdn.net/qq401195092/article/details/133717025  
-    [5] https://blog.csdn.net/microsoft_mos/article/details/123627295  
-  </TabItem>
-</Tabs>
-
-{/* #### 🌟 VMWare（推荐） */}
-
-
-{/* #### WSL2（试验性） */}
-
-
+[1] <https://zhuanlan.zhihu.com/p/377263437>  
+[2] <https://sspai.com/post/74167>  
+[3] <https://zhuanlan.zhihu.com/p/348813745>  
+[4] <https://blog.csdn.net/qq401195092/article/details/133717025>  
+[5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>  
 
 ### 1.1.1 Ubuntu 安装后配置
 
@@ -167,7 +156,7 @@ C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 ### 2.2 cmake
 
-参考 https://www.hahack.com/codes/cmake/
+参考 <https://www.hahack.com/codes/cmake/>
 
 ## 3. git使用
  
@@ -212,9 +201,9 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 
 参考以下链接，尝试理解 ROS 节点间是以何种方式实现通信。
 
-[1] https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingNodes  
-[2] https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingTopics  
-[3] https://wiki.ros.org/cn/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
+[1] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingNodes>  
+[2] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingTopics>  
+[3] <https://wiki.ros.org/cn/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29>
 
 ## 5. Github使用 
 
