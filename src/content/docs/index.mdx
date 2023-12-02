@@ -26,7 +26,7 @@ export function Contributors() {
       const users = res.data;
       const detail = users.map((user) => {
         console.log(user.login);
-        return (<image src={user.avatar_url} />)
+        return (<img src={user.avatar_url} alt="github user icon" />)
         // document.getElementById("asd").innerHTML = user.login;
       });
       // console.log(detail);
