@@ -118,7 +118,7 @@ task 相当于 VS Code 里面的任务。按下按键所对应的任务便会执
 
 如果调试没有如想象中一样停止等待操作，可以检查 `tasks.json` 中 -g 的 flag 有没有被添加或者尝试在编辑器左侧给程序打上断点。
 
-![debugging](./../../../assets/images/vsc-c-c++-dev-and-debug/debugging.gif)
+<!-- ![debugging](./../../../assets/images/vsc-c-c++-dev-and-debug/debugging.gif) -->
 
 ## 后话
 
