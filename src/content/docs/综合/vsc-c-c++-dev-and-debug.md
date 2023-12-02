@@ -3,8 +3,6 @@ title: 在 Visual Studio Code 上进行 C/C++ 开发与调试
 Author: NekoRectifier
 ---
 
-# 还未完成
-
 ## 前言
 
 VSC 相比 Clion/Visual Studio 来说仅仅是个简单的代码编辑器，默认并不具备 C/C++ 代码的编译/调试等功能。但如果你想要在 VSC 上实现这样的功能的话，你可以参考如下内容进行。
