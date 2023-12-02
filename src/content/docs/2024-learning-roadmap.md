@@ -105,7 +105,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 :::
 
-{/* ### 1.3 浏览器的安装
+<!-- ### 1.3 浏览器的安装
 
 如果你使用 VMWare 虚拟机来安装 Ubuntu 系统的话，在安装过程中你会注意到这一选项：
 
@@ -114,7 +114,8 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 选择“最小安装”即可，默认的 Firefox 浏览器会正常进行安装。
 
 但如果使用 WSL 则安装浏览器的意义并不大，因为Windows环境下的浏览器是能直接使用的。  
-你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。  */}
+你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。  
+-->
 
 ### 1.3 IDE 安装及其配置
 
