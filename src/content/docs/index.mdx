@@ -26,14 +26,18 @@ export function Contributors() {
       const users = res.data;
       const detail = users.map((user) => {
         console.log(user.login);
-        return (<img src={user.avatar_url} alt="github user icon" />)
-        // document.getElementById("asd").innerHTML = user.login;
+        // console.log({<img src={user.avatar_url} alt="github user icon" />})
+        return (
+          <div>
+            <img src={user.avatar_url} alt="github user icon" />
+          </div>
+        )
       });
       // console.log(detail);
       
       return detail;
     }).catch((e) => console.log(e));
-    return "";
+    // return "";
 }
 
 ### 以下是该网站 Repo 的贡献者，感谢他们每一行的付出
