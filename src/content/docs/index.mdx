@@ -15,3 +15,30 @@ hero:
       link: https://github.com/HUAT-FSAC/Guidance-Astro
       icon: external
 ---
+
+{/* scripts */}
+
+import axios from 'axios'
+
+export function Contributors() {
+  axios.get(`https://api.github.com/repos/HUAT-FSAC/Guidance-Astro/contributors`)
+    .then((res) => {
+      const users = res.data;
+      const detail = users.map((user) => {
+        console.log(user.login);
+        return (<image src={user.avatar_url} />)
+        // document.getElementById("asd").innerHTML = user.login;
+      });
+      // console.log(detail);
+      
+      return detail;
+    }).catch((e) => console.log(e));
+    return "";
+}
+
+### 以下是该网站 Repo 的贡献者，感谢他们每一行的付出
+
+<Contributors />
+
+<div id="asd" />
+
