@@ -99,7 +99,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 #### 什么是命令，有哪些，我要怎么学习？
 
-由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令及如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
+由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令以及该如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
 
 :::tip
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
@@ -141,6 +141,7 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 #### 安装后配置
 
 参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
+参考[这篇教程](./../综合/vsc-c-c++-dev-and-debug)来配置在 VSC 上进行 C/C++ 开发。
 
 ### 1.4 Linux 下代理的配置
 
