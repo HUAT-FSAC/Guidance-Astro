@@ -200,17 +200,25 @@ title: VSCode ROS 开发指南 (Clang)
 ### CMake Toools 设置 —— 生成 compile_command.json
 
 **这一步是 clangd 能够自动索引到头文件的关键。**  
-同样找到该插件的设置，并将 “Export Compile Commands File” 的选项打上钩。接着使用 `catkin_make` 或者 `catkin build` 编译一下。
+同样找到该插件的设置，并将 “Export Compile Commands File” 的选项打上钩。
+
+在工作空间下执行：`catkin config --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`，来设置空间的编译参数。
+
+接着使用 `catkin_make` 或者 `catkin build` 编译一下。
 
 ![cmaketool](./../../../assets/images/ros-vsc-setup/cmaketool.png)
 
-最后在 `/build` 文件夹下看看有没有 `compile_commands.json` 文件的存在。
+最后在 `/build` 文件夹下看看有没有 `compile_commands.json` 文件的存在。  
+如果没有的话，可以从 `build/{正在开发的包名}/` 目录下把 `compile_commands.json` 文件给拷贝到 `build/` 目录下。
 
 ## 结语
+
+![](./../../../assets/images/ros-vsc-setup/finish.png)
 
 这样就可以愉快的使用 clangd 的特性进行 ROS 开发了。
 
 ## 参考链接
 
 【1】<https://blog.csdn.net/weixin_43862847/article/details/119274382>  
-【2】<https://zhuanlan.zhihu.com/p/514541589>
+【2】<https://zhuanlan.zhihu.com/p/514541589>  
+【3】<https://blog.csdn.net/m0_38144614/article/details/116986927>
