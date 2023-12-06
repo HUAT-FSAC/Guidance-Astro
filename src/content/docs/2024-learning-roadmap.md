@@ -1,40 +1,56 @@
 ---
-title: 2024 无人系统部学习指南
+title: 2024 无人系统部介绍
 ---
 
-欢迎来到 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。  
+嗨，你好啊。欢迎加入 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。  
 
-:::caution
+## 序
+
+首先介绍一下无人系统部所用的软件与开发平台。我们的软件开发主要基于 Robot Operating System（ROS），你可以把它理解为有着各种工具的工具箱。我们依托于这个“平台”来开发各种各样的功能包，比如视觉的图像处理，对路径的计算与规划等。  
+由于 ROS 一般运行在 Linux 操作系统上，所以掌握部分 Linux 知识是必须的。在日常代码的编写上我们会使用 Visual Studio Code，当然你也可以使用你熟悉的编辑器/集成开发环境。而在开发语言上 ROS 限定了两种：C++ 与 Python，你也可以按照喜好自由选择。
+
+而在你的学习过程中，我们希望你能自己搜索/了解没听说过的软件和领域，遇到问题时能自己先搜索下报错信息，看到教程指南时也能自己分析是否与所搜寻的相符。最重要的是——对未知的领域保持探索欲与求知欲。
+
+当然我们也非常乐意回答你在学习时提出的问题，只要它们是在你真的努力尝试搜寻答案却仍然无果之后——我们不希望提问被滥用为快速解决问题的“捷径”。
+
+最后，培训不仅仅是完成任务，我们更乐意看到你在不断尝试的过程中学到真东西，而非只是按部就班草草完成了事。
+
+—— NekoRectifier
+
+## 如果你不怎么习惯用电脑
+
+<!-- - 在你想开口问什么之前，我都建议先上搜索引擎搜搜看，说不定它比 -->
+
+- 在搜索什么东西的时候，我更推荐使用[必应](www.bing.com)而非[百度](www.baidu.com)。原因不过后者的竞价排名只会让你更难搜索到你需要的信息。
+
+- 搜索的时候别忘了看一下页面的日期，有时候过时的信息反而会误导你。
+
+<!-- :::caution
 ## 0. 请学会正确的提问
 
 请务必在自行思考，网上寻找仍无法解决之后简明清楚的说明你所遇到的问题。具体请参考[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
-:::
+::: -->
 
 ## 1. 基础环境配置
 
-首先我们从接触全新的系统环境开始,在虚拟机平台上安装Ubuntu,熟悉基本的命令行接口(CLI)操作。  
-同时,学习浏览器、集成开发环境(IDE)的安装以及代理的使用。熟练使用命令行是后续工作的基础。
+我们先从接触全新的系统环境开始，既然 ROS 运行在 Linux 之上。我们就得先安装一个 Linux 操作系统。  
+目前与 ROS 兼容性最好的便是 Ubuntu 操作系统，你可以自行搜索安装方式。但如果你没什么主意💡，下面是一个现成的安装方案可以参考。
 
-### 1.1 Linux（Ubuntu）系统的安装
+### 1.1 Linux（Ubuntu）系统在 VMWare 虚拟机上的安装
 
 ![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
-要想在 Ubuntu 上进行开发，首先要做的是**安装并配置 Ubuntu 操作系统**。在下方我们给出了两种推荐的基于 Windows 下的虚拟机安装方式。
+通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以搜索[vmware ubuntu 18.04 安装](https://www.bing.com/search?q=vmware+ubuntu+18.04+%E5%AE%89%E8%A3%85)。
 
-#### 🌟VMWare
+以下是几点提示：
 
-通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以参考<https://blog.csdn.net/weixin_43290551/article/details/125954709>的教程。也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。以下是几点提示：
-
-- 不用担心搞坏什么东西，虚拟机本身就是用来折腾的；
-- 在 “安装客户机操作系统” 部分中，你也可以不按照网上大多教程所说的选择 “稍后安装操作系统”。而是直接选择 “安装程序光盘映像文件” 并指向你刚刚下载下来的镜像文件；
-- 如果安装完成后系统不是中文，请参考[这篇教程](https://zhuanlan.zhihu.com/p/38797088)的“设置语言环境”部分；
-- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免对后续的 ROS 学习造成影响；
-- VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的；
-- (USTC Mirror) [Ubuntu 18.04.6 镜像](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso)  （快于官方网站）
-- 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本并进行安装。
+- 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本并进行安装
+- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，因为这个版本与我们使用的 ROS 版本搭配
+- VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的
 
 
-#### WSL2
+
+<!-- #### WSL2
 
 :::warning
 此前有过 WSL 上软件图形界面画面撕裂（rqt）的报告，如果你只想尽快配置好，那么请选择 VMware。
@@ -66,9 +82,9 @@ WSL的主要功能和优点包括:
 [2] <https://sspai.com/post/74167>  
 [3] <https://zhuanlan.zhihu.com/p/348813745>  
 [4] <https://blog.csdn.net/qq401195092/article/details/133717025>  
-[5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>  
+[5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>   -->
 
-### 1.1.1 Ubuntu 安装后配置
+<!-- ### 1.1.1 Ubuntu 安装后配置
 
 #### 换源
 
@@ -121,19 +137,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 :::tip
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
-:::
-
-<!-- ### 1.3 浏览器的安装
-
-如果你使用 VMWare 虚拟机来安装 Ubuntu 系统的话，在安装过程中你会注意到这一选项：
-
-![install-choice](./../../assets/images/2024-learning-roadmap/install-choice.png)
-
-选择“最小安装”即可，默认的 Firefox 浏览器会正常进行安装。
-
-但如果使用 WSL 则安装浏览器的意义并不大，因为Windows环境下的浏览器是能直接使用的。  
-你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。  
--->
+::: -->
 
 ### 1.3 IDE（集成开发环境）安装及其配置
 
@@ -158,12 +162,12 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 
 #### 安装后配置
 
-参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。
+参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。  
 参考[这篇教程](./../综合/vsc-c-c++-dev-and-debug)来配置在 VSC 上进行 C/C++ 开发。
 
-### 1.4 Linux 下代理的配置
+<!-- ### 1.4 Linux 下代理的配置
 
-此部分请移步至[这里](./../综合/setting-up-proxy-on-linux)查看。
+此部分请移步至[这里](./../综合/setting-up-proxy-on-linux)查看。 -->
 
 ## 2. 编程语言基础概念
 
@@ -174,9 +178,9 @@ C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
 
 可以在[这里](https://www.runoob.com/cplusplus/cpp-tutorial.html)随时查询相关知识。
 
-### 2.2 cmake
+<!-- ### 2.2 cmake
 
-参考 <https://www.hahack.com/codes/cmake/>
+参考 <https://www.hahack.com/codes/cmake/> -->
 
 ## 3. git使用
  
@@ -211,11 +215,11 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
       安装教程请参考[ROS1 (Melodic) 安装教程](./../综合/ros-installing)
     - 运行 ROS 中内置的 turtle_sim 程序包
     - **完成后上传结果至 QQ 群作业。**
-2. 创建自己的 ROS 程序包
+<!-- 2. 创建自己的 ROS 程序包
     - 在目录下创建 ROS 工作空间； 
     - 创建自己的程序包；
     - 在工作空间中编译运行程序包；
-    - 最后截图并上传结果至群作业。
+    - 最后截图并上传结果至群作业。 -->
 
 ### 4.3 了解 ROS 节点通信
 
@@ -225,20 +229,21 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 [2] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingTopics>  
 [3] <https://wiki.ros.org/cn/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29>
 
-## 5. Github使用 
+<!-- ## 5. Github使用 
 
-<!-- 注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。 -->
+注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。
 
 ### 5.1 注册
 
 在[Github 主页](https://github.com)点击右上角的Sign up，随后按照提示完成注册。
 
-<!-- ### 5.2 加入 HUAT-FSAC Github 组织
-向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后在[HUAT-FSAC 组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。 -->
+### 5.2 加入 HUAT-FSAC Github 组织
+向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后在[HUAT-FSAC 组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。
 
 
 ## 6. FSSim
 
 最后尝试运行 [FSSim](https://github.com/HUAT-FSAC/fssim) ,实际操作一个机器人仿真环境,为后续真实机器人做准备。
+-->
 
 通过以上学习步骤，你将逐步掌握机器人操作系统ROS的基础知识，为后续的进阶学习奠定坚实基础。实践是提升技能的关键，因此请在学习的同时多进行练习，以加深对所学知识的理解。
