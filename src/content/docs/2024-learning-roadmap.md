@@ -23,12 +23,15 @@ title: 2024 无人系统部学习指南
 
 #### 🌟VMWare
 
-通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以参考<https://zhuanlan.zhihu.com/p/38797088>的教程。也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。以下是几点提示：
+通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以参考<https://blog.csdn.net/weixin_43290551/article/details/125954709>的教程。也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。以下是几点提示：
 
-- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免对后续操作造成影响；
+- 不用担心搞坏什么东西，虚拟机本身就是用来折腾的。
+- 在 “安装客户机操作系统” 部分中，你也可以不按照网上大多教程所说的选择 “稍后安装操作系统”。而是直接选择 “安装程序光盘映像文件” 并指向你刚刚下载下来的镜像文件。
+- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免对后续的 ROS 学习造成影响；
 - VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的；
 - (USTC Mirror) [Ubuntu 18.04.6 镜像](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso)  （快于官方网站）
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本并进行安装。
+
 
 #### WSL2
 
