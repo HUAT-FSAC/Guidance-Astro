@@ -19,21 +19,33 @@ title: 2024 无人系统部学习指南
 
 ![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
-尽管在真机上安装 Ubuntu 是避免兼容性问题的最好选择，但是更多时候安装在虚拟机上却更方便。以下是在不同虚拟机上安装 Ubuntu 的两种方式。
+要想在 Ubuntu 上进行开发，首先要做的是**安装并配置 Ubuntu 操作系统**。在下方我们给出了两种推荐的基于 Windows 下的虚拟机安装方式。
 
-#### VMWare（推荐）
+#### 🌟VMWare
 
-关于这一部分网上资源较多，推荐参考<https://zhuanlan.zhihu.com/p/38797088>的教程。你也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。
+通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以参考<https://zhuanlan.zhihu.com/p/38797088>的教程。也可以自行搜索安装教程图文/[视频](https://search.bilibili.com/all?keyword=vmware%20ubuntu%2018.04)。以下是几点提示：
 
-
-- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免影响后续操作；
-- VMWare Workstation 的版本并不严格要求，16/17/18 都是可以的；
+- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，避免对后续操作造成影响；
+- VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的；
 - (USTC Mirror) [Ubuntu 18.04.6 镜像](https://mirrors.ustc.edu.cn/ubuntu-releases/18.04.6/ubuntu-18.04.6-desktop-amd64.iso)  （快于官方网站）
-- 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本
+- 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本并进行安装。
 
-#### 🌟 WSL2
+#### WSL2
+
+:::warning
+此前有过 WSL 上软件图形界面画面撕裂（rqt）的报告，如果你只想尽快配置好，那么请选择 VMware。
+:::
 
 ![wsl](./../../assets/images/2024-learning-roadmap/wsl.png)
+
+
+Windows Subsystem for Linux (WSL) 是微软在 Windows 10 中引入的一个新功能,它允许在 Windows 系统上原生运行Linux二进制可执行文件,而无需虚拟机或双启动。
+
+WSL的主要功能和优点包括:
+
+1. 在Windows系统内部运行一个真正的Linux环境,包括Linux内核和命令行工具。
+2. 无缝地在Windows系统文件和Linux环境文件之间互相访问和操作。
+3. 直接在Windows命令行(CMD或PowerShell)中运行Linux命令和程序。
 
 如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
@@ -44,7 +56,7 @@ title: 2024 无人系统部学习指南
 - 与 Windows 融合度高
 - ...
 
-你可以自行参考以下链接来进行 WSL2 Ubuntu 18.04 的安装
+目前还没有找到适合推荐的 WSL 配置教程，你可以自行参考以下链接来进行 WSL2 Ubuntu 18.04 的安装
 
 [1] <https://zhuanlan.zhihu.com/p/377263437>  
 [2] <https://sspai.com/post/74167>  
@@ -56,7 +68,7 @@ title: 2024 无人系统部学习指南
 
 #### 换源
 
-在 Ubuntu 中软件是以“软件包”的形式存在的，而我们想要下载或更新软件就首先要更新软件包列表的索引。考虑到与国外原分发服务器的连接延迟，更换成在国内架设的“镜像源”显然更为合适。
+在 Ubuntu 中软件是以“软件包”的形式存在的，而我们想要下载或更新软件就首先要更新软件包列表的索引。考虑到国内与国外原软件分发服务器的网络延迟，更换成在国内架设的“镜像源”显然更为合适。
 
 Ubuntu 的包管  理器是 “apt”，它的“软件源”配置文件在 `/etc/apt/sources.list` 。你可以通过执行 `sudo gedit /etc/apt/sources.list` 来编辑它。
 
@@ -97,6 +109,8 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 
 就会打开 Ubuntu 的命令行窗口，从这里输入你的命令就好。
 
+> 如果你使用 WSL，那么打开的命令窗口就是 Ubuntu 中的终端。
+
 #### 什么是命令，有哪些，我要怎么学习？
 
 由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令以及该如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
@@ -117,7 +131,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 你可以跳过这一部分，或者在终端中输入 `sudo apt install firefox` 来进行安装。  
 -->
 
-### 1.3 IDE 安装及其配置
+### 1.3 IDE（集成开发环境）安装及其配置
 
 在车队目前主要使用 C/C++ 进行开发，部分情况下使用 Python 3。因此我们推荐使用 Visual Studio Code（下称 VSC） 来进行代码教学及日常开发。
 
