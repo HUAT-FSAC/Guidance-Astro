@@ -139,7 +139,7 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 ::: -->
 
-### 1.3 IDE（集成开发环境）安装及其配置
+### 1.2 IDE（集成开发环境）安装及其配置
 
 在车队目前主要使用 C/C++ 进行开发，部分情况下使用 Python 3。因此我们推荐使用 Visual Studio Code（下称 VSC） 来进行代码教学及日常开发。
 
@@ -171,24 +171,20 @@ sudo dpkg -i {安装包的文件名（带后缀）}
 
 ## 2. 编程语言基础概念
 
-学习并熟悉C/C++，掌握基础代码查错技巧，了解 cmake 并理解其运行机制。  
-C++ 是 ROS 中主要使用的语言,对其有基本的了解非常重要。
+如果你是大一新生，那么你很可能在学习公共课——大学 C 语言。如果你觉得跟上课程内容很容易而且有意思，那么跟着听没问题。  
+但如果你觉得听不懂/没意思/想拓展，这些有一些书可以帮到你。
 
-### 2.1 基础语言框架
+- Essential C++
 
-可以在[这里](https://www.runoob.com/cplusplus/cpp-tutorial.html)随时查询相关知识。
-
-<!-- ### 2.2 cmake
-
-参考 <https://www.hahack.com/codes/cmake/> -->
+- C++ Primer Plus
 
 ## 3. git使用
  
 git 是一个分布式的代码版本控制系统。
 
-通过使用 git 你可以将自己的代码随时回退到任意先前版本而不用手动更改任何文件。而且借助 git   的“分支”概念，你可以在不影响主要代码的情况下向代码添加新的功能并测试。  
+通过使用 git 你可以一键将自己的代码回退至任意版本。而且借助 git 的“分支”功能，你可以在不影响主要代码的情况下向代码添加新的功能并测试。  
 
-学习并尝试使用 git 进行代码管理。在 HUAT - FSAC 团队开发项目中，用 git 托管代码是必不可少的。
+学习并尝试使用 git 进行代码管理。在 HUAT-FSAC 团队开发项目中，用 git 托管代码是必不可少的。
 
 [在网页上即刻体检 git 操作](https://learngitbranching.js.org/?locale=zh_CN)
 
@@ -228,22 +224,5 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
 [1] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingNodes>  
 [2] <https://wiki.ros.org/cn/ROS/Tutorials/UnderstandingTopics>  
 [3] <https://wiki.ros.org/cn/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29>
-
-<!-- ## 5. Github使用 
-
-注册 Github 并加入[HUAT-FSAC组织](https://github.com/HUAT-FSAC),可以熟悉/参考车队现有代码。
-
-### 5.1 注册
-
-在[Github 主页](https://github.com)点击右上角的Sign up，随后按照提示完成注册。
-
-### 5.2 加入 HUAT-FSAC Github 组织
-向 HUAT-FSAC 所有者（[2182998627@qq](https://qm.qq.com/q/Q3p2NrKCOI); 2171139160@qq）告知你的 Github 用户名，之后在[HUAT-FSAC 组织页](https://github.com/HUAT-FSAC)查看来自所有者发送的邀请。
-
-
-## 6. FSSim
-
-最后尝试运行 [FSSim](https://github.com/HUAT-FSAC/fssim) ,实际操作一个机器人仿真环境,为后续真实机器人做准备。
--->
 
 通过以上学习步骤，你将逐步掌握机器人操作系统ROS的基础知识，为后续的进阶学习奠定坚实基础。实践是提升技能的关键，因此请在学习的同时多进行练习，以加深对所学知识的理解。
