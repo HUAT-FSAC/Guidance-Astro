@@ -44,6 +44,8 @@ title: 2024 无人系统部介绍
 
 ![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
 
+<p align="center">Ubuntu 操作系统的 LOGO</p>
+
 通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以搜索[vmware ubuntu 18.04 安装](https://www.bing.com/search?q=vmware+ubuntu+18.04+%E5%AE%89%E8%A3%85)。
 
 以下是几点提示：
@@ -107,9 +109,12 @@ WSL的主要功能和优点包括:
 
 由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令以及该如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
 
+同时你也可以通过按这样的格式搜索 [linux 命令 ls 是什么](https://www.bing.com/search?q=linux+%E5%91%BD%E4%BB%A4+ls+%E6%98%AF%E4%BB%80%E4%B9%88) 来解答你在使用命令是产生的疑问。
+
 :::tip
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
-::: -->
+::: 
+
 
 ### 1.3 Visual Studio Code安装及其配置
 
