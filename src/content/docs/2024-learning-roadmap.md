@@ -2,7 +2,9 @@
 title: 2024 无人系统部介绍
 ---
 
-嗨，你好啊。欢迎加入 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。  
+嗨，你好啊。欢迎加入 HUAT FSAC 无人系统部👏，在这里开始你的第一步学习吧。 
+
+> 请注意：本教程指南仍在编写阶段，内容随时可能更新。
 
 ## 序
 
@@ -84,38 +86,6 @@ WSL的主要功能和优点包括:
 [4] <https://blog.csdn.net/qq401195092/article/details/133717025>  
 [5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>   -->
 
-<!-- ### 1.1.1 Ubuntu 安装后配置
-
-#### 换源
-
-在 Ubuntu 中软件是以“软件包”的形式存在的，而我们想要下载或更新软件就首先要更新软件包列表的索引。考虑到国内与国外原软件分发服务器的网络延迟，更换成在国内架设的“镜像源”显然更为合适。
-
-Ubuntu 的包管  理器是 “apt”，它的“软件源”配置文件在 `/etc/apt/sources.list` 。你可以通过执行 `sudo gedit /etc/apt/sources.list` 来编辑它。
-
-:::tip
-你也可以使用[ROS1 (Melodic) 安装教程](./../综合/ros-installing)中的一键脚本来直接设置软件源，避免手动操作。
-:::
-
-将打开的文件完全替换为以下的内容：
-
-```text
-# 默认注释了源码仓库，如有需要可自行取消注释
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-
-```
-
-详细步骤[见此](https://mirrors.ustc.edu.cn/help/ubuntu.html)
-
 ### 1.2 Linux 命令行操作
 
 尽管现代 Linux 操作系统大多都搭配的方便易用的 GUI 图形界面，但是对于开发来说快速便捷的 CLI 指令依然是必不可少的得力助手。
@@ -139,28 +109,26 @@ deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted univers
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 ::: -->
 
-### 1.2 IDE（集成开发环境）安装及其配置
+### 1.2 Visual Studio Code安装及其配置
 
-在车队目前主要使用 C/C++ 进行开发，部分情况下使用 Python 3。因此我们推荐使用 Visual Studio Code（下称 VSC） 来进行代码教学及日常开发。
+说到集成开发环境，相信大多数人接触到的都是 Dev C++、Clion(IDEA) 或者 Visual Studio。但你对以上所列举的软件并不熟悉或不怎么上手的话，可以考虑学习一下 Visual Studio Code（下称 VSC）。 
+
+![vsc 的用户界面图](./../../assets/images/2024-learning-roadmap/vsc-ui.png)
+
+<p align="center">VSC 的用户界面图</p>
 
 #### 安装
 
-> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/code_1.84.2-1699528352_amd64.deb)下载 VSCode Linux 安装包（deb）  
-> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/VSCodeUserSetup-x64-1.84.2.exe)下载 VSCode Windows（exe）
+> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/code_1.84.2-1699528352_amd64.deb)下载 VSC Linux 安装包（deb）  
+> 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/VSCodeUserSetup-x64-1.84.2.exe)下载 VSC Windows（exe）
 
-Windows 安装的过程不多复述。
+Windows 安装的过程不多复述，双击 exe 文件并进行安装就好。
 
-在 Ubuntu 上进行安装首先要找到安装包。接着打开终端，输入：
+至于 dpkg 的安装，你可以搜索 [ubuntu 安装 deb 包](https://www.bing.com/search?q=ubuntu+%E5%AE%89%E8%A3%85+deb+%E5%8C%85) 来获取相关信息。
 
-```bash
-sudo dpkg -i {安装包的文件名（带后缀）}
-```
+完成后，你可以在终端内执行 `code` 或者在应用列表内找到 VSC 图标来打开它。
 
-进行安装。
-
-在安装过程结束后，你可以通过在终端内执行 `code` 或者在应用列表内找到 VSCode 图标来打开。
-
-#### 安装后配置
+#### 配置
 
 参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。  
 参考[这篇教程](./../综合/vsc-c-c++-dev-and-debug)来配置在 VSC 上进行 C/C++ 开发。
