@@ -27,6 +27,8 @@ title: 2024 无人系统部介绍
 
 - 搜索的时候别忘了看一下页面的日期，有时候过时的信息反而会误导你。
 
+- 本文中所说的 “参考”，指的是在不会/不懂的时候可以优先将该链接作为可靠信源，而非强制性的要求全部学完。
+
 <!-- :::caution
 ## 0. 请学会正确的提问
 
@@ -109,7 +111,7 @@ WSL的主要功能和优点包括:
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 ::: -->
 
-### 1.2 Visual Studio Code安装及其配置
+### 1.3 Visual Studio Code安装及其配置
 
 说到集成开发环境，相信大多数人接触到的都是 Dev C++、Clion(IDEA) 或者 Visual Studio。但你对以上所列举的软件并不熟悉或不怎么上手的话，可以考虑学习一下 Visual Studio Code（下称 VSC）。 
 
@@ -117,7 +119,7 @@ WSL的主要功能和优点包括:
 
 <p align="center">VSC 的用户界面图</p>
 
-#### 安装
+#### 1.3.1 安装
 
 > 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/code_1.84.2-1699528352_amd64.deb)下载 VSC Linux 安装包（deb）  
 > 在[这里](https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/VSCodeUserSetup-x64-1.84.2.exe)下载 VSC Windows（exe）
@@ -128,7 +130,7 @@ Windows 安装的过程不多复述，双击 exe 文件并进行安装就好。
 
 完成后，你可以在终端内执行 `code` 或者在应用列表内找到 VSC 图标来打开它。
 
-#### 配置
+#### 1.3.2 配置
 
 参考[这篇教程](./../综合/ros-vsc-setup)来配置在 VSC 上进行 ROS 开发。  
 参考[这篇教程](./../综合/vsc-c-c++-dev-and-debug)来配置在 VSC 上进行 C/C++ 开发。
