@@ -9,8 +9,9 @@ VSC 相比 Clion/Visual Studio 来说仅仅是个简单的代码编辑器，默�
 
 ## 安装 Windows 平台下 C/C++ 编译器
 
-在此我推荐 [Winlibs](https://winlibs.com/) 作为 Windows 上最适合使用的编译器。  
-它集合了 GCC/Clang 两大编译器，并且整合了 MinGW-w64、LLVM、GDB与LLDB。仅一次安装就可以部署好 C/C++ 编译的大部分软件与环境。
+一般的 Linux 平台上都会默认安装 gcc 或 clang 作为编译器，如果没有请自行搜索并安装。  
+而 [Winlibs](https://winlibs.com/) 则是可以作为 Windows 上最适合快速部署的编译环境。  
+它集合了 GCC/Clang 两大编译器，并且整合了 MinGW-w64、LLVM、GDB与LLDB。仅一次安装就可以部署好用于 C/C++ 编译的大部分软件与环境。
 
 ### 部署
 

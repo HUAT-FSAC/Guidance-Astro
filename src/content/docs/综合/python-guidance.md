@@ -12,7 +12,7 @@ Python 的 ROS 功能包开发/除错都更加容易，尽可能地掌握它将*
 ## 相关推荐
 
 1.  Python 虚拟空间  
-  虚拟空间可以避免潜在的依赖冲突，同时也可以在同一系统环境下运行不同的 Python 运行时。
+  虚拟空间可以避免潜在的依赖冲突，同时也可以在同一系统环境下安装不同的 Python 运行时。
 
     - [Anaconda](https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh) / [Miniconda](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
     
