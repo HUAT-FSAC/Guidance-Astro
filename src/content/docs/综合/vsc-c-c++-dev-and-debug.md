@@ -44,6 +44,8 @@ task 相当于 VS Code 里面的任务。按下按键所对应的任务便会执
 
 用 VSC 打开一个你准备好的空目录，新建一个 `.vscode/` 目录，在其中新建一个 `tasks.json` 文件。将以下内容复制进去：
 
+##### 请注意，这个 task.json 是在Windows环境下编译所配置的。如果用于其他平台请务必做出必要修改。
+
 ```json
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
