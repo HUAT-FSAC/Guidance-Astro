@@ -2,9 +2,9 @@
 title: VSCode ROS 开发指南 (Clang)
 ---
 
-在 VSCode 中标配的 “C/C++” 插件在开发 ROS（C++）上实在显得力不从心。你可能会遇到以下情况：
+在 VSCode 中的 “C/C++” 插件（此插件默认与 ROS 官方插件搭配）在开发 ROS（C++）上实在显得力不从心。你可能会遇到以下情况：
 
-- 糟糕的头文件索引（CMakeList 写明了是用于编译，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
+- 糟糕的头文件索引（CMakeList 写明了各种库，而你还需要在 `cpp_configuration` 中添加路径来为 C/C++ 插件提供索引。
 
 - 由于没有良好的索引，静态代码检查完全无法工作
 
@@ -22,6 +22,7 @@ title: VSCode ROS 开发指南 (Clang)
 
     ```bash
     sudo apt install clang
+    # 考虑到 ubuntu 源更新，其名称可能变为：clang-10
     ```
 
 2. 安装 clangd
@@ -49,6 +50,7 @@ title: VSCode ROS 开发指南 (Clang)
 
 4. 配置 clang-format
 
+    同样地，这一步也是可选的。
     在项目根目录下添加 `.clang-format` 文件，并修改为以下内容。
 
     ```yaml
@@ -179,37 +181,29 @@ title: VSCode ROS 开发指南 (Clang)
 
 - clangd (LLVM)
 
-- Clang-Format (Xaver Hellauer)
+- 【可选】Clang-Format (Xaver Hellauer)
 
 - CMake (twxs)
 
-- CMake Tools (Microsoft)
-
-- CodeLLDB (Vadim Chugunov)
 
 ![ext](./../../../assets/images/ros-vsc-setup/exts.png)
 
 ### clangd 设置
 
 在 VSCode 插件中找到 clangd 插件的设置，在“Clangd: Arguments” 中添加：`--compile-commands-dir=${workspaceFolder}/build`
-然后保存。  
+
 此配置将会指明编译后文件的存放路径。
 
 ![clangd-setting](./../../../assets/images/ros-vsc-setup/clangd-setting.png)
 
-### CMake Toools 设置 —— 生成 compile_command.json
-
-**这一步是 clangd 能够自动索引到头文件的关键。**  
-同样找到该插件的设置，并将 “Export Compile Commands File” 的选项打上钩。
-
 在工作空间下执行：`catkin config --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`，来设置空间的编译参数。
 
-接着使用 `catkin_make` 或者 `catkin build` 编译一下。
+接着使用 `catkin build` 编译一下。
 
-![cmaketool](./../../../assets/images/ros-vsc-setup/cmaketool.png)
+> 如果使用 “catkin_make” 则可以在每次使用时加上 “-DCMAKE_EXPORT_COMPILE_COMMANDS=1”即：`catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1` 来直接在 `build/` 下生成 `compile_commands.json`
 
-最后在 `/build` 文件夹下看看有没有 `compile_commands.json` 文件的存在。  
-如果没有的话，可以从 `build/{正在开发的包名}/` 目录下把 `compile_commands.json` 文件给拷贝到 `build/` 目录下。
+若 `build/` 目录下没有 `compile_commands.json` 文件，而分散在各包名目录下，则可以使用[这里](https://github.com/catkin/catkin_tools/issues/551#issuecomment-553521463)的 shell 脚本来合并。
+此操作在依赖不变的情况下，仅需进行一次。
 
 ## 结语
 
@@ -221,4 +215,5 @@ title: VSCode ROS 开发指南 (Clang)
 
 【1】<https://blog.csdn.net/weixin_43862847/article/details/119274382>  
 【2】<https://zhuanlan.zhihu.com/p/514541589>  
-【3】<https://blog.csdn.net/m0_38144614/article/details/116986927>
+【3】<https://blog.csdn.net/m0_38144614/article/details/116986927>  
+【4】<https://github.com/catkin/catkin_tools/issues/551>
