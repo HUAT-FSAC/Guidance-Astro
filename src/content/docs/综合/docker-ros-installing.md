@@ -48,3 +48,8 @@ docker run -it --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthor
 尝试执行 `rqt`, `gazebo` 或者 `rviz` 指令来查看 gui 支持是否正常。
 
 ![d-r](../../../assets/images/docker-ros-installing/docker-rviz.png)
+
+## 提示
+
+其他的 docker 命令及教程[见此](https://www.runoob.com/docker/docker-container-usage.html)
+如果要开启多个 docker 终端，可在启动
