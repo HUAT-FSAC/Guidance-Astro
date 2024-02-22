@@ -25,7 +25,7 @@ title: ROS 入门 · 创建工作空间和运行 ROS 包
 
 会显示类似于这样的界面
 
-![version-check](./../../../assets/images/ros-toturial-creating-ws-and-package/version-check.png)
+![version-check](./../../../../assets/images/ros-toturial-creating-ws-and-package/version-check.png)
 
 如果没有还未安装 ROS，推荐通过“鱼香ROS”的一键安装指令来安装：
 
@@ -174,7 +174,7 @@ target_link_libraries(步骤3的源文件名  ${catkin_LIBRARIES})
 
 然后我们就可以在终端看到我们发布的 hellowrld！了
 
-![output](./../../../assets/images/ros-toturial-creating-ws-and-package/output.png)
+![output](./../../../../assets/images/ros-toturial-creating-ws-and-package/output.png)
 
 五 总结问题
 ------
