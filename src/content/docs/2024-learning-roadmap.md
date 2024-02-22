@@ -39,6 +39,11 @@ title: 2024 无人系统部介绍
 
 我们先从接触全新的系统环境开始，既然 ROS 运行在 Linux 之上。我们就得先安装一个 Linux 操作系统。  
 目前与 ROS 兼容性最好的是 Ubuntu 操作系统，你可以自行搜索安装方式。  
+
+![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
+
+<p align="center">Ubuntu 操作系统的 LOGO</p>
+
 一般来说有以下几种安装方案：
 
 - 在物理真机上安装 Ubuntu 系统，好处是不会像虚拟机一样有性能损耗
@@ -49,23 +54,15 @@ title: 2024 无人系统部介绍
 
 - 在 Android 上跑 proot 环境运行 Ubuntu，....不做推荐
 
-我们对 Ubuntu 系统的部署方式不做限制，只要你能在上面成功的完成指定任务就好。
-但如果你没什么主意💡，下面是一个现成的安装方案可以参考。
-
-### 1.1 Linux（Ubuntu）系统在 VMWare 虚拟机上的安装
-
-![ubuntu-logo](./../../assets/images/2024-learning-roadmap/ubuntu-logo.webp)
-
-<p align="center">Ubuntu 操作系统的 LOGO</p>
+我们对 Ubuntu 系统的部署方式不做限制，但如果你没什么主意💡，你可以参考如下内容。
 
 通过 VMWare Workstation 来部署 Ubuntu 虚拟机，你可以搜索[vmware ubuntu 18.04 安装](https://www.bing.com/search?q=vmware+ubuntu+18.04+%E5%AE%89%E8%A3%85)。
 
 以下是几点提示：
 
 - 你可以在[这里](https://www.vmware.com/go/getworkstation-win)下载 VMWare 虚拟机最新版本并进行安装
-- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，因为这个版本与我们使用的 ROS 版本搭配
+- Ubuntu 系统要求/建议安装为 Ubuntu LTS 18.04，因为这个版本与我们使用的 ROS 版本 （ROS1 Melodic）搭配
 - VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的
-
 
 
 <!-- #### WSL2
@@ -104,6 +101,7 @@ WSL的主要功能和优点包括:
 
 ### 1.2 Linux 命令行操作
 
+我们假定你已经成功完成了 Ubuntu 操作系统的安装，接下来是其CLI操作的讲解。 
 尽管现代 Linux 操作系统大多都搭配的方便易用的 GUI 图形界面，但是对于开发来说快速便捷的 CLI 指令依然是必不可少的得力助手。
 
 #### 我应该在哪里输入命令？
