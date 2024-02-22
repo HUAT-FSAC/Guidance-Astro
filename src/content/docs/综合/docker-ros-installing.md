@@ -1,5 +1,5 @@
 ---
-title: 在 docker 上安装可使用图形软件的 ROS1/2 
+title: 在 docker 上安装 ROS1/2 
 ---
 
 # 前言
@@ -32,6 +32,14 @@ ROS 官方严格限制了各 ROS 版本与操作系统间的对应关系。如 R
 ```bash
 docker pull fishros2/ros:melodic-dekstop-full
 ```
+
+这里默认拉取 ROS1 Melodic 版本，若需要其他版本则可以使用：
+
+1. [默认的 ros 源](https://hub.docker.com/_/ros/tags)
+2. [osrf 再分发的 OSS 源](https://hub.docker.com/r/osrf/ros/tags)
+3. [fishros2 源](https://hub.docker.com/r/fishros2/ros/tags)
+
+在以上源中找到你所需要版本的特定tag即可。
 
 拉取过程中可能会有网络问题，请多次尝试，必要时可以使用代理。
 

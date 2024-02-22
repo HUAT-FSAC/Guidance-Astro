@@ -1,5 +1,5 @@
 ---
-title: 在 Visual Studio Code 上进行 C/C++ 开发与调试
+title: 基于 VSCode 的 C/C++ 开发调试
 Author: NekoRectifier
 ---
 
