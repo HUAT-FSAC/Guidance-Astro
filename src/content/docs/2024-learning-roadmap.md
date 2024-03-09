@@ -101,8 +101,10 @@ WSL的主要功能和优点包括:
 
 ### 1.2 Linux 命令行操作
 
-我们假定你已经成功完成了 Ubuntu 操作系统的安装，接下来是其CLI操作的讲解。 
-尽管现代 Linux 操作系统大多都搭配的方便易用的 GUI 图形界面，但是对于开发来说快速便捷的 CLI 指令依然是必不可少的得力助手。
+我们假定你已经成功完成了 Ubuntu 18.06 的安装，下面还要介绍的是它的基础操作。  
+关于 Linux 基础操作你可以参考[Linux 漫游指南](https://libhitchhiker.eu.org/) 这篇教程。
+
+尽管现代 Linux 操作系统大多都搭配了方便易用的图形界面（如偏向 Mac 风格的 Gnome3 与类似 Windows 的 KDE 等），但便捷的 CLI 指令依然是必不可少的。
 
 #### 我应该在哪里输入命令？
 
@@ -117,18 +119,18 @@ WSL的主要功能和优点包括:
 
 #### 什么是命令，有哪些，我要怎么学习？
 
-由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令以及该如何学习/使用他们。但是可以把[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)推荐给你。
+由于能力限制，我们无法在这里直接讲述开发中最常见的 Linux 命令以及该如何学习/使用他们。但我们推荐[这份教程](https://www.freecodecamp.org/chinese/news/command-line-for-beginners/)。
 
-同时你也可以通过按这样的格式搜索 [linux 命令 ls 是什么](https://www.bing.com/search?q=linux+%E5%91%BD%E4%BB%A4+ls+%E6%98%AF%E4%BB%80%E4%B9%88) 来解答你在使用命令是产生的疑问。
+同时你也可以通过按这样的格式 [linux 命令 ls 是什么](https://www.bing.com/search?q=linux+%E5%91%BD%E4%BB%A4+ls+%E6%98%AF%E4%BB%80%E4%B9%88) 进行搜索来解答你在使用命令是产生的疑问。
 
 :::tip
 另外我们也支持你自己在搜索引擎上搜索不同的 Linux 命令或在虚拟机上亲手看看它们如何工作，毕竟对代码开发的**耐心与兴趣**才是最能保持热情与动力的。
 ::: 
 
 
-### 1.3 Visual Studio Code安装及其配置
+### 1.3 Visual Studio Code 安装及其配置
 
-说到集成开发环境，相信大多数人接触到的都是 Dev C++、Clion(IDEA) 或者 Visual Studio。但你对以上所列举的软件并不熟悉或不怎么上手的话，可以考虑学习一下 Visual Studio Code（下称 VSC）。 
+说到集成开发环境（IDE），相信大多数人接触到的都是 Dev C++、Clion(IDEA) 或者 Visual Studio。但你对以上所列举的软件并不熟悉或不怎么上手的话，可以考虑学习一下 Visual Studio Code（下称 VSC）。 
 
 ![vsc 的用户界面图](./../../assets/images/2024-learning-roadmap/vsc-ui.png)
 
@@ -177,15 +179,15 @@ git 是一个分布式的代码版本控制系统。
 
 ## 4. ROS 架构熟悉
 
-:::tip[任务]
+<!-- :::tip[任务]
 这一部分指南包含要完成的任务，请认真阅读下列内容并按要求完成任务。
-:::
+::: -->
 
 ### 4.1 ROS 介绍
 
 ROS 是一个适用于机器人的开源的元操作系统。它提供了操作系统应有的服务，包括硬件抽象，底层设备控制，常用函数的实现，进程间消息传递，以及包管理。 [详情参考](https://wiki.ros.org/cn/ROS/Introduction)
 
-### 4.2 ROS 实践
+<!-- ### 4.2 ROS 实践
 
 建议参考[官网的教程](https://wiki.ros.org/cn/ROS/Tutorials)来完成下列任务：
 
@@ -200,9 +202,9 @@ ROS 是一个适用于机器人的开源的元操作系统。它提供了操作�
     - 在目录下创建 ROS 工作空间； 
     - 创建自己的程序包；
     - 在工作空间中编译运行程序包；
-    - 最后截图并上传结果至群作业。 -->
+    - 最后截图并上传结果至群作业。 --> -->
 
-### 4.3 了解 ROS 节点通信
+### 4.2 了解 ROS 节点通信
 
 参考以下链接，尝试理解 ROS 节点间是以何种方式实现通信。
 
