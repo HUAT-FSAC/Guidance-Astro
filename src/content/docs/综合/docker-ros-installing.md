@@ -35,7 +35,7 @@ ROS 官方严格限制了各 ROS 版本与操作系统间的对应关系。如 R
 在终端执行:
 
 ```bash
-docker pull fishros2/ros:melodic-dekstop-full
+docker pull fishros2/ros:melodic-desktop-full
 ```
 
 这里默认拉取 ROS1 Melodic 版本，若需要其他版本则可以使用：
