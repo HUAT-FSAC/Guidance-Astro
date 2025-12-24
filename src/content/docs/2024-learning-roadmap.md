@@ -65,43 +65,46 @@ title: 2024 无人系统部介绍
 - VMWare Workstation 的版本并没有严格要求，16/17/18 都是可以的
 
 
-<!-- #### WSL2
+#### WSL2
 
 :::warning
-此前有过 WSL 上软件图形界面画面撕裂（rqt）的报告，如果你只想尽快配置好，那么请选择 VMware。
+此前有过 WSL 上软件图形界面画面撕裂（ros-rqt）的报告，如果你向往对于新技术的常识，那么可以试试 WSL2。
 :::
 
 ![wsl](./../../assets/images/2024-learning-roadmap/wsl.png)
 
 
-Windows Subsystem for Linux (WSL) 是微软在 Windows 10 中引入的一个新功能,它允许在 Windows 系统上原生运行Linux二进制可执行文件,而无需虚拟机或双启动。
+Windows Subsystem for Linux (WSL) 是微软在 Windows 10 中引入的一个新功能,它允许在 Windows 系统上基于 Hyper-V 技术原生运行 Linux 操作系统，而无需传统的虚拟机软件或双实机系统。
 
 WSL的主要功能和优点包括:
 
-1. 在Windows系统内部运行一个真正的Linux环境,包括Linux内核和命令行工具。
-2. 无缝地在Windows系统文件和Linux环境文件之间互相访问和操作。
-3. 直接在Windows命令行(CMD或PowerShell)中运行Linux命令和程序。
+1. 在Windows系统内部运行一个真正的 Linux 环境,包括 Linux 内核和命令行工具。
+2. 无缝地在 Windows 系统文件和 Linux 环境文件之间互相访问和操作。
+3. 直接在 Windows 命令行(CMD 或 PowerShell)中运行 Linux 命令和程序。
 
 如果你的电脑系统为 Windows 11 或 Windows 10 较新版本且性能配置较高，可以考虑使用 Windows Subsystem for Linux 来创建虚拟机。
 
 相比 VMWare 它具有以下优势：
+
 - 无需 2.xG 的镜像文件
 - 启动快
 - 安装/卸载方便
-- 与 Windows 融合度高
-- ...
+- 与 Windows 系统融合度高
 
-目前还没有找到适合推荐的 WSL 配置教程，你可以自行参考以下链接来进行 WSL2 Ubuntu 18.04 的安装
+个人推荐采用如下[Dev on Windows with WSL](https://dowww.spencerwoo.com/)作为你的入门选择（别担心，这个是全中文的）。  
+即便不使用 WSL 创建虚拟机，我也推荐你去参考下其中对于终端、shell、VSCode 等部分的讲解。
+
+以下是先前的 WSL 教程，你可以自行参考。
 
 [1] <https://zhuanlan.zhihu.com/p/377263437>  
 [2] <https://sspai.com/post/74167>  
 [3] <https://zhuanlan.zhihu.com/p/348813745>  
 [4] <https://blog.csdn.net/qq401195092/article/details/133717025>  
-[5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>   -->
+[5] <https://blog.csdn.net/microsoft_mos/article/details/123627295>
 
 ### 1.2 Linux 命令行操作
 
-我们假定你已经成功完成了 Ubuntu 18.06 的安装，下面还要介绍的是它的基础操作。  
+我们假定你已经成功完成了 Ubuntu 18.04 的安装，下面还要介绍的是它的基础操作。  
 关于 Linux 基础操作你可以参考[Linux 漫游指南](https://libhitchhiker.eu.org/) 这篇教程。
 
 尽管现代 Linux 操作系统大多都搭配了方便易用的图形界面（如偏向 Mac 风格的 Gnome3 与类似 Windows 的 KDE 等），但便捷的 CLI 指令依然是必不可少的。
