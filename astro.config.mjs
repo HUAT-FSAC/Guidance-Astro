@@ -13,7 +13,7 @@ export default defineConfig({
 				tag: 'script',
 				attrs: {
 					src: 'https://analytics.eu.umami.is/script.js',
-					'data-website-id': 'e86c2669-d540-49f3-94f4-a7fe7284ccb4',
+					'data-website-id': 'e25fd750-bde4-4599-a440-99ed5a381af0',
 				},
 			}
 		],
