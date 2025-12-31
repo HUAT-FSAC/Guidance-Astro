@@ -1,0 +1,77 @@
+---
+import NewsCard from "./NewsCard.astro";
+import type { NewsItem } from "../../data/home";
+
+interface Props {
+    title: string;
+    subtitle: string;
+    news: NewsItem[];
+}
+
+const { title, subtitle, news } = Astro.props;
+---
+
+<section class="news-section">
+    <div class="news-header">
+        <span class="news-label">{title}</span>
+        <h2 class="news-title">{subtitle}</h2>
+    </div>
+    <div class="news-grid">
+        {
+            news.map((item) => (
+                <NewsCard
+                    title={item.title}
+                    description={item.description}
+                    image={item.image}
+                    link={item.link}
+                    date={item.date}
+                />
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .news-section {
+        padding: 6rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .news-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .news-label {
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--sl-color-accent, #f39c12);
+        margin-bottom: 1rem;
+    }
+
+    .news-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin: 0;
+        color: var(--sl-color-white);
+    }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .news-section {
+            padding: 4rem 1.5rem;
+        }
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

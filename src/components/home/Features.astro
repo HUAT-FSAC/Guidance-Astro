@@ -1,0 +1,77 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+---
+
+<div class="feature-grid">
+    <a href="/2025/感知/" class="feature-card">
+        <Icon name="rocket" size="2rem" color="var(--sl-color-accent)" />
+        <div>
+            <h3>🤖 算法部</h3>
+            <p>感知 · 定位建图 · 规控 · 仿真</p>
+        </div>
+    </a>
+    <a href="/2025/电气/" class="feature-card">
+        <Icon name="seti:bicep" size="2rem" color="var(--sl-color-accent)" />
+        <div>
+            <h3>⚡ 电气部</h3>
+            <p>线束 · 软件 · 硬件 · 电池箱</p>
+        </div>
+    </a>
+    <a href="/2025/机械/" class="feature-card">
+        <Icon name="setting" size="2rem" color="var(--sl-color-accent)" />
+        <div>
+            <h3>🔧 机械部</h3>
+            <p>转向悬架 · 传动 · 车架 · 制动</p>
+        </div>
+    </a>
+    <a href="/2025/项管/" class="feature-card">
+        <Icon name="open-book" size="2rem" color="var(--sl-color-accent)" />
+        <div>
+            <h3>📋 项管部</h3>
+            <p>新媒体 · 营销 · 运营管理</p>
+        </div>
+    </a>
+</div>
+
+<style>
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .feature-card {
+        background: var(--sl-color-gray-6);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-decoration: none !important;
+        color: var(--sl-color-white) !important;
+        transition:
+            transform 0.2s,
+            background 0.2s;
+        border: 1px solid transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        background: var(--sl-color-gray-5);
+        border-color: var(--sl-color-accent);
+    }
+
+    .feature-card h3 {
+        margin: 0 !important;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .feature-card p {
+        margin: 0 !important;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        line-height: 1.5;
+    }
+</style>

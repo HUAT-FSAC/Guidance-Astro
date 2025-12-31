@@ -1,0 +1,102 @@
+---
+interface Props {
+    title: string;
+    subtitle: string;
+    description: string;
+    ctaText: string;
+    ctaLink: string;
+    backgroundImage?: string;
+}
+
+const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
+    Astro.props;
+---
+
+<section class="fs-section">
+    <div class="fs-background"></div>
+    <div class="fs-content">
+        <span class="fs-label">{subtitle}</span>
+        <h2 class="fs-title">{title}</h2>
+        <p class="fs-description">{description}</p>
+        <a href={ctaLink} class="fs-cta">{ctaText}</a>
+    </div>
+</section>
+
+<style
+    define:vars={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+    }}
+>
+    .fs-section {
+        position: relative;
+        padding: 8rem 2rem;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .fs-background {
+        position: absolute;
+        inset: 0;
+        background: var(--backgroundImage) center/cover no-repeat;
+        background-color: var(--sl-color-gray-6, #0f0f0f);
+        opacity: 0.3;
+    }
+
+    .fs-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .fs-label {
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: var(--sl-color-accent, #f39c12);
+        margin-bottom: 1.5rem;
+    }
+
+    .fs-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        line-height: 1.2;
+        margin: 0 0 1.5rem;
+        color: var(--sl-color-white);
+    }
+
+    .fs-description {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 0 2.5rem;
+    }
+
+    .fs-cta {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #000;
+        background: var(--sl-color-accent, #f39c12);
+        border: none;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .fs-cta:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 30px rgba(243, 156, 18, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .fs-section {
+            padding: 5rem 1.5rem;
+        }
+    }
+</style>

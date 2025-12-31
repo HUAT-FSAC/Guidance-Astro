@@ -1,0 +1,128 @@
+---
+title: 摄像头
+description: 2025赛季摄像头感知技术文档
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+# 摄像头
+
+## Basler 相机配置
+
+### 官方资源
+
+- [Basler ROS 驱动](https://www.baslerweb.cn/zh-cn/software/pylon/camera-driver-ros/)
+- [下载 Pylon 软件](https://www.baslerweb.cn/zh-cn/downloads/software/?downloadCategory.values.label.data=pylon)
+
+### 安装步骤
+
+<Steps>
+1. **下载 Pylon SDK**
+   
+   选择最新版 Pylon SDK 版本，任意填写表单，得到下载链接。
+   
+   示例链接：
+   ```
+   https://downloadbsl.blob.core.windows.net/software/pylon%2025.11.0/pylon-25.11.0_linux-x86_64_debs.tar.gz
+   ```
+
+2. **安装 SDK**
+   
+   解压后得到 `.deb` 文件，使用以下命令安装：
+   ```bash
+   sudo apt install ./pylon*.deb
+   ```
+
+3. **连接摄像头**
+   
+   - 连接摄像头电源
+   - 使用超五类及六类或更高传输带宽的以太网线连接摄像头与计算机
+
+4. **配置网络**
+   
+   - 在设置中为新出现的以太网设备设置 IP 地址、网关、子网掩码
+   - 为摄像头手动分配一个子网（例如 IP `192.168.2.1`，Mask `255.255.255.0`）
+   - 在 Pylon IP Configurator 中为摄像头设备填写相同的 IP
+
+5. **测试连接**
+   
+   打开 Pylon Viewer，双击 GigE 中的设备，并点击工具栏中的连拍查看图像是否正常。
+</Steps>
+
+---
+
+## 模型训练
+
+### 标注工具
+
+**X-AnyLabeling**: [GitHub 仓库](https://github.com/CVHub520/X-AnyLabeling)
+
+### YOLO 训练
+
+**官方文档**: [Ultralytics YOLO 训练指南](https://docs.ultralytics.com/zh/modes/train/#resuming-interrupted-trainings)
+
+### 训练流程
+
+<Steps>
+1. **数据标注**
+   
+   根据 X-AnyLabeling 使用说明，导入图像文件夹。设定几种标签类型：
+   - `Red` - 红色锥桶
+   - `Blue` - 蓝色锥桶
+   - `Yellow` - 黄色锥桶
+   
+   在图像中对锥桶框选，选择对应的标签类型。
+
+2. **导出数据集**
+   
+   标注大约 100 张后，将数据集导出为 COCO 格式。
+
+3. **编写配置文件**
+   
+   ```yaml
+   path: /path_name          # 数据集路径
+   train: images/train       # 训练数据集
+   val: images/val           # 验证数据集
+   ```
+   
+   <Aside type="caution">
+   不可将训练数据集放入验证数据集！
+   </Aside>
+
+4. **开始训练**
+   
+   ```bash
+   yolo detect train data=config.yaml model=yolo11n.pt epochs=100 imgsz=640 device=mps
+   ```
+   
+   使用 YOLO-n 模型训练大约 20-30 轮后导出模型文件。
+
+5. **自动标注**
+   
+   - 点击 X-AnyLabeling 左下角的 AI 图标
+   - 导入训练好的模型
+   - 对其余未标注图片自动标注
+   - 手动检查修正
+
+6. **部署模型**
+   
+   在收集足够的数据集并且完成训练后，使用 ONNX Runtime 或 TensorRT 在 C++ 中加载模型。
+</Steps>
+
+---
+
+## 训练技巧
+
+<Aside type="tip">
+训练时，在 YOLO 配置文件中调整以下参数以增强模型识别效果：
+- 训练参数
+- 数据增强
+- 数据预处理
+- 分辨率缩放
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/2025/感知/" style="color: var(--sl-color-accent);">← 返回感知模块</a>
+</div>

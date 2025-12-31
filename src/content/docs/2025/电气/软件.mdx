@@ -1,0 +1,119 @@
+---
+title: 软件开发
+description: 2025赛季嵌入式软件开发
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+# 软件开发
+
+## VCU 软件架构
+
+**整车控制器 (VCU)** 是赛车的"大脑"，负责协调各系统工作。
+
+### 软件层次
+
+```
+┌─────────────────────────┐
+│     应用层 (App)        │
+├─────────────────────────┤
+│   服务层 (Service)      │
+├─────────────────────────┤
+│    驱动层 (Driver)      │
+├─────────────────────────┤
+│   硬件抽象层 (HAL)      │
+└─────────────────────────┘
+```
+
+---
+
+## 开发环境
+
+<Tabs>
+  <TabItem label="STM32">
+    ### STM32 开发环境
+    
+    - **IDE**：STM32CubeIDE / Keil MDK
+    - **调试器**：ST-Link V2
+    - **库**：HAL 库 / LL 库
+    
+    ```c
+    // 示例：CAN 发送
+    HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
+    ```
+  </TabItem>
+  
+  <TabItem label="ESP32">
+    ### ESP32 开发环境
+    
+    - **IDE**：VS Code + PlatformIO
+    - **框架**：ESP-IDF / Arduino
+    - **优势**：内置 WiFi/BLE，便于调试
+  </TabItem>
+</Tabs>
+
+---
+
+## CAN 通讯
+
+### 协议设计
+
+| CAN ID | 功能 | 周期 |
+|--------|------|------|
+| 0x100 | VCU 心跳 | 10ms |
+| 0x200 | 电机状态 | 20ms |
+| 0x300 | BMS 数据 | 100ms |
+| 0x400 | 传感器数据 | 50ms |
+
+### DBC 文件
+
+建议使用 **Vector CANdb++** 或 **Kvaser Database Editor** 管理 CAN 数据库。
+
+---
+
+## 状态机设计
+
+### 整车状态
+
+```
+┌─────────┐    启动    ┌─────────┐
+│  待机   │ ────────→ │  就绪   │
+└─────────┘           └─────────┘
+                          │
+                          ↓ 使能
+                     ┌─────────┐
+                     │  运行   │
+                     └─────────┘
+                          │
+                          ↓ 故障
+                     ┌─────────┐
+                     │  故障   │
+                     └─────────┘
+```
+
+<Aside type="caution">
+状态切换需要严格的条件判断，防止误触发！
+</Aside>
+
+---
+
+## 上位机开发
+
+### 技术栈
+
+- **Python + PyQt5** - 快速开发
+- **C# + WPF** - Windows 原生
+- **Electron + Vue** - 跨平台
+
+### 功能模块
+
+1. 实时数据显示
+2. 参数标定
+3. 故障诊断
+4. 数据记录与回放
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/2025/电气/" style="color: var(--sl-color-accent);">← 返回电气部</a>
+</div>

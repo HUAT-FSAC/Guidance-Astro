@@ -1,26 +1,178 @@
 ---
-title: Welcome to HUAT FSAC AST Docs
-description: Get started building your docs site with Starlight.
+title: HUAT FSAC | 华中科技大学方程式赛车队
+description: Where Student Engineers Build Champions.
 template: splash
 hero:
-  tagline: 欢迎来到 HUAT FSAC 无人系统部参考文档站点
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: 开始浏览
-      link: /2024-learning-roadmap/
-      icon: right-arrow
-      variant: primary
-    - text: 查看项目 Repo
-      link: https://github.com/HUAT-FSAC/Guidance-Astro
-      icon: external
+  title: ""
+  tagline: ""
 ---
 
-## Thanks to all the contributors of this project!
+import Hero from '../../components/home/Hero.astro';
+import Achievement from '../../components/home/Achievement.astro';
+import NewsSection from '../../components/home/NewsSection.astro';
+import FormulaStudentInfo from '../../components/home/FormulaStudentInfo.astro';
+import Stats from '../../components/home/Stats.astro';
+import Features from '../../components/home/Features.astro';
+import Seasons from '../../components/home/Seasons.astro';
+import Sponsors from '../../components/home/Sponsors.astro';
+import Acknowledgement from '../../components/home/Acknowledgement.astro';
+import Recruitment from '../../components/home/Recruitment.astro';
+import { 
+  heroConfig, 
+  stats, 
+  achievements, 
+  newsItems, 
+  formulaStudentInfo, 
+  seasons, 
+  sponsorGroups 
+} from '../../data/home';
 
-<a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" />
-</a>
+<style>{`
+  :root {
+    --sl-content-width: 100% !important;
+  }
+  
+  /* 隐藏默认的 hero 区域 */
+  .hero {
+    display: none !important;
+  }
+  
+  /* 全宽内容 */
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  
+  .sl-markdown-content {
+    max-width: 100% !important;
+  }
+  
+  /* 深色背景 */
+  .content-panel {
+    background: #0a0a0a !important;
+  }
+  
+  /* Footer 链接样式 */
+  .footer-link {
+    color: var(--sl-color-white);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    text-decoration: none;
+  }
+  
+  .footer-link:hover {
+    opacity: 1;
+  }
+`}</style>
 
-Made with [contrib.rocks](https://contrib.rocks).
+{/* ==================== Hero 区域 ==================== */}
+<Hero 
+  title={heroConfig.title}
+  subtitle={heroConfig.subtitle}
+  description={heroConfig.description}
+  ctaText={heroConfig.ctaText}
+  ctaLink={heroConfig.ctaLink}
+  backgroundImage={heroConfig.backgroundImage}
+/>
+
+{/* ==================== 统计数据 ==================== */}
+<Stats stats={stats} />
+
+{/* ==================== 成就展示区域 ==================== */}
+{achievements.map((achievement, index) => (
+  <Achievement 
+    badge={achievement.badge}
+    title={achievement.title}
+    description={achievement.description}
+    ctaText={achievement.ctaText}
+    ctaLink={achievement.ctaLink}
+    image={achievement.image}
+    reverse={index % 2 === 1}
+  />
+))}
+
+{/* ==================== 核心模块 ==================== */}
+<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">学习资源</span>
+    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">📚 核心模块</h2>
+  </div>
+  <Features />
+</section>
+
+{/* ==================== 新闻动态 ==================== */}
+<NewsSection 
+  title="新闻动态"
+  subtitle="保持更新，了解最新进展"
+  news={newsItems}
+/>
+
+{/* ==================== 赛季回顾 ==================== */}
+<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">我们的足迹</span>
+    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">🏎️ 赛季回顾</h2>
+  </div>
+  <Seasons seasons={seasons} />
+</section>
+
+{/* ==================== 招新入口 ==================== */}
+<Recruitment />
+
+{/* ==================== Formula Student 介绍 ==================== */}
+<FormulaStudentInfo 
+  title={formulaStudentInfo.title}
+  subtitle={formulaStudentInfo.subtitle}
+  description={formulaStudentInfo.description}
+  ctaText={formulaStudentInfo.ctaText}
+  ctaLink={formulaStudentInfo.ctaLink}
+/>
+
+{/* ==================== 赞助商 ==================== */}
+<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">感谢支持</span>
+    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">❤️ 合作伙伴</h2>
+  </div>
+  <Sponsors groups={sponsorGroups} />
+</section>
+
+{/* ==================== 致谢 ==================== */}
+<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+  <Acknowledgement />
+</section>
+
+{/* ==================== 贡献者 ==================== */}
+<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; text-align: center;">
+  <div style="margin-bottom: 3rem;">
+    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">开源贡献</span>
+    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">🤝 贡献者</h2>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 2rem;">
+    <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
+      <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" />
+    </a>
+  </div>
+  <div style="text-align: center; margin-top: 1rem; opacity: 0.6;">
+    Made with <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">contrib.rocks</a>
+  </div>
+</section>
+
+{/* ==================== 页脚联系信息 ==================== */}
+<footer style="padding: 4rem 2rem; background: rgba(0,0,0,0.3); text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+  <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">
+    HUAT FSAC - 方程式赛车队
+  </p>
+  <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+    <a href="https://github.com/HUAT-FSAC" class="footer-link">
+      GitHub
+    </a>
+    <a href="mailto:contact@example.com" class="footer-link">
+      联系我们
+    </a>
+  </div>
+  <p style="font-size: 0.85rem; opacity: 0.5;">
+    © 2024 HUAT FSAC. All rights reserved.
+  </p>
+</footer>
 

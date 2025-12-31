@@ -1,0 +1,235 @@
+---
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import type { SeasonItem } from "../../data/home";
+
+interface Props {
+    seasons: SeasonItem[];
+}
+
+const { seasons } = Astro.props;
+---
+
+<Tabs>
+    {
+        seasons.map((season) => (
+            <TabItem label={`${season.year} Season`} icon="star">
+                <div class="season-content">
+                    {/* 图片展示区 */}
+                    <div class="season-gallery">
+                        <div class="gallery-item">
+                            <img src={season.teamImg} alt="Team" />
+                            <div class="gallery-caption">The Team</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src={season.carImg} alt="Car" />
+                            <div class="gallery-caption">The Machine</div>
+                        </div>
+                    </div>
+
+                    {/* 团队信息区 */}
+                    {(season.advisor || season.captain || season.members) && (
+                        <div class="team-info">
+                            <h3 class="team-info-title">
+                                🏆 {season.year} 赛季团队
+                            </h3>
+
+                            {/* 指导老师和队长 */}
+                            <div class="leadership">
+                                {season.advisor && (
+                                    <div class="leader-card">
+                                        <span class="leader-role">
+                                            👨‍🏫 指导老师
+                                        </span>
+                                        <span class="leader-name">
+                                            {season.advisor}
+                                        </span>
+                                    </div>
+                                )}
+                                {season.captain && (
+                                    <div class="leader-card">
+                                        <span class="leader-role">🎖️ 队长</span>
+                                        <span class="leader-name">
+                                            {season.captain}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* 成员列表 */}
+                            {season.members && season.members.length > 0 && (
+                                <div class="members-section">
+                                    <h4 class="members-title">👥 团队成员</h4>
+                                    <div class="members-grid">
+                                        {season.members.map((group) => (
+                                            <div class="member-group">
+                                                <div class="group-name">
+                                                    {group.group}
+                                                </div>
+                                                <div class="group-members">
+                                                    {group.names.map((name) => (
+                                                        <span class="member-name">
+                                                            {name}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </TabItem>
+        ))
+    }
+</Tabs>
+
+<style>
+    .season-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .season-gallery {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .season-gallery {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .gallery-item {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .gallery-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    /* 团队信息区样式 */
+    .team-info {
+        background: var(--sl-color-gray-6);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-top: 1rem;
+    }
+
+    .team-info-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 0 1.5rem 0;
+        color: var(--sl-color-white);
+        border-bottom: 2px solid var(--sl-color-accent);
+        padding-bottom: 0.75rem;
+    }
+
+    .leadership {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .leader-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        background: var(--sl-color-gray-5);
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        border-left: 4px solid var(--sl-color-accent);
+    }
+
+    .leader-role {
+        font-size: 0.85rem;
+        color: var(--sl-color-gray-2);
+    }
+
+    .leader-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--sl-color-white);
+    }
+
+    .members-section {
+        margin-top: 1rem;
+    }
+
+    .members-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+        color: var(--sl-color-gray-2);
+    }
+
+    .members-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .member-group {
+        background: var(--sl-color-gray-5);
+        border-radius: 0.75rem;
+        padding: 1rem;
+    }
+
+    .group-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--sl-color-accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--sl-color-gray-4);
+    }
+
+    .group-members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .member-name {
+        background: var(--sl-color-gray-4);
+        color: var(--sl-color-gray-1);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .member-name:hover {
+        background: var(--sl-color-accent);
+        color: var(--sl-color-black);
+    }
+</style>

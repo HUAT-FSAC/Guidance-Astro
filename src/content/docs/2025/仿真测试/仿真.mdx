@@ -1,0 +1,154 @@
+---
+title: 仿真平台
+description: 2025赛季仿真平台介绍与使用经验
+---
+
+import { Aside, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import imgSimInfo from '../../../../assets/images/2025/仿真-修改信息.png';
+import imgSimNode from '../../../../assets/images/2025/仿真-启动节点.jpg';
+import imgTeam from '../../../../assets/images/2025/勇敢去做.jpeg';
+
+# 仿真平台
+
+以下是关于 HUAT 无人仿真相关的一些知识点，希望这些可以帮助以后的学弟学妹。以上资料仅作参考，剩下的还需要自己多多了解，如果有错误的地方还请斧正。
+
+---
+
+## 仿真平台对比
+
+<Tabs>
+  <TabItem label="Fssim">
+    ### Fssim
+
+    **简介**：我了解到的第一款仿真软件，由 AMZ Racing 开发。
+
+    **技术栈**：
+    - 基于 ROS1 (Ubuntu 18.04)
+    - 使用 Gazebo 和 RViz 进行模拟仿真
+
+    **GitHub**：[AMZ-Racing/fssim](https://github.com/AMZ-Racing/fssim)
+
+    **使用说明**：
+    - 可以在项目中修改 SDF 文件来切换对应的赛道环境
+    - 启动相关节点即可运行仿真
+
+    <Image src={imgSimInfo} alt="修改赛道信息" />
+
+    如下图可以启动高速循迹的相关仿真节点：
+
+    <Image src={imgSimNode} alt="启动仿真节点" />
+
+    **适用场景**：八字绕环、直线加速、高速循迹等赛项的仿真测试
+  </TabItem>
+
+  <TabItem label="FSDS">
+    ### FSDS (Formula Student Driverless Simulator)
+
+    **简介**：通过与其他车队交流了解到的仿真平台。
+
+    **技术栈**：
+    - 基于虚幻引擎 (UE4) + AirSim
+    - 拥有极高的视觉保真度
+
+    **GitHub**：[FS-Driverless/Formula-Student-Driverless-Simulator](https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator)
+
+    <Aside type="caution">
+    性能消耗大，对显卡要求较高！
+    </Aside>
+
+    **推荐度**：⭐⭐⭐⭐⭐ 目前最可靠和实用的选择
+  </TabItem>
+
+  <TabItem label="CARLA">
+    ### CARLA
+
+    **简介**：一般用于通用自动驾驶（城市/交通）的相关仿真。
+
+    **GitHub**：[carla-simulator/carla](https://github.com/carla-simulator/carla)
+
+    <Aside type="note">
+    若只是对赛车循迹之类的仿真，CARLA 过于庞大和复杂了，对显卡的要求也很高。若要使用，请酌情判断。
+    </Aside>
+  </TabItem>
+
+  <TabItem label="f1tenth">
+    ### f1tenth_gym_ros
+
+    **简介**：主要用于 F1TENTH 微型赛车设计的轻量级仿真环境。
+
+    **GitHub**：[f1tenth/f1tenth_gym_ros](https://github.com/f1tenth/f1tenth_gym_ros)
+
+    **安装教程**：[f1tenth Simulator on Ubuntu20 with ROS2 Foxy](https://www.youtube.com/watch?v=h-0HjJzuo6Q)
+
+    <Aside type="caution">
+    对我们赛事的仿真效果不是很好。一些相关的数据（例如 PID 参数）可能只能用于参考，直接用在实车上可能会出现大问题。
+    </Aside>
+  </TabItem>
+</Tabs>
+
+---
+
+## 个人对仿真的看法
+
+<Aside type="tip">
+仿真在无人方程式的比赛中，可能只会在答辩环节发挥一点作用，平时对实车测试的环节只能起到一点点的参考作用。
+</Aside>
+
+从今年的答辩环节来看，裁判的提问重心已经从仿真的概念性知识转移到**整车测试**的环节上了。
+
+**核心观点**：
+- 仿真只是为了让实车测试有个大概的数据指标
+- 在整体环节上起不到太大的作用
+- 也不能消除仿真和实车测试的相关误差
+
+**一个简单的例子**：
+> 仿真的机械结构是定死的，但实车的机械结构是不能预料的，会与你预想中的有很大的偏差。不如学习福州大学（24年冠军）说的那样："**我们没有仿真，直接上实车调参**"来的更有说服力。
+
+**推荐资源**：[FSAE-TJU 方程式赛车仿真平台](https://www.yuque.com/baiyunqianzaijin/vggzyn/ogmpsb29e8gbtf5p)（天津大学开源）
+
+---
+
+## 答辩总结
+
+以下是今年的答辩问题汇总：
+
+### 仿真测试相关
+
+| 序号 | 问题 |
+|:----:|------|
+| 1 | 整体测试如何规划？ |
+| 2 | 对整车的设计流程是否有计划？ |
+| 3 | 对设备的选型如何抉择，策略是什么？ |
+| 4 | 整体测试是从小到大还是一步步来，还是说直接上实车进行验证？ |
+| 5 | 你认为目前赛车的整体进度完成了多少，还有什么不足？有没有什么没解决的问题？现在解决了没有？ |
+| 6 | 有没有相关资料储备？比如代码如何管理、相关的问题出现后的解决情况，有没有解决后续有没有出现？ |
+| 7 | 在测试环节方面，是使用控制变量法还是交替使用各种方法进行验证，是否进行了相关技术的检验？ |
+
+### 无人系统相关
+
+| 序号 | 问题 |
+|:----:|------|
+| 8 | 站在最高角度上，什么因素制约的车队的发展？ |
+| 9 | 无人系统指的是什么，整体的部分是什么安排的？ |
+| 10 | 整体规划是由谁负责，有没有资料留存？ |
+| 11 | 时间同步有没有实现？ |
+| 12 | 有没有制作关于安全的冗余措施，具体是如何实现的？ |
+
+---
+
+## 寄语
+
+<Aside type="note">
+以上文章如有疏漏，还请未来的学弟学妹们批评斧正，不断完善。
+</Aside>
+
+**蔡俊翔 / 24-25 赛季算法组**
+
+<Image src={imgTeam} alt="勇敢去做 - 24-25 赛季算法组" />
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/2025/仿真测试/" style="color: var(--sl-color-accent);">← 返回仿真测试模块</a>
+</div>

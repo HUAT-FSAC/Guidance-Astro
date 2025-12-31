@@ -1,0 +1,143 @@
+---
+interface Props {
+    title: string;
+    subtitle: string;
+    description: string;
+    ctaText: string;
+    ctaLink: string;
+    backgroundImage?: string;
+}
+
+const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
+    Astro.props;
+---
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">{title}</h1>
+        <p class="hero-subtitle">{subtitle}</p>
+        <p class="hero-description">{description}</p>
+        <a href={ctaLink} class="hero-cta">{ctaText}</a>
+    </div>
+    <div class="hero-scroll-indicator">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="M12 5v14M19 12l-7 7-7-7"></path>
+        </svg>
+    </div>
+</section>
+
+<style define:vars={{ backgroundImage: `url(${backgroundImage})` }}>
+    .hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--backgroundImage) center/cover no-repeat;
+        background-color: #0a0a0a;
+        overflow: hidden;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0.8) 100%
+        );
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 900px;
+        padding: 2rem;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 8vw, 5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: -1px;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-weight: 600;
+        color: var(--sl-color-accent, #f39c12);
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+    }
+
+    .hero-description {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: rgba(255, 255, 255, 0.85);
+        max-width: 650px;
+        margin: 0 auto 2.5rem;
+        line-height: 1.7;
+    }
+
+    .hero-cta {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #000;
+        background: var(--sl-color-accent, #f39c12);
+        border: none;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(243, 156, 18, 0.4);
+    }
+
+    .hero-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 30px rgba(243, 156, 18, 0.6);
+    }
+
+    .hero-scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        40% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+        60% {
+            transform: translateX(-50%) translateY(-5px);
+        }
+    }
+</style>

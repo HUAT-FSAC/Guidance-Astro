@@ -1,0 +1,131 @@
+---
+title: 学习路线
+description: 2025赛季定位建图学习路线与资料汇总
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+# 学习路线
+
+## 资料汇总
+
+### 基础知识
+
+- [激光SLAM简介 - 知乎](https://zhuanlan.zhihu.com/p/379696400)
+- [坐标转换](https://blog.csdn.net/panfei263031/article/details/123367962)
+- [ROS TF2](https://wiki.ros.org/tf2/Tutorials)
+- [Git 使用参考](https://github.com/LOGIC-XYZ/NoteAboutStudy/tree/main/Git)
+
+### 传感器融合
+
+- [多传感器融合之时间同步](https://blog.csdn.net/scott198510/article/details/131170408)
+- [自动驾驶中的多传感器时间同步](https://blog.csdn.net/m0_49384824/article/details/145343749)
+- [激光点云的畸变补偿](https://zhuanlan.zhihu.com/p/351109327)
+- [激光雷达运动补偿方法](https://zhuanlan.zhihu.com/p/470795318)
+
+### 学习路线参考
+
+- [零基础如何入门激光SLAM](https://zhuanlan.zhihu.com/p/338433941)
+- [激光SLAM算法学习](https://blog.csdn.net/qq_34675171/article/details/90552793)
+- [从零开始做自动驾驶定位（文章汇总）](https://zhuanlan.zhihu.com/p/113616755)
+- [从零开始搭二维激光SLAM](https://www.zhihu.com/column/c_1314297528322764800)
+- [从零开始学定位](https://www.zhihu.com/column/c_1530947688660631552)
+
+### 卡尔曼滤波
+
+- [基础卡尔曼滤波到互补卡尔曼滤波](https://zeal-up.github.io/2023/03/13/kalman_filter/)
+- [机器人建图 - 弗赖堡大学课程](https://www.zhihu.com/column/c_1405202802868662273)
+- [EKF-SLAM详解](https://blog.csdn.net/daocaoren_/article/details/105728716)
+
+### 因子图优化
+
+- [因子图优化公开课](https://www.bilibili.com/video/BV1gk4y1R7Lb/)
+- [因子图优化学习总结](https://blog.csdn.net/qq_44709827/article/details/135089592)
+- [SLAM基础-因子图优化和gtsam应用](https://blog.csdn.net/jjjqqq123321/article/details/136747255)
+- [干货：因子图优化的资源合集](https://zhuanlan.zhihu.com/p/128720019)
+- [因子图优化原理（iSAM、iSAM2论文解析）](https://blog.csdn.net/weixin_45112559/article/details/126146289)
+- [多传感器融合定位-基于图优化的定位方法](https://blog.csdn.net/qq_28087491/article/details/128890899)
+- [Graph SLAM Tutorial](https://heyijia.blog.csdn.net/article/details/47686523)
+- [因子图GNSS](https://www.cnblogs.com/bokeyuan-dlam/articles/16086056.html)
+
+### 开源项目
+
+- [LeGO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM)
+- [LIO-SAM](https://github.com/TixiaoShan/LIO-SAM)
+
+### 其他
+
+- [RTK+GPS提高定位精度原理解析](https://blog.csdn.net/LEEANG121/article/details/107179265)
+- [轨迹评估工具使用总结 - evo](https://blog.csdn.net/hhaowang/article/details/105225595)
+- [SLAM算法阅读专栏](https://blog.csdn.net/weixin_42048023/category_9216766.html)
+
+### 深造专栏
+
+- [自动驾驶星球](https://www.zhihu.com/column/c_1215619039407861760) - 感知、定位、路径规划
+- [SLAM学习](https://www.zhihu.com/column/c_1336060120435453952) - 干货分享、论文解读、源码解读
+
+---
+
+## 第一阶段 - 坐标转换（空间同步）
+
+### 概述
+
+- 了解 **SLAM (Simultaneous Localization and Mapping)** 的基本概念和常见应用
+- 掌握坐标系、位姿表示、运动学等基础知识
+- 学习全局定位和局部定位的区别及应用场景
+- 学习基于 ROS 的开发环境配置和常用工具使用
+- 实现所有传感器数据的 **空间同步**，确保所有坐标系在同一个全局基准下对齐
+
+<Aside type="note">
+我们这部分在 SLAM 中实际上是后端优化的位置，重点关注这部分。
+</Aside>
+
+### 理论知识
+
+| 主题 | 内容 |
+|------|------|
+| 坐标系 | WGS84、ECEF、ENU 坐标系的定义及使用场景 |
+| 坐标转换 | 学习如何转换不同坐标系的坐标信息 |
+| ROS 通信 | 熟悉话题通信、参数配置，学习使用 RViz |
+| TF 库 | 了解 ROS 中的 tf，学习如何用于变换 |
+| Git | 了解如何上传代码至 GitHub |
+| 数学基础 | 熟悉线性代数、矩阵运算和微分方程基础 |
+
+### 坐标转换简介
+
+#### 1. WGS84 到 ECEF 的转换
+
+地理坐标系（如 WGS84）是以地球质心为原点的坐标系。ECEF（地心地固坐标系）以地球质心为原点，X 轴指向格林尼治子午线与赤道的交点，Z 轴指向北极。
+
+转换公式：
+
+```
+X = (N(φ) + h) * cos(φ) * cos(λ)
+Y = (N(φ) + h) * cos(φ) * sin(λ)
+Z = (N(φ) * (1 - e²) + h) * sin(φ)
+```
+
+其中：
+- `N(φ)` - 卯酉圈曲率半径
+- `h` - 海拔高度
+- `φ` - 纬度
+- `λ` - 经度
+- `e` - 地球椭球体的第一偏心率
+
+#### 2. ECEF 到 ENU 的转换
+
+ENU 坐标系是一种局部切平面坐标系，原点通常设在参考点（如起点），X 轴指向东，Y 轴指向北，Z 轴垂直向上。
+
+转换公式：
+
+```
+X_enu = X - X_origin
+Y_enu = Y - Y_origin
+Z_enu = Z - Z_origin
+```
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/2025/定位建图/" style="color: var(--sl-color-accent);">← 返回定位建图模块</a>
+</div>

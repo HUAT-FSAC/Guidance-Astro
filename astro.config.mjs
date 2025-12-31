@@ -21,12 +21,36 @@ export default defineConfig({
 			logo: { src: "./src/assets/logo-canvas.png" },
 			social: [{ icon: "github", label: "GitHub", href: "https://github.com/HUAT-FSAC" }],
 			tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
+			// 自定义组件覆盖，添加评论功能
+			components: {
+				// 如需启用评论，取消下行注释并完成 Giscus 配置
+				// PageFrame: './src/components/DocPage.astro',
+			},
 			sidebar: [
-				{ label: "📁 感知融合", collapsed: true, autogenerate: { directory: "感知" } },
-				{ label: "📁 定位建图", collapsed: true, autogenerate: { directory: "定位建图" } },
-				{ label: "📁 仿真测试", collapsed: true, autogenerate: { directory: "仿真测试" } },
-				{ label: "📁 规划控制", collapsed: true, autogenerate: { directory: "规控" } },
-				{ label: "📁 综合", collapsed: true, autogenerate: { directory: "综合" } },
+				{
+					label: "🏎️ 2025 赛季文档",
+					collapsed: false,
+					items: [
+						{ label: "📁 算法部 - 感知", collapsed: true, autogenerate: { directory: "2025/感知" } },
+						{ label: "📁 算法部 - 定位建图", collapsed: true, autogenerate: { directory: "2025/定位建图" } },
+						{ label: "📁 算法部 - 规控", collapsed: true, autogenerate: { directory: "2025/规控" } },
+						{ label: "📁 算法部 - 仿真测试", collapsed: true, autogenerate: { directory: "2025/仿真测试" } },
+						{ label: "📁 电气部", collapsed: true, autogenerate: { directory: "2025/电气" } },
+						{ label: "📁 机械部", collapsed: true, autogenerate: { directory: "2025/机械" } },
+						{ label: "📁 项管部", collapsed: true, autogenerate: { directory: "2025/项管" } },
+					],
+				},
+				{
+					label: "📚 2024 赛季文档",
+					collapsed: true,
+					items: [
+						{ label: "📁 感知融合", collapsed: true, autogenerate: { directory: "感知" } },
+						{ label: "📁 定位建图", collapsed: true, autogenerate: { directory: "定位建图" } },
+						{ label: "📁 仿真测试", collapsed: true, autogenerate: { directory: "仿真测试" } },
+						{ label: "📁 规划控制", collapsed: true, autogenerate: { directory: "规控" } },
+						{ label: "📁 综合", collapsed: true, autogenerate: { directory: "综合" } },
+					],
+				},
 				{ label: "HUAT 无人车队开源项目", link: "/open-source-projects/" },
 				{ label: "2024 无人系统部学习指南", link: "/2024-learning-roadmap/" },
 			],

@@ -1,0 +1,102 @@
+---
+title: 高速循迹
+description: 2025赛季高速循迹路径规划算法
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+# 高速循迹
+
+高速循迹主要就是三个部分的结合：
+
+<CardGrid>
+  <Card title="德劳内三角" icon="puzzle">
+    基于锥桶位置生成三角网格
+  </Card>
+  <Card title="启发式搜索" icon="magnifier">
+    路径搜索算法（算力负担较重）
+  </Card>
+  <Card title="曲线拟合" icon="pencil">
+    对规划进行曲度拟合（贝塞尔曲线、B样条、自适应多项式）
+  </Card>
+</CardGrid>
+
+---
+
+## 路径规划总引入
+
+<Aside type="danger">
+重要！注意后面的扩展阅读！
+</Aside>
+
+[7. 路径规划（传统技术） - 知乎](https://zhuanlan.zhihu.com/p/788631063)
+
+---
+
+## 一、德劳内三角部分
+
+[基于 Delaunay 三角剖分的大学生方程式自动驾驶路径规划算法（MATLAB 实现）](https://zhuanlan.zhihu.com/p/601589326)
+
+---
+
+## 二、启发式搜索
+
+<Aside type="note">
+这一部分需要贴切的分析我们车上的实际代码进行理解。
+</Aside>
+
+### 学习资料
+
+- [改进的 A* 算法的路径规划（路径规划+代码+教程）](https://zhuanlan.zhihu.com/p/682830759)
+- [第二讲 搜索求解（启发式搜索、对抗搜索、蒙特卡洛树搜索、AlphaGo 算法解读）](https://zhuanlan.zhihu.com/p/48740530)
+
+---
+
+## 三、曲线拟合
+
+### 学习资料
+
+- [贝塞尔曲线与 Catmull-Rom 曲线总结](https://zhuanlan.zhihu.com/p/141977882)
+- [贝塞尔(Bezier)曲线与B样条](https://www.bilibili.com/video/BV1uK4y1M7M1/)
+- [Bezier 曲线生成算法](https://www.bilibili.com/video/BV1Dt411f7Qj?p=14)
+
+---
+
+## 实践指南
+
+我们代码的运行是在 ROS 上面进行运行的，我们通过跑包是可以得到我们规划路径的好坏的。
+
+**建议**：
+- 要注意把代码跑通，试着去看看效果
+- 调整一下 yaml 文件看看效果
+- 效果的检查可以下载 MATLAB 进行对点的绘图
+- 规划的点哪里来，在看了我们的代码后或许你就有了答案
+
+---
+
+## 答辩准备
+
+| 问题 | 回答方向 |
+|------|----------|
+| 德劳内三角的优点是什么？ | 各方面的特点，使用动机 |
+| 曲线拟合怎么进行误差分析？ | 对误差出现的解决手段与思路 |
+| 介绍一下代码设计的大致思路？ | 算法的结构、运行流程与运行逻辑 |
+| 明年能优化什么？ | 发展方向，目前的不足 |
+| 调参最复杂的位置是什么？ | 自我解决问题的独有思考 |
+
+---
+
+## 注意事项
+
+<Aside type="tip">
+出现锥桶实际位置不对的情况是正常的。充分理解我们的算法后：
+- 对于锥桶位置非常不对的情况，在德劳内三角部分就会被剔除
+- 少一小个锥桶不会影响我们的规划
+- 只要保证了正常的锥桶道路特征就可以正常运行
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/2025/规控/" style="color: var(--sl-color-accent);">← 返回规控模块</a>
+</div>

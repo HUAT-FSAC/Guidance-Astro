@@ -1,0 +1,154 @@
+---
+interface Props {
+    badge?: string;
+    title: string;
+    description: string;
+    ctaText: string;
+    ctaLink: string;
+    image: string;
+    reverse?: boolean;
+}
+
+const {
+    badge,
+    title,
+    description,
+    ctaText,
+    ctaLink,
+    image,
+    reverse = false,
+} = Astro.props;
+---
+
+<section class={`achievement ${reverse ? "reverse" : ""}`}>
+    <div class="achievement-content">
+        {badge && <span class="achievement-badge">{badge}</span>}
+        <h2 class="achievement-title">{title}</h2>
+        <p class="achievement-description">{description}</p>
+        <a href={ctaLink} class="achievement-cta">
+            {ctaText}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+        </a>
+    </div>
+    <div class="achievement-image">
+        <img src={image} alt={title} loading="lazy" />
+    </div>
+</section>
+
+<style>
+    .achievement {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        padding: 6rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .achievement.reverse {
+        direction: rtl;
+    }
+
+    .achievement.reverse > * {
+        direction: ltr;
+    }
+
+    @media (max-width: 900px) {
+        .achievement {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 4rem 1.5rem;
+        }
+        .achievement.reverse {
+            direction: ltr;
+        }
+    }
+
+    .achievement-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .achievement-badge {
+        display: inline-block;
+        width: fit-content;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #000;
+        background: var(--sl-color-accent, #f39c12);
+        border-radius: 4px;
+    }
+
+    .achievement-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin: 0;
+        color: var(--sl-color-white);
+    }
+
+    .achievement-description {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0;
+    }
+
+    .achievement-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: fit-content;
+        padding: 1rem 2rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #fff;
+        background: transparent;
+        border: 2px solid var(--sl-color-accent, #f39c12);
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .achievement-cta:hover {
+        background: var(--sl-color-accent, #f39c12);
+        color: #000;
+        transform: translateX(5px);
+    }
+
+    .achievement-image {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .achievement-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .achievement-image:hover img {
+        transform: scale(1.05);
+    }
+</style>

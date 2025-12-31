@@ -1,0 +1,230 @@
+---
+title: 技术分享：路径规划算法详解
+description: 深入解析 HUAT FSAC 采用的路径规划算法
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+# 🛤️ 技术分享：路径规划算法详解
+
+**发布日期：2024年10月**
+
+![路径规划](https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200)
+
+本期技术分享会上，规控组的同学为大家详细讲解了我们在无人驾驶赛车上采用的路径规划算法及其优化过程。
+
+---
+
+## 路径规划概述
+
+路径规划是无人驾驶系统的核心模块之一，其任务是在给定的环境中找到一条从起点到终点的安全、高效路径。
+
+<Aside type="note">
+  在 Formula Student 无人驾驶赛事中，赛道由锥桶标记，蓝色锥桶在左，黄色锥桶在右，赛车需要在锥桶中间行驶。
+</Aside>
+
+### 规划层级
+
+我们的路径规划系统分为三个层级：
+
+```
+全局规划（赛道级） → 局部规划（秒级） → 轨迹跟踪（毫秒级）
+```
+
+---
+
+## 全局路径规划
+
+### 赛道中线生成
+
+<Steps>
+1. **锥桶匹配**
+   
+   将检测到的蓝色和黄色锥桶进行配对，形成赛道边界
+
+2. **中线计算**
+   
+   计算每对锥桶的中点，得到赛道中线点序列
+
+3. **路径拟合**
+   
+   使用样条曲线（如三次 B 样条）对中线点进行平滑拟合
+
+4. **曲率优化**
+   
+   调整路径使曲率变化更加平滑，提高车辆行驶舒适性
+</Steps>
+
+### 最优路径生成
+
+在了解赛道地图后，我们可以进一步优化行驶路线：
+
+```python
+def optimize_racing_line(centerline, track_width):
+    """
+    优化赛车线，在弯道内侧走更短的路径
+    同时考虑曲率约束和速度优化
+    """
+    # 定义优化变量：每个点的横向偏移量
+    n_points = len(centerline)
+    lateral_offset = cp.Variable(n_points)
+    
+    # 约束：偏移量不能超过半个赛道宽度
+    constraints = [
+        cp.abs(lateral_offset) <= track_width / 2
+    ]
+    
+    # 目标：最小化路径长度 + 曲率惩罚
+    objective = cp.Minimize(
+        path_length(lateral_offset) + 
+        lambda_curv * curvature_cost(lateral_offset)
+    )
+    
+    problem = cp.Problem(objective, constraints)
+    problem.solve()
+    
+    return centerline + lateral_offset.value
+```
+
+---
+
+## 局部路径规划
+
+局部规划负责实时生成可行的行驶轨迹，需要考虑：
+- 当前车辆状态（位置、速度、航向）
+- 新检测到的锥桶
+- 避障需求
+
+### Frenet 坐标系
+
+我们采用 Frenet 坐标系进行局部规划，将问题分解为：
+- **纵向（s）**：沿参考路径方向
+- **横向（d）**：垂直于参考路径方向
+
+<Aside type="tip">
+  Frenet 坐标系的优势在于将复杂的二维规划问题解耦为两个一维问题，简化了规划器的设计。
+</Aside>
+
+### 多项式轨迹规划
+
+```python
+class QuinticPolynomial:
+    """五次多项式轨迹"""
+    
+    def __init__(self, x0, v0, a0, xf, vf, af, T):
+        """
+        参数：
+            x0, v0, a0: 初始位置、速度、加速度
+            xf, vf, af: 终止位置、速度、加速度
+            T: 规划时间
+        """
+        # 求解五次多项式系数
+        A = np.array([
+            [T**3, T**4, T**5],
+            [3*T**2, 4*T**3, 5*T**4],
+            [6*T, 12*T**2, 20*T**3]
+        ])
+        b = np.array([
+            xf - x0 - v0*T - 0.5*a0*T**2,
+            vf - v0 - a0*T,
+            af - a0
+        ])
+        
+        x = np.linalg.solve(A, b)
+        self.a0, self.a1, self.a2 = x0, v0, a0/2
+        self.a3, self.a4, self.a5 = x
+    
+    def calc_point(self, t):
+        """计算 t 时刻的位置"""
+        return (self.a0 + self.a1*t + self.a2*t**2 + 
+                self.a3*t**3 + self.a4*t**4 + self.a5*t**5)
+```
+
+---
+
+## 轨迹跟踪控制
+
+### Pure Pursuit 算法
+
+Pure Pursuit 是一种几何路径跟踪算法，通过追踪前方的目标点来计算转向角：
+
+转向角公式：`δ = arctan(2L·sin(α) / ld)`
+
+其中：
+- `L`：车辆轴距
+- `α`：目标点相对于车头的夹角
+- `ld`：预瞄距离
+
+### MPC 控制器
+
+模型预测控制（MPC）是一种更先进的控制方法：
+
+```python
+def mpc_control(state, reference_trajectory):
+    """
+    MPC 控制器
+    
+    优化问题：
+    min Σ (x_k - x_ref)^T Q (x_k - x_ref) + u_k^T R u_k
+    s.t. x_{k+1} = f(x_k, u_k)  # 动力学约束
+         u_min <= u_k <= u_max  # 控制量约束
+    """
+    # 定义预测步长
+    N = 10  # 预测 horizon
+    
+    # 定义优化变量
+    x = cp.Variable((4, N+1))  # 状态：[x, y, v, psi]
+    u = cp.Variable((2, N))    # 控制：[加速度, 转向角]
+    
+    # 构建优化问题
+    cost = 0
+    constraints = []
+    
+    for k in range(N):
+        # 跟踪误差代价
+        cost += cp.quad_form(x[:,k] - ref[:,k], Q)
+        # 控制量代价
+        cost += cp.quad_form(u[:,k], R)
+        # 动力学约束
+        constraints += [x[:,k+1] == A @ x[:,k] + B @ u[:,k]]
+    
+    # 求解
+    problem = cp.Problem(cp.Minimize(cost), constraints)
+    problem.solve()
+    
+    return u[:, 0].value  # 返回第一个控制量
+```
+
+---
+
+## 性能优化经验
+
+### 计算效率
+
+1. **降采样**：对锥桶点云进行降采样，减少计算量
+2. **增量式更新**：只更新发生变化的路径段
+3. **多线程**：规划和控制并行执行
+
+### 鲁棒性
+
+1. **异常值过滤**：剔除检测中的虚假锥桶
+2. **平滑滤波**：对规划结果进行低通滤波
+3. **失效保护**：规划失败时切换到安全模式
+
+---
+
+## 相关资料
+
+推荐阅读以下论文和教程：
+
+- Werling, M. et al. "Optimal trajectory generation for dynamic street scenarios in a Frenet frame"
+- Python Robotics: [https://github.com/AtsushiSakai/PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics)
+- MPC 控制教程：[规划控制模块](/规控/)
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/news/new-car-development/" style="color: var(--sl-color-accent);">← 上一篇</a>
+  {" | "}
+  <a href="/" style="color: var(--sl-color-accent);">返回首页</a>
+</div>

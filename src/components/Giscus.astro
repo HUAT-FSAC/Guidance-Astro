@@ -1,0 +1,88 @@
+---
+/**
+ * Giscus 评论组件
+ * 基于 GitHub Discussions 的评论系统
+ *
+ * 使用前需要：
+ * 1. 在 GitHub 仓库启用 Discussions
+ * 2. 安装 Giscus App: https://github.com/apps/giscus
+ * 3. 在 https://giscus.app 获取配置参数
+ * 4. 更新下方的 repo、repoId、category、categoryId
+ */
+
+export interface Props {
+    theme?: "dark" | "light" | "preferred_color_scheme";
+}
+
+const { theme = "dark" } = Astro.props;
+
+// ============ Giscus 配置 ============
+// 请在 https://giscus.app 获取以下参数
+const giscusConfig = {
+    repo: "HUAT-FSAC/Guidance-Astro", // 替换为你的仓库
+    repoId: "YOUR_REPO_ID", // 替换为你的 Repo ID
+    category: "Announcements", // 选择一个 Discussion 分类
+    categoryId: "YOUR_CATEGORY_ID", // 替换为你的 Category ID
+    mapping: "pathname", // 映射方式
+    strict: "0",
+    reactionsEnabled: "1",
+    emitMetadata: "0",
+    inputPosition: "top",
+    lang: "zh-CN",
+};
+---
+
+<div class="giscus-wrapper">
+    <div class="giscus-header">
+        <h3>💬 评论区</h3>
+        <p>欢迎留下你的想法和建议！</p>
+    </div>
+    <script
+        src="https://giscus.app/client.js"
+        data-repo={giscusConfig.repo}
+        data-repo-id={giscusConfig.repoId}
+        data-category={giscusConfig.category}
+        data-category-id={giscusConfig.categoryId}
+        data-mapping={giscusConfig.mapping}
+        data-strict={giscusConfig.strict}
+        data-reactions-enabled={giscusConfig.reactionsEnabled}
+        data-emit-metadata={giscusConfig.emitMetadata}
+        data-input-position={giscusConfig.inputPosition}
+        data-theme={theme}
+        data-lang={giscusConfig.lang}
+        crossorigin="anonymous"
+        async></script>
+</div>
+
+<style>
+    .giscus-wrapper {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--sl-color-gray-5);
+    }
+
+    .giscus-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .giscus-header h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.25rem;
+        color: var(--sl-color-white);
+    }
+
+    .giscus-header p {
+        margin: 0;
+        font-size: 0.9rem;
+        opacity: 0.7;
+    }
+
+    /* Giscus iframe 样式调整 */
+    .giscus {
+        max-width: 100%;
+    }
+
+    .giscus-frame {
+        width: 100% !important;
+    }
+</style>

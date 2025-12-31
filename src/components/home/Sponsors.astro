@@ -1,0 +1,65 @@
+---
+import type { SponsorGroup } from "../../data/home";
+
+interface Props {
+    groups: SponsorGroup[];
+}
+
+const { groups } = Astro.props;
+---
+
+{
+    groups.map((group) => (
+        <div class="sponsor-section">
+            <h3>{group.name}</h3>
+            <div class="sponsor-grid">
+                {group.items.map((sponsor) => (
+                    <img
+                        src={sponsor.logo}
+                        alt={sponsor.title}
+                        class="sponsor-logo"
+                        title={sponsor.title}
+                    />
+                ))}
+            </div>
+        </div>
+    ))
+}
+
+<style>
+    .sponsor-section {
+        text-align: center;
+        margin: 4rem 0;
+    }
+
+    .sponsor-section h3 {
+        opacity: 0.7;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .sponsor-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .sponsor-logo {
+        height: 50px;
+        width: auto;
+        filter: grayscale(100%);
+        opacity: 0.6;
+        transition: all 0.3s;
+    }
+
+    .sponsor-logo:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: scale(1.1);
+    }
+</style>

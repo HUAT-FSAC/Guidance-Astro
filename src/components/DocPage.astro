@@ -1,0 +1,20 @@
+---
+/**
+ * 自定义文档页面布局
+ * 在默认 Starlight 布局基础上添加 Giscus 评论
+ */
+import type { Props } from "@astrojs/starlight/props";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Giscus from "./Giscus.astro";
+
+// 获取当前页面的 frontmatter
+const { frontmatter } = Astro.props;
+
+// 可以在 frontmatter 中设置 comments: false 来禁用评论
+const showComments = frontmatter?.comments !== false;
+---
+
+<StarlightPage {...Astro.props}>
+    <slot />
+    {showComments && <Giscus theme="dark" />}
+</StarlightPage>
