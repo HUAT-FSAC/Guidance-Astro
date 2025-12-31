@@ -1,0 +1,147 @@
+---
+title: 定位与建图组
+---
+
+import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="🎯 核心职责" icon="rocket">
+    车辆定位、赛道建图、位姿估计
+  </Card>
+  <Card title="📍 定位方式" icon="star">
+    组合惯导、视觉定位、激光SLAM
+  </Card>
+  <Card title="🗺️ 建图技术" icon="document">
+    实时建图、地图优化、回环检测
+  </Card>
+  <Card title="⚡ 技术栈" icon="laptop">
+    ROS、C++、Eigen、GTSAM
+  </Card>
+</CardGrid>
+
+---
+
+## 简介
+
+定位与建图组通过使用**组合惯性导航单元**与多传感器（单目摄像头/激光雷达）配合进行：
+
+<CardGrid stagger>
+  <Card title="环境识别" icon="magnifier">
+    识别周围赛道环境结构
+  </Card>
+  <Card title="车辆定位" icon="star">
+    实时估计车辆位置与姿态
+  </Card>
+  <Card title="地图建立" icon="document">
+    构建赛道全局地图
+  </Card>
+  <Card title="路径优化" icon="random">
+    为规划控制提供基础
+  </Card>
+</CardGrid>
+
+<Aside type="tip" title="重要性">
+  精确的定位是自动驾驶的核心能力之一。没有准确的位置信息，车辆无法知道自己在哪里，也无法规划正确的行驶路径。
+</Aside>
+
+---
+
+## 技术架构
+
+```
+       ┌─────────────┐
+       │   IMU/GPS   │
+       └──────┬──────┘
+              │
+              ▼
+┌─────────────────────────┐
+│      组合惯性导航        │ ←── 高频位姿估计
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│    视觉/激光 SLAM       │ ←── 位姿校正 + 建图
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│      全局地图输出        │ ←── 供规划使用
+└─────────────────────────┘
+```
+
+---
+
+## 基础知识
+
+<Aside type="note" title="学习路线">
+  建议先掌握线性代数、概率论基础，再深入学习 SLAM 理论。
+</Aside>
+
+### 推荐学习资源
+
+<CardGrid>
+  <LinkCard
+    title="视觉 SLAM 十四讲"
+    description="高翔博士的经典 SLAM 入门课程"
+    href="https://www.bilibili.com/video/BV16t411g7FR"
+  />
+  <LinkCard
+    title="状态估计理论"
+    description="卡尔曼滤波与优化理论"
+    href="https://www.bilibili.com/video/BV1K4411w7PJ"
+  />
+</CardGrid>
+
+---
+
+## 核心技术
+
+<CardGrid>
+  <Card title="惯性导航" icon="right-arrow">
+    <Badge text="核心" variant="success" />
+    - IMU 数据处理
+    - 姿态解算
+    - 积分误差分析
+  </Card>
+  <Card title="视觉 SLAM" icon="magnifier">
+    <Badge text="重要" variant="note" />
+    - 特征提取与匹配
+    - 视觉里程计
+    - 后端优化
+  </Card>
+  <Card title="激光 SLAM" icon="seti:json">
+    <Badge text="重要" variant="note" />
+    - 点云配准
+    - ICP/NDT 算法
+    - 回环检测
+  </Card>
+  <Card title="传感器融合" icon="puzzle">
+    <Badge text="高级" variant="caution" />
+    - 多传感器标定
+    - 卡尔曼滤波
+    - 图优化
+  </Card>
+</CardGrid>
+
+---
+
+## 开发工具
+
+<CardGrid>
+  <Card title="ROS" icon="seti:robot">
+    <Badge text="必备" variant="success" />
+    机器人操作系统
+  </Card>
+  <Card title="Eigen" icon="seti:cpp">
+    <Badge text="必备" variant="success" />
+    C++ 矩阵运算库
+  </Card>
+  <Card title="GTSAM" icon="puzzle">
+    <Badge text="推荐" variant="note" />
+    图优化库
+  </Card>
+  <Card title="OpenCV" icon="seti:image">
+    <Badge text="推荐" variant="note" />
+    视觉特征处理
+  </Card>
+</CardGrid>

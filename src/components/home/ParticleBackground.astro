@@ -1,0 +1,146 @@
+---
+// 粒子背景组件 - 星空效果
+---
+
+<canvas id="particleCanvas" class="particle-canvas"></canvas>
+
+<script>
+    function initParticles() {
+        const canvas = document.getElementById(
+            "particleCanvas",
+        ) as HTMLCanvasElement;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        let particles: Particle[] = [];
+        let animationId: number;
+
+        interface Particle {
+            x: number;
+            y: number;
+            size: number;
+            speedX: number;
+            speedY: number;
+            opacity: number;
+            twinkleSpeed: number;
+        }
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticleArray();
+        }
+
+        function initParticleArray() {
+            particles = [];
+            const particleCount = Math.floor(
+                (canvas.width * canvas.height) / 15000,
+            );
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkleSpeed: Math.random() * 0.02 + 0.01,
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p) => {
+                // 闪烁效果
+                p.opacity += Math.sin(Date.now() * p.twinkleSpeed) * 0.01;
+                p.opacity = Math.max(0.1, Math.min(1, p.opacity));
+
+                // 移动
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                // 边界循环
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                // 绘制
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.fill();
+            });
+
+            // 绘制连接线
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach((p2) => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(243, 156, 18, ${0.1 * (1 - distance / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // 只在 Hero 区域显示
+        const hero = document.querySelector(".hero");
+        if (hero) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            canvas.style.opacity = "1";
+                            if (!animationId) animate();
+                        } else {
+                            canvas.style.opacity = "0";
+                            if (animationId) {
+                                cancelAnimationFrame(animationId);
+                                animationId = 0;
+                            }
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+
+            observer.observe(hero);
+        }
+
+        window.addEventListener("resize", resize);
+        resize();
+        animate();
+    }
+
+    document.addEventListener("DOMContentLoaded", initParticles);
+    document.addEventListener("astro:page-load", initParticles);
+</script>
+
+<style>
+    .particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+</style>

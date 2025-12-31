@@ -1,0 +1,185 @@
+---
+title: ROS1 (Melodic) 安装教程
+---
+
+import { Card, CardGrid, Aside, Tabs, TabItem, Steps, Badge, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="系统要求" icon="laptop">
+    Ubuntu 18.04 LTS
+  </Card>
+  <Card title="ROS 版本" icon="seti:robot">
+    ROS Melodic
+  </Card>
+  <Card title="难度" icon="star">
+    <Badge text="初级" variant="success" />
+  </Card>
+  <Card title="预计时间" icon="clock">
+    约 30 分钟
+  </Card>
+</CardGrid>
+
+<Aside type="caution" title="版本对应">
+  ROS 与 Ubuntu 的系统版本**严格对应**，不可混装。  
+  如 `ROS Melodic` 对应 Ubuntu 18.04 LTS
+</Aside>
+
+---
+
+## 快速安装（推荐）
+
+<Steps>
+
+1. 打开终端
+
+2. 执行一键安装脚本
+   ```bash
+   wget http://fishros.com/install -O fishros && . fishros
+   ```
+
+3. 跟随终端提示选择 ROS Melodic 进行安装
+
+</Steps>
+
+<Aside type="tip">
+  一键安装脚本来自 [鱼香 ROS](http://fishros.com/)，已帮你配置好国内镜像源，安装速度更快。
+</Aside>
+
+---
+
+## ROS 入门推荐资料
+
+<Aside type="note" title="学习建议">
+  以下资料作为参考，**不要求全部看完**。"哪里不会看哪里就好"
+</Aside>
+
+<CardGrid>
+  <LinkCard
+    title="传智专修学院 ROS 教程"
+    description="适合零基础入门的 ROS 文档教程"
+    href="https://robot.czxy.com/docs/ros/arch/file/"
+  />
+  <LinkCard
+    title="Autolabor 视频教程"
+    description="B站高质量 ROS 入门视频"
+    href="https://www.bilibili.com/video/BV1Ci4y1L7ZZ/"
+  />
+  <LinkCard
+    title="Autolabor 文档教程"
+    description="配套文字版教程"
+    href="http://www.autolabor.com.cn/book/ROSTutorials/"
+  />
+  <LinkCard
+    title="古月居 ROS 教程"
+    description="经典 ROS 入门视频系列"
+    href="https://www.bilibili.com/video/BV1zt411G7Vn/"
+  />
+</CardGrid>
+
+---
+
+## 手动安装（可选）
+
+<Aside type="note">
+  以下是手动安装步骤，仅供参考。推荐使用上面的一键安装脚本。
+</Aside>
+
+在进行操作之前请确保你已经完成了 Ubuntu 的基础设置：语言、时区、`apt` 程序源设定。
+
+<Steps>
+
+1. **配置 Ubuntu 软件仓库**
+
+   添加来自清华镜像的 ROS 源：
+   ```bash
+   sudo sh -c '. /etc/lsb-release && echo "deb http://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu/ `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
+   ```
+
+2. **添加 PGP 密钥**
+
+   ```bash
+   sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+   ```
+   
+   <Aside type="tip">
+     如果上面的命令失败，尝试：
+     ```bash
+     curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -
+     ```
+   </Aside>
+
+3. **更新软件源索引**
+
+   ```bash
+   sudo apt update
+   ```
+
+4. **安装 ROS Melodic**
+
+   <Tabs>
+     <TabItem label="完整安装（推荐）">
+       ```bash
+       sudo apt install ros-melodic-desktop-full
+       ```
+       包含：ROS、rqt、rviz、机器人通用库、2D/3D 模拟器、导航以及 2D/3D 感知包。
+     </TabItem>
+     <TabItem label="桌面版安装">
+       ```bash
+       sudo apt install ros-melodic-desktop
+       ```
+       包含：ROS、rqt、rviz 和机器人通用库
+     </TabItem>
+   </Tabs>
+
+5. **初始化 rosdep**
+
+   使用 pip 安装 rosdepc：
+   ```bash
+   pip install rosdepc
+   rosdepc init
+   ```
+
+6. **设置环境变量**
+
+   ```bash
+   echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+7. **环境测试**
+
+   在终端输入 `roscore` 激活 ROS 核心，然后打开新终端执行：
+   ```bash
+   rosrun turtlesim turtlesim_node
+   ```
+   
+   若正常应有新窗口打开且显示一只海龟。继续打开新终端执行：
+   ```bash
+   rosrun turtlesim turtle_teleop_key
+   ```
+   
+   用键盘上下左右键控制海龟移动，以上内容能实现则说明安装成功！
+
+</Steps>
+
+---
+
+## 相关链接
+
+<CardGrid>
+  <LinkCard
+    title="ROS 官网"
+    description="ROS 官方文档与资源"
+    href="https://www.ros.org/"
+  />
+  <LinkCard
+    title="清华镜像源"
+    description="ROS 国内镜像配置说明"
+    href="https://mirrors.tuna.tsinghua.edu.cn/help/ros/"
+  />
+  <LinkCard
+    title="返回综合教程"
+    description="查看更多开发环境配置"
+    href="/综合/"
+  />
+</CardGrid>

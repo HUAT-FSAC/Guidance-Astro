@@ -1,0 +1,73 @@
+---
+title: 有趣分享
+---
+
+import { Card, CardGrid, LinkCard, Badge } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="内容类型" icon="star">
+    学习资源 & 工具推荐
+  </Card>
+  <Card title="适合人群" icon="approve-check">
+    所有队员
+  </Card>
+</CardGrid>
+
+---
+
+## 推荐资源
+
+<CardGrid>
+  <LinkCard
+    title="CS 自学指南 (CSDIY)"
+    description="一份计科/软工的自学指南，从无到有的详尽知识体系指南"
+    href="https://csdiy.wiki/"
+  />
+  <LinkCard
+    title="提问的智慧"
+    description="在开口提问计算机相关问题前，都应该看看这个"
+    href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md"
+  />
+  <LinkCard
+    title="Linux 101 @ USTC"
+    description="来自中科大的 Linux 基础教程，掌握基础且实用的知识并领略社区开源文化的魅力"
+    href="https://101.lug.ustc.edu.cn/"
+  />
+</CardGrid>
+
+---
+
+## 资源简介
+
+<CardGrid stagger>
+  <Card title="CSDIY" icon="open-book">
+    <Badge text="强烈推荐" variant="success" />
+    
+    北大学生创建的计算机自学指南，涵盖：
+    - 编程入门
+    - 数据结构与算法
+    - 操作系统
+    - 计算机网络
+    - 机器学习
+    - ...等完整课程体系
+  </Card>
+  
+  <Card title="提问的智慧" icon="information">
+    <Badge text="必读" variant="caution" />
+    
+    学会如何正确提问，提高沟通效率：
+    - 描述问题背景
+    - 说明已尝试的方法
+    - 提供错误信息
+    - 尊重他人时间
+  </Card>
+  
+  <Card title="Linux 101" icon="seti:linux">
+    <Badge text="推荐" variant="note" />
+    
+    中科大 Linux 用户组出品：
+    - 适合 Linux 新手
+    - 实用技能导向
+    - 开源文化介绍
+  </Card>
+</CardGrid>

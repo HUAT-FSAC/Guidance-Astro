@@ -1,0 +1,135 @@
+---
+title: 仿真测试组
+---
+
+import { Card, CardGrid, Aside, Steps, LinkCard, Badge } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="🎯 核心职责" icon="rocket">
+    搭建仿真环境、算法测试、问题复现
+  </Card>
+  <Card title="🖥️ 仿真平台" icon="laptop">
+    基于 Gazebo 的 FSSim 仿真器
+  </Card>
+  <Card title="🔧 主要工作" icon="setting">
+    赛道建模、车辆模型、传感器仿真
+  </Card>
+  <Card title="⚡ 技术栈" icon="puzzle">
+    ROS、Gazebo、URDF、Python
+  </Card>
+</CardGrid>
+
+---
+
+## 简介
+
+{/* 视频文件待添加 */}
+
+仿真是通过计算机模拟出**车辆模型**与**比赛赛道**，使各程序能够在模拟出的环境下运行并进行测试。
+
+<Aside type="tip" title="为什么需要仿真？">
+  - ✅ 无需实车即可测试算法
+  - ✅ 提高测试效率与安全性
+  - ✅ 提前发现潜在问题
+  - ✅ 可重复、可控的测试环境
+</Aside>
+
+---
+
+## 仿真平台
+
+<Card title="FSSim" icon="star">
+  目前车队使用基于 [BITFSD](http://www.bitfsd.com/) 修改的 [FSSim](https://github.com/HUAT-FSAC/fssim) 仿真平台进行测试。
+
+  <Badge text="开源" variant="success" /> <Badge text="ROS 兼容" variant="note" /> <Badge text="Gazebo" variant="caution" />
+</Card>
+
+---
+
+## 仿真架构
+
+<CardGrid stagger>
+  <Card title="车辆模型" icon="right-arrow">
+    - URDF 模型描述
+    - 动力学仿真
+    - 转向/制动模拟
+  </Card>
+  <Card title="传感器仿真" icon="magnifier">
+    - 激光雷达模拟
+    - 摄像头模拟
+    - IMU/GPS 模拟
+  </Card>
+  <Card title="赛道环境" icon="approve-check">
+    - 锥桶摆放
+    - 赛道布局
+    - 物理碰撞
+  </Card>
+  <Card title="可视化" icon="seti:image">
+    - Gazebo 3D 渲染
+    - RViz 数据可视化
+    - 实时状态监控
+  </Card>
+</CardGrid>
+
+---
+
+## 快速开始
+
+<Steps>
+
+1. **安装依赖环境**
+   
+   确保已安装 ROS Noetic 和 Gazebo
+
+2. **克隆仿真仓库**
+   
+   ```bash
+   git clone https://github.com/HUAT-FSAC/fssim.git
+   cd fssim
+   ```
+
+3. **编译工作空间**
+   
+   ```bash
+   catkin_make
+   source devel/setup.bash
+   ```
+
+4. **启动仿真**
+   
+   ```bash
+   roslaunch fssim_gazebo fssim.launch
+   ```
+
+</Steps>
+
+<Aside type="caution" title="环境要求">
+  FSSim 需要 Ubuntu 20.04 + ROS Noetic 环境，建议使用虚拟机或 WSL2。
+</Aside>
+
+---
+
+## 相关链接
+
+<CardGrid>
+  <LinkCard
+    title="FSSim 仓库"
+    description="HUAT-FSAC 仿真平台 GitHub 仓库"
+    href="https://github.com/HUAT-FSAC/fssim"
+  />
+  <LinkCard
+    title="BITFSD 官网"
+    description="原始仿真平台来源"
+    href="http://www.bitfsd.com/"
+  />
+  <LinkCard
+    title="Gazebo 教程"
+    description="Gazebo 仿真器官方文档"
+    href="https://gazebosim.org/docs"
+  />
+  <LinkCard
+    title="ROS Wiki"
+    description="ROS 机器人操作系统文档"
+    href="http://wiki.ros.org/"
+  />
+</CardGrid>

@@ -1,0 +1,122 @@
+---
+// 页面加载动画组件
+---
+
+<div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+        <div class="loader-logo">
+            <span class="logo-text">HUAT</span>
+            <span class="logo-accent">FSAC</span>
+        </div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initPageLoader() {
+        const loader = document.getElementById("pageLoader");
+        if (!loader) return;
+
+        function hideLoader() {
+            if (loader.classList.contains("loaded")) return;
+            loader.classList.add("loaded");
+            setTimeout(() => {
+                loader.style.display = "none";
+                // 触发自定义事件，通知其他组件可以开始动画了
+                window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
+            }, 200);
+        }
+
+        // DOM 准备好就隐藏，不等待所有资源
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", hideLoader);
+        } else {
+            // DOM 已经准备好，立即隐藏
+            hideLoader();
+        }
+
+        // 备用：如果 1 秒后还没隐藏，强制隐藏
+        setTimeout(hideLoader, 1000);
+    }
+
+    // 立即执行
+    initPageLoader();
+</script>
+
+<style>
+    .page-loader {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        transition:
+            opacity 0.2s ease,
+            visibility 0.2s ease;
+    }
+
+    .page-loader.loaded {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .loader-content {
+        text-align: center;
+    }
+
+    .loader-logo {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        margin-bottom: 2rem;
+    }
+
+    .logo-text {
+        color: #fff;
+    }
+
+    .logo-accent {
+        color: var(--sl-color-accent, #f39c12);
+        margin-left: 0.5rem;
+    }
+
+    .loader-bar {
+        width: 200px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .loader-progress {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+            90deg,
+            var(--sl-color-accent, #f39c12),
+            #fff
+        );
+        border-radius: 3px;
+        animation: loading 1.5s ease-in-out infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            width: 0%;
+            margin-left: 0%;
+        }
+        50% {
+            width: 70%;
+            margin-left: 15%;
+        }
+        100% {
+            width: 0%;
+            margin-left: 100%;
+        }
+    }
+</style>

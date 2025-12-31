@@ -1,5 +1,5 @@
 ---
-title: HUAT FSAC | 华中科技大学方程式赛车队
+title: HUAT FSAC 
 description: Where Student Engineers Build Champions.
 template: splash
 hero:
@@ -17,6 +17,14 @@ import Seasons from '../../components/home/Seasons.astro';
 import Sponsors from '../../components/home/Sponsors.astro';
 import Acknowledgement from '../../components/home/Acknowledgement.astro';
 import Recruitment from '../../components/home/Recruitment.astro';
+import ThemeSwitcher from '../../components/home/ThemeSwitcher.astro';
+import ScrollProgress from '../../components/home/ScrollProgress.astro';
+import BackToTop from '../../components/home/BackToTop.astro';
+import MouseGlow from '../../components/home/MouseGlow.astro';
+import CustomScrollbar from '../../components/home/CustomScrollbar.astro';
+import PageLoader from '../../components/home/PageLoader.astro';
+import KeyboardNav from '../../components/home/KeyboardNav.astro';
+import ParticleBackground from '../../components/home/ParticleBackground.astro';
 import { 
   heroConfig, 
   stats, 
@@ -47,23 +55,76 @@ import {
     max-width: 100% !important;
   }
   
-  /* 深色背景 */
+  /* Apple 风格极简深色背景 */
   .content-panel {
-    background: #0a0a0a !important;
+    background-color: #000000 !important;
+    /* 顶部微弱的光源效果，模拟高级质感 */
+    background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 85%) !important;
   }
   
   /* Footer 链接样式 */
   .footer-link {
     color: var(--sl-color-white);
     opacity: 0.7;
-    transition: opacity 0.3s;
+    transition: all 0.3s ease;
     text-decoration: none;
+    position: relative;
   }
   
   .footer-link:hover {
     opacity: 1;
+    color: var(--sl-color-accent);
   }
+  
+  .footer-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--sl-color-accent);
+    transition: width 0.3s ease;
+  }
+  
+  .footer-link:hover::after {
+    width: 100%;
+  }
+
+  /* 全局淡入动画 */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  section {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0; /* 初始隐藏，由动画控制显示 */
+    animation-delay: 0.2s; /* 稍微延迟 */
+  }
+  
+  /* 针对不同 section 设置不同的延迟，制造层次感 */
+  section:nth-of-type(1) { animation-delay: 0.1s; }
+  section:nth-of-type(2) { animation-delay: 0.3s; }
+  section:nth-of-type(3) { animation-delay: 0.5s; }
+  section:nth-of-type(4) { animation-delay: 0.7s; }
 `}</style>
+
+{/* ==================== 全局增强组件 ==================== */}
+<PageLoader />
+<ScrollProgress />
+<BackToTop />
+<MouseGlow />
+<CustomScrollbar />
+<KeyboardNav />
+<ParticleBackground />
+<ThemeSwitcher />
 
 {/* ==================== Hero 区域 ==================== */}
 <Hero 

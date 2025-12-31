@@ -1,0 +1,231 @@
+---
+// 主题色切换组件 - 可在不同赛季主题色间切换
+interface ThemeOption {
+    name: string;
+    color: string;
+    accent: string;
+}
+
+const themes: ThemeOption[] = [
+    { name: "经典橙", color: "#f39c12", accent: "#e67e22" },
+    { name: "电竞蓝", color: "#3498db", accent: "#2980b9" },
+    { name: "赛道红", color: "#e74c3c", accent: "#c0392b" },
+    { name: "科技紫", color: "#9b59b6", accent: "#8e44ad" },
+    { name: "极速绿", color: "#2ecc71", accent: "#27ae60" },
+];
+---
+
+<div class="theme-switcher">
+    <button class="theme-toggle" aria-label="切换主题色" title="切换主题色">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <circle cx="12" cy="12" r="5"></circle>
+            <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+            ></path>
+        </svg>
+    </button>
+    <div class="theme-dropdown">
+        <div class="theme-dropdown-header">🎨 主题色</div>
+        {
+            themes.map((theme, index) => (
+                <button
+                    class="theme-option"
+                    data-color={theme.color}
+                    data-accent={theme.accent}
+                    data-index={index}
+                    style={`--preview-color: ${theme.color}`}
+                >
+                    <span class="color-preview" />
+                    <span class="theme-name">{theme.name}</span>
+                </button>
+            ))
+        }
+    </div>
+</div>
+
+<script>
+    function initThemeSwitcher() {
+        const toggle = document.querySelector(".theme-toggle");
+        const dropdown = document.querySelector(".theme-dropdown");
+        const options = document.querySelectorAll(".theme-option");
+
+        // 从 localStorage 读取保存的主题
+        const savedTheme = localStorage.getItem("huat-theme-color");
+        const savedAccent = localStorage.getItem("huat-theme-accent");
+        if (savedTheme && savedAccent) {
+            applyTheme(savedTheme, savedAccent);
+        }
+
+        // 切换下拉菜单
+        toggle?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            dropdown?.classList.toggle("active");
+        });
+
+        // 点击选项应用主题
+        options.forEach((option) => {
+            option.addEventListener("click", () => {
+                const color = (option as HTMLElement).dataset.color;
+                const accent = (option as HTMLElement).dataset.accent;
+                if (color && accent) {
+                    applyTheme(color, accent);
+                    localStorage.setItem("huat-theme-color", color);
+                    localStorage.setItem("huat-theme-accent", accent);
+                }
+                dropdown?.classList.remove("active");
+            });
+        });
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener("click", () => {
+            dropdown?.classList.remove("active");
+        });
+    }
+
+    function applyTheme(color: string, accent: string) {
+        document.documentElement.style.setProperty("--sl-color-accent", color);
+        document.documentElement.style.setProperty(
+            "--sl-color-accent-high",
+            accent,
+        );
+
+        // 更新选中状态
+        document.querySelectorAll(".theme-option").forEach((opt) => {
+            opt.classList.remove("active");
+            if ((opt as HTMLElement).dataset.color === color) {
+                opt.classList.add("active");
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", initThemeSwitcher);
+    document.addEventListener("astro:page-load", initThemeSwitcher);
+</script>
+
+<style>
+    .theme-switcher {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+    }
+
+    .theme-toggle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+        border-color: var(--sl-color-accent);
+    }
+
+    .theme-dropdown {
+        position: absolute;
+        bottom: 60px;
+        right: 0;
+        background: rgba(20, 20, 20, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 0.5rem;
+        min-width: 160px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .theme-dropdown.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .theme-dropdown-header {
+        padding: 0.75rem 1rem 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 0.5rem;
+    }
+
+    .theme-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: transparent;
+        border: none;
+        border-radius: 0.5rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+    }
+
+    .theme-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .theme-option.active {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .color-preview {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--preview-color);
+        box-shadow: 0 2px 8px var(--preview-color);
+        transition: transform 0.2s ease;
+    }
+
+    .theme-option:hover .color-preview {
+        transform: scale(1.2);
+    }
+
+    .theme-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .theme-switcher {
+            bottom: 1rem;
+            right: 1rem;
+        }
+
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+        }
+    }
+</style>

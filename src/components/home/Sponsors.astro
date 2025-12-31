@@ -52,14 +52,21 @@ const { groups } = Astro.props;
     .sponsor-logo {
         height: 50px;
         width: auto;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
         filter: grayscale(100%);
         opacity: 0.6;
-        transition: all 0.3s;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .sponsor-logo:hover {
         filter: grayscale(0%);
         opacity: 1;
-        transform: scale(1.1);
+        transform: translateY(-5px) scale(1.05);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 </style>

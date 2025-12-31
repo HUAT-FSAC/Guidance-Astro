@@ -1,0 +1,340 @@
+/**
+ * HUAT FSAC 代码块样式增强
+ * 优化 Expressive Code 代码块外观
+ */
+
+/* ==================== 代码块容器 ==================== */
+.expressive-code {
+    margin: 1.5rem 0 !important;
+}
+
+.expressive-code .frame {
+    border-radius: 1rem !important;
+    overflow: hidden;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.expressive-code .frame:hover {
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(243, 156, 18, 0.3) !important;
+}
+
+/* ==================== 代码块头部 (文件名/标题) ==================== */
+.expressive-code .header {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.expressive-code .title {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--sl-color-accent) !important;
+    letter-spacing: 0.5px;
+}
+
+/* macOS 风格窗口按钮 */
+.expressive-code .header::before {
+    content: '';
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
+    background: #ff5f56;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow:
+        20px 0 0 #ffbd2e,
+        40px 0 0 #27ca40;
+}
+
+/* ==================== 代码内容区 ==================== */
+.expressive-code pre {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16161a 100%) !important;
+    padding: 1.25rem !important;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.7 !important;
+    tab-size: 4;
+}
+
+.expressive-code code {
+    font-family: inherit !important;
+}
+
+/* ==================== 行号样式 ==================== */
+.expressive-code .line-numbers {
+    color: rgba(255, 255, 255, 0.25) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-right: 1rem !important;
+    margin-right: 1rem !important;
+    user-select: none;
+}
+
+/* ==================== 行高亮效果 ==================== */
+.expressive-code .highlight {
+    background: rgba(243, 156, 18, 0.15) !important;
+    border-left: 3px solid var(--sl-color-accent) !important;
+    margin-left: -1.25rem !important;
+    padding-left: calc(1.25rem - 3px) !important;
+    margin-right: -1.25rem !important;
+    padding-right: 1.25rem !important;
+}
+
+/* 插入行 (diff +) */
+.expressive-code .ins {
+    background: rgba(46, 204, 113, 0.15) !important;
+    border-left: 3px solid #2ecc71 !important;
+}
+
+/* 删除行 (diff -) */
+.expressive-code .del {
+    background: rgba(231, 76, 60, 0.15) !important;
+    border-left: 3px solid #e74c3c !important;
+}
+
+/* ==================== 复制按钮 ==================== */
+.expressive-code .copy {
+    position: absolute !important;
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.expressive-code .frame:hover .copy {
+    opacity: 1;
+}
+
+.expressive-code .copy:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: var(--sl-color-accent) !important;
+    border-color: var(--sl-color-accent) !important;
+    transform: scale(1.1);
+}
+
+.expressive-code .copy.copied {
+    background: rgba(46, 204, 113, 0.2) !important;
+    border-color: #2ecc71 !important;
+    color: #2ecc71 !important;
+}
+
+/* ==================== 语法高亮增强 ==================== */
+/* 关键字 */
+.expressive-code .token.keyword {
+    color: #c792ea !important;
+    font-weight: 500;
+}
+
+/* 函数 */
+.expressive-code .token.function {
+    color: #82aaff !important;
+}
+
+/* 字符串 */
+.expressive-code .token.string {
+    color: #c3e88d !important;
+}
+
+/* 数字 */
+.expressive-code .token.number {
+    color: #f78c6c !important;
+}
+
+/* 注释 */
+.expressive-code .token.comment {
+    color: #676e95 !important;
+    font-style: italic;
+}
+
+/* 变量 */
+.expressive-code .token.variable {
+    color: #f07178 !important;
+}
+
+/* 操作符 */
+.expressive-code .token.operator {
+    color: #89ddff !important;
+}
+
+/* 类名 */
+.expressive-code .token.class-name {
+    color: #ffcb6b !important;
+}
+
+/* 属性 */
+.expressive-code .token.property {
+    color: #80cbc4 !important;
+}
+
+/* ==================== 终端样式 ==================== */
+.expressive-code[data-language="bash"] pre,
+.expressive-code[data-language="shell"] pre,
+.expressive-code[data-language="sh"] pre {
+    background: linear-gradient(180deg, #1e1e1e 0%, #0d0d0d 100%) !important;
+}
+
+.expressive-code[data-language="bash"] .header::before,
+.expressive-code[data-language="shell"] .header::before,
+.expressive-code[data-language="sh"] .header::before {
+    /* 保持 macOS 窗口样式 */
+}
+
+/* ==================== 代码块内滚动条 ==================== */
+.expressive-code pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.expressive-code pre::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.expressive-code pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.expressive-code pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==================== 行内代码样式 ==================== */
+.sl-markdown-content :not(pre)>code {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: var(--sl-color-accent) !important;
+    padding: 0.2em 0.5em !important;
+    border-radius: 6px !important;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+    font-size: 0.875em !important;
+    font-weight: 500;
+    border: 1px solid rgba(243, 156, 18, 0.2);
+    transition: all 0.2s ease;
+}
+
+.sl-markdown-content :not(pre)>code:hover {
+    background: rgba(243, 156, 18, 0.25) !important;
+    border-color: rgba(243, 156, 18, 0.4);
+}
+
+/* ==================== 代码块标签（语言标识）==================== */
+.expressive-code .language-id {
+    position: absolute;
+    top: 0.5rem;
+    right: 3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 992px) {
+    .expressive-code pre {
+        font-size: 0.875rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .expressive-code {
+        margin: 1rem 0 !important;
+    }
+
+    .expressive-code .frame {
+        border-radius: 0.75rem !important;
+    }
+
+    .expressive-code pre {
+        padding: 1rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .expressive-code .header {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .expressive-code .header::before {
+        width: 10px;
+        height: 10px;
+        box-shadow:
+            16px 0 0 #ffbd2e,
+            32px 0 0 #27ca40;
+    }
+
+    .expressive-code .title {
+        font-size: 0.75rem !important;
+    }
+
+    .expressive-code .copy {
+        width: 32px !important;
+        height: 32px !important;
+        top: 0.5rem !important;
+        right: 0.5rem !important;
+        opacity: 1;
+        /* 移动端始终显示 */
+    }
+
+    /* 行号缩小 */
+    .expressive-code .line-numbers {
+        padding-right: 0.75rem !important;
+        margin-right: 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .expressive-code pre {
+        padding: 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .expressive-code .header::before {
+        width: 8px;
+        height: 8px;
+        margin-right: 6px;
+        box-shadow:
+            14px 0 0 #ffbd2e,
+            28px 0 0 #27ca40;
+    }
+
+    /* 隐藏语言标签节省空间 */
+    .expressive-code .language-id {
+        display: none;
+    }
+}
+
+/* ==================== 代码块动画 ==================== */
+@keyframes codeBlockFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.expressive-code {
+    animation: codeBlockFadeIn 0.5s ease forwards;
+}

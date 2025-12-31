@@ -1,0 +1,50 @@
+---
+// 滚动进度条组件
+---
+
+<div class="scroll-progress">
+    <div class="scroll-progress-bar"></div>
+</div>
+
+<script>
+    function initScrollProgress() {
+        const progressBar = document.querySelector(
+            ".scroll-progress-bar",
+        ) as HTMLElement;
+        if (!progressBar) return;
+
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight =
+                document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        window.addEventListener("scroll", updateProgress, { passive: true });
+        updateProgress();
+    }
+
+    document.addEventListener("DOMContentLoaded", initScrollProgress);
+    document.addEventListener("astro:page-load", initScrollProgress);
+</script>
+
+<style>
+    .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 9999;
+    }
+
+    .scroll-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--sl-color-accent), #fff);
+        box-shadow: 0 0 10px var(--sl-color-accent);
+        transition: width 0.1s ease-out;
+    }
+</style>

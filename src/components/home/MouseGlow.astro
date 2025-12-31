@@ -1,0 +1,92 @@
+---
+// 鼠标跟随光效组件
+---
+
+<div class="mouse-glow"></div>
+
+<script>
+    function initMouseGlow() {
+        const glow = document.querySelector(".mouse-glow") as HTMLElement;
+        if (!glow) return;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        document.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animate() {
+            // 平滑跟随
+            currentX += (mouseX - currentX) * 0.1;
+            currentY += (mouseY - currentY) * 0.1;
+
+            glow.style.left = `${currentX}px`;
+            glow.style.top = `${currentY}px`;
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // 在卡片上时增强光效
+        document
+            .querySelectorAll(
+                ".feature-card, .news-card, .stat-item, .member-group, .leader-card",
+            )
+            .forEach((card) => {
+                card.addEventListener("mouseenter", () => {
+                    glow.classList.add("active");
+                });
+                card.addEventListener("mouseleave", () => {
+                    glow.classList.remove("active");
+                });
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", initMouseGlow);
+    document.addEventListener("astro:page-load", initMouseGlow);
+</script>
+
+<style>
+    .mouse-glow {
+        position: fixed;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            rgba(243, 156, 18, 0.15) 0%,
+            transparent 70%
+        );
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        opacity: 0;
+        transition:
+            opacity 0.3s ease,
+            width 0.3s ease,
+            height 0.3s ease;
+    }
+
+    .mouse-glow.active {
+        opacity: 1;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+            circle,
+            rgba(243, 156, 18, 0.25) 0%,
+            transparent 70%
+        );
+    }
+
+    /* 在触摸设备上隐藏 */
+    @media (hover: none) {
+        .mouse-glow {
+            display: none;
+        }
+    }
+</style>

@@ -1,0 +1,114 @@
+---
+title: Python 3 入门汇总
+---
+
+import { Card, CardGrid, Aside, Badge, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="语言" icon="seti:python">
+    Python 3.x
+  </Card>
+  <Card title="用途" icon="rocket">
+    ROS 开发、数据处理、脚本工具
+  </Card>
+  <Card title="难度" icon="star">
+    <Badge text="入门" variant="success" />
+  </Card>
+</CardGrid>
+
+---
+
+## 为什么学 Python？
+
+尽管大多数新队员已有 C/C++ 经验，但 Python 仍然在车队的开发工作中占据一席之地。
+
+<CardGrid stagger>
+  <Card title="✅ 开发更快" icon="rocket">
+    Python 的 ROS 功能包开发周期更短
+  </Card>
+  <Card title="✅ 调试更容易" icon="magnifier">
+    动态类型、交互式调试
+  </Card>
+  <Card title="✅ 生态丰富" icon="puzzle">
+    NumPy、OpenCV、PyTorch 等库支持
+  </Card>
+</CardGrid>
+
+<Aside type="tip">
+  尽可能地掌握 Python 将**大大减轻**你在开发中的繁复工作。
+</Aside>
+
+---
+
+## 推荐教程
+
+<LinkCard
+  title="菜鸟教程 - Python 3 教程"
+  description="最适合零基础入门的中文 Python 教程"
+  href="https://www.runoob.com/python3/python3-tutorial.html"
+/>
+
+---
+
+## 相关推荐
+
+### Python 虚拟环境
+
+<Aside type="note">
+  虚拟空间可以避免潜在的依赖冲突，同时也可以在同一系统环境下安装不同的 Python 运行时。
+</Aside>
+
+<CardGrid>
+  <Card title="Anaconda / Miniconda" icon="star">
+    <Badge text="推荐" variant="success" />
+    
+    功能完整的 Python 环境管理工具
+    
+    - [Anaconda 下载](https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh)
+    - [Miniconda 下载](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
+  </Card>
+  <Card title="venv" icon="seti:python">
+    <Badge text="轻量" variant="note" />
+    
+    Python 自带的虚拟环境模块，功能少但体积小
+    
+    [官方文档](https://docs.python.org/zh-cn/3/library/venv.html)
+  </Card>
+</CardGrid>
+
+### 开发工具
+
+<Card title="PyCharm" icon="laptop">
+  JetBrains 旗下的 Python IDE
+  
+  <Badge text="推荐" variant="success" />
+  
+  作为学生的你可通过 `@huat.edu.cn` 邮箱免费获取 [专业版](https://www.jetbrains.com/pycharm/download/)
+</Card>
+
+---
+
+## 速查手册
+
+<LinkCard
+  title="Python 3 Cookbook（中文译本）"
+  description="Python 进阶技巧与最佳实践"
+  href="https://python3-cookbook.readthedocs.io/zh_CN/latest/preface.html"
+/>
+
+---
+
+## 相关链接
+
+<CardGrid>
+  <LinkCard
+    title="Python 官网"
+    description="Python 官方文档与下载"
+    href="https://www.python.org/"
+  />
+  <LinkCard
+    title="返回综合教程"
+    description="查看更多开发环境配置"
+    href="/综合/"
+  />
+</CardGrid>

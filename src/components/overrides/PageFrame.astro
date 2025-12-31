@@ -1,0 +1,18 @@
+---
+/**
+ * 自定义文档页面框架
+ * 在所有文档页面中添加全局组件（灯箱、分享按钮等）
+ */
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/PageFrame.astro";
+import ImageLightbox from "../docs/ImageLightbox.astro";
+---
+
+<Default {...Astro.props}>
+    <slot name="header" slot="header" />
+    <slot name="sidebar" slot="sidebar" />
+    <slot />
+</Default>
+
+<!-- 全局文档组件 -->
+<ImageLightbox />

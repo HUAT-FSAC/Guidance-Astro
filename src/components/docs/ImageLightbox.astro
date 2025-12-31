@@ -1,0 +1,307 @@
+---
+/**
+ * 图片灯箱组件
+ * 点击图片放大查看，支持键盘导航
+ */
+---
+
+<div class="lightbox" id="imageLightbox">
+    <button class="lightbox-close" aria-label="关闭">&times;</button>
+    <div class="lightbox-content">
+        <img src="" alt="" class="lightbox-image" />
+        <p class="lightbox-caption"></p>
+    </div>
+    <button class="lightbox-nav lightbox-prev" aria-label="上一张">
+        <svg
+            viewBox="0 0 24 24"
+            width="32"
+            height="32"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" aria-label="下一张">
+        <svg
+            viewBox="0 0 24 24"
+            width="32"
+            height="32"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="M9 18l6-6-6-6"></path>
+        </svg>
+    </button>
+</div>
+
+<script>
+    function initLightbox() {
+        const lightbox = document.getElementById("imageLightbox");
+        const lightboxImg = lightbox?.querySelector(
+            ".lightbox-image",
+        ) as HTMLImageElement;
+        const lightboxCaption = lightbox?.querySelector(
+            ".lightbox-caption",
+        ) as HTMLElement;
+        const closeBtn = lightbox?.querySelector(".lightbox-close");
+        const prevBtn = lightbox?.querySelector(".lightbox-prev");
+        const nextBtn = lightbox?.querySelector(".lightbox-next");
+
+        if (!lightbox || !lightboxImg) return;
+
+        // 获取所有文档中的图片
+        let images: HTMLImageElement[] = [];
+        let currentIndex = 0;
+
+        function collectImages() {
+            images = Array.from(
+                document.querySelectorAll(".sl-markdown-content img"),
+            ) as HTMLImageElement[];
+
+            images.forEach((img, index) => {
+                img.style.cursor = "zoom-in";
+                img.addEventListener("click", () => openLightbox(index));
+            });
+        }
+
+        function openLightbox(index: number) {
+            currentIndex = index;
+            updateLightboxImage();
+            lightbox.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        function updateLightboxImage() {
+            const img = images[currentIndex];
+            if (!img) return;
+
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightboxCaption.textContent = img.alt || "";
+
+            // 更新导航按钮可见性
+            if (prevBtn)
+                prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
+            if (nextBtn)
+                nextBtn.style.display =
+                    currentIndex < images.length - 1 ? "flex" : "none";
+        }
+
+        function showPrev() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateLightboxImage();
+            }
+        }
+
+        function showNext() {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                updateLightboxImage();
+            }
+        }
+
+        // 事件监听
+        closeBtn?.addEventListener("click", closeLightbox);
+        prevBtn?.addEventListener("click", showPrev);
+        nextBtn?.addEventListener("click", showNext);
+
+        // 点击背景关闭
+        lightbox.addEventListener("click", (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // 键盘导航
+        document.addEventListener("keydown", (e) => {
+            if (!lightbox.classList.contains("active")) return;
+
+            switch (e.key) {
+                case "Escape":
+                    closeLightbox();
+                    break;
+                case "ArrowLeft":
+                    showPrev();
+                    break;
+                case "ArrowRight":
+                    showNext();
+                    break;
+            }
+        });
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        lightbox.addEventListener("touchstart", (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        lightbox.addEventListener("touchend", (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) showNext();
+                else showPrev();
+            }
+        });
+
+        collectImages();
+    }
+
+    document.addEventListener("DOMContentLoaded", initLightbox);
+    document.addEventListener("astro:page-load", initLightbox);
+</script>
+
+<style>
+    .lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .lightbox.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .lightbox-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .lightbox-image {
+        max-width: 100%;
+        max-height: 80vh;
+        object-fit: contain;
+        border-radius: 0.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .lightbox.active .lightbox-image {
+        transform: scale(1);
+    }
+
+    .lightbox-caption {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        max-width: 600px;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        line-height: 1;
+    }
+
+    .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .lightbox-prev {
+        left: 1.5rem;
+    }
+
+    .lightbox-next {
+        right: 1.5rem;
+    }
+
+    .lightbox-nav:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+        .lightbox-close {
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+        }
+
+        .lightbox-nav {
+            width: 44px;
+            height: 44px;
+        }
+
+        .lightbox-prev {
+            left: 0.5rem;
+        }
+
+        .lightbox-next {
+            right: 0.5rem;
+        }
+
+        .lightbox-caption {
+            font-size: 0.85rem;
+            padding: 0 1rem;
+        }
+    }
+
+    /* 加载动画 */
+    .lightbox-image[src=""] {
+        opacity: 0;
+    }
+
+    .lightbox-image {
+        opacity: 1;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+    }
+</style>

@@ -1,0 +1,194 @@
+---
+// 快捷键导航组件
+---
+
+<div class="keyboard-help" id="keyboardHelp">
+    <div class="keyboard-modal">
+        <div class="keyboard-header">
+            <h3>⌨️ 快捷键</h3>
+            <button class="close-btn" aria-label="关闭">&times;</button>
+        </div>
+        <div class="keyboard-content">
+            <div class="shortcut">
+                <kbd>?</kbd>
+                <span>显示快捷键帮助</span>
+            </div>
+            <div class="shortcut">
+                <kbd>H</kbd>
+                <span>返回首页</span>
+            </div>
+            <div class="shortcut">
+                <kbd>T</kbd>
+                <span>返回顶部</span>
+            </div>
+            <div class="shortcut">
+                <kbd>/</kbd>
+                <span>搜索</span>
+            </div>
+            <div class="shortcut">
+                <kbd>J</kbd>
+                <span>加入我们</span>
+            </div>
+            <div class="shortcut">
+                <kbd>Esc</kbd>
+                <span>关闭弹窗</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initKeyboardNav() {
+        const helpModal = document.getElementById("keyboardHelp");
+        const closeBtn = helpModal?.querySelector(".close-btn");
+
+        function showHelp() {
+            helpModal?.classList.add("visible");
+        }
+
+        function hideHelp() {
+            helpModal?.classList.remove("visible");
+        }
+
+        closeBtn?.addEventListener("click", hideHelp);
+        helpModal?.addEventListener("click", (e) => {
+            if (e.target === helpModal) hideHelp();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            // 忽略输入框中的按键
+            if (
+                ["INPUT", "TEXTAREA"].includes(
+                    (e.target as HTMLElement).tagName,
+                )
+            )
+                return;
+
+            switch (e.key) {
+                case "?":
+                    e.preventDefault();
+                    showHelp();
+                    break;
+                case "Escape":
+                    hideHelp();
+                    break;
+                case "h":
+                case "H":
+                    window.location.href = "/";
+                    break;
+                case "t":
+                case "T":
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    break;
+                case "/":
+                    e.preventDefault();
+                    const searchBtn = document.querySelector(
+                        '[data-pagefind-ui], .search-input, button[aria-label*="Search"]',
+                    ) as HTMLElement;
+                    searchBtn?.click();
+                    break;
+                case "j":
+                case "J":
+                    window.location.href = "/join/";
+                    break;
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", initKeyboardNav);
+    document.addEventListener("astro:page-load", initKeyboardNav);
+</script>
+
+<style>
+    .keyboard-help {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .keyboard-help.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .keyboard-modal {
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        min-width: 300px;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .keyboard-help.visible .keyboard-modal {
+        transform: scale(1);
+    }
+
+    .keyboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .keyboard-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .close-btn:hover {
+        color: #fff;
+    }
+
+    .keyboard-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .shortcut {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: var(--sl-color-accent);
+    }
+
+    .shortcut span {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>

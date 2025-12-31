@@ -6,18 +6,98 @@ interface Props {
 }
 
 const { stats } = Astro.props;
+
+// 解析数值和后缀（如 "50+" -> { num: 50, suffix: "+" }）
+function parseValue(value: string) {
+    const match = value.match(/^(\d+)(.*)$/);
+    if (match) {
+        return { num: parseInt(match[1]), suffix: match[2] || "" };
+    }
+    return { num: 0, suffix: value };
+}
 ---
 
 <div class="stats-bar">
     {
-        stats.map((stat) => (
-            <div class="stat-item">
-                <div class="value">{stat.value}</div>
-                <div class="label">{stat.label}</div>
-            </div>
-        ))
+        stats.map((stat) => {
+            const { num, suffix } = parseValue(stat.value);
+            return (
+                <div class="stat-item">
+                    <div class="value" data-target={num} data-suffix={suffix}>
+                        0{suffix}
+                    </div>
+                    <div class="label">{stat.label}</div>
+                </div>
+            );
+        })
     }
 </div>
+
+<script>
+    // 数字计数动画
+    function animateCounters() {
+        const counters = document.querySelectorAll(
+            ".stat-item .value[data-target]",
+        );
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target as HTMLElement;
+                        const target = parseInt(el.dataset.target || "0");
+                        const suffix = el.dataset.suffix || "";
+                        const duration = 2000; // 动画时长 2 秒
+                        const startTime = performance.now();
+
+                        function updateCounter(currentTime: number) {
+                            const elapsed = currentTime - startTime;
+                            const progress = Math.min(elapsed / duration, 1);
+
+                            // 使用 easeOutExpo 缓动函数，让动画更有质感
+                            const easeProgress = 1 - Math.pow(1 - progress, 4);
+                            const current = Math.floor(easeProgress * target);
+
+                            el.textContent = current + suffix;
+
+                            if (progress < 1) {
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                el.textContent = target + suffix;
+                            }
+                        }
+
+                        requestAnimationFrame(updateCounter);
+                        observer.unobserve(el);
+                    }
+                });
+            },
+            { threshold: 0.5 },
+        );
+
+        counters.forEach((counter) => observer.observe(counter));
+    }
+
+    // 等待 PageLoader 消失后再启动动画
+    // 如果没有 PageLoader（比如从其他页面导航过来），则立即启动
+    function initCounters() {
+        const loader = document.getElementById("pageLoader");
+        if (loader && !loader.classList.contains("loaded")) {
+            // PageLoader 还在显示，等待它消失
+            window.addEventListener("pageLoaderHidden", animateCounters, {
+                once: true,
+            });
+        } else {
+            // PageLoader 已消失或不存在，直接启动
+            animateCounters();
+        }
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener("DOMContentLoaded", initCounters);
+    // 兼容 View Transitions
+    document.addEventListener("astro:page-load", initCounters);
+</script>
 
 <style>
     .stats-bar {
@@ -25,27 +105,48 @@ const { stats } = Astro.props;
         justify-content: space-around;
         flex-wrap: wrap;
         gap: 2rem;
-        padding: 4rem 0;
-        border-bottom: 1px solid var(--sl-color-hairline);
+        padding: 4rem 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         margin-bottom: 4rem;
         text-align: center;
+    }
+
+    .stat-item {
+        padding: 1.5rem 2rem;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.15);
     }
 
     .stat-item .value {
         font-size: 3.5rem;
         font-weight: 800;
         line-height: 1;
-        background: linear-gradient(45deg, var(--sl-color-accent), #fff);
+        background: linear-gradient(
+            135deg,
+            var(--sl-color-accent) 0%,
+            #fff 100%
+        );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 0.5rem;
     }
 
     .stat-item .label {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 500;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        opacity: 0.8;
+        opacity: 0.7;
     }
 </style>

@@ -1,4 +1,4 @@
----
+<!-- ---
 /**
  * 自定义文档页面布局
  * 在默认 Starlight 布局基础上添加 Giscus 评论
@@ -7,14 +7,17 @@ import type { Props } from "@astrojs/starlight/props";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Giscus from "./Giscus.astro";
 
-// 获取当前页面的 frontmatter
-const { frontmatter } = Astro.props;
+// 获取当前页面的数据
+// 在 PageFrame override 中，Astro.props 包含 entry 数据，而不是直接的 frontmatter
+const { entry } = Astro.props;
+const frontmatter = entry?.data || { title: "" };
 
 // 可以在 frontmatter 中设置 comments: false 来禁用评论
-const showComments = frontmatter?.comments !== false;
+// 仅在有 entry 数据时（正常文档页）显示评论
+const showComments = entry && (frontmatter as any).comments !== false;
 ---
 
-<StarlightPage {...Astro.props}>
+<StarlightPage frontmatter={frontmatter} {...Astro.props}>
     <slot />
     {showComments && <Giscus theme="dark" />}
-</StarlightPage>
+</StarlightPage> -->

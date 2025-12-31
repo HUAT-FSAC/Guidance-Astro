@@ -9,6 +9,12 @@ export default defineConfig({
 		starlight({
 			title: "FSAC AST Docs",
 			favicon: "/favicon.png",
+			customCss: [
+				// 全局文档样式
+				"./src/styles/docs-global.css",
+				// 代码块样式增强
+				"./src/styles/code-blocks.css",
+			],
 			head: [
 				{
 					tag: "script",
@@ -21,10 +27,10 @@ export default defineConfig({
 			logo: { src: "./src/assets/logo-canvas.png" },
 			social: [{ icon: "github", label: "GitHub", href: "https://github.com/HUAT-FSAC" }],
 			tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
-			// 自定义组件覆盖，添加评论功能
+			// 自定义组件覆盖
 			components: {
-				// 如需启用评论，取消下行注释并完成 Giscus 配置
-				// PageFrame: './src/components/DocPage.astro',
+				// 添加图片灯箱等全局功能
+				PageFrame: './src/components/overrides/PageFrame.astro',
 			},
 			sidebar: [
 				{

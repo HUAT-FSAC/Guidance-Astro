@@ -39,7 +39,8 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         inset: 0;
         background: var(--backgroundImage) center/cover no-repeat;
         background-color: var(--sl-color-gray-6, #0f0f0f);
-        opacity: 0.3;
+        opacity: 0.25;
+        filter: blur(2px);
     }
 
     .fs-content {
@@ -47,6 +48,12 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         z-index: 1;
         max-width: 800px;
         margin: 0 auto;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 2rem;
+        padding: 3rem 2rem;
     }
 
     .fs-label {
