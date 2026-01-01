@@ -106,12 +106,15 @@ function parseValue(value: string) {
     }
 
     // 增强的初始化逻辑：处理各种加载状态
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+    ) {
         initCounters();
     } else {
         document.addEventListener("DOMContentLoaded", initCounters);
     }
-    
+
     // 兼容 View Transitions
     document.addEventListener("astro:page-load", initCounters);
 </script>

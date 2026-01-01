@@ -30,7 +30,8 @@
         }
 
         function updateColors() {
-            const isLight = document.documentElement.getAttribute("data-theme") === "light";
+            const isLight =
+                document.documentElement.getAttribute("data-theme") === "light";
             // 暗色模式：白色粒子；亮色模式：深灰色粒子
             particleColor = isLight ? "100, 100, 100" : "255, 255, 255";
             // 连线颜色
@@ -119,12 +120,15 @@
         // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                if (mutation.type === "attributes" && mutation.attributeName === "data-theme") {
+                if (
+                    mutation.type === "attributes" &&
+                    mutation.attributeName === "data-theme"
+                ) {
                     updateColors();
                 }
             });
         });
-        
+
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ["data-theme"],
@@ -135,14 +139,17 @@
     }
 
     // 增强的初始化逻辑：处理各种加载状态
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+    ) {
         // 如果脚本执行时 DOM 已经准备好，直接初始化
         initParticles();
     } else {
         // 否则等待 DOMContentLoaded
         document.addEventListener("DOMContentLoaded", initParticles);
     }
-    
+
     // 兼容 Astro 的 View Transitions
     document.addEventListener("astro:page-load", initParticles);
 </script>
