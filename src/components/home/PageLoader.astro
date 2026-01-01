@@ -14,51 +14,56 @@
     </div>
 </div>
 
-<script>
-    function initPageLoader() {
-        const loaderEl = document.getElementById("pageLoader");
-        if (!(loaderEl instanceof HTMLElement)) return;
-        const loader = loaderEl;
+<script is:inline>
+    // 使用立即执行函数 (IIFE) 避免污染全局作用域
+    // 使用 is:inline 确保脚本在 HTML 解析时立即执行，防止页面闪烁
+    (function () {
+        var loader = document.getElementById("pageLoader");
+        if (!loader) return;
 
-        // P0: 性能优化 - 检查是否首次访问
-        // 如果用户在本次会话中已经访问过，则不再显示加载动画
-        const hasVisited = sessionStorage.getItem("huat_fsac_visited");
+        var STORAGE_KEY = "huat_fsac_visited";
+        var hasVisited = sessionStorage.getItem(STORAGE_KEY);
 
+        // 场景 A: 非首次访问 (Session 中有记录)
         if (hasVisited) {
+            // 立即隐藏，防止闪烁
             loader.style.display = "none";
-            // 即使不显示动画，也要触发事件，保证依赖此事件的其他组件（如 Hero 动画）能正常运行
-            window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
+            loader.classList.add("loaded");
+
+            // 触发事件，通知依赖此事件的组件 (如 Stats)
+            // 使用 requestAnimationFrame 确保在下一帧触发，给其他脚本一点加载时间
+            requestAnimationFrame(function () {
+                window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
+            });
             return;
         }
 
+        // 场景 B: 首次访问
         // 标记本次会话已访问
-        sessionStorage.setItem("huat_fsac_visited", "true");
+        sessionStorage.setItem(STORAGE_KEY, "true");
 
         function hideLoader() {
             if (loader.classList.contains("loaded")) return;
+
             loader.classList.add("loaded");
-            setTimeout(() => {
+
+            // 等待 CSS transition (0.2s) 完成后彻底隐藏
+            setTimeout(function () {
                 loader.style.display = "none";
-                // 触发自定义事件，通知其他组件可以开始动画了
                 window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
             }, 500);
         }
 
-        // DOM 准备好就隐藏，不等待所有资源
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", hideLoader);
-        } else {
-            // DOM 已经准备好，立即隐藏
+        // 首次访问时，等待页面全部资源加载完毕 (包括图片) 再隐藏
+        // 这样能提供更平滑的体验
+        if (document.readyState === "complete") {
             hideLoader();
+        } else {
+            window.addEventListener("load", hideLoader);
+            // 保底策略：如果 3 秒后还没加载完 (如图片加载慢)，强制进入
+            setTimeout(hideLoader, 3000);
         }
-
-        // P0: 强制超时销毁机制 (防止 JS 报错导致永久白屏)
-        // 设置 3 秒超时，确保即使发生异常也能进入页面
-        setTimeout(hideLoader, 3000);
-    }
-
-    // 立即执行
-    initPageLoader();
+    })();
 </script>
 
 <style>

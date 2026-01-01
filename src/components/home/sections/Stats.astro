@@ -45,7 +45,7 @@ function parseValue(value: string) {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const el = entry.target as HTMLElement;
-                        
+
                         // 防止重复动画
                         if (el.dataset.animated) return;
                         el.dataset.animated = "true";
@@ -86,7 +86,13 @@ function parseValue(value: string) {
     // 等待 PageLoader 消失后再启动动画
     function initCounters() {
         const loader = document.getElementById("pageLoader");
-        if (loader && !loader.classList.contains("loaded")) {
+        // 检查 loader 是否存在且正在显示（没有 loaded 类且 display 不是 none）
+        const isLoaderActive =
+            loader &&
+            !loader.classList.contains("loaded") &&
+            loader.style.display !== "none";
+
+        if (isLoaderActive) {
             // PageLoader 还在显示，等待它消失
             window.addEventListener("pageLoaderHidden", animateCounters, {
                 once: true,
@@ -116,7 +122,8 @@ function parseValue(value: string) {
         padding: 4rem 2rem;
         max-width: 1400px;
         margin: 0 auto 4rem;
-        border-bottom: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
+        border-bottom: 1px solid
+            var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
         text-align: center;
     }
 
@@ -137,7 +144,7 @@ function parseValue(value: string) {
         justify-content: center;
     }
 
-    :global([data-theme='light']) .stat-item {
+    :global([data-theme="light"]) .stat-item {
         background: rgba(255, 255, 255, 0.5);
         border-color: rgba(0, 0, 0, 0.1);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -149,7 +156,7 @@ function parseValue(value: string) {
         border-color: var(--sl-color-gray-4, rgba(255, 255, 255, 0.15));
     }
 
-    :global([data-theme='light']) .stat-item:hover {
+    :global([data-theme="light"]) .stat-item:hover {
         background: rgba(255, 255, 255, 0.8);
         border-color: rgba(0, 0, 0, 0.2);
     }
