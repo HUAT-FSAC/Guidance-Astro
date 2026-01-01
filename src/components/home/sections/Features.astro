@@ -114,4 +114,16 @@ import { Icon } from "@astrojs/starlight/components";
         opacity: 0.7;
         line-height: 1.6;
     }
+
+    @media (max-width: 640px) {
+        .feature-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            padding: 2rem 1.5rem;
+        }
+    }
 </style>

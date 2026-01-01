@@ -318,7 +318,7 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     margin-top: 3rem;
 }
 
-/* ==================== 响应式优化 ==================== */
+/* ==================== 响应式优化 (机型适配) ==================== */
 /* 大屏幕 (桌面) */
 @media (min-width: 1400px) {
     .sl-markdown-content {
@@ -358,11 +358,13 @@ starlight-tabs [role="tab"][aria-selected="true"] {
         font-size: 1.25rem;
     }
 
-    /* 表格响应式 */
+    /* 表格响应式容器 */
     .sl-markdown-content table {
         display: block;
+        width: 100%;
         overflow-x: auto;
-        white-space: nowrap;
+        -webkit-overflow-scrolling: touch; /* 平滑滚动 */
+        white-space: nowrap; /* 防止单元格换行导致布局错乱 */
     }
 }
 
@@ -371,18 +373,20 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     .sl-markdown-content {
         font-size: 0.95rem;
         line-height: 1.75;
-        padding: 0 0.5rem;
+        padding: 0 0.75rem; /* 增加一点边距 */
     }
 
     .sl-markdown-content h1 {
         font-size: 1.75rem;
         padding-bottom: 0.5rem;
+        line-height: 1.3;
     }
 
     .sl-markdown-content h2 {
         font-size: 1.35rem;
         margin-top: 2rem;
         padding-top: 1rem;
+        line-height: 1.4;
     }
 
     .sl-markdown-content h2::before {
@@ -402,10 +406,22 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     .sl-markdown-content blockquote {
         padding: 1rem;
         margin: 1.5rem 0;
+        border-left-width: 3px;
     }
 
     /* 图片全宽 */
     .sl-markdown-content img {
+        border-radius: var(--radius-sm);
+        width: 100%; /* 强制全宽 */
+        height: auto;
+    }
+
+    /* 视频/Iframe 响应式 */
+    .sl-markdown-content iframe,
+    .sl-markdown-content video {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
         border-radius: var(--radius-sm);
     }
 
@@ -413,6 +429,7 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     .sl-markdown-content code:not(pre code) {
         font-size: 0.85em;
         padding: 0.15rem 0.4rem;
+        word-break: break-word; /* 允许长单词换行 */
     }
 
     /* 列表 */
@@ -461,11 +478,18 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     starlight-tabs [role="tablist"] {
         overflow-x: auto;
         flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* 隐藏滚动条 */
+    }
+    
+    starlight-tabs [role="tablist"]::-webkit-scrollbar {
+        display: none;
     }
 
     starlight-tabs [role="tab"] {
         white-space: nowrap;
         font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
     }
 }
 

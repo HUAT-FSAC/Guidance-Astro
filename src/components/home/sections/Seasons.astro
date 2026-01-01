@@ -1,5 +1,4 @@
 ---
-import { Tabs, TabItem } from "@astrojs/starlight/components";
 import type { SeasonItem } from "../../data/home";
 
 interface Props {
@@ -9,138 +8,360 @@ interface Props {
 const { seasons } = Astro.props;
 ---
 
-<div class="seasons-tabs">
-    <Tabs>
-        {
-            seasons.map((season) => (
-                <TabItem label={`${season.year} Season`} icon="star">
-                    <div class="season-content">
-                        {/* 图片展示区 */}
-                        <div class="season-gallery">
-                            <div class="gallery-item">
-                                <img src={season.teamImg} alt="Team" />
-                                <div class="gallery-caption">The Team</div>
+<div class="seasons-carousel-container">
+    <div class="carousel-viewport" id="seasonsViewport">
+        <div class="carousel-track" id="seasonsTrack">
+            {
+                seasons.map((season, index) => (
+                    <div class="carousel-slide" data-index={index}>
+                        <div class="season-card">
+                            <div class="season-header">
+                                <div class="season-year">{season.year}</div>
+                                <div class="season-badge">Season Team</div>
                             </div>
-                            <div class="gallery-item">
-                                <img src={season.carImg} alt="Car" />
-                                <div class="gallery-caption">The Machine</div>
-                            </div>
-                        </div>
 
-                        {/* 团队信息区 */}
-                        {(season.advisor || season.captain || season.members) && (
-                            <div class="team-info">
-                                <h3 class="team-info-title">
-                                    🏆 {season.year} 赛季团队
-                                </h3>
-
-                                {/* 指导老师和队长 */}
-                                <div class="leadership">
-                                    {season.advisor && (
-                                        <div class="leader-card">
-                                            <span class="leader-role">
-                                                👨‍🏫 指导老师
-                                            </span>
-                                            <span class="leader-name">
-                                                {season.advisor}
-                                            </span>
-                                        </div>
-                                    )}
-                                    {season.captain && (
-                                        <div class="leader-card">
-                                            <span class="leader-role">🎖️ 队长</span>
-                                            <span class="leader-name">
-                                                {season.captain}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* 成员列表 */}
-                                {season.members && season.members.length > 0 && (
-                                    <div class="members-section">
-                                        <h4 class="members-title">👥 团队成员</h4>
-                                        <div class="members-grid">
-                                            {season.members.map((group) => (
-                                                <div class="member-group">
-                                                    <div class="group-name">
-                                                        {group.group}
-                                                    </div>
-                                                    <div class="group-members">
-                                                        {group.names.map((name) => (
-                                                            <span class="member-name">
-                                                                {name}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
+                            <div class="season-content">
+                                {/* 图片展示区 */}
+                                <div class="season-gallery">
+                                    <div class="gallery-item">
+                                        <img
+                                            src={season.teamImg}
+                                            alt={`${season.year} Team`}
+                                            loading="lazy"
+                                        />
+                                        <div class="gallery-caption">
+                                            The Team
                                         </div>
                                     </div>
-                                )}
+                                    <div class="gallery-item">
+                                        <img
+                                            src={season.carImg}
+                                            alt={`${season.year} Car`}
+                                            loading="lazy"
+                                        />
+                                        <div class="gallery-caption">
+                                            The Machine
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 团队信息区 */}
+                                <div class="team-info">
+                                    {/* 指导老师和队长 */}
+                                    <div class="leadership">
+                                        {season.advisor && (
+                                            <div class="leader-card">
+                                                <div class="leader-icon">
+                                                    👨‍🏫
+                                                </div>
+                                                <div class="leader-details">
+                                                    <span class="leader-role">
+                                                        指导老师
+                                                    </span>
+                                                    <span class="leader-name">
+                                                        {season.advisor}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {season.captain && (
+                                            <div class="leader-card">
+                                                <div class="leader-icon">
+                                                    🎖️
+                                                </div>
+                                                <div class="leader-details">
+                                                    <span class="leader-role">
+                                                        队长
+                                                    </span>
+                                                    <span class="leader-name">
+                                                        {season.captain}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* 成员列表 */}
+                                    {season.members &&
+                                        season.members.length > 0 && (
+                                            <div class="members-section">
+                                                <div class="members-grid">
+                                                    {season.members.map(
+                                                        (group) => (
+                                                            <div class="member-group">
+                                                                <div class="group-name">
+                                                                    {
+                                                                        group.group
+                                                                    }
+                                                                </div>
+                                                                <div class="group-members">
+                                                                    {group.names.map(
+                                                                        (
+                                                                            name,
+                                                                        ) => (
+                                                                            <span class="member-name">
+                                                                                {
+                                                                                    name
+                                                                                }
+                                                                            </span>
+                                                                        ),
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                </div>
                             </div>
-                        )}
+                        </div>
                     </div>
-                </TabItem>
+                ))
+            }
+        </div>
+    </div>
+
+    {/* 导航按钮 */}
+    <button class="carousel-nav prev" id="prevBtn" aria-label="Previous Season">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg
+        >
+    </button>
+    <button class="carousel-nav next" id="nextBtn" aria-label="Next Season">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg
+        >
+    </button>
+
+    {/* 指示器 */}
+    <div class="carousel-indicators">
+        {
+            seasons.map((_, index) => (
+                <button
+                    class={`indicator ${index === 0 ? "active" : ""}`}
+                    data-index={index}
+                    aria-label={`Go to slide ${index + 1}`}
+                />
             ))
         }
-    </Tabs>
+    </div>
 </div>
 
+<script>
+    function initCarousel() {
+        const track = document.getElementById("seasonsTrack");
+        const slides = document.querySelectorAll(".carousel-slide");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const indicators = document.querySelectorAll(".indicator");
+
+        if (!track || slides.length === 0) return;
+
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+
+        function updateCarousel() {
+            // 移动轨道
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            // 更新指示器
+            indicators.forEach((ind, i) => {
+                if (i === currentIndex) ind.classList.add("active");
+                else ind.classList.remove("active");
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        // 事件监听
+        nextBtn?.addEventListener("click", () => {
+            nextSlide();
+            resetAutoPlay();
+        });
+
+        prevBtn?.addEventListener("click", () => {
+            prevSlide();
+            resetAutoPlay();
+        });
+
+        indicators.forEach((ind) => {
+            ind.addEventListener("click", (e) => {
+                const target = e.target as HTMLElement;
+                const index = parseInt(target.dataset.index || "0");
+                currentIndex = index;
+                updateCarousel();
+                resetAutoPlay();
+            });
+        });
+
+        // 自动播放
+        let autoPlayInterval: number;
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000); // 5秒切换一次
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        function resetAutoPlay() {
+            stopAutoPlay();
+            startAutoPlay();
+        }
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener(
+            "touchstart",
+            (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                stopAutoPlay();
+            },
+            { passive: true },
+        );
+
+        track.addEventListener(
+            "touchend",
+            (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                startAutoPlay();
+            },
+            { passive: true },
+        );
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) prevSlide();
+        }
+
+        // 启动
+        startAutoPlay();
+
+        // 鼠标悬停暂停
+        track.addEventListener("mouseenter", stopAutoPlay);
+        track.addEventListener("mouseleave", startAutoPlay);
+    }
+
+    // 初始化
+    document.addEventListener("DOMContentLoaded", initCarousel);
+    document.addEventListener("astro:page-load", initCarousel);
+</script>
+
 <style>
-    /* 自定义 Tabs 样式，使其更融入页面 */
-    .seasons-tabs {
+    .seasons-carousel-container {
         position: relative;
-        z-index: 2;
-        margin-top: 2rem;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        overflow: hidden;
+        padding: 2rem 0;
     }
 
-    /* 移除默认的 Tab 列表背景和边框，使其看起来更像页面的一部分 */
-    .seasons-tabs :global(starlight-tabs [role="tablist"]) {
-        background: transparent !important;
-        border: none !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
-        gap: 2rem !important;
+    .carousel-viewport {
+        overflow: hidden;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* 调整 Tab 按钮样式 */
-    .seasons-tabs :global(starlight-tabs [role="tab"]) {
-        background: transparent !important;
-        border: none !important;
-        padding: 1rem 0.5rem !important;
-        font-size: 1.2rem !important;
-        font-weight: 700 !important;
-        color: var(--sl-color-gray-3) !important;
-        border-bottom: 3px solid transparent !important;
-        border-radius: 0 !important;
-        transition: all 0.3s ease !important;
+    :global([data-theme="light"]) .carousel-viewport {
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    /* 选中状态样式 */
-    .seasons-tabs :global(starlight-tabs [role="tab"][aria-selected="true"]) {
-        color: var(--sl-color-accent, #f39c12) !important;
-        background: transparent !important;
-        border-bottom-color: var(--sl-color-accent, #f39c12) !important;
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        width: 100%;
     }
 
-    /* 鼠标悬停样式 */
-    .seasons-tabs :global(starlight-tabs [role="tab"]:hover:not([aria-selected="true"])) {
-        color: var(--sl-color-text) !important;
+    .carousel-slide {
+        min-width: 100%;
+        box-sizing: border-box;
+        padding: 2rem;
     }
 
-    .season-content {
+    .season-card {
         display: flex;
         flex-direction: column;
         gap: 2rem;
     }
 
+    .season-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1rem;
+    }
+
+    :global([data-theme="light"]) .season-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .season-year {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--sl-color-accent);
+        line-height: 1;
+    }
+
+    .season-badge {
+        background: var(--sl-color-accent);
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    :global([data-theme="light"]) .season-badge {
+        color: #000;
+    }
+
+    .season-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    /* 图片区域 */
     .season-gallery {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin-top: 2rem;
+        gap: 1.5rem;
     }
 
     @media (max-width: 768px) {
@@ -151,29 +372,20 @@ const { seasons } = Astro.props;
 
     .gallery-item {
         position: relative;
-        border-radius: 1.5rem;
+        border-radius: 0.75rem;
         overflow: hidden;
         aspect-ratio: 16/9;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .gallery-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        border-color: var(--sl-color-gray-4, rgba(255, 255, 255, 0.2));
     }
 
     .gallery-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: transform 0.5s ease;
     }
 
     .gallery-item:hover img {
-        transform: scale(1.08);
+        transform: scale(1.05);
     }
 
     .gallery-caption {
@@ -181,126 +393,99 @@ const { seasons } = Astro.props;
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 1.5rem;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-        color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
-        letter-spacing: 0.5px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        color: #fff;
+        padding: 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
     }
 
-    /* 团队信息区样式 */
+    /* 团队信息区域 */
     .team-info {
-        background: var(--sl-color-gray-6, rgba(255, 255, 255, 0.03));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.08));
-        border-radius: 1.5rem;
-        padding: 2rem;
-        margin-top: 1rem;
-    }
-
-    :global([data-theme='light']) .team-info {
-        background: rgba(255, 255, 255, 0.6);
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .team-info-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 0 0 1.5rem 0;
-        color: var(--sl-color-text);
-        border-bottom: 2px solid var(--sl-color-accent);
-        padding-bottom: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
     }
 
     .leadership {
         display: flex;
         gap: 1.5rem;
         flex-wrap: wrap;
-        margin-bottom: 1.5rem;
     }
 
     .leader-card {
         display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.05));
-        padding: 1rem 1.5rem;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.75rem 1.25rem;
         border-radius: 0.75rem;
-        border-left: 4px solid var(--sl-color-accent);
-        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    :global([data-theme='light']) .leader-card {
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    :global([data-theme="light"]) .leader-card {
+        background: rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    .leader-card:hover {
-        background: var(--sl-color-gray-4, rgba(255, 255, 255, 0.08));
-        transform: translateX(5px);
+    .leader-icon {
+        font-size: 1.5rem;
+    }
+
+    .leader-details {
+        display: flex;
+        flex-direction: column;
     }
 
     .leader-role {
-        font-size: 0.85rem;
-        color: var(--sl-color-gray-3);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        opacity: 0.7;
+        font-weight: 600;
     }
 
     .leader-name {
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1rem;
         color: var(--sl-color-text);
     }
 
+    /* 成员列表 */
     .members-section {
-        margin-top: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .members-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0 0 1rem 0;
-        color: var(--sl-color-gray-2);
+    :global([data-theme="light"]) .members-section {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .members-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
     }
 
     .member-group {
-        background: var(--sl-color-gray-6, rgba(255, 255, 255, 0.03));
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.05));
-        border-radius: 1rem;
-        padding: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    :global([data-theme='light']) .member-group {
-        background: rgba(255, 255, 255, 0.8);
-        border-color: rgba(0, 0, 0, 0.1);
-    }
-
-    .member-group:hover {
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.06));
-        border-color: var(--sl-color-gray-4, rgba(255, 255, 255, 0.12));
-    }
-
-    :global([data-theme='light']) .member-group:hover {
-        background: rgba(255, 255, 255, 1);
-        border-color: rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .group-name {
-        font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
+        font-weight: 700;
         color: var(--sl-color-accent);
-        margin-bottom: 0.75rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--sl-color-gray-4);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    :global([data-theme="light"]) .group-name {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .group-members {
@@ -310,16 +495,92 @@ const { seasons } = Astro.props;
     }
 
     .member-name {
-        background: var(--sl-color-gray-4);
-        color: var(--sl-color-gray-1);
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.9rem;
-        transition: all 0.2s;
+        font-size: 0.85rem;
+        opacity: 0.8;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
     }
 
-    .member-name:hover {
+    :global([data-theme="light"]) .member-name {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* 导航按钮 */
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .carousel-nav:hover {
         background: var(--sl-color-accent);
-        color: var(--sl-color-black);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-nav.prev {
+        left: 10px;
+    }
+    .carousel-nav.next {
+        right: 10px;
+    }
+
+    /* 指示器 */
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+        height: 20px;
+    }
+
+    .indicator {
+        width: 10px;
+        height: 10px;
+        padding: 0;
+        margin: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        display: block;
+    }
+
+    :global([data-theme="light"]) .indicator {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .indicator.active {
+        background: var(--sl-color-accent);
+        transform: scale(1.2);
+    }
+
+    @media (max-width: 640px) {
+        .carousel-slide {
+            padding: 1rem;
+        }
+
+        .season-year {
+            font-size: 2rem;
+        }
+
+        .members-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>

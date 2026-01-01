@@ -397,3 +397,33 @@
 .expressive-code {
     animation: codeBlockFadeIn 0.5s ease forwards;
 }
+
+/* ==================== 移动端适配 ==================== */
+@media (max-width: 640px) {
+    .expressive-code {
+        margin: 1rem 0 !important;
+    }
+
+    .expressive-code .frame {
+        border-radius: 0.5rem !important;
+    }
+
+    .expressive-code .header {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .expressive-code .title {
+        font-size: 0.8rem !important;
+    }
+
+    .expressive-code pre {
+        padding: 1rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    /* 确保代码块可以横向滚动 */
+    .expressive-code pre code {
+        white-space: pre;
+        overflow-x: auto;
+    }
+}
