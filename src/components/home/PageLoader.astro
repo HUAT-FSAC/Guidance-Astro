@@ -16,8 +16,23 @@
 
 <script>
     function initPageLoader() {
-        const loader = document.getElementById("pageLoader");
-        if (!loader) return;
+        const loaderEl = document.getElementById("pageLoader");
+        if (!(loaderEl instanceof HTMLElement)) return;
+        const loader = loaderEl;
+
+        // P0: 性能优化 - 检查是否首次访问
+        // 如果用户在本次会话中已经访问过，则不再显示加载动画
+        const hasVisited = sessionStorage.getItem("huat_fsac_visited");
+
+        if (hasVisited) {
+            loader.style.display = "none";
+            // 即使不显示动画，也要触发事件，保证依赖此事件的其他组件（如 Hero 动画）能正常运行
+            window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
+            return;
+        }
+
+        // 标记本次会话已访问
+        sessionStorage.setItem("huat_fsac_visited", "true");
 
         function hideLoader() {
             if (loader.classList.contains("loaded")) return;
@@ -26,7 +41,7 @@
                 loader.style.display = "none";
                 // 触发自定义事件，通知其他组件可以开始动画了
                 window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
-            }, 200);
+            }, 500);
         }
 
         // DOM 准备好就隐藏，不等待所有资源
@@ -37,8 +52,9 @@
             hideLoader();
         }
 
-        // 备用：如果 1 秒后还没隐藏，强制隐藏
-        setTimeout(hideLoader, 1000);
+        // P0: 强制超时销毁机制 (防止 JS 报错导致永久白屏)
+        // 设置 3 秒超时，确保即使发生异常也能进入页面
+        setTimeout(hideLoader, 3000);
     }
 
     // 立即执行
@@ -57,6 +73,10 @@
         transition:
             opacity 0.2s ease,
             visibility 0.2s ease;
+    }
+
+    :global([data-theme="light"]) .page-loader {
+        background: #fff;
     }
 
     .page-loader.loaded {
@@ -79,6 +99,10 @@
         color: #fff;
     }
 
+    :global([data-theme="light"]) .logo-text {
+        color: #000;
+    }
+
     .logo-accent {
         color: var(--sl-color-accent, #f39c12);
         margin-left: 0.5rem;
@@ -91,6 +115,10 @@
         border-radius: 3px;
         overflow: hidden;
         margin: 0 auto;
+    }
+
+    :global([data-theme="light"]) .loader-bar {
+        background: rgba(0, 0, 0, 0.1);
     }
 
     .loader-progress {

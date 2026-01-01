@@ -47,6 +47,8 @@ const {
 
 <style>
     .achievement {
+        position: relative;
+        z-index: 2;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
@@ -99,13 +101,13 @@ const {
         font-weight: 800;
         line-height: 1.1;
         margin: 0;
-        color: var(--sl-color-white);
+        color: var(--sl-color-text);
     }
 
     .achievement-description {
         font-size: 1.1rem;
         line-height: 1.7;
-        color: rgba(255, 255, 255, 0.75);
+        color: var(--sl-color-text-gray, rgba(255, 255, 255, 0.75));
         margin: 0;
     }
 
@@ -119,17 +121,19 @@ const {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #fff;
+        color: var(--sl-color-text);
         background: transparent;
         border: 2px solid var(--sl-color-accent, #f39c12);
         border-radius: 50px;
         text-decoration: none;
         transition: all 0.3s ease;
+        box-sizing: border-box;
+        line-height: 1.2;
     }
 
     .achievement-cta:hover {
         background: var(--sl-color-accent, #f39c12);
-        color: #000;
+        color: #fff;
         transform: translateX(5px);
     }
 
@@ -143,10 +147,20 @@ const {
         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
+    :global([data-theme="light"]) .achievement-image {
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
     .achievement-image:hover {
         transform: translateY(-8px);
         box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6);
         border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    :global([data-theme="light"]) .achievement-image:hover {
+        box-shadow: 0 35px 70px rgba(0, 0, 0, 0.15);
+        border-color: rgba(0, 0, 0, 0.2);
     }
 
     .achievement-image img {

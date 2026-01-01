@@ -24,3 +24,32 @@ You may access umami analytics data [here](https://cloud.umami.is/share/ADsMBsz2
     *   **保留并提交** `pnpm-lock.yaml`。如果在 Codespaces 中该文件发生变更（为了适配 Linux 环境），**请务必提交**，这能确保 Cloudflare 构建成功。
 *   **关键配置保留**：
     *   `pnpm-workspace.yaml` 中的 `onlyBuiltDependencies` (esbuild, sharp) 是构建脚本白名单，**严禁删除**，否则无法构建。
+
+### 3. 静态资源管理规范
+为了避免 `public/` 目录臃肿并利用 Astro 的图片优化功能，请遵循以下规范：
+
+*   **存放位置**：文档图片请存放在 `src/assets/docs/` 下对应的年份和模块文件夹中。
+    *   例如：`src/assets/docs/2025/感知/lidar-setup.png`
+    *   目前已建立的目录结构：
+        ```text
+        src/assets/docs/
+        ├── 2025/
+        │   ├── 感知/
+        │   ├── 定位建图/
+        │   ├── 规控/
+        │   ├── 仿真测试/
+        │   ├── 电气/
+        │   ├── 机械/
+        │   └── 项管/
+        ```
+*   **引用方式**：在 MDX 文件中，使用相对路径引用图片，Astro 会自动处理优化。
+    ```mdx
+    import { Image } from 'astro:assets';
+    import myImage from '../../assets/docs/2025/感知/lidar-setup.png';
+
+    <Image src={myImage} alt="激光雷达安装示意图" />
+    ```
+    或者直接使用 Markdown 语法（Astro Starlight 也会尝试优化）：
+    ```markdown
+    ![激光雷达安装示意图](../../assets/docs/2025/感知/lidar-setup.png)
+    ```

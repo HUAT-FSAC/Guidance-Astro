@@ -11,9 +11,8 @@
         ) as HTMLCanvasElement;
         if (!canvas) return;
 
-        const context = canvas.getContext("2d");
-        if (!context) return;
-        const ctx = context;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
         let particles: Particle[] = [];
         let animationId: number;
@@ -31,8 +30,7 @@
         }
 
         function updateColors() {
-            const isLight =
-                document.documentElement.getAttribute("data-theme") === "light";
+            const isLight = document.documentElement.getAttribute("data-theme") === "light";
             // 暗色模式：白色粒子；亮色模式：深灰色粒子
             particleColor = isLight ? "100, 100, 100" : "255, 255, 255";
             // 连线颜色
@@ -121,15 +119,12 @@
         // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                if (
-                    mutation.type === "attributes" &&
-                    mutation.attributeName === "data-theme"
-                ) {
+                if (mutation.type === "attributes" && mutation.attributeName === "data-theme") {
                     updateColors();
                 }
             });
         });
-
+        
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ["data-theme"],

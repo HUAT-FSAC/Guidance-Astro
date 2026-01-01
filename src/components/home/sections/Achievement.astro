@@ -1,0 +1,216 @@
+---
+interface Props {
+    badge?: string;
+    title: string;
+    description: string;
+    ctaText: string;
+    ctaLink: string;
+    image: string;
+    reverse?: boolean;
+}
+
+const {
+    badge,
+    title,
+    description,
+    ctaText,
+    ctaLink,
+    image,
+    reverse = false,
+} = Astro.props;
+---
+
+<section class="achievement-section">
+    <div class={`achievement-container ${reverse ? "reverse" : ""}`}>
+        <div class="achievement-content">
+            {badge && <span class="achievement-badge">{badge}</span>}
+            <h2 class="achievement-title">{title}</h2>
+            <p class="achievement-description">{description}</p>
+            <a href={ctaLink} class="achievement-cta">
+                {ctaText}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="achievement-image">
+            <img src={image} alt={title} loading="lazy" />
+        </div>
+    </div>
+</section>
+
+<style>
+    .achievement-section {
+        position: relative;
+        z-index: 2;
+        padding: 6rem 2rem;
+        /* 保持透明或根据需要添加背景，这里为了保持一致性，我们使用与招新组件类似的背景逻辑，
+           但考虑到可能是连续展示，我们使用交替背景或保持透明让父级控制。
+           用户要求"一致"，招新组件有背景。如果这里也加背景，连续两个Achievement会有两个背景块。
+           我们可以给偶数/奇数项不同的背景，或者都加背景。
+           为了安全起见，先加上背景，让它看起来像独立的卡片区域。
+        */
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        margin-bottom: 2rem; /* 增加间距 */
+    }
+
+    :global([data-theme="light"]) .achievement-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .achievement-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .achievement-container.reverse {
+        direction: rtl;
+    }
+
+    .achievement-container.reverse > * {
+        direction: ltr;
+    }
+
+    @media (max-width: 900px) {
+        .achievement-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        .achievement-section {
+            padding: 4rem 1.5rem;
+        }
+        .achievement-container.reverse {
+            direction: ltr;
+        }
+    }
+
+    .achievement-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .achievement-badge {
+        display: inline-block;
+        width: fit-content;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: white;
+        background: var(--sl-color-accent, #f39c12);
+        border-radius: 2rem;
+        margin-bottom: 0.5rem;
+        border: none;
+    }
+
+    .achievement-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 800;
+        line-height: 1.2;
+        margin: 0;
+        color: white;
+    }
+
+    :global([data-theme="light"]) .achievement-title {
+        color: var(--sl-color-text);
+    }
+
+    .achievement-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
+
+    :global([data-theme="light"]) .achievement-description {
+        color: var(--sl-color-text-gray);
+    }
+
+    .achievement-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: fit-content;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white !important;
+        background: var(--sl-color-accent, #f39c12);
+        border: none;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: none;
+    }
+
+    :global([data-theme="light"]) .achievement-cta {
+        color: #000 !important;
+    }
+
+    .achievement-cta:hover {
+        transform: translateX(5px);
+        box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+        color: white !important;
+    }
+
+    :global([data-theme="light"]) .achievement-cta:hover {
+        color: #000 !important;
+    }
+
+    .achievement-cta svg {
+        transition: transform 0.3s ease;
+    }
+
+    .achievement-cta:hover svg {
+        transform: translateX(4px);
+    }
+
+    .achievement-image {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    :global([data-theme="light"]) .achievement-image {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .achievement-image:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    :global([data-theme="light"]) .achievement-image:hover {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .achievement-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .achievement-image:hover img {
+        transform: scale(1.05);
+    }
+</style>

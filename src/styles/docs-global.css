@@ -76,7 +76,7 @@
 /* ==================== 段落和文本 ==================== */
 .sl-markdown-content p {
     margin-bottom: 1.25rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--sl-color-text);
 }
 
 .sl-markdown-content strong {
@@ -192,12 +192,22 @@
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+:root[data-theme='light'] .sl-markdown-content code:not(pre code) {
+    background: rgba(243, 156, 18, 0.12);
+    color: #8a4b00;
+}
+
 /* 代码块增强 */
 .sl-markdown-content pre {
     margin: 1.5rem 0;
     border-radius: var(--radius-md) !important;
     box-shadow: var(--card-shadow);
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme='light'] .sl-markdown-content pre {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Expressive Code 标题栏 */

@@ -92,9 +92,17 @@ const { title = "", url = "" } = Astro.props;
         margin-top: 2rem;
     }
 
+    :global([data-theme="light"]) .share-buttons {
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
     .share-label {
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.6);
+    }
+
+    :global([data-theme="light"]) .share-label {
+        color: var(--sl-color-gray-3);
     }
 
     .share-btn {
@@ -111,11 +119,21 @@ const { title = "", url = "" } = Astro.props;
         transition: all 0.3s ease;
     }
 
+    :global([data-theme="light"]) .share-btn {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.1);
+        color: var(--sl-color-gray-3);
+    }
+
     .share-btn:hover {
         background: rgba(255, 255, 255, 0.1);
         color: var(--sl-color-accent);
         border-color: var(--sl-color-accent);
         transform: translateY(-2px);
+    }
+
+    :global([data-theme="light"]) .share-btn:hover {
+        background: rgba(0, 0, 0, 0.1);
     }
 
     .share-btn.copied {

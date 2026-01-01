@@ -7,24 +7,21 @@ hero:
   tagline: ""
 ---
 
-import Hero from '../../components/home/Hero.astro';
-import Achievement from '../../components/home/Achievement.astro';
-import NewsSection from '../../components/home/NewsSection.astro';
-import FormulaStudentInfo from '../../components/home/FormulaStudentInfo.astro';
-import Stats from '../../components/home/Stats.astro';
-import Features from '../../components/home/Features.astro';
-import Seasons from '../../components/home/Seasons.astro';
-import Sponsors from '../../components/home/Sponsors.astro';
-import Acknowledgement from '../../components/home/Acknowledgement.astro';
-import Recruitment from '../../components/home/Recruitment.astro';
-import ThemeSwitcher from '../../components/home/ThemeSwitcher.astro';
-import ScrollProgress from '../../components/home/ScrollProgress.astro';
-import BackToTop from '../../components/home/BackToTop.astro';
-import MouseGlow from '../../components/home/MouseGlow.astro';
-import CustomScrollbar from '../../components/home/CustomScrollbar.astro';
-import PageLoader from '../../components/home/PageLoader.astro';
-import KeyboardNav from '../../components/home/KeyboardNav.astro';
-import ParticleBackground from '../../components/home/ParticleBackground.astro';
+import Hero from '../../components/home/sections/Hero.astro';
+import Achievement from '../../components/home/sections/Achievement.astro';
+import NewsSection from '../../components/home/sections/NewsSection.astro';
+import FormulaStudentInfo from '../../components/home/sections/FormulaStudentInfo.astro';
+import Stats from '../../components/home/sections/Stats.astro';
+import Features from '../../components/home/sections/Features.astro';
+import Seasons from '../../components/home/sections/Seasons.astro';
+import Sponsors from '../../components/home/sections/Sponsors.astro';
+import Acknowledgement from '../../components/home/sections/Acknowledgement.astro';
+import Recruitment from '../../components/home/sections/Recruitment.astro';
+import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro';
+import ScrollProgress from '../../components/home/ui/ScrollProgress.astro';
+import BackToTop from '../../components/home/ui/BackToTop.astro';
+import KeyboardNav from '../../components/home/ui/KeyboardNav.astro';
+import ParticleBackground from '../../components/home/ui/ParticleBackground.astro';
 import { 
   heroConfig, 
   stats, 
@@ -55,16 +52,22 @@ import {
     max-width: 100% !important;
   }
   
-  /* Apple 风格极简深色背景 */
-  .content-panel {
+  /* Apple 风格极简深色背景 - 仅在暗色模式下生效 */
+  :global([data-theme='dark']) .content-panel {
     background-color: #000000 !important;
     /* 顶部微弱的光源效果，模拟高级质感 */
     background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 85%) !important;
   }
   
+  /* 亮色模式适配 */
+  :global([data-theme='light']) .content-panel {
+    background-color: #ffffff !important;
+    background-image: radial-gradient(circle at 50% 0%, #f5f5f7 0%, #ffffff 85%) !important;
+  }
+  
   /* Footer 链接样式 */
   .footer-link {
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
     opacity: 0.7;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -89,6 +92,19 @@ import {
   
   .footer-link:hover::after {
     width: 100%;
+  }
+
+  /* Footer 容器样式 */
+  .home-footer {
+    padding: 4rem 2rem;
+    background: var(--sl-color-gray-6);
+    text-align: center;
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+  
+  :global([data-theme='light']) .home-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
   }
 
   /* 全局淡入动画 */
@@ -117,11 +133,8 @@ import {
 `}</style>
 
 {/* ==================== 全局增强组件 ==================== */}
-<PageLoader />
 <ScrollProgress />
 <BackToTop />
-<MouseGlow />
-<CustomScrollbar />
 <KeyboardNav />
 <ParticleBackground />
 <ThemeSwitcher />
@@ -220,7 +233,7 @@ import {
 </section>
 
 {/* ==================== 页脚联系信息 ==================== */}
-<footer style="padding: 4rem 2rem; background: rgba(0,0,0,0.3); text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+<footer class="home-footer">
   <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">
     HUAT FSAC - 方程式赛车队
   </p>

@@ -28,9 +28,7 @@ const { seasons } = Astro.props;
                         </div>
 
                         {/* 团队信息区 */}
-                        {(season.advisor ||
-                            season.captain ||
-                            season.members) && (
+                        {(season.advisor || season.captain || season.members) && (
                             <div class="team-info">
                                 <h3 class="team-info-title">
                                     🏆 {season.year} 赛季团队
@@ -50,9 +48,7 @@ const { seasons } = Astro.props;
                                     )}
                                     {season.captain && (
                                         <div class="leader-card">
-                                            <span class="leader-role">
-                                                🎖️ 队长
-                                            </span>
+                                            <span class="leader-role">🎖️ 队长</span>
                                             <span class="leader-name">
                                                 {season.captain}
                                             </span>
@@ -61,32 +57,27 @@ const { seasons } = Astro.props;
                                 </div>
 
                                 {/* 成员列表 */}
-                                {season.members &&
-                                    season.members.length > 0 && (
-                                        <div class="members-section">
-                                            <h4 class="members-title">
-                                                👥 团队成员
-                                            </h4>
-                                            <div class="members-grid">
-                                                {season.members.map((group) => (
-                                                    <div class="member-group">
-                                                        <div class="group-name">
-                                                            {group.group}
-                                                        </div>
-                                                        <div class="group-members">
-                                                            {group.names.map(
-                                                                (name) => (
-                                                                    <span class="member-name">
-                                                                        {name}
-                                                                    </span>
-                                                                ),
-                                                            )}
-                                                        </div>
+                                {season.members && season.members.length > 0 && (
+                                    <div class="members-section">
+                                        <h4 class="members-title">👥 团队成员</h4>
+                                        <div class="members-grid">
+                                            {season.members.map((group) => (
+                                                <div class="member-group">
+                                                    <div class="group-name">
+                                                        {group.group}
                                                     </div>
-                                                ))}
-                                            </div>
+                                                    <div class="group-members">
+                                                        {group.names.map((name) => (
+                                                            <span class="member-name">
+                                                                {name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    )}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -135,8 +126,7 @@ const { seasons } = Astro.props;
     }
 
     /* 鼠标悬停样式 */
-    .seasons-tabs
-        :global(starlight-tabs [role="tab"]:hover:not([aria-selected="true"])) {
+    .seasons-tabs :global(starlight-tabs [role="tab"]:hover:not([aria-selected="true"])) {
         color: var(--sl-color-text) !important;
     }
 
@@ -210,7 +200,7 @@ const { seasons } = Astro.props;
         margin-top: 1rem;
     }
 
-    :global([data-theme="light"]) .team-info {
+    :global([data-theme='light']) .team-info {
         background: rgba(255, 255, 255, 0.6);
         border-color: rgba(0, 0, 0, 0.1);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -243,7 +233,7 @@ const { seasons } = Astro.props;
         transition: all 0.3s ease;
     }
 
-    :global([data-theme="light"]) .leader-card {
+    :global([data-theme='light']) .leader-card {
         background: rgba(255, 255, 255, 0.8);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
@@ -289,7 +279,7 @@ const { seasons } = Astro.props;
         transition: all 0.3s ease;
     }
 
-    :global([data-theme="light"]) .member-group {
+    :global([data-theme='light']) .member-group {
         background: rgba(255, 255, 255, 0.8);
         border-color: rgba(0, 0, 0, 0.1);
     }
@@ -299,7 +289,7 @@ const { seasons } = Astro.props;
         border-color: var(--sl-color-gray-4, rgba(255, 255, 255, 0.12));
     }
 
-    :global([data-theme="light"]) .member-group:hover {
+    :global([data-theme='light']) .member-group:hover {
         background: rgba(255, 255, 255, 1);
         border-color: rgba(0, 0, 0, 0.2);
     }
