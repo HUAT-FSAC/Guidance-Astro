@@ -105,8 +105,13 @@ function parseValue(value: string) {
         }
     }
 
-    // 页面加载完成后初始化
-    document.addEventListener("DOMContentLoaded", initCounters);
+    // 增强的初始化逻辑：处理各种加载状态
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        initCounters();
+    } else {
+        document.addEventListener("DOMContentLoaded", initCounters);
+    }
+    
     // 兼容 View Transitions
     document.addEventListener("astro:page-load", initCounters);
 </script>

@@ -24,7 +24,9 @@
         var STORAGE_KEY = "huat_fsac_visited";
         var hasVisited = sessionStorage.getItem(STORAGE_KEY);
 
+        // 临时修改：强制每次都显示加载动画，方便调试和上线验证
         // 场景 A: 非首次访问 (Session 中有记录)
+        /* 
         if (hasVisited) {
             // 立即隐藏，防止闪烁
             loader.style.display = "none";
@@ -37,6 +39,7 @@
             });
             return;
         }
+        */
 
         // 场景 B: 首次访问
         // 标记本次会话已访问

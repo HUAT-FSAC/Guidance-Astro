@@ -134,7 +134,16 @@
         canvas.style.opacity = "1";
     }
 
-    document.addEventListener("DOMContentLoaded", initParticles);
+    // 增强的初始化逻辑：处理各种加载状态
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        // 如果脚本执行时 DOM 已经准备好，直接初始化
+        initParticles();
+    } else {
+        // 否则等待 DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", initParticles);
+    }
+    
+    // 兼容 Astro 的 View Transitions
     document.addEventListener("astro:page-load", initParticles);
 </script>
 
