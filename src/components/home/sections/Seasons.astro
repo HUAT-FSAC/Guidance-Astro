@@ -1,5 +1,5 @@
 ---
-import type { SeasonItem } from "../../data/home";
+import type { SeasonItem } from "../../../data/home";
 
 interface Props {
     seasons: SeasonItem[];
@@ -87,7 +87,7 @@ const { seasons } = Astro.props;
                                             <div class="members-section">
                                                 <div class="members-grid">
                                                     {season.members.map(
-                                                        (group) => (
+                                                        (group: { group: string; names: string[] }) => (
                                                             <div class="member-group">
                                                                 <div class="group-name">
                                                                     {
@@ -97,7 +97,7 @@ const { seasons } = Astro.props;
                                                                 <div class="group-members">
                                                                     {group.names.map(
                                                                         (
-                                                                            name,
+                                                                            name: string,
                                                                         ) => (
                                                                             <span class="member-name">
                                                                                 {
@@ -179,7 +179,7 @@ const { seasons } = Astro.props;
 
         function updateCarousel() {
             // 移动轨道
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            track!.style.transform = `translateX(-${currentIndex * 100}%)`;
 
             // 更新指示器
             indicators.forEach((ind, i) => {
@@ -220,7 +220,7 @@ const { seasons } = Astro.props;
         });
 
         // 自动播放
-        let autoPlayInterval: number;
+        let autoPlayInterval: ReturnType<typeof setInterval>;
 
         function startAutoPlay() {
             autoPlayInterval = setInterval(nextSlide, 5000); // 5秒切换一次

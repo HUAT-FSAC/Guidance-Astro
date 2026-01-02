@@ -1,5 +1,5 @@
 ---
-import type { SponsorGroup } from "../../data/home";
+import type { SponsorGroup, SponsorItem } from "../../../data/home";
 
 interface Props {
     groups: SponsorGroup[];
@@ -9,11 +9,11 @@ const { groups } = Astro.props;
 ---
 
 {
-    groups.map((group) => (
+    groups.map((group: SponsorGroup) => (
         <div class="sponsor-section">
             <h3>{group.name}</h3>
             <div class="sponsor-grid">
-                {group.items.map((sponsor) => (
+                {group.items.map((sponsor: SponsorItem) => (
                     <img
                         src={sponsor.logo}
                         alt={sponsor.title}
@@ -63,7 +63,7 @@ const { groups } = Astro.props;
         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
-    :global([data-theme='light']) .sponsor-logo {
+    :global([data-theme="light"]) .sponsor-logo {
         background: rgba(255, 255, 255, 0.8);
         border-color: rgba(0, 0, 0, 0.1);
         filter: grayscale(100%) brightness(0.8);
@@ -78,21 +78,10 @@ const { groups } = Astro.props;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    :global([data-theme='light']) .sponsor-logo:hover {
+    :global([data-theme="light"]) .sponsor-logo:hover {
         background: rgba(255, 255, 255, 1);
         border-color: rgba(0, 0, 0, 0.2);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         filter: grayscale(0%);
-    }
-
-    @media (max-width: 640px) {
-        .sponsor-grid {
-            gap: 1.5rem;
-        }
-
-        .sponsor-logo {
-            height: 40px;
-            padding: 0.75rem 1rem;
-        }
     }
 </style>
