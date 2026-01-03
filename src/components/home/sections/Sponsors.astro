@@ -19,6 +19,8 @@ const { groups } = Astro.props;
                         alt={sponsor.title}
                         class="sponsor-logo"
                         title={sponsor.title}
+                        loading="lazy"
+                        decoding="async"
                     />
                 ))}
             </div>
@@ -83,5 +85,31 @@ const { groups } = Astro.props;
         border-color: rgba(0, 0, 0, 0.2);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         filter: grayscale(0%);
+    }
+
+    @media (max-width: 768px) {
+        .sponsor-grid {
+            gap: 1.5rem;
+        }
+
+        .sponsor-logo {
+            height: 40px;
+            padding: 0.75rem 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sponsor-section {
+            margin: 3rem 0;
+        }
+
+        .sponsor-grid {
+            gap: 1rem;
+        }
+
+        .sponsor-logo {
+            height: 36px;
+            padding: 0.6rem 0.8rem;
+        }
     }
 </style>

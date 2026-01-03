@@ -8,6 +8,9 @@
 
 <script>
     function initScrollProgress() {
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        if (isSmallScreen) return;
+
         const progressBar = document.querySelector(
             ".scroll-progress-bar",
         ) as HTMLElement;
@@ -46,5 +49,11 @@
         background: linear-gradient(90deg, var(--sl-color-accent), #fff);
         box-shadow: 0 0 10px var(--sl-color-accent);
         transition: width 0.1s ease-out;
+    }
+
+    @media (max-width: 768px) {
+        .scroll-progress {
+            display: none;
+        }
     }
 </style>

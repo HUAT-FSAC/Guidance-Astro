@@ -30,6 +30,7 @@ You may access umami analytics data [here](https://cloud.umami.is/share/ADsMBsz2
 
 *   **存放位置**：文档图片请存放在 `src/assets/docs/` 下对应的年份和模块文件夹中。
     *   例如：`src/assets/docs/2025/感知/lidar-setup.png`
+    *   文档视频统一存放在 `src/assets/docs/videos/`（可按主题再建子目录）
     *   目前已建立的目录结构：
         ```text
         src/assets/docs/
@@ -41,6 +42,7 @@ You may access umami analytics data [here](https://cloud.umami.is/share/ADsMBsz2
         │   ├── 电气/
         │   ├── 机械/
         │   └── 项管/
+        └── videos/
         ```
 *   **引用方式**：在 MDX 文件中，使用相对路径引用图片，Astro 会自动处理优化。
     ```mdx

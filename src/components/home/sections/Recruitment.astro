@@ -208,6 +208,12 @@
         }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+        .icon-item {
+            animation: none;
+        }
+    }
+
     @media (max-width: 768px) {
         .recruitment-container {
             grid-template-columns: 1fr;
@@ -226,6 +232,29 @@
             width: 80px;
             height: 80px;
             font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .recruitment-section {
+            padding: 3rem 1.25rem;
+        }
+
+        .recruitment-content h2 {
+            font-size: 1.9rem;
+        }
+
+        .recruitment-content p {
+            font-size: 1rem;
+        }
+
+        .departments {
+            gap: 0.5rem;
+        }
+
+        .cta-button {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>

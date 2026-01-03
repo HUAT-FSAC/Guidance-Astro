@@ -74,4 +74,16 @@ const { title, subtitle, news } = Astro.props;
             grid-template-columns: 1fr;
         }
     }
+
+    @media (max-width: 480px) {
+        .news-section {
+            padding: 3rem 1.25rem;
+        }
+        .news-header {
+            margin-bottom: 2.5rem;
+        }
+        .news-grid {
+            gap: 1.5rem;
+        }
+    }
 </style>

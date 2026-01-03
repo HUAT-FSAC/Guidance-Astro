@@ -17,6 +17,7 @@ import Seasons from '../../components/home/sections/Seasons.astro';
 import Sponsors from '../../components/home/sections/Sponsors.astro';
 import Acknowledgement from '../../components/home/sections/Acknowledgement.astro';
 import Recruitment from '../../components/home/sections/Recruitment.astro';
+import PageLoader from '../../components/home/PageLoader.astro';
 import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro';
 import ScrollProgress from '../../components/home/ui/ScrollProgress.astro';
 import BackToTop from '../../components/home/ui/BackToTop.astro';
@@ -107,6 +108,54 @@ import {
     border-top: 1px solid #e9ecef;
   }
 
+  .home-block {
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .home-block-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .home-block-label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--sl-color-accent, #f39c12);
+    margin-bottom: 1rem;
+  }
+
+  .home-block-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .home-block--center {
+    text-align: center;
+  }
+
+  .contributors-image {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .contributors-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .contributors-meta {
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0.6;
+  }
+
   /* 全局淡入动画 */
   @keyframes fadeInUp {
     from {
@@ -130,9 +179,35 @@ import {
   section:nth-of-type(2) { animation-delay: 0.3s; }
   section:nth-of-type(3) { animation-delay: 0.5s; }
   section:nth-of-type(4) { animation-delay: 0.7s; }
+
+  @media (max-width: 768px) {
+    .home-block {
+      padding: 3rem 1.25rem;
+    }
+
+    .home-block-header {
+      margin-bottom: 2rem;
+    }
+
+    .home-block-title {
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+    }
+
+    .home-footer {
+      padding: 3rem 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce), (max-width: 768px) {
+    section {
+      animation: none;
+      opacity: 1;
+    }
+  }
 `}</style>
 
 {/* ==================== 全局增强组件 ==================== */}
+<PageLoader />
 <ScrollProgress />
 <BackToTop />
 <KeyboardNav />
@@ -166,10 +241,10 @@ import {
 ))}
 
 {/* ==================== 核心模块 ==================== */}
-<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">学习资源</span>
-    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">📚 核心模块</h2>
+<section class="home-block">
+  <div class="home-block-header">
+    <span class="home-block-label">学习资源</span>
+    <h2 class="home-block-title">📚 核心模块</h2>
   </div>
   <Features />
 </section>
@@ -182,10 +257,10 @@ import {
 />
 
 {/* ==================== 赛季回顾 ==================== */}
-<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">我们的足迹</span>
-    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">🏎️ 赛季回顾</h2>
+<section class="home-block">
+  <div class="home-block-header">
+    <span class="home-block-label">我们的足迹</span>
+    <h2 class="home-block-title">🏎️ 赛季回顾</h2>
   </div>
   <Seasons seasons={seasons} />
 </section>
@@ -203,31 +278,36 @@ import {
 />
 
 {/* ==================== 赞助商 ==================== */}
-<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">感谢支持</span>
-    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">❤️ 合作伙伴</h2>
+<section class="home-block">
+  <div class="home-block-header">
+    <span class="home-block-label">感谢支持</span>
+    <h2 class="home-block-title">❤️ 合作伙伴</h2>
   </div>
   <Sponsors groups={sponsorGroups} />
 </section>
 
 {/* ==================== 致谢 ==================== */}
-<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+<section class="home-block">
   <Acknowledgement />
 </section>
 
 {/* ==================== 贡献者 ==================== */}
-<section style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; text-align: center;">
-  <div style="margin-bottom: 3rem;">
-    <span style="display: inline-block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--sl-color-accent, #f39c12); margin-bottom: 1rem;">开源贡献</span>
-    <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0;">🤝 贡献者</h2>
+<section class="home-block home-block--center">
+  <div class="home-block-header">
+    <span class="home-block-label">开源贡献</span>
+    <h2 class="home-block-title">🤝 贡献者</h2>
   </div>
-  <div style="display: flex; justify-content: center; margin-top: 2rem;">
+  <div class="contributors-image">
     <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
-      <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" />
+      <img
+        src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro"
+        alt="GitHub contributors"
+        loading="lazy"
+        decoding="async"
+      />
     </a>
   </div>
-  <div style="text-align: center; margin-top: 1rem; opacity: 0.6;">
+  <div class="contributors-meta">
     Made with <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">contrib.rocks</a>
   </div>
 </section>
@@ -249,4 +329,5 @@ import {
     © 2024 HUAT FSAC. All rights reserved.
   </p>
 </footer>
+
 

@@ -3,6 +3,7 @@ title: 规控组
 ---
 
 import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/components';
+import showcaseVideo from '../../../assets/docs/videos/showcase.webm';
 
 <CardGrid>
   <Card title="🎯 核心职责" icon="rocket">
@@ -24,7 +25,7 @@ import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/compo
 ## 简介
 
 <video controls style="width: 100%; border-radius: 12px; margin: 1rem 0;">
-  <source src="/videos/showcase.webm" type="video/webm" />
+  <source src={showcaseVideo} type="video/webm" />
 </video>
 
 在感知部分的结果之上，规控组能够**实时规划赛道地图**，获取当前位置，同时得到赛车行驶**最优路径**。

@@ -18,6 +18,16 @@ const {
     image,
     reverse = false,
 } = Astro.props;
+
+function optimizeImageUrl(url: string, width = 900) {
+    if (url.includes("unsplash.com")) {
+        const base = url.split("?")[0];
+        return `${base}?fm=webp&w=${width}&q=80`;
+    }
+    return url;
+}
+
+const optimizedImage = optimizeImageUrl(image);
 ---
 
 <section class="achievement-section">
@@ -44,7 +54,12 @@ const {
             </a>
         </div>
         <div class="achievement-image">
-            <img src={image} alt={title} loading="lazy" />
+            <img
+                src={optimizedImage}
+                alt={title}
+                loading="lazy"
+                decoding="async"
+            />
         </div>
     </div>
 </section>
@@ -95,6 +110,25 @@ const {
         }
         .achievement-container.reverse {
             direction: ltr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .achievement-section {
+            padding: 3rem 1.25rem;
+        }
+
+        .achievement-title {
+            font-size: 1.8rem;
+        }
+
+        .achievement-description {
+            font-size: 1rem;
+        }
+
+        .achievement-cta {
+            width: 100%;
+            justify-content: center;
         }
     }
 

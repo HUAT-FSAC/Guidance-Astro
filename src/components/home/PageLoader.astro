@@ -24,9 +24,6 @@
         var STORAGE_KEY = "huat_fsac_visited";
         var hasVisited = sessionStorage.getItem(STORAGE_KEY);
 
-        // 临时修改：强制每次都显示加载动画，方便调试和上线验证
-        // 场景 A: 非首次访问 (Session 中有记录)
-        /* 
         if (hasVisited) {
             // 立即隐藏，防止闪烁
             loader.style.display = "none";
@@ -39,33 +36,47 @@
             });
             return;
         }
-        */
 
         // 场景 B: 首次访问
         // 标记本次会话已访问
         sessionStorage.setItem(STORAGE_KEY, "true");
 
-        function hideLoader() {
-            if (loader.classList.contains("loaded")) return;
+        var MIN_VISIBLE_MS = 350;
+        var MAX_WAIT_MS = 1500;
+        var startTime = Date.now();
 
+        function revealContent() {
+            if (loader.classList.contains("loaded")) return;
             loader.classList.add("loaded");
 
-            // 等待 CSS transition (0.2s) 完成后彻底隐藏
+            // 等待 CSS transition 完成后彻底隐藏
             setTimeout(function () {
                 loader.style.display = "none";
                 window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
-            }, 500);
+            }, 250);
         }
 
-        // 首次访问时，等待页面全部资源加载完毕 (包括图片) 再隐藏
-        // 这样能提供更平滑的体验
-        if (document.readyState === "complete") {
+        function hideLoader() {
+            if (loader.classList.contains("loaded")) return;
+            var elapsed = Date.now() - startTime;
+            var delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
+            setTimeout(revealContent, delay);
+        }
+
+        // 首次访问时，等待 DOM 就绪即可隐藏，避免阻塞图片加载
+        if (
+            document.readyState === "complete" ||
+            document.readyState === "interactive"
+        ) {
             hideLoader();
         } else {
-            window.addEventListener("load", hideLoader);
-            // 保底策略：如果 3 秒后还没加载完 (如图片加载慢)，强制进入
-            setTimeout(hideLoader, 3000);
+            document.addEventListener("DOMContentLoaded", hideLoader, {
+                once: true,
+            });
         }
+
+        // 保底策略：如果长时间没有完成，强制进入
+        setTimeout(hideLoader, MAX_WAIT_MS);
     })();
 </script>
 
@@ -139,6 +150,13 @@
         );
         border-radius: 3px;
         animation: loading 1.5s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .loader-progress {
+            animation: none;
+            width: 100%;
+        }
     }
 
     @keyframes loading {

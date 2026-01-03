@@ -109,12 +109,16 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 2px;
-        color: #fff;
+        color: #fff !important;
         background: var(--sl-color-accent, #f39c12);
         border: none;
         border-radius: 50px;
         text-decoration: none;
         transition: all 0.3s ease;
+    }
+
+    :global([data-theme='light']) .fs-cta {
+        color: #000 !important;
     }
 
     .fs-cta:hover {

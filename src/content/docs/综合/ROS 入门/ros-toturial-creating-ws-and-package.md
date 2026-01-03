@@ -2,9 +2,6 @@
 title: ROS 入门 · 创建工作空间和运行 ROS 包
 ---
 
-# 前言
-
-
 当你开始学习 ROS（机器人操作系统）时，第一步通常是创建一个工作空间（workspace），它是你进行 ROS 开发的主要目录。在工作空间中，你可以组织和管理 ROS 软件包，构建和运行 ROS 节点，以及进行 ROS 相关的开发工作。我们的大致流程为
 
 1.  先创建一个工作空间；
@@ -25,7 +22,7 @@ title: ROS 入门 · 创建工作空间和运行 ROS 包
 
 会显示类似于这样的界面
 
-![version-check](./../../../../assets/images/ros-toturial-creating-ws-and-package/version-check.png)
+![version-check](./../../../../assets/docs/ros-toturial-creating-ws-and-package/version-check.png)
 
 如果没有还未安装 ROS，推荐通过“鱼香ROS”的一键安装指令来安装：
 
@@ -174,7 +171,7 @@ target_link_libraries(步骤3的源文件名  ${catkin_LIBRARIES})
 
 然后我们就可以在终端看到我们发布的 hellowrld！了
 
-![output](./../../../../assets/images/ros-toturial-creating-ws-and-package/output.png)
+![output](./../../../../assets/docs/ros-toturial-creating-ws-and-package/output.png)
 
 五 总结问题
 ------
@@ -182,7 +179,6 @@ target_link_libraries(步骤3的源文件名  ${catkin_LIBRARIES})
 ### 1. 工作空间与软件包的关系与区别
 在ROS（机器人操作系统）中，工作空间（workspace）是一个包含多个软件包（packages）的目录。工作空间是一个用于组织和构建ROS项目的容器，它提供了一种管理和编译多个软件包的机制。每个软件包代表着一个独立的功能单元，可以包含节点（nodes）、消息（messages）、服务（services）、动作（actions）以及其他相关文件。  
 工作空间可以包含多个软件包，这些软件包可以是你自己编写的或者是从其他人或团队获取的。通过将这些软件包组织在一个工作空间中，你可以方便地进行编译、构建和管理。
-
 
 ### 2. 成功编译所需的 CMake 指令 
 在 ROS 中，CMake 是用于构建和编译 ROS 软件包的工具。下面是一些常用的 CMake 指令：  
@@ -218,3 +214,5 @@ rosrun 是 ROS 中一个常用的命令行工具，用于运行 ROS 软件包中
 3.  `Find<package>.cmake`：这些是用于查找和配置其他非ROS软件包的CMake模块文件。这些文件通常用于在ROS项目中使用外部库或工具，它们提供了与这些库和工具的集成方法。
 
 每个CMake文件都有其特定的作用和范围，它们共同协同工作以构建和管理一个完整的ROS项目。这种分离的方式使得项目的组织和维护更加清晰，并允许不同部分的独立管理和配置。
+
+

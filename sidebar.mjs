@@ -11,6 +11,11 @@ export default [
         ],
     },
     {
+        label: "📚 文档中心",
+        collapsed: false,
+        autogenerate: { directory: "文档中心" },
+    },
+    {
         label: "📰 新闻动态",
         collapsed: false,
         autogenerate: { directory: "news" },
@@ -48,3 +53,5 @@ export default [
         ],
     },
 ];
+
+

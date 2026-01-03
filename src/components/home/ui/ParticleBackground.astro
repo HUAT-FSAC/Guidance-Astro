@@ -10,14 +10,33 @@
             "particleCanvas",
         ) as HTMLCanvasElement;
         if (!canvas) return;
+        if (canvas.dataset.initialized === "true") return;
+        canvas.dataset.initialized = "true";
+
+        const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const saveData =
+            "connection" in navigator && navigator.connection?.saveData;
+
+        if (prefersReducedMotion || saveData || isSmallScreen) {
+            canvas.style.display = "none";
+            return;
+        }
 
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         let particles: Particle[] = [];
-        let animationId: number;
-        let particleColor = "255, 255, 255"; // 默认白色
-        let lineColor = "243, 156, 18"; // 默认橙色
+        let animationId = 0;
+        let particleColor = "255, 255, 255";
+        let lineColor = "243, 156, 18";
+        let drawLines = !isSmallScreen;
+        let particleDensity = isSmallScreen ? 26000 : 15000;
+        let maxDistance = isSmallScreen ? 80 : 110;
+        let frameInterval = isSmallScreen ? 1000 / 30 : 1000 / 60;
+        let lastFrame = 0;
 
         interface Particle {
             x: number;
@@ -29,16 +48,23 @@
             twinkleSpeed: number;
         }
 
+        function updateSettings() {
+            const smallScreen = window.matchMedia("(max-width: 768px)").matches;
+            drawLines = !smallScreen;
+            particleDensity = smallScreen ? 26000 : 15000;
+            maxDistance = smallScreen ? 80 : 110;
+            frameInterval = smallScreen ? 1000 / 30 : 1000 / 60;
+        }
+
         function updateColors() {
             const isLight =
                 document.documentElement.getAttribute("data-theme") === "light";
-            // 暗色模式：白色粒子；亮色模式：深灰色粒子
             particleColor = isLight ? "100, 100, 100" : "255, 255, 255";
-            // 连线颜色
             lineColor = "243, 156, 18";
         }
 
         function resize() {
+            updateSettings();
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             initParticleArray();
@@ -47,7 +73,7 @@
         function initParticleArray() {
             particles = [];
             const particleCount = Math.floor(
-                (canvas.width * canvas.height) / 15000,
+                (canvas.width * canvas.height) / particleDensity,
             );
 
             for (let i = 0; i < particleCount; i++) {
@@ -63,61 +89,83 @@
             }
         }
 
-        function animate() {
+        function animate(now: number) {
+            if (now - lastFrame < frameInterval) {
+                animationId = requestAnimationFrame(animate);
+                return;
+            }
+            lastFrame = now;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            particles.forEach((p) => {
-                // 闪烁效果
-                p.opacity += Math.sin(Date.now() * p.twinkleSpeed) * 0.01;
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.opacity += Math.sin(now * p.twinkleSpeed) * 0.01;
                 p.opacity = Math.max(0.1, Math.min(1, p.opacity));
 
-                // 移动
                 p.x += p.speedX;
                 p.y += p.speedY;
 
-                // 边界循环
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
                 if (p.y > canvas.height) p.y = 0;
 
-                // 绘制
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(${particleColor}, ${p.opacity})`;
                 ctx.fill();
-            });
+            }
 
-            // 绘制连接线
-            particles.forEach((p1, i) => {
-                particles.slice(i + 1).forEach((p2) => {
-                    const dx = p1.x - p2.x;
-                    const dy = p1.y - p2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+            if (drawLines) {
+                const maxDistanceSq = maxDistance * maxDistance;
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distanceSq = dx * dx + dy * dy;
 
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(p1.x, p1.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(${lineColor}, ${0.1 * (1 - distance / 100)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
+                        if (distanceSq < maxDistanceSq) {
+                            const alpha =
+                                0.1 * (1 - distanceSq / maxDistanceSq);
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(${lineColor}, ${alpha})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
                     }
-                });
-            });
+                }
+            }
 
             animationId = requestAnimationFrame(animate);
         }
 
-        // 初始化
+        function startAnimation() {
+            if (animationId) return;
+            lastFrame = 0;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function stopAnimation() {
+            if (!animationId) return;
+            cancelAnimationFrame(animationId);
+            animationId = 0;
+        }
+
         updateColors();
         resize();
-        animate();
+        startAnimation();
 
-        // 监听窗口大小变化
         window.addEventListener("resize", resize);
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopAnimation();
+            else startAnimation();
+        });
 
-        // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (
@@ -134,24 +182,37 @@
             attributeFilter: ["data-theme"],
         });
 
-        // 确保 Canvas 可见
         canvas.style.opacity = "1";
     }
 
-    // 增强的初始化逻辑：处理各种加载状态
+    function scheduleInit() {
+        const run = () => initParticles();
+        const idle = (window as Window & {
+            requestIdleCallback?: (
+                callback: IdleRequestCallback,
+                options?: IdleRequestOptions,
+            ) => number;
+        }).requestIdleCallback;
+
+        if (idle) {
+            idle(run, { timeout: 1500 });
+        } else {
+            setTimeout(run, 200);
+        }
+    }
+
     if (
         document.readyState === "complete" ||
         document.readyState === "interactive"
     ) {
-        // 如果脚本执行时 DOM 已经准备好，直接初始化
-        initParticles();
+        scheduleInit();
     } else {
-        // 否则等待 DOMContentLoaded
-        document.addEventListener("DOMContentLoaded", initParticles);
+        document.addEventListener("DOMContentLoaded", scheduleInit, {
+            once: true,
+        });
     }
 
-    // 兼容 Astro 的 View Transitions
-    document.addEventListener("astro:page-load", initParticles);
+    document.addEventListener("astro:page-load", scheduleInit);
 </script>
 
 <style>

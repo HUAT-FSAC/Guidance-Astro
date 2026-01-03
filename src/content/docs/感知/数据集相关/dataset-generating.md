@@ -53,7 +53,7 @@ git clone https://github.com/NekoRectifier/disposable-python-snippet.git
 
 - color 是转换彩色图时所使用的颜色（不影响训练）
 
-![label-modify](/./../../../../assets/images/dataset-generating/label-modify.png)
+![label-modify](/./../../../../assets/docs/dataset-generating/label-modify.png)
 
 如图即为修改完成。
 
@@ -99,3 +99,4 @@ python ./disposable-python-snippet/dataset_gen.py help
 ```
 
 此代码将会生成与 cityscapes 数据集格式相同的数据集。通过查看给出的提示开始进行数据集生成。
+

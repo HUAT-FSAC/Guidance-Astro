@@ -53,7 +53,7 @@ ROS 官方严格限制了各 ROS 版本与操作系统间的对应关系。如 R
    
    在终端输入 `docker -v` 检查：
    
-   ![docker-version](../../../assets/images/docker-ros-installing/docker-version.png)
+   ![docker-version](../../../assets/docs/docker-ros-installing/docker-version.png)
 
 3. **配置用户权限**
    
@@ -100,7 +100,7 @@ docker run -it --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthor
 
 执行以上命令，待完成后则默认进入 Docker 环境。
 
-![docker-terminal](../../../assets/images/docker-ros-installing/docker-terminal.png)
+![docker-terminal](../../../assets/docs/docker-ros-installing/docker-terminal.png)
 
 ---
 
@@ -108,7 +108,7 @@ docker run -it --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthor
 
 X11 窗口系统默认的安全配置不允许来自 Docker 的窗口连接。
 
-![cant_connect](../../../assets/images/docker-ros-installing/cant_connect.png)
+![cant_connect](../../../assets/docs/docker-ros-installing/cant_connect.png)
 
 <Steps>
 
@@ -130,10 +130,10 @@ X11 窗口系统默认的安全配置不允许来自 Docker 的窗口连接。
 
 <CardGrid>
   <Card title="rqt 启动成功">
-    ![rqt_start](../../../assets/images/docker-ros-installing/rqt_start.png)
+    ![rqt_start](../../../assets/docs/docker-ros-installing/rqt_start.png)
   </Card>
   <Card title="rviz 启动成功">
-    ![docker-rviz](../../../assets/images/docker-ros-installing/docker-rviz.png)
+    ![docker-rviz](../../../assets/docs/docker-ros-installing/docker-rviz.png)
   </Card>
 </CardGrid>
 
@@ -158,3 +158,4 @@ X11 窗口系统默认的安全配置不允许来自 Docker 的窗口连接。
     href="/综合/"
   />
 </CardGrid>
+

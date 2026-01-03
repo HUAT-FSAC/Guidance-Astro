@@ -6,14 +6,25 @@ interface Props {
 }
 
 const { seasons } = Astro.props;
+
+function optimizeImageUrl(url: string, width = 900) {
+    if (url.includes("unsplash.com")) {
+        const base = url.split("?")[0];
+        return `${base}?fm=webp&w=${width}&q=80`;
+    }
+    return url;
+}
 ---
 
 <div class="seasons-carousel-container">
     <div class="carousel-viewport" id="seasonsViewport">
         <div class="carousel-track" id="seasonsTrack">
             {
-                seasons.map((season, index) => (
-                    <div class="carousel-slide" data-index={index}>
+                seasons.map((season, index) => {
+                    const teamImg = optimizeImageUrl(season.teamImg);
+                    const carImg = optimizeImageUrl(season.carImg);
+                    return (
+                        <div class="carousel-slide" data-index={index}>
                         <div class="season-card">
                             <div class="season-header">
                                 <div class="season-year">{season.year}</div>
@@ -25,9 +36,10 @@ const { seasons } = Astro.props;
                                 <div class="season-gallery">
                                     <div class="gallery-item">
                                         <img
-                                            src={season.teamImg}
+                                            src={teamImg}
                                             alt={`${season.year} Team`}
                                             loading="lazy"
+                                            decoding="async"
                                         />
                                         <div class="gallery-caption">
                                             The Team
@@ -35,9 +47,10 @@ const { seasons } = Astro.props;
                                     </div>
                                     <div class="gallery-item">
                                         <img
-                                            src={season.carImg}
+                                            src={carImg}
                                             alt={`${season.year} Car`}
                                             loading="lazy"
+                                            decoding="async"
                                         />
                                         <div class="gallery-caption">
                                             The Machine
@@ -117,7 +130,8 @@ const { seasons } = Astro.props;
                             </div>
                         </div>
                     </div>
-                ))
+                    );
+                })
             }
         </div>
     </div>
@@ -166,13 +180,28 @@ const { seasons } = Astro.props;
 
 <script>
     function initCarousel() {
+        const viewport = document.getElementById("seasonsViewport");
         const track = document.getElementById("seasonsTrack");
         const slides = document.querySelectorAll(".carousel-slide");
         const prevBtn = document.getElementById("prevBtn");
         const nextBtn = document.getElementById("nextBtn");
         const indicators = document.querySelectorAll(".indicator");
 
+        const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+
         if (!track || slides.length === 0) return;
+        if ((track as HTMLElement).dataset.initialized === "true") return;
+        if (isSmallScreen) {
+            (track as HTMLElement).dataset.initialized = "true";
+            return;
+        }
+
+        (track as HTMLElement).dataset.initialized = "true";
+
+        const enableAutoPlay = !prefersReducedMotion;
 
         let currentIndex = 0;
         const totalSlides = slides.length;
@@ -220,17 +249,21 @@ const { seasons } = Astro.props;
         });
 
         // 自动播放
-        let autoPlayInterval: ReturnType<typeof setInterval>;
+        let autoPlayInterval: ReturnType<typeof setInterval> | null = null;
 
         function startAutoPlay() {
+            if (!enableAutoPlay || autoPlayInterval) return;
             autoPlayInterval = setInterval(nextSlide, 5000); // 5秒切换一次
         }
 
         function stopAutoPlay() {
+            if (!autoPlayInterval) return;
             clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
         }
 
         function resetAutoPlay() {
+            if (!enableAutoPlay) return;
             stopAutoPlay();
             startAutoPlay();
         }
@@ -243,7 +276,7 @@ const { seasons } = Astro.props;
             "touchstart",
             (e) => {
                 touchStartX = e.changedTouches[0].screenX;
-                stopAutoPlay();
+                if (enableAutoPlay) stopAutoPlay();
             },
             { passive: true },
         );
@@ -253,7 +286,7 @@ const { seasons } = Astro.props;
             (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 handleSwipe();
-                startAutoPlay();
+                if (enableAutoPlay) startAutoPlay();
             },
             { passive: true },
         );
@@ -263,17 +296,63 @@ const { seasons } = Astro.props;
             if (touchEndX > touchStartX + 50) prevSlide();
         }
 
-        // 启动
-        startAutoPlay();
+        // 启动：仅在可见时自动播放
+        if (enableAutoPlay) {
+            if (viewport) {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) startAutoPlay();
+                            else stopAutoPlay();
+                        });
+                    },
+                    { threshold: 0.2 },
+                );
+                observer.observe(viewport);
+            } else {
+                startAutoPlay();
+            }
 
-        // 鼠标悬停暂停
-        track.addEventListener("mouseenter", stopAutoPlay);
-        track.addEventListener("mouseleave", startAutoPlay);
+            track.addEventListener("mouseenter", stopAutoPlay);
+            track.addEventListener("mouseleave", startAutoPlay);
+        }
     }
 
     // 初始化
-    document.addEventListener("DOMContentLoaded", initCarousel);
-    document.addEventListener("astro:page-load", initCarousel);
+    function scheduleInit() {
+        const viewport = document.getElementById("seasonsViewport");
+        if (!viewport) return;
+
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            observer.disconnect();
+                            initCarousel();
+                        }
+                    });
+                },
+                { rootMargin: "200px" },
+            );
+            observer.observe(viewport);
+        } else {
+            initCarousel();
+        }
+    }
+
+    if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+    ) {
+        scheduleInit();
+    } else {
+        document.addEventListener("DOMContentLoaded", scheduleInit, {
+            once: true,
+        });
+    }
+
+    document.addEventListener("astro:page-load", scheduleInit);
 </script>
 
 <style>
@@ -581,6 +660,34 @@ const { seasons } = Astro.props;
 
         .members-grid {
             grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .carousel-viewport {
+            box-shadow: none;
+            background: transparent;
+            border: none;
+        }
+
+        .carousel-track {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            transform: none !important;
+        }
+
+        .carousel-slide {
+            padding: 0;
+        }
+
+        .season-card {
+            gap: 1.5rem;
+        }
+
+        .carousel-nav,
+        .carousel-indicators {
+            display: none;
         }
     }
 </style>

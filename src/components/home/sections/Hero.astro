@@ -10,8 +10,23 @@ interface Props {
 
 const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
     Astro.props;
+
+function optimizeImageUrl(url: string, width: number) {
+    if (url.includes("unsplash.com")) {
+        const base = url.split("?")[0];
+        return `${base}?fm=webp&w=${width}&q=80`;
+    }
+    return url;
+}
+
+const largeBg = backgroundImage
+    ? optimizeImageUrl(backgroundImage, 1600)
+    : "";
+const smallBg = backgroundImage
+    ? optimizeImageUrl(backgroundImage, 900)
+    : "";
 const bgStyle = backgroundImage
-    ? `background-image: url(${backgroundImage})`
+    ? `--hero-bg: url(${largeBg}); --hero-bg-mobile: url(${smallBg});`
     : "";
 ---
 
@@ -66,6 +81,7 @@ const bgStyle = backgroundImage
     .hero-bg {
         position: absolute;
         inset: 0;
+        background-image: var(--hero-bg);
         background-size: cover;
         background-position: center;
         opacity: 0.18;
@@ -166,6 +182,9 @@ const bgStyle = backgroundImage
         }
         .hero-heading {
             font-size: 2.5rem;
+        }
+        .hero-bg {
+            background-image: var(--hero-bg-mobile, var(--hero-bg));
         }
     }
 

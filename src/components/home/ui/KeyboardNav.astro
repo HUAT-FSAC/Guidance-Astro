@@ -39,6 +39,9 @@
 
 <script>
     function initKeyboardNav() {
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        if (isSmallScreen) return;
+
         const helpModal = document.getElementById("keyboardHelp");
         const closeBtn = helpModal?.querySelector(".close-btn");
 
@@ -222,5 +225,11 @@
 
     :global([data-theme='light']) .shortcut span {
         color: var(--sl-color-text);
+    }
+
+    @media (max-width: 768px) {
+        .keyboard-help {
+            display: none;
+        }
     }
 </style>

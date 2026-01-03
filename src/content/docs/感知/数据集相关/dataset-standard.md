@@ -12,7 +12,7 @@ title: ⭐ 数据集标注及生成标准
     
     应如图中所示，各项从零开始编号。
 
-    ![naming_standard](./../../../../assets/images/dataset-standard/naming_standard.png)
+    ![naming_standard](./../../../../assets/docs/dataset-standard/naming_standard.png)
 
 
 ### 内容标注规范
@@ -35,7 +35,7 @@ title: ⭐ 数据集标注及生成标准
 
 5. 过于复杂的形状和不必要的物体可以选择不标注，一次总体标注中针对这些物体的标注规则应当一致。
 
-![example](./../../../../assets/images/dataset-standard/unnecessary-label.png)
+![example](./../../../../assets/docs/dataset-standard/unnecessary-label.png)
 
 ## 数据集生成标准
 
@@ -48,3 +48,4 @@ title: ⭐ 数据集标注及生成标准
     故每次生成时组数不能过多，总数量不得超过26。
 
 3. 每组中的图片数量最大值不做限制。
+
