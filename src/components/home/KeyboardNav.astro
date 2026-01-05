@@ -39,30 +39,35 @@
 
 <script>
     function initKeyboardNav() {
+        if (typeof document === "undefined") return;
         const helpModal = document.getElementById("keyboardHelp");
-        const closeBtn = helpModal?.querySelector(".close-btn");
+        if (!helpModal) return;
+
+        // 防止重复初始化
+        if ((helpModal as any).dataset?.huatInit === "1") return;
+        (helpModal as any).dataset.huatInit = "1";
+
+        const closeBtn = helpModal.querySelector(".close-btn");
 
         function showHelp() {
-            helpModal?.classList.add("visible");
+            helpModal.classList.add("visible");
         }
 
         function hideHelp() {
-            helpModal?.classList.remove("visible");
+            helpModal.classList.remove("visible");
         }
 
-        closeBtn?.addEventListener("click", hideHelp);
-        helpModal?.addEventListener("click", (e) => {
-            if (e.target === helpModal) hideHelp();
-        });
+        function onCloseClick() {
+            hideHelp();
+        }
 
-        document.addEventListener("keydown", (e) => {
-            // 忽略输入框中的按键
-            if (
-                ["INPUT", "TEXTAREA"].includes(
-                    (e.target as HTMLElement).tagName,
-                )
-            )
-                return;
+        function onBackgroundClick(e: Event) {
+            if (e.target === helpModal) hideHelp();
+        }
+
+        function onKeydown(e: KeyboardEvent) {
+            const targetTag = (e.target as HTMLElement)?.tagName;
+            if (["INPUT", "TEXTAREA"].includes(targetTag)) return;
 
             switch (e.key) {
                 case "?":
@@ -84,7 +89,7 @@
                     e.preventDefault();
                     const searchBtn = document.querySelector(
                         '[data-pagefind-ui], .search-input, button[aria-label*="Search"]',
-                    ) as HTMLElement;
+                    ) as HTMLElement | null;
                     searchBtn?.click();
                     break;
                 case "j":
@@ -92,7 +97,34 @@
                     window.location.href = "/join/";
                     break;
             }
-        });
+        }
+
+        // 绑定
+        closeBtn?.addEventListener("click", onCloseClick);
+        helpModal.addEventListener("click", onBackgroundClick);
+        document.addEventListener("keydown", onKeydown);
+
+        // cleanup
+        function cleanup() {
+            try {
+                closeBtn?.removeEventListener("click", onCloseClick);
+            } catch (e) {}
+            try {
+                helpModal.removeEventListener("click", onBackgroundClick);
+            } catch (e) {}
+            try {
+                document.removeEventListener("keydown", onKeydown);
+            } catch (e) {}
+            try {
+                delete (helpModal as any).dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete (helpModal as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        (helpModal as any).__huatCleanup = cleanup;
+        window.addEventListener("beforeunload", cleanup);
     }
 
     document.addEventListener("DOMContentLoaded", initKeyboardNav);

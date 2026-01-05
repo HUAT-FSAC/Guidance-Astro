@@ -21,62 +21,103 @@
         var loader = document.getElementById("pageLoader");
         if (!loader) return;
 
+        // 防止重复初始化
+        try {
+            if (loader.dataset && loader.dataset.huatInit === "1") return;
+            loader.dataset.huatInit = "1";
+        } catch (e) {}
+
         var STORAGE_KEY = "huat_fsac_visited";
         var hasVisited = sessionStorage.getItem(STORAGE_KEY);
-
-        if (hasVisited) {
-            // 立即隐藏，防止闪烁
-            loader.style.display = "none";
-            loader.classList.add("loaded");
-
-            // 触发事件，通知依赖此事件的组件 (如 Stats)
-            // 使用 requestAnimationFrame 确保在下一帧触发，给其他脚本一点加载时间
-            requestAnimationFrame(function () {
-                window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
-            });
-            return;
-        }
-
-        // 场景 B: 首次访问
-        // 标记本次会话已访问
-        sessionStorage.setItem(STORAGE_KEY, "true");
 
         var MIN_VISIBLE_MS = 350;
         var MAX_WAIT_MS = 1500;
         var startTime = Date.now();
+        var revealTimeoutId = null;
+        var maxWaitId = null;
 
-        function revealContent() {
-            if (loader.classList.contains("loaded")) return;
-            loader.classList.add("loaded");
-
-            // 等待 CSS transition 完成后彻底隐藏
-            setTimeout(function () {
-                loader.style.display = "none";
+        function dispatchHidden() {
+            requestAnimationFrame(function () {
                 window.dispatchEvent(new CustomEvent("pageLoaderHidden"));
-            }, 250);
-        }
-
-        function hideLoader() {
-            if (loader.classList.contains("loaded")) return;
-            var elapsed = Date.now() - startTime;
-            var delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
-            setTimeout(revealContent, delay);
-        }
-
-        // 首次访问时，等待 DOM 就绪即可隐藏，避免阻塞图片加载
-        if (
-            document.readyState === "complete" ||
-            document.readyState === "interactive"
-        ) {
-            hideLoader();
-        } else {
-            document.addEventListener("DOMContentLoaded", hideLoader, {
-                once: true,
             });
         }
 
-        // 保底策略：如果长时间没有完成，强制进入
-        setTimeout(hideLoader, MAX_WAIT_MS);
+        function revealContent() {
+            try {
+                if (loader.classList.contains("loaded")) return;
+                loader.classList.add("loaded");
+
+                // 等待 CSS transition 完成后彻底隐藏
+                revealTimeoutId = window.setTimeout(function () {
+                    try {
+                        loader.style.display = "none";
+                    } catch (e) {}
+                    dispatchHidden();
+                }, 250);
+            } catch (e) {}
+        }
+
+        function hideLoader() {
+            try {
+                if (loader.classList.contains("loaded")) return;
+                var elapsed = Date.now() - startTime;
+                var delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
+                revealTimeoutId = window.setTimeout(revealContent, delay);
+            } catch (e) {}
+        }
+
+        if (hasVisited) {
+            // 立即隐藏，防止闪烁
+            try {
+                loader.style.display = "none";
+            } catch (e) {}
+            try {
+                loader.classList.add("loaded");
+            } catch (e) {}
+            dispatchHidden();
+        } else {
+            // 标记本次会话已访问
+            try {
+                sessionStorage.setItem(STORAGE_KEY, "true");
+            } catch (e) {}
+
+            // 首次访问时，等待 DOM 就绪即可隐藏，避免阻塞图片加载
+            if (
+                document.readyState === "complete" ||
+                document.readyState === "interactive"
+            ) {
+                hideLoader();
+            } else {
+                document.addEventListener("DOMContentLoaded", hideLoader, {
+                    once: true,
+                });
+            }
+
+            // 保底策略：如果长时间没有完成，强制进入
+            maxWaitId = window.setTimeout(hideLoader, MAX_WAIT_MS);
+        }
+
+        function cleanup() {
+            try {
+                if (revealTimeoutId) clearTimeout(revealTimeoutId);
+            } catch (e) {}
+            try {
+                if (maxWaitId) clearTimeout(maxWaitId);
+            } catch (e) {}
+            try {
+                delete loader.dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete loader.__huatCleanup;
+            } catch (e) {}
+        }
+
+        try {
+            loader.__huatCleanup = cleanup;
+        } catch (e) {}
+        try {
+            window.addEventListener("beforeunload", cleanup);
+        } catch (e) {}
     })();
 </script>
 

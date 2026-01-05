@@ -39,6 +39,7 @@
 
 <script>
     function initLightbox() {
+        if (typeof document === "undefined") return;
         const lightbox = document.getElementById("imageLightbox");
         const lightboxImg = lightbox?.querySelector(
             ".lightbox-image",
@@ -52,31 +53,44 @@
 
         if (!lightbox || !lightboxImg) return;
 
-        // 获取所有文档中的图片
+        // 防止重复初始化
+        if ((lightbox as any).dataset?.huatInit === "1") return;
+        (lightbox as any).dataset.huatInit = "1";
+
+        // 状态与处理器存储
         let images: HTMLImageElement[] = [];
         let currentIndex = 0;
+        const imgHandlers = new WeakMap<HTMLImageElement, EventListener>();
 
-        function collectImages() {
-            images = Array.from(
-                document.querySelectorAll(".sl-markdown-content img"),
-            ) as HTMLImageElement[];
-
-            images.forEach((img, index) => {
-                img.style.cursor = "zoom-in";
-                img.addEventListener("click", () => openLightbox(index));
-            });
+        function onKeydown(e: KeyboardEvent) {
+            if (!lightbox.classList.contains("active")) return;
+            switch (e.key) {
+                case "Escape":
+                    closeLightbox();
+                    break;
+                case "ArrowLeft":
+                    showPrev();
+                    break;
+                case "ArrowRight":
+                    showNext();
+                    break;
+            }
         }
 
         function openLightbox(index: number) {
             currentIndex = index;
             updateLightboxImage();
             lightbox.classList.add("active");
-            document.body.style.overflow = "hidden";
+            try {
+                document.body.style.overflow = "hidden";
+            } catch (err) {}
         }
 
         function closeLightbox() {
             lightbox.classList.remove("active");
-            document.body.style.overflow = "";
+            try {
+                document.body.style.overflow = "";
+            } catch (err) {}
         }
 
         function updateLightboxImage() {
@@ -87,7 +101,6 @@
             lightboxImg.alt = img.alt;
             lightboxCaption.textContent = img.alt || "";
 
-            // 更新导航按钮可见性
             if (prevBtn)
                 prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
             if (nextBtn)
@@ -109,50 +122,85 @@
             }
         }
 
-        // 事件监听
-        closeBtn?.addEventListener("click", closeLightbox);
-        prevBtn?.addEventListener("click", showPrev);
-        nextBtn?.addEventListener("click", showNext);
+        function collectImages() {
+            images = Array.from(
+                document.querySelectorAll(".sl-markdown-content img"),
+            ) as HTMLImageElement[];
 
-        // 点击背景关闭
-        lightbox.addEventListener("click", (e) => {
+            images.forEach((img, index) => {
+                img.style.cursor = "zoom-in";
+                if (!imgHandlers.has(img)) {
+                    const handler = () => openLightbox(index);
+                    img.addEventListener("click", handler);
+                    imgHandlers.set(img, handler);
+                }
+            });
+        }
+
+        // 背景点击关闭（具名）
+        function onBackgroundClick(e: Event) {
             if (e.target === lightbox) closeLightbox();
-        });
-
-        // 键盘导航
-        document.addEventListener("keydown", (e) => {
-            if (!lightbox.classList.contains("active")) return;
-
-            switch (e.key) {
-                case "Escape":
-                    closeLightbox();
-                    break;
-                case "ArrowLeft":
-                    showPrev();
-                    break;
-                case "ArrowRight":
-                    showNext();
-                    break;
-            }
-        });
+        }
 
         // 触摸滑动支持
         let touchStartX = 0;
-        lightbox.addEventListener("touchstart", (e) => {
+        function onTouchStart(e: TouchEvent) {
             touchStartX = e.touches[0].clientX;
-        });
-
-        lightbox.addEventListener("touchend", (e) => {
+        }
+        function onTouchEnd(e: TouchEvent) {
             const touchEndX = e.changedTouches[0].clientX;
             const diff = touchStartX - touchEndX;
-
             if (Math.abs(diff) > 50) {
                 if (diff > 0) showNext();
                 else showPrev();
             }
+        }
+
+        // 绑定 UI 事件（使用命名函数，便于 cleanup）
+        closeBtn?.addEventListener("click", closeLightbox);
+        prevBtn?.addEventListener("click", showPrev);
+        nextBtn?.addEventListener("click", showNext);
+        lightbox.addEventListener("click", onBackgroundClick);
+        document.addEventListener("keydown", onKeydown);
+        lightbox.addEventListener("touchstart", onTouchStart, {
+            passive: true,
         });
+        lightbox.addEventListener("touchend", onTouchEnd, { passive: true });
 
         collectImages();
+
+        // cleanup: 在页面卸载或需要时移除所有监听器
+        function cleanup() {
+            // remove image handlers
+            images.forEach((img) => {
+                const h = imgHandlers.get(img);
+                if (h) img.removeEventListener("click", h);
+                imgHandlers.delete(img);
+            });
+
+            closeBtn?.removeEventListener("click", closeLightbox);
+            prevBtn?.removeEventListener("click", showPrev);
+            nextBtn?.removeEventListener("click", showNext);
+            lightbox.removeEventListener("click", onBackgroundClick);
+            document.removeEventListener("keydown", onKeydown);
+            lightbox.removeEventListener("touchstart", onTouchStart);
+            lightbox.removeEventListener("touchend", onTouchEnd);
+
+            try {
+                document.body.style.overflow = "";
+            } catch (err) {}
+
+            delete (lightbox as any).dataset.huatInit;
+            try {
+                delete (lightbox as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        // 保存 cleanup 引用，供外部（或后续 init）调用
+        (lightbox as any).__huatCleanup = cleanup;
+
+        // 在页面卸载时确保清理
+        window.addEventListener("beforeunload", cleanup);
     }
 
     document.addEventListener("DOMContentLoaded", initLightbox);

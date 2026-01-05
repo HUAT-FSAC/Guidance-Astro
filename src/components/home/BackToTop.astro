@@ -18,8 +18,13 @@
 
 <script>
     function initBackToTop() {
+        if (typeof document === "undefined") return;
         const btn = document.querySelector(".back-to-top") as HTMLElement;
         if (!btn) return;
+
+        // 防止重复初始化
+        if ((btn as any).dataset?.huatInit === "1") return;
+        (btn as any).dataset.huatInit = "1";
 
         function toggleVisibility() {
             if (window.scrollY > 500) {
@@ -29,15 +34,39 @@
             }
         }
 
-        btn.addEventListener("click", () => {
+        function onClick() {
             window.scrollTo({
                 top: 0,
                 behavior: "smooth",
             });
-        });
+        }
 
+        // 绑定具名处理器，便于 cleanup
+        btn.addEventListener("click", onClick);
         window.addEventListener("scroll", toggleVisibility, { passive: true });
         toggleVisibility();
+
+        function cleanup() {
+            try {
+                btn.removeEventListener("click", onClick);
+            } catch (e) {}
+            try {
+                window.removeEventListener(
+                    "scroll",
+                    toggleVisibility as EventListener,
+                );
+            } catch (e) {}
+            try {
+                delete (btn as any).dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete (btn as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        // 保存 cleanup 引用
+        (btn as any).__huatCleanup = cleanup;
+        window.addEventListener("beforeunload", cleanup);
     }
 
     document.addEventListener("DOMContentLoaded", initBackToTop);

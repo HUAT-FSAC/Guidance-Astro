@@ -34,69 +34,100 @@ function parseValue(value: string) {
 </div>
 
 <script>
-    // 数字计数动画
-    function animateCounters() {
-        const counters = document.querySelectorAll(
-            ".stat-item .value[data-target]",
-        );
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const el = entry.target as HTMLElement;
-
-                        // 防止重复动画
-                        if (el.dataset.animated) return;
-                        el.dataset.animated = "true";
-
-                        const target = parseInt(el.dataset.target || "0");
-                        const suffix = el.dataset.suffix || "";
-                        const duration = 2000; // 动画时长 2 秒
-                        const startTime = performance.now();
-
-                        function updateCounter(currentTime: number) {
-                            const elapsed = currentTime - startTime;
-                            const progress = Math.min(elapsed / duration, 1);
-
-                            // 使用 easeOutExpo 缓动函数，让动画更有质感
-                            const easeProgress = 1 - Math.pow(1 - progress, 4);
-                            const current = Math.floor(easeProgress * target);
-
-                            el.textContent = current + suffix;
-
-                            if (progress < 1) {
-                                requestAnimationFrame(updateCounter);
-                            } else {
-                                el.textContent = target + suffix;
-                            }
-                        }
-
-                        requestAnimationFrame(updateCounter);
-                        observer.unobserve(el);
-                    }
-                });
-            },
-            { threshold: 0.1 },
-        );
-
-        counters.forEach((counter) => observer.observe(counter));
-    }
-
-    // 等待 PageLoader 消失后再启动动画
+    // 等待 PageLoader 消失后再启动动画（包含 init guard 与 cleanup）
     function initCounters() {
+        if (typeof document === "undefined") return;
+        const container = document.querySelector(
+            ".stats-bar",
+        ) as HTMLElement | null;
+        if (!container) return;
+
+        // 防止重复初始化
+        if ((container as any).dataset?.huatInit === "1") return;
+        (container as any).dataset.huatInit = "1";
+
+        let counterObserver: IntersectionObserver | null = null;
+        let fallbackId: number | null = null;
+
+        function animateCounters() {
+            const counters = document.querySelectorAll(
+                ".stat-item .value[data-target]",
+            );
+
+            counterObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const el = entry.target as HTMLElement;
+
+                            // 防止重复动画
+                            if (el.dataset.animated) return;
+                            el.dataset.animated = "true";
+
+                            const target = parseInt(el.dataset.target || "0");
+                            const suffix = el.dataset.suffix || "";
+                            const duration = 2000; // 动画时长 2 秒
+                            const startTime = performance.now();
+
+                            function updateCounter(currentTime: number) {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(
+                                    elapsed / duration,
+                                    1,
+                                );
+                                const easeProgress =
+                                    1 - Math.pow(1 - progress, 4);
+                                const current = Math.floor(
+                                    easeProgress * target,
+                                );
+
+                                el.textContent = current + suffix;
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateCounter);
+                                } else {
+                                    el.textContent = target + suffix;
+                                }
+                            }
+
+                            requestAnimationFrame(updateCounter);
+                            counterObserver?.unobserve(el);
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+
+            counters.forEach((counter) => counterObserver?.observe(counter));
+        }
+
         const loader = document.getElementById("pageLoader");
         if (loader && !loader.classList.contains("loaded")) {
-            // PageLoader 还在显示，等待它消失
             window.addEventListener("pageLoaderHidden", animateCounters, {
                 once: true,
             });
-            // 保底策略：如果事件没有触发，3秒后强制启动
-            setTimeout(animateCounters, 3000);
+            fallbackId = window.setTimeout(animateCounters, 3000);
         } else {
-            // PageLoader 已消失或不存在，直接启动
             animateCounters();
         }
+
+        function cleanup() {
+            try {
+                if (counterObserver) counterObserver.disconnect();
+            } catch (e) {}
+            try {
+                if (fallbackId) clearTimeout(fallbackId);
+            } catch (e) {}
+            try {
+                delete (container as any).dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete (container as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        (container as any).__huatCleanup = cleanup;
+        window.addEventListener("beforeunload", cleanup);
     }
 
     // 页面加载完成后初始化

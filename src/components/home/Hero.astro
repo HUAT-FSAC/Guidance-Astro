@@ -60,9 +60,21 @@ const optimizedBg = optimizeBgImage(backgroundImage);
 </section>
 
 <script>
-    // 打字机效果
-    function initTypewriter() {
-        const typewriters = document.querySelectorAll(".typewriter");
+    // 合并初始化，增加 init guard、命名处理器与 cleanup
+    function initHero() {
+        if (typeof document === "undefined") return;
+        const hero = document.querySelector(".hero") as HTMLElement;
+        if (!hero) return;
+
+        // 防止重复初始化
+        if ((hero as any).dataset?.huatInit === "1") return;
+        (hero as any).dataset.huatInit = "1";
+
+        // 打字机效果（可清理的定时器）
+        const typewriters = Array.from(
+            document.querySelectorAll(".typewriter"),
+        ) as HTMLElement[];
+        const timeoutIds: number[] = [];
 
         typewriters.forEach((el) => {
             const text = (el as HTMLElement).dataset.text || "";
@@ -73,50 +85,67 @@ const optimizedBg = optimizeBgImage(backgroundImage);
                 if (index < text.length) {
                     el.textContent += text.charAt(index);
                     index++;
-                    setTimeout(type, 120);
+                    const id = window.setTimeout(type, 120);
+                    timeoutIds.push(id);
                 }
             }
 
-            // 延迟开始，等待页面加载动画
-            setTimeout(type, 800);
+            const startId = window.setTimeout(type, 800);
+            timeoutIds.push(startId);
         });
-    }
 
-    // 视差滚动效果
-    function initParallax() {
-        const bgImage = document.querySelector(".hero-bg-image") as HTMLElement;
+        // 视差滚动效果（具名处理器）
+        const bgImage = document.querySelector(
+            ".hero-bg-image",
+        ) as HTMLElement | null;
         const heroContent = document.querySelector(
             ".hero-content",
-        ) as HTMLElement;
+        ) as HTMLElement | null;
 
-        if (!bgImage || !heroContent) return;
+        function onScroll() {
+            if (!bgImage || !heroContent) return;
+            const scrollY = window.scrollY;
+            const heroHeight =
+                document.querySelector(".hero")?.clientHeight || 0;
 
-        window.addEventListener(
-            "scroll",
-            () => {
-                const scrollY = window.scrollY;
-                const heroHeight =
-                    document.querySelector(".hero")?.clientHeight || 0;
+            if (scrollY < heroHeight) {
+                bgImage.style.transform = `scale(1) translateY(${scrollY * 0.3}px)`;
+                heroContent.style.transform = `translateY(${scrollY * 0.5}px)`;
+                heroContent.style.opacity = `${1 - scrollY / heroHeight}`;
+            }
+        }
 
-                if (scrollY < heroHeight) {
-                    // 背景慢速移动
-                    bgImage.style.transform = `scale(1) translateY(${scrollY * 0.3}px)`;
-                    // 内容快速移动 + 淡出
-                    heroContent.style.transform = `translateY(${scrollY * 0.5}px)`;
-                    heroContent.style.opacity = `${1 - scrollY / heroHeight}`;
-                }
-            },
-            { passive: true },
-        );
+        if (bgImage && heroContent) {
+            window.addEventListener("scroll", onScroll, { passive: true });
+            // 初始化一次
+            onScroll();
+        }
+
+        // cleanup
+        function cleanup() {
+            // clear timeouts
+            timeoutIds.forEach((id) => clearTimeout(id));
+            // remove scroll listener
+            try {
+                window.removeEventListener("scroll", onScroll as EventListener);
+            } catch (e) {}
+            try {
+                delete (hero as any).dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete (hero as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        (hero as any).__huatCleanup = cleanup;
+        window.addEventListener("beforeunload", cleanup);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        initTypewriter();
-        initParallax();
+        initHero();
     });
     document.addEventListener("astro:page-load", () => {
-        initTypewriter();
-        initParallax();
+        initHero();
     });
 </script>
 

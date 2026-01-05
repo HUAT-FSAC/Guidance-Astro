@@ -42,9 +42,20 @@ const { title = "", url = "" } = Astro.props;
 
 <script>
     function initShareButtons() {
-        document.querySelectorAll(".share-btn").forEach((btn) => {
-            btn.addEventListener("click", async () => {
-                const platform = (btn as HTMLElement).dataset.platform;
+        if (typeof document === "undefined") return;
+        const container = document.querySelector(".share-buttons");
+        if (!container) return;
+
+        // 防止重复初始化
+        if ((container as any).dataset?.huatInit === "1") return;
+        (container as any).dataset.huatInit = "1";
+
+        const timeouts = new Map<HTMLElement, number>();
+        const handlerMap = new WeakMap<HTMLElement, EventListener>();
+
+        function makeHandler(btn: HTMLElement) {
+            return async function onClick() {
+                const platform = btn.dataset.platform;
                 const pageTitle = document.title;
                 const pageUrl = window.location.href;
 
@@ -65,17 +76,51 @@ const { title = "", url = "" } = Astro.props;
                         try {
                             await navigator.clipboard.writeText(pageUrl);
                             btn.classList.add("copied");
-                            setTimeout(
-                                () => btn.classList.remove("copied"),
-                                2000,
-                            );
+                            // 清理旧计时
+                            const prev = timeouts.get(btn);
+                            if (prev) clearTimeout(prev);
+                            const id = window.setTimeout(() => {
+                                btn.classList.remove("copied");
+                                timeouts.delete(btn);
+                            }, 2000);
+                            timeouts.set(btn, id);
                         } catch (err) {
                             console.error("复制失败:", err);
                         }
                         break;
                 }
-            });
+            };
+        }
+
+        const buttons = Array.from(
+            document.querySelectorAll(".share-btn"),
+        ) as HTMLElement[];
+        buttons.forEach((btn) => {
+            if (!handlerMap.has(btn)) {
+                const h = makeHandler(btn);
+                handlerMap.set(btn, h as EventListener);
+                btn.addEventListener("click", h as EventListener);
+            }
         });
+
+        function cleanup() {
+            buttons.forEach((btn) => {
+                const h = handlerMap.get(btn) as EventListener | undefined;
+                if (h) btn.removeEventListener("click", h);
+                const t = timeouts.get(btn);
+                if (t) clearTimeout(t);
+            });
+            timeouts.clear();
+            try {
+                delete (container as any).dataset.huatInit;
+            } catch (e) {}
+            try {
+                delete (container as any).__huatCleanup;
+            } catch (e) {}
+        }
+
+        (container as any).__huatCleanup = cleanup;
+        window.addEventListener("beforeunload", cleanup);
     }
 
     document.addEventListener("DOMContentLoaded", initShareButtons);
