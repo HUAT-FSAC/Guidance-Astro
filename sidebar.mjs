@@ -44,7 +44,7 @@ export default [
         ],
     },
     {
-        label: "📘 教程与指南",
+        label: "📘 通用教程与指南",
         collapsed: true,
         items: [
             { label: "2024 无人系统部学习指南", link: "/2024-learning-roadmap/" },
