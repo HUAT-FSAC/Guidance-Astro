@@ -181,25 +181,25 @@ export const seasons: SeasonItem[] = [
 
 export const sponsorGroups: SponsorGroup[] = [
     {
-        name: "核心赞助商",
+        name: "核心赞助",
         items: [
-            { title: "学校名称", logo: "https://via.placeholder.com/200x80/1a1a1a/f39c12?text=University" },
-            { title: "赞助商 A", logo: "https://via.placeholder.com/200x80/1a1a1a/f39c12?text=Sponsor+A" },
-        ]
-    },
-    {
-        name: "战略合作伙伴",
-        items: [
-            { title: "合作伙伴 A", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+A" },
-            { title: "合作伙伴 B", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+B" },
-            { title: "合作伙伴 C", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+C" },
-        ]
-    },
-    {
-        name: "技术支持",
-        items: [
-            { title: "技术支持 A", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+A" },
-            { title: "技术支持 B", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+B" },
+            { title: "湖北汽车工业学院", logo: "./../assets/logos/huat.jpg" },
+            // { title: "赞助商 A", logo: "https://via.placeholder.com/200x80/1a1a1a/f39c12?text=Sponsor+A" },
         ]
     }
+    // {
+    //     name: "战略合作伙伴",
+    //     items: [
+    //         { title: "合作伙伴 A", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+A" },
+    //         { title: "合作伙伴 B", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+B" },
+    //         { title: "合作伙伴 C", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+C" },
+    //     ]
+    // },
+    // {
+    //     name: "技术支持",
+    //     items: [
+    //         { title: "技术支持 A", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+A" },
+    //         { title: "技术支持 B", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+B" },
+    //     ]
+    // }
 ];
