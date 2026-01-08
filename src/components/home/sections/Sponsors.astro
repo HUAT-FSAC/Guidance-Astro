@@ -1,11 +1,15 @@
 ---
 import type { SponsorGroup, SponsorItem } from "../../../data/home";
+import { getImageLoadingStrategy, getImageFetchPriority } from "../../../utils/image-optimization";
 
 interface Props {
     groups: SponsorGroup[];
 }
 
 const { groups } = Astro.props;
+
+const loading = getImageLoadingStrategy(false);
+const fetchPriority = getImageFetchPriority(false);
 ---
 
 {
@@ -14,14 +18,19 @@ const { groups } = Astro.props;
             <h3>{group.name}</h3>
             <div class="sponsor-grid">
                 {group.items.map((sponsor: SponsorItem) => (
-                    <img
-                        src={sponsor.logo}
-                        alt={sponsor.title}
-                        class="sponsor-logo"
-                        title={sponsor.title}
-                        loading="lazy"
-                        decoding="async"
-                    />
+                    <div class="sponsor-card">
+                        <div class="sponsor-image-container">
+                            <img
+                                src={sponsor.logo}
+                                alt={sponsor.title}
+                                class="sponsor-logo"
+                                loading={loading}
+                                fetchpriority={fetchPriority}
+                                decoding="async"
+                            />
+                        </div>
+                        <span class="sponsor-name">{sponsor.title}</span>
+                    </div>
                 ))}
             </div>
         </div>
@@ -37,54 +46,91 @@ const { groups } = Astro.props;
     }
 
     .sponsor-section h3 {
-        opacity: 0.7;
-        font-weight: 400;
+        opacity: 0.9;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 1rem;
+        letter-spacing: 1px;
+        font-size: 1.1rem;
         margin-bottom: 2rem;
+        color: var(--sl-color-white);
     }
 
     .sponsor-grid {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 3rem;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .sponsor-card {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 0.75rem;
+        width: 160px;
+        transition: transform 0.3s ease;
+    }
+    
+    .sponsor-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .sponsor-image-container {
+        width: 100%;
+        height: 100px;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    /* 适配浅色模式 */
+    :global([data-theme="light"]) .sponsor-image-container {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .sponsor-logo {
-        height: 50px;
+        max-width: 100%;
+        max-height: 100%;
         width: auto;
-        padding: 1rem 1.5rem;
-        background: var(--sl-color-gray-6, rgba(255, 255, 255, 0.03));
-        border-radius: 0.75rem;
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.05));
-        filter: grayscale(100%);
-        opacity: 0.6;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    :global([data-theme="light"]) .sponsor-logo {
-        background: rgba(255, 255, 255, 0.8);
-        border-color: rgba(0, 0, 0, 0.1);
-        filter: grayscale(100%) brightness(0.8);
-    }
-
-    .sponsor-logo:hover {
-        filter: grayscale(0%);
+        height: auto;
+        object-fit: contain;
+        filter: none;
         opacity: 1;
-        transform: translateY(-5px) scale(1.05);
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.08));
-        border-color: var(--sl-color-gray-4, rgba(255, 255, 255, 0.15));
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    :global([data-theme="light"]) .sponsor-logo:hover {
-        background: rgba(255, 255, 255, 1);
-        border-color: rgba(0, 0, 0, 0.2);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        filter: grayscale(0%);
+    .sponsor-name {
+        font-size: 0.9rem;
+        color: var(--sl-color-gray-3);
+        font-weight: 500;
+        line-height: 1.3;
+        text-align: center;
+        transition: color 0.3s ease;
+    }
+    
+    :global([data-theme="light"]) .sponsor-name {
+        color: var(--sl-color-gray-2);
+    }
+
+    .sponsor-card:hover .sponsor-image-container {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        border-color: var(--sl-color-accent);
+    }
+    
+    .sponsor-card:hover .sponsor-name {
+        color: var(--sl-color-white);
+    }
+    
+    :global([data-theme="light"]) .sponsor-card:hover .sponsor-name {
+        color: var(--sl-color-accent);
     }
 
     @media (max-width: 768px) {
@@ -92,24 +138,17 @@ const { groups } = Astro.props;
             gap: 1.5rem;
         }
 
-        .sponsor-logo {
-            height: 40px;
-            padding: 0.75rem 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .sponsor-section {
-            margin: 3rem 0;
+        .sponsor-card {
+            width: 130px;
         }
 
-        .sponsor-grid {
-            gap: 1rem;
+        .sponsor-image-container {
+            height: 80px;
+            padding: 10px;
         }
-
-        .sponsor-logo {
-            height: 36px;
-            padding: 0.6rem 0.8rem;
+        
+        .sponsor-name {
+            font-size: 0.85rem;
         }
     }
 </style>

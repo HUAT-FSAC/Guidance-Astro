@@ -1,4 +1,6 @@
 ---
+import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority, generateAltText } from "../../../utils/image-optimization";
+
 interface Props {
     badge?: string;
     title: string;
@@ -19,15 +21,11 @@ const {
     reverse = false,
 } = Astro.props;
 
-function optimizeImageUrl(url: string, width = 900) {
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=webp&w=${width}&q=80`;
-    }
-    return url;
-}
-
-const optimizedImage = optimizeImageUrl(image);
+const optimizedImage = optimizeExternalImage(image, 900, 80);
+const srcSet = generateSrcSet(image, [450, 675, 900]);
+const loading = getImageLoadingStrategy(false);
+const fetchPriority = getImageFetchPriority(false);
+const altText = generateAltText(title, "成就展示");
 ---
 
 <section class="achievement-section">
@@ -56,8 +54,11 @@ const optimizedImage = optimizeImageUrl(image);
         <div class="achievement-image">
             <img
                 src={optimizedImage}
-                alt={title}
-                loading="lazy"
+                srcset={srcSet}
+                sizes="(max-width: 900px) 100vw, 50vw"
+                alt={altText}
+                loading={loading}
+                fetchpriority={fetchPriority}
                 decoding="async"
             />
         </div>

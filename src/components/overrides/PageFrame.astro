@@ -6,13 +6,16 @@
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/PageFrame.astro";
 import ImageLightbox from "../docs/ImageLightbox.astro";
+import ErrorBoundary from "../ErrorBoundary.astro";
 ---
 
-<Default {...Astro.props}>
-    <slot name="header" slot="header" />
-    <slot name="sidebar" slot="sidebar" />
-    <slot />
-</Default>
+<ErrorBoundary>
+    <Default {...Astro.props}>
+        <slot name="header" slot="header" />
+        <slot name="sidebar" slot="sidebar" />
+        <slot />
+    </Default>
+</ErrorBoundary>
 
 <!-- 全局文档组件 -->
 <ImageLightbox />

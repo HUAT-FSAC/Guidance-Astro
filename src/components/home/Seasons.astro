@@ -1,6 +1,7 @@
 ---
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import type { SeasonItem } from "../../data/home";
+import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority } from "../../utils/image-optimization";
 
 interface Props {
     seasons: SeasonItem[];
@@ -18,11 +19,25 @@ const { seasons } = Astro.props;
                         {/* 图片展示区 */}
                         <div class="season-gallery">
                             <div class="gallery-item">
-                                <img src={season.teamImg} alt="Team" />
+                                <img
+                                    src={optimizeExternalImage(season.teamImg, 800, 85)}
+                                    srcset={generateSrcSet(season.teamImg, [400, 600, 800])}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    alt={`${season.year}赛季 HUAT FSAC 团队合影`}
+                                    loading={getImageLoadingStrategy(false)}
+                                    fetchpriority={getImageFetchPriority(false)}
+                                />
                                 <div class="gallery-caption">The Team</div>
                             </div>
                             <div class="gallery-item">
-                                <img src={season.carImg} alt="Car" />
+                                <img
+                                    src={optimizeExternalImage(season.carImg, 800, 85)}
+                                    srcset={generateSrcSet(season.carImg, [400, 600, 800])}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    alt={`${season.year}赛季 HUAT FSAC 赛车`}
+                                    loading={getImageLoadingStrategy(false)}
+                                    fetchpriority={getImageFetchPriority(false)}
+                                />
                                 <div class="gallery-caption">The Machine</div>
                             </div>
                         </div>
@@ -163,10 +178,22 @@ const { seasons } = Astro.props;
         position: relative;
         border-radius: 1.5rem;
         overflow: hidden;
-        aspect-ratio: 16/9;
+        aspect-ratio: 4/3;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    @media (max-width: 768px) {
+        .gallery-item {
+            aspect-ratio: 3/2;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .gallery-item {
+            aspect-ratio: 1/1;
+        }
     }
 
     .gallery-item:hover {
@@ -277,8 +304,23 @@ const { seasons } = Astro.props;
 
     .members-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 1rem;
+        align-items: start;
+    }
+
+    @media (max-width: 768px) {
+        .members-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .members-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
     }
 
     .member-group {
@@ -326,6 +368,17 @@ const { seasons } = Astro.props;
         border-radius: 1rem;
         font-size: 0.9rem;
         transition: all 0.2s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .member-name {
+            font-size: 0.85rem;
+            padding: 0.2rem 0.6rem;
+        }
     }
 
     .member-name:hover {

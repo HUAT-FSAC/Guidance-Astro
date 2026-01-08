@@ -1,11 +1,15 @@
 ---
 import type { SponsorGroup } from "../../data/home";
+import { getImageLoadingStrategy, getImageFetchPriority } from "../../utils/image-optimization";
 
 interface Props {
     groups: SponsorGroup[];
 }
 
 const { groups } = Astro.props;
+
+const loading = getImageLoadingStrategy(false);
+const fetchPriority = getImageFetchPriority(false);
 ---
 
 {
@@ -19,6 +23,8 @@ const { groups } = Astro.props;
                         alt={sponsor.title}
                         class="sponsor-logo"
                         title={sponsor.title}
+                        loading={loading}
+                        fetchpriority={fetchPriority}
                     />
                 ))}
             </div>

@@ -1,4 +1,6 @@
 ---
+import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority } from "../../../utils/image-optimization";
+
 interface Props {
     title: string;
     description: string;
@@ -9,16 +11,10 @@ interface Props {
 
 const { title, description, image, link, date } = Astro.props;
 
-// 优化 Unsplash 图片 URL
-function optimizeImageUrl(url: string): string {
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=webp&w=600&q=80`;
-    }
-    return url;
-}
-
-const optimizedImage = optimizeImageUrl(image);
+const optimizedImage = optimizeExternalImage(image, 600, 80);
+const srcSet = generateSrcSet(image, [300, 450, 600]);
+const loading = getImageLoadingStrategy(false);
+const fetchPriority = getImageFetchPriority(false);
 ---
 
 <a href={link} class="news-card">
@@ -26,8 +22,11 @@ const optimizedImage = optimizeImageUrl(image);
         <div class="image-placeholder"></div>
         <img
             src={optimizedImage}
+            srcset={srcSet}
+            sizes="(max-width: 768px) 100vw, 33vw"
             alt={title}
-            loading="lazy"
+            loading={loading}
+            fetchpriority={fetchPriority}
             decoding="async"
             onload="this.parentElement.classList.add('loaded')"
         />

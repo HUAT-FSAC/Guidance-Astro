@@ -47,7 +47,6 @@ export interface AchievementItem {
 }
 
 // ==================== Hero 区域配置 ====================
-
 export const heroConfig = {
     title: "HUAT FSAC",
     subtitle: "方程式赛车队",
@@ -58,7 +57,6 @@ export const heroConfig = {
 };
 
 // ==================== 统计数据 ====================
-
 export const stats: StatItem[] = [
     { value: "2015", label: "成立年份" },
     { value: "50+", label: "团队成员" },
@@ -66,7 +64,6 @@ export const stats: StatItem[] = [
 ];
 
 // ==================== 成就展示 ====================
-
 export const achievements: AchievementItem[] = [
     {
         badge: "我们的赛车",
@@ -87,7 +84,6 @@ export const achievements: AchievementItem[] = [
 ];
 
 // ==================== 新闻动态 ====================
-
 export const newsItems: NewsItem[] = [
     {
         title: "2024赛季圆满收官",
@@ -113,7 +109,6 @@ export const newsItems: NewsItem[] = [
 ];
 
 // ==================== Formula Student 介绍 ====================
-
 export const formulaStudentInfo = {
     title: "探索 Formula Student 的世界",
     subtitle: "FORMULA STUDENT",
@@ -123,83 +118,19 @@ export const formulaStudentInfo = {
 };
 
 // ==================== 赛季展示 ====================
+// 从 JSON 文件导入赛季数据
+import seasons2025 from "./seasons/2025.json";
+import seasons2024 from "./seasons/2024.json";
+import seasons2023 from "./seasons/2023.json";
 
 export const seasons: SeasonItem[] = [
-    {
-        year: "2025",
-        teamImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
-        carImg: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800",
-        advisor: "金湘遂",
-        captain: "潘世泉",
-        members: [
-            { group: "机械部", names: ["潘世泉", "黄宇轩", "陈柏霖", "罗炯恒", "成杰", "刘文涛", "雷世豪", "汪智强", "闫博", "杨昌鑫", "涂伟麟"] },
-            { group: "电气部", names: ["许基天", "郑雨乐", "郑舟鑫", "周凌", "魏博", "于欣渤", "崔心怡", "汪雅兰", "刘定智", "吴民正", "何流"] },
-            { group: "算法部", names: ["陈子扬", "徐子达", "张鑫跃", "陈娟", "蔡俊翔", "卫冠杰", "金俊杰", "万仁成", "黄昭然"] },
-            { group: "项管部", names: ["房静琳", "熊傲然", "王颂扬"] },
-        ]
-    },
-    {
-        year: "2024",
-        teamImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
-        carImg: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800",
-        advisor: "指导老师",
-        captain: "队长姓名",
-        members: [
-            { group: "算法部 - 惯导", names: ["成员A", "成员B"] },
-            { group: "算法部 - 雷达", names: ["成员C", "成员D"] },
-            { group: "算法部 - 视觉", names: ["成员E", "成员F"] },
-            { group: "算法部 - 规划控制", names: ["蔡俊翔", "成员G"] },
-            { group: "电气部 - 线束", names: ["成员H", "成员I"] },
-            { group: "电气部 - 软件", names: ["成员J", "成员K"] },
-            { group: "电气部 - 硬件", names: ["成员L", "成员M"] },
-            { group: "电气部 - 电池箱", names: ["成员N", "成员O"] },
-            { group: "机械部 - 转向悬架", names: ["成员P", "成员Q"] },
-            { group: "机械部 - 传动", names: ["成员R", "成员S"] },
-            { group: "机械部 - 车架车身", names: ["成员T", "成员U"] },
-            { group: "机械部 - 制动", names: ["成员V", "成员W"] },
-            { group: "项管部 - 新媒体", names: ["成员X"] },
-            { group: "项管部 - 营销", names: ["成员Y"] },
-            { group: "项管部 - 运营", names: ["成员Z"] },
-        ]
-    },
-    {
-        year: "2023",
-        teamImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
-        carImg: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800",
-        advisor: "指导老师",
-        captain: "队长姓名",
-        members: [
-            { group: "算法部", names: ["成员A", "成员B", "成员C"] },
-            { group: "电气部", names: ["成员D", "成员E", "成员F"] },
-            { group: "机械部", names: ["成员G", "成员H", "成员I"] },
-            { group: "项管部", names: ["成员J", "成员K"] },
-        ]
-    },
+    ...seasons2025,
+    ...seasons2024,
+    ...seasons2023,
 ];
 
 // ==================== 赞助商 ====================
+// 从 JSON 文件导入赞助商数据
+import sponsorsData from "./sponsors.json";
 
-export const sponsorGroups: SponsorGroup[] = [
-    {
-        name: "核心赞助",
-        items: [
-            { title: "湖北汽车工业学院", logo: "./../assets/logos/huat.jpg" },
-            // { title: "赞助商 A", logo: "https://via.placeholder.com/200x80/1a1a1a/f39c12?text=Sponsor+A" },
-        ]
-    }
-    // {
-    //     name: "战略合作伙伴",
-    //     items: [
-    //         { title: "合作伙伴 A", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+A" },
-    //         { title: "合作伙伴 B", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+B" },
-    //         { title: "合作伙伴 C", logo: "https://via.placeholder.com/150x60/1a1a1a/888?text=Partner+C" },
-    //     ]
-    // },
-    // {
-    //     name: "技术支持",
-    //     items: [
-    //         { title: "技术支持 A", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+A" },
-    //         { title: "技术支持 B", logo: "https://via.placeholder.com/120x50/1a1a1a/666?text=Tech+B" },
-    //     ]
-    // }
-];
+export const sponsorGroups: SponsorGroup[] = sponsorsData.groups;

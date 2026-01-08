@@ -48,7 +48,8 @@
     position: relative;
 }
 
-.sl-markdown-content h2::before {
+/* 只在主要内容的 h2 上显示装饰条，子标题不显示 */
+.sl-markdown-content>h2::before {
     content: '';
     position: absolute;
     left: 0;
@@ -57,6 +58,13 @@
     height: 3px;
     background: var(--sl-color-accent);
     border-radius: 2px;
+}
+
+/* 子标题不显示装饰条 */
+.sl-markdown-content h3 h2::before,
+.sl-markdown-content h4 h2::before,
+.sl-markdown-content h2 h2::before {
+    display: none;
 }
 
 .sl-markdown-content h3 {
@@ -93,6 +101,14 @@
 
 .sl-markdown-content a:hover {
     border-bottom-color: var(--sl-color-accent);
+}
+
+:root[data-theme='light'] .sl-markdown-content a {
+    color: #d48806;
+}
+
+:root[data-theme='light'] .sl-markdown-content a:hover {
+    color: #b56a00;
 }
 
 /* ==================== 列表样式 ==================== */
@@ -162,6 +178,7 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--card-shadow);
+    table-layout: auto;
 }
 
 .sl-markdown-content th {
@@ -171,15 +188,57 @@
     text-align: left;
     padding: 1rem;
     border-bottom: 2px solid var(--sl-color-accent);
+    white-space: nowrap;
 }
 
 .sl-markdown-content td {
     padding: 0.875rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .sl-markdown-content tr:hover td {
     background: rgba(255, 255, 255, 0.03);
+}
+
+/* 表格响应式容器 */
+.sl-markdown-content .table-wrapper {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+}
+
+.sl-markdown-content .table-wrapper table {
+    margin: 0;
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+
+    .sl-markdown-content table,
+    .sl-markdown-content .table-wrapper table {
+        font-size: 0.9rem;
+    }
+
+    .sl-markdown-content th,
+    .sl-markdown-content td {
+        padding: 0.75rem 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .sl-markdown-content table,
+    .sl-markdown-content .table-wrapper table {
+        font-size: 0.85rem;
+    }
+
+    .sl-markdown-content th,
+    .sl-markdown-content td {
+        padding: 0.625rem 0.75rem;
+    }
 }
 
 /* ==================== 代码样式 ==================== */

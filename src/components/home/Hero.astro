@@ -1,4 +1,12 @@
 ---
+import {
+    optimizeExternalImage,
+    generateSrcSet,
+    getImageLoadingStrategy,
+    getImageFetchPriority,
+} from "../../utils/image-optimization";
+import { handleImageError } from "../../utils/error-handling";
+
 interface Props {
     title: string;
     subtitle: string;
@@ -11,40 +19,41 @@ interface Props {
 const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
     Astro.props;
 
-// 优化背景图片 URL（支持 Unsplash WebP 格式）
-function optimizeBgImage(url?: string): string {
-    if (!url) return "";
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=webp&w=1920&q=85`;
-    }
-    return url;
-}
-
-const optimizedBg = optimizeBgImage(backgroundImage);
+const optimizedBg = optimizeExternalImage(backgroundImage, 1920, 85);
+const srcSet = generateSrcSet(backgroundImage, [800, 1200, 1920]);
+const loading = getImageLoadingStrategy(true);
+const fetchPriority = getImageFetchPriority(true);
 ---
 
 <section class="hero">
     <div class="hero-bg-wrapper">
         <img
             src={optimizedBg}
+            srcset={srcSet}
+            sizes="100vw"
             alt=""
             class="hero-bg-image"
-            loading="eager"
+            loading={loading}
+            fetchpriority={fetchPriority}
             decoding="async"
             onload="this.parentElement.classList.add('loaded')"
+            onerror={(event) => {
+                const img = event.target as HTMLImageElement;
+                handleImageError(img);
+            }}
         />
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1 class="hero-title">
-            <span class="typewriter" data-text={title}></span>
+            <span class="typewriter" data-text={title} aria-live="polite"
+            ></span>
         </h1>
         <p class="hero-subtitle">{subtitle}</p>
         <p class="hero-description">{description}</p>
-        <a href={ctaLink} class="hero-cta">{ctaText}</a>
+        <a href={ctaLink} class="hero-cta" aria-label={ctaText}>{ctaText}</a>
     </div>
-    <div class="hero-scroll-indicator">
+    <div class="hero-scroll-indicator" aria-hidden="true">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -53,6 +62,7 @@ const optimizedBg = optimizeBgImage(backgroundImage);
             fill="none"
             stroke="currentColor"
             stroke-width="2"
+            aria-label="向下滚动"
         >
             <path d="M12 5v14M19 12l-7 7-7-7"></path>
         </svg>
@@ -60,24 +70,16 @@ const optimizedBg = optimizeBgImage(backgroundImage);
 </section>
 
 <script>
-    // 合并初始化，增加 init guard、命名处理器与 cleanup
+    import { setupComponentLifecycle } from "../../utils/component-initialization";
+
     function initHero() {
-        if (typeof document === "undefined") return;
-        const hero = document.querySelector(".hero") as HTMLElement;
-        if (!hero) return;
-
-        // 防止重复初始化
-        if ((hero as any).dataset?.huatInit === "1") return;
-        (hero as any).dataset.huatInit = "1";
-
-        // 打字机效果（可清理的定时器）
         const typewriters = Array.from(
             document.querySelectorAll(".typewriter"),
         ) as HTMLElement[];
         const timeoutIds: number[] = [];
 
         typewriters.forEach((el) => {
-            const text = (el as HTMLElement).dataset.text || "";
+            const text = el.dataset.text || "";
             let index = 0;
             el.textContent = "";
 
@@ -94,7 +96,6 @@ const optimizedBg = optimizeBgImage(backgroundImage);
             timeoutIds.push(startId);
         });
 
-        // 视差滚动效果（具名处理器）
         const bgImage = document.querySelector(
             ".hero-bg-image",
         ) as HTMLElement | null;
@@ -117,36 +118,18 @@ const optimizedBg = optimizeBgImage(backgroundImage);
 
         if (bgImage && heroContent) {
             window.addEventListener("scroll", onScroll, { passive: true });
-            // 初始化一次
             onScroll();
         }
 
-        // cleanup
-        function cleanup() {
-            // clear timeouts
+        return function cleanup() {
             timeoutIds.forEach((id) => clearTimeout(id));
-            // remove scroll listener
             try {
-                window.removeEventListener("scroll", onScroll as EventListener);
+                window.removeEventListener("scroll", onScroll);
             } catch (e) {}
-            try {
-                delete (hero as any).dataset.huatInit;
-            } catch (e) {}
-            try {
-                delete (hero as any).__huatCleanup;
-            } catch (e) {}
-        }
-
-        (hero as any).__huatCleanup = cleanup;
-        window.addEventListener("beforeunload", cleanup);
+        };
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        initHero();
-    });
-    document.addEventListener("astro:page-load", () => {
-        initHero();
-    });
+    setupComponentLifecycle(".hero", initHero);
 </script>
 
 <style>
@@ -196,9 +179,9 @@ const optimizedBg = optimizeBgImage(backgroundImage);
     :global([data-theme="light"]) .hero-overlay {
         background: linear-gradient(
             180deg,
-            rgba(255, 255, 255, 0.7) 0%,
-            rgba(255, 255, 255, 0.5) 50%,
-            rgba(255, 255, 255, 0.8) 100%
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0.2) 50%,
+            rgba(0, 0, 0, 0.4) 100%
         );
     }
 
@@ -223,7 +206,7 @@ const optimizedBg = optimizeBgImage(backgroundImage);
     }
 
     :global([data-theme="light"]) .hero-title {
-        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
 
     /* 打字机光标效果 */

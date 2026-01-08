@@ -38,29 +38,25 @@
 </div>
 
 <script>
+    import { setupComponentLifecycle } from "../../utils/component-initialization";
+
     function initLightbox() {
-        if (typeof document === "undefined") return;
-        const lightbox = document.getElementById("imageLightbox");
+        const lightbox = document.getElementById("imageLightbox") as HTMLElement | null;
         const lightboxImg = lightbox?.querySelector(
             ".lightbox-image",
-        ) as HTMLImageElement;
+        ) as HTMLImageElement | null;
         const lightboxCaption = lightbox?.querySelector(
             ".lightbox-caption",
-        ) as HTMLElement;
+        ) as HTMLElement | null;
         const closeBtn = lightbox?.querySelector(".lightbox-close");
         const prevBtn = lightbox?.querySelector(".lightbox-prev");
         const nextBtn = lightbox?.querySelector(".lightbox-next");
 
         if (!lightbox || !lightboxImg) return;
 
-        // 防止重复初始化
-        if ((lightbox as any).dataset?.huatInit === "1") return;
-        (lightbox as any).dataset.huatInit = "1";
-
-        // 状态与处理器存储
         let images: HTMLImageElement[] = [];
         let currentIndex = 0;
-        const imgHandlers = new WeakMap<HTMLImageElement, EventListener>();
+        const imgHandlers = new WeakMap<HTMLImageElement, () => void>();
 
         function onKeydown(e: KeyboardEvent) {
             if (!lightbox.classList.contains("active")) return;
@@ -99,7 +95,9 @@
 
             lightboxImg.src = img.src;
             lightboxImg.alt = img.alt;
-            lightboxCaption.textContent = img.alt || "";
+            if (lightboxCaption) {
+                lightboxCaption.textContent = img.alt || "";
+            }
 
             if (prevBtn)
                 prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
@@ -137,12 +135,10 @@
             });
         }
 
-        // 背景点击关闭（具名）
         function onBackgroundClick(e: Event) {
             if (e.target === lightbox) closeLightbox();
         }
 
-        // 触摸滑动支持
         let touchStartX = 0;
         function onTouchStart(e: TouchEvent) {
             touchStartX = e.touches[0].clientX;
@@ -156,7 +152,6 @@
             }
         }
 
-        // 绑定 UI 事件（使用命名函数，便于 cleanup）
         closeBtn?.addEventListener("click", closeLightbox);
         prevBtn?.addEventListener("click", showPrev);
         nextBtn?.addEventListener("click", showNext);
@@ -169,9 +164,7 @@
 
         collectImages();
 
-        // cleanup: 在页面卸载或需要时移除所有监听器
-        function cleanup() {
-            // remove image handlers
+        return function cleanup() {
             images.forEach((img) => {
                 const h = imgHandlers.get(img);
                 if (h) img.removeEventListener("click", h);
@@ -189,22 +182,10 @@
             try {
                 document.body.style.overflow = "";
             } catch (err) {}
-
-            delete (lightbox as any).dataset.huatInit;
-            try {
-                delete (lightbox as any).__huatCleanup;
-            } catch (e) {}
-        }
-
-        // 保存 cleanup 引用，供外部（或后续 init）调用
-        (lightbox as any).__huatCleanup = cleanup;
-
-        // 在页面卸载时确保清理
-        window.addEventListener("beforeunload", cleanup);
+        };
     }
 
-    document.addEventListener("DOMContentLoaded", initLightbox);
-    document.addEventListener("astro:page-load", initLightbox);
+    setupComponentLifecycle("#imageLightbox", initLightbox);
 </script>
 
 <style>

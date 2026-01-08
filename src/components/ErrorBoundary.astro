@@ -1,0 +1,165 @@
+---
+/**
+ * 错误边界组件
+ * 捕获子组件中的错误，显示友好的错误信息
+ */
+
+interface Props {
+    fallback?: string;
+    showErrorDetails?: boolean;
+}
+
+const { fallback = "组件加载失败，请刷新页面重试。", showErrorDetails = false } = Astro.props;
+---
+
+<slot />
+
+<div id="error-boundary" class="error-boundary" style="display: none;">
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h2 class="error-title">出错了</h2>
+        <p class="error-message">{fallback}</p>
+        {showErrorDetails && (
+            <div class="error-details">
+                <h3>错误详情</h3>
+                <pre id="error-stack" class="error-stack"></pre>
+            </div>
+        )}
+        <button class="error-retry" onclick="window.location.reload()">
+            刷新页面
+        </button>
+    </div>
+</div>
+
+<script>
+    import { setupGlobalErrorHandlers, registerErrorHandler, ErrorType, type ErrorInfo } from "../utils/error-handling";
+
+    // 设置全局错误处理器
+    setupGlobalErrorHandlers();
+
+    // 注册错误处理器
+    const unregister = registerErrorHandler(ErrorType.COMPONENT_ERROR, (error: ErrorInfo) => {
+        const errorBoundary = document.getElementById("error-boundary");
+        if (!errorBoundary) return;
+
+        const errorStack = document.getElementById("error-stack");
+        if (errorStack && error.stack) {
+            errorStack.textContent = error.stack;
+        }
+
+        errorBoundary.style.display = "flex";
+    });
+
+    // 在页面卸载时清理事件监听器
+    document.addEventListener("astro:page-load", () => {
+        unregister();
+    });
+
+    // 在组件卸载时清理
+    window.addEventListener("beforeunload", () => {
+        unregister();
+    });
+</script>
+
+<style>
+    .error-boundary {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .error-container {
+        background: var(--sl-color-bg);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--sl-color-gray-5);
+    }
+
+    .error-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .error-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--sl-color-text);
+        margin: 0 0 1rem 0;
+    }
+
+    .error-message {
+        font-size: 1rem;
+        color: var(--sl-color-text-gray);
+        line-height: 1.6;
+        margin: 0 0 1.5rem 0;
+    }
+
+    .error-details {
+        background: var(--sl-color-gray-6);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .error-details h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--sl-color-text);
+        margin: 0 0 0.75rem 0;
+    }
+
+    .error-stack {
+        font-size: 0.75rem;
+        color: var(--sl-color-gray-2);
+        background: var(--sl-color-gray-7);
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin: 0;
+    }
+
+    .error-retry {
+        background: var(--sl-color-accent);
+        color: #000;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .error-retry:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+    }
+
+    @media (max-width: 640px) {
+        .error-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+
+        .error-icon {
+            font-size: 3rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>

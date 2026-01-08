@@ -17,11 +17,141 @@ export default defineConfig({
 				"./src/styles/code-blocks.css",
 			],
 			head: [
+				// SEO 元数据
+				{
+					tag: "meta",
+					attrs: {
+						name: "description",
+						content: "HUAT FSAC - 湖北汽车工业学院方程式赛车队。我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "keywords",
+						content: "HUAT, FSAC, Formula Student, 方程式赛车, 无人驾驶, 赛车, 湖北汽车工业学院",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						property: "og:title",
+						content: "HUAT FSAC - 方程式赛车队",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						property: "og:description",
+						content: "我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						property: "og:type",
+						content: "website",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						property: "og:url",
+						content: "https://huat-fsac.eu.org",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						property: "og:image",
+						content: "https://huat-fsac.eu.org/og-image.jpg",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "twitter:card",
+						content: "summary_large_image",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "twitter:title",
+						content: "HUAT FSAC - 方程式赛车队",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "twitter:description",
+						content: "我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "twitter:image",
+						content: "https://huat-fsac.eu.org/og-image.jpg",
+					},
+				},
+				// 性能优化：DNS 预解析
+				{
+					tag: "link",
+					attrs: {
+						rel: "dns-prefetch",
+						href: "https://images.unsplash.com",
+					},
+				},
+				{
+					tag: "link",
+					attrs: {
+						rel: "dns-prefetch",
+						href: "https://cloud.umami.is",
+					},
+				},
+				// 性能优化：预连接
+				{
+					tag: "link",
+					attrs: {
+						rel: "preconnect",
+						href: "https://images.unsplash.com",
+					},
+				},
+				{
+					tag: "link",
+					attrs: {
+						rel: "preconnect",
+						href: "https://cloud.umami.is",
+					},
+				},
+				// 性能优化：预加载关键资源
+				{
+					tag: "link",
+					attrs: {
+						rel: "preload",
+						href: "/favicon.png",
+						as: "image",
+						type: "image/png",
+					},
+				},
+				// 性能优化：预加载首屏字体（如果使用）
+				{
+					tag: "link",
+					attrs: {
+						rel: "preload",
+						href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+						as: "style",
+						crossorigin: "anonymous",
+					},
+				},
+				// 分析脚本
 				{
 					tag: "script",
 					attrs: {
 						src: "https://cloud.umami.is/script.js",
 						"data-website-id": "e25fd750-bde4-4599-a440-99ed5a381af0",
+						defer: true,
 					},
 				},
 			],

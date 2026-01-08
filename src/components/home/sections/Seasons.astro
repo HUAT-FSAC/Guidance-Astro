@@ -1,5 +1,6 @@
 ---
 import type { SeasonItem } from "../../../data/home";
+import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority } from "../../../utils/image-optimization";
 
 interface Props {
     seasons: SeasonItem[];
@@ -7,13 +8,8 @@ interface Props {
 
 const { seasons } = Astro.props;
 
-function optimizeImageUrl(url: string, width = 900) {
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=webp&w=${width}&q=80`;
-    }
-    return url;
-}
+const loading = getImageLoadingStrategy(false);
+const fetchPriority = getImageFetchPriority(false);
 ---
 
 <div class="seasons-carousel-container">
@@ -21,8 +17,11 @@ function optimizeImageUrl(url: string, width = 900) {
         <div class="carousel-track" id="seasonsTrack">
             {
                 seasons.map((season, index) => {
-                    const teamImg = optimizeImageUrl(season.teamImg);
-                    const carImg = optimizeImageUrl(season.carImg);
+                    const isValidUrl = (url: string | undefined) => url && url.startsWith('http');
+                    const teamImg = isValidUrl(season.teamImg) ? optimizeExternalImage(season.teamImg, 900, 80) : '';
+                    const carImg = isValidUrl(season.carImg) ? optimizeExternalImage(season.carImg, 900, 80) : '';
+                    const teamSrcSet = isValidUrl(season.teamImg) ? generateSrcSet(season.teamImg, [450, 675, 900]) : '';
+                    const carSrcSet = isValidUrl(season.carImg) ? generateSrcSet(season.carImg, [450, 675, 900]) : '';
                     return (
                         <div class="carousel-slide" data-index={index}>
                         <div class="season-card">
@@ -34,28 +33,38 @@ function optimizeImageUrl(url: string, width = 900) {
                             <div class="season-content">
                                 {/* 图片展示区 */}
                                 <div class="season-gallery">
-                                    <div class="gallery-item">
-                                        <img
-                                            src={teamImg}
-                                            alt={`${season.year} Team`}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                        <div class="gallery-caption">
-                                            The Team
+                                    {teamImg && (
+                                        <div class="gallery-item">
+                                            <img
+                                                src={teamImg}
+                                                srcset={teamSrcSet}
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                alt={`${season.year} Team`}
+                                                loading={loading}
+                                                fetchpriority={fetchPriority}
+                                                decoding="async"
+                                            />
+                                            <div class="gallery-caption">
+                                                The Team
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="gallery-item">
-                                        <img
-                                            src={carImg}
-                                            alt={`${season.year} Car`}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                        <div class="gallery-caption">
-                                            The Machine
+                                    )}
+                                    {carImg && (
+                                        <div class="gallery-item">
+                                            <img
+                                                src={carImg}
+                                                srcset={carSrcSet}
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                alt={`${season.year} Car`}
+                                                loading={loading}
+                                                fetchpriority={fetchPriority}
+                                                decoding="async"
+                                            />
+                                            <div class="gallery-caption">
+                                                The Machine
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {/* 团队信息区 */}
@@ -568,8 +577,8 @@ function optimizeImageUrl(url: string, width = 900) {
     }
 
     .group-members {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 0.5rem;
     }
 
@@ -579,6 +588,12 @@ function optimizeImageUrl(url: string, width = 900) {
         background: rgba(255, 255, 255, 0.05);
         padding: 0.1rem 0.4rem;
         border-radius: 4px;
+        text-align: center;
+        box-sizing: border-box;
+        height: 24px;
+        line-height: 22px;
+        display: inline-block;
+        vertical-align: middle;
     }
 
     :global([data-theme="light"]) .member-name {

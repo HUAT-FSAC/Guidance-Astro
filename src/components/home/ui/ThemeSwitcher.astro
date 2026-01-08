@@ -246,17 +246,27 @@ const themes: ThemeOption[] = [
         gap: 0.5rem;
         padding: 0.5rem 1rem 0.75rem;
         justify-content: flex-end;
-        align-items: center;
+        align-items: stretch;
     }
 
     .mode-btn {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: var(--sl-color-text);
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem 1rem;
         border-radius: 0.375rem;
         cursor: pointer;
         font-size: 0.85rem;
+        min-width: 64px;
+        width: 64px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        line-height: 1;
+        box-sizing: border-box;
+        vertical-align: middle;
     }
 
     :global([data-theme="light"]) .mode-btn {
