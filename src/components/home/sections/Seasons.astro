@@ -1,15 +1,14 @@
 ---
 import type { SeasonItem } from "../../../data/home";
-import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority } from "../../../utils/image-optimization";
+import { optimizeExternalImage } from "../../../utils/image-optimization";
+import ChevronLeft from "../../icons/ChevronLeft.astro";
+import ChevronRight from "../../icons/ChevronRight.astro";
 
 interface Props {
     seasons: SeasonItem[];
 }
 
 const { seasons } = Astro.props;
-
-const loading = getImageLoadingStrategy(false);
-const fetchPriority = getImageFetchPriority(false);
 ---
 
 <div class="seasons-carousel-container">
@@ -17,11 +16,8 @@ const fetchPriority = getImageFetchPriority(false);
         <div class="carousel-track" id="seasonsTrack">
             {
                 seasons.map((season, index) => {
-                    const isValidUrl = (url: string | undefined) => url && url.startsWith('http');
-                    const teamImg = isValidUrl(season.teamImg) ? optimizeExternalImage(season.teamImg, 900, 80) : '';
-                    const carImg = isValidUrl(season.carImg) ? optimizeExternalImage(season.carImg, 900, 80) : '';
-                    const teamSrcSet = isValidUrl(season.teamImg) ? generateSrcSet(season.teamImg, [450, 675, 900]) : '';
-                    const carSrcSet = isValidUrl(season.carImg) ? generateSrcSet(season.carImg, [450, 675, 900]) : '';
+                    const teamImg = optimizeExternalImage(season.teamImg, 900);
+                    const carImg = optimizeExternalImage(season.carImg, 900);
                     return (
                         <div class="carousel-slide" data-index={index}>
                         <div class="season-card">
@@ -33,38 +29,28 @@ const fetchPriority = getImageFetchPriority(false);
                             <div class="season-content">
                                 {/* 图片展示区 */}
                                 <div class="season-gallery">
-                                    {teamImg && (
-                                        <div class="gallery-item">
-                                            <img
-                                                src={teamImg}
-                                                srcset={teamSrcSet}
-                                                sizes="(max-width: 768px) 100vw, 50vw"
-                                                alt={`${season.year} Team`}
-                                                loading={loading}
-                                                fetchpriority={fetchPriority}
-                                                decoding="async"
-                                            />
-                                            <div class="gallery-caption">
-                                                The Team
-                                            </div>
+                                    <div class="gallery-item">
+                                        <img
+                                            src={teamImg}
+                                            alt={`${season.year} Team`}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                        <div class="gallery-caption">
+                                            The Team
                                         </div>
-                                    )}
-                                    {carImg && (
-                                        <div class="gallery-item">
-                                            <img
-                                                src={carImg}
-                                                srcset={carSrcSet}
-                                                sizes="(max-width: 768px) 100vw, 50vw"
-                                                alt={`${season.year} Car`}
-                                                loading={loading}
-                                                fetchpriority={fetchPriority}
-                                                decoding="async"
-                                            />
-                                            <div class="gallery-caption">
-                                                The Machine
-                                            </div>
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img
+                                            src={carImg}
+                                            alt={`${season.year} Car`}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                        <div class="gallery-caption">
+                                            The Machine
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
 
                                 {/* 团队信息区 */}
@@ -147,30 +133,10 @@ const fetchPriority = getImageFetchPriority(false);
 
     {/* 导航按钮 */}
     <button class="carousel-nav prev" id="prevBtn" aria-label="Previous Season">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg
-        >
+        <ChevronLeft size={24} />
     </button>
     <button class="carousel-nav next" id="nextBtn" aria-label="Next Season">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg
-        >
+        <ChevronRight size={24} />
     </button>
 
     {/* 指示器 */}
@@ -577,8 +543,8 @@ const fetchPriority = getImageFetchPriority(false);
     }
 
     .group-members {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        display: flex;
+        flex-wrap: wrap;
         gap: 0.5rem;
     }
 
@@ -588,12 +554,6 @@ const fetchPriority = getImageFetchPriority(false);
         background: rgba(255, 255, 255, 0.05);
         padding: 0.1rem 0.4rem;
         border-radius: 4px;
-        text-align: center;
-        box-sizing: border-box;
-        height: 24px;
-        line-height: 22px;
-        display: inline-block;
-        vertical-align: middle;
     }
 
     :global([data-theme="light"]) .member-name {

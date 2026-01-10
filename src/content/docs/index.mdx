@@ -23,6 +23,7 @@ import ScrollProgress from '../../components/home/ui/ScrollProgress.astro';
 import BackToTop from '../../components/home/ui/BackToTop.astro';
 import KeyboardNav from '../../components/home/ui/KeyboardNav.astro';
 import ParticleBackground from '../../components/home/ui/ParticleBackground.astro';
+import MobileNavigation from '../../components/home/ui/MobileNavigation.astro';
 import { 
   heroConfig, 
   stats, 
@@ -51,6 +52,13 @@ import {
   
   .sl-markdown-content {
     max-width: 100% !important;
+  }
+  
+  /* 移动端为固定导航栏留出空间 */
+  @media (max-width: 768px) {
+    main {
+      padding-top: 60px !important;
+    }
   }
   
   /* Apple 风格极简深色背景 - 仅在暗色模式下生效 */
@@ -213,6 +221,7 @@ import {
 <KeyboardNav />
 <ParticleBackground />
 <ThemeSwitcher />
+<MobileNavigation />
 
 {/* ==================== Hero 区域 ==================== */}
 <Hero 

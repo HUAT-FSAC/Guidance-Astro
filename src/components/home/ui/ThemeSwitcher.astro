@@ -1,50 +1,31 @@
 ---
 // 主题色切换组件 - 可在不同赛季主题色间切换
+import Sun from "../../icons/Sun.astro";
+
 interface ThemeOption {
-    name: string;
-    color: string;
-    accent: string;
+    name: string
+    color: string
+    accent: string
 }
 
 const themes: ThemeOption[] = [
-    { name: "经典橙", color: "#f39c12", accent: "#e67e22" },
-    { name: "电竞蓝", color: "#3498db", accent: "#2980b9" },
-    { name: "赛道红", color: "#e74c3c", accent: "#c0392b" },
-    { name: "科技紫", color: "#9b59b6", accent: "#8e44ad" },
-    { name: "极速绿", color: "#2ecc71", accent: "#27ae60" },
-];
+    { name: '经典橙', color: '#f39c12', accent: '#e67e22' },
+    { name: '电竞蓝', color: '#3498db', accent: '#2980b9' },
+    { name: '赛道红', color: '#e74c3c', accent: '#c0392b' },
+    { name: '科技紫', color: '#9b59b6', accent: '#8e44ad' },
+    { name: '极速绿', color: '#2ecc71', accent: '#27ae60' },
+]
 ---
 
 <div class="theme-switcher">
     <button class="theme-toggle" aria-label="切换主题色" title="切换主题色">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-        >
-            <circle cx="12" cy="12" r="5"></circle>
-            <path
-                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-            ></path>
-        </svg>
+        <Sun size={20} />
     </button>
     <div class="theme-dropdown">
         <div class="theme-dropdown-header">🎨 主题色</div>
         <div class="mode-controls" aria-hidden="false">
-            <button
-                class="mode-btn"
-                data-mode="light"
-                aria-label="切换到亮色模式">亮</button
-            >
-            <button
-                class="mode-btn"
-                data-mode="dark"
-                aria-label="切换到暗色模式">暗</button
-            >
+            <button class="mode-btn" data-mode="light" aria-label="切换到亮色模式">亮</button>
+            <button class="mode-btn" data-mode="dark" aria-label="切换到暗色模式">暗</button>
         </div>
         {
             themes.map((theme, index) => (
@@ -64,96 +45,106 @@ const themes: ThemeOption[] = [
 </div>
 
 <script>
+    // 安全的 localStorage 操作函数
+    function safeGetItem(key: string): string | null {
+        try {
+            return localStorage.getItem(key);
+        } catch {
+            return null;
+        }
+    }
+
+    function safeSetItem(key: string, value: string): void {
+        try {
+            localStorage.setItem(key, value);
+        } catch {
+            console.warn(`Failed to save ${key} to localStorage`);
+        }
+    }
+
     function initThemeSwitcher() {
-        const toggle = document.querySelector(".theme-toggle");
-        const dropdown = document.querySelector(".theme-dropdown");
-        const options = document.querySelectorAll(".theme-option");
-        const modeButtons = document.querySelectorAll(".mode-btn");
+        const toggle = document.querySelector('.theme-toggle')
+        const dropdown = document.querySelector('.theme-dropdown')
+        const options = document.querySelectorAll('.theme-option')
+        const modeButtons = document.querySelectorAll('.mode-btn')
 
         // 读取并应用已保存的亮/暗模式（优先）
-        const savedScheme = localStorage.getItem("huat-color-scheme");
+        const savedScheme = safeGetItem('huat-color-scheme')
         if (savedScheme) {
-            document.documentElement.setAttribute("data-theme", savedScheme);
-            updateModeButtons(savedScheme);
-        } else if (
-            window.matchMedia &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-        ) {
-            document.documentElement.setAttribute("data-theme", "dark");
-            updateModeButtons("dark");
+            document.documentElement.setAttribute('data-theme', savedScheme)
+            updateModeButtons(savedScheme)
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark')
+            updateModeButtons('dark')
         }
 
         // 从 localStorage 读取保存的主题
-        const savedTheme = localStorage.getItem("huat-theme-color");
-        const savedAccent = localStorage.getItem("huat-theme-accent");
+        const savedTheme = safeGetItem('huat-theme-color')
+        const savedAccent = safeGetItem('huat-theme-accent')
         if (savedTheme && savedAccent) {
-            applyTheme(savedTheme, savedAccent);
+            applyTheme(savedTheme, savedAccent)
         }
 
         // 切换下拉菜单
-        toggle?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            dropdown?.classList.toggle("active");
-        });
+        toggle?.addEventListener('click', (e) => {
+            e.stopPropagation()
+            dropdown?.classList.toggle('active')
+        })
 
         // 点击选项应用主题
         options.forEach((option) => {
-            option.addEventListener("click", () => {
-                const color = (option as HTMLElement).dataset.color;
-                const accent = (option as HTMLElement).dataset.accent;
+            option.addEventListener('click', () => {
+                const color = (option as HTMLElement).dataset.color
+                const accent = (option as HTMLElement).dataset.accent
                 if (color && accent) {
-                    applyTheme(color, accent);
-                    localStorage.setItem("huat-theme-color", color);
-                    localStorage.setItem("huat-theme-accent", accent);
+                    applyTheme(color, accent)
+                    safeSetItem('huat-theme-color', color)
+                    safeSetItem('huat-theme-accent', accent)
                 }
-                dropdown?.classList.remove("active");
-            });
-        });
+                dropdown?.classList.remove('active')
+            })
+        })
 
         // 点击外部关闭下拉菜单
-        document.addEventListener("click", () => {
-            dropdown?.classList.remove("active");
-        });
+        document.addEventListener('click', () => {
+            dropdown?.classList.remove('active')
+        })
 
         // 亮/暗模式按钮处理
         modeButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const mode = (btn as HTMLElement).dataset.mode;
-                if (mode === "light" || mode === "dark") {
-                    document.documentElement.setAttribute("data-theme", mode);
-                    localStorage.setItem("huat-color-scheme", mode);
-                    updateModeButtons(mode);
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation()
+                const mode = (btn as HTMLElement).dataset.mode
+                if (mode === 'light' || mode === 'dark') {
+                    document.documentElement.setAttribute('data-theme', mode)
+                    safeSetItem('huat-color-scheme', mode)
+                    updateModeButtons(mode)
                 }
-            });
-        });
+            })
+        })
     }
 
     function applyTheme(color: string, accent: string) {
-        document.documentElement.style.setProperty("--sl-color-accent", color);
-        document.documentElement.style.setProperty(
-            "--sl-color-accent-high",
-            accent,
-        );
+        document.documentElement.style.setProperty('--sl-color-accent', color)
+        document.documentElement.style.setProperty('--sl-color-accent-high', accent)
 
         // 更新选中状态
-        document.querySelectorAll(".theme-option").forEach((opt) => {
-            opt.classList.remove("active");
+        document.querySelectorAll('.theme-option').forEach((opt) => {
+            opt.classList.remove('active')
             if ((opt as HTMLElement).dataset.color === color) {
-                opt.classList.add("active");
+                opt.classList.add('active')
             }
-        });
+        })
     }
 
-    document.addEventListener("DOMContentLoaded", initThemeSwitcher);
-    document.addEventListener("astro:page-load", initThemeSwitcher);
+    document.addEventListener('DOMContentLoaded', initThemeSwitcher)
+    document.addEventListener('astro:page-load', initThemeSwitcher)
 
     function updateModeButtons(mode: string) {
-        document.querySelectorAll(".mode-btn").forEach((b) => {
-            b.classList.remove("active");
-            if ((b as HTMLElement).dataset.mode === mode)
-                b.classList.add("active");
-        });
+        document.querySelectorAll('.mode-btn').forEach((b) => {
+            b.classList.remove('active')
+            if ((b as HTMLElement).dataset.mode === mode) b.classList.add('active')
+        })
     }
 </script>
 
@@ -182,7 +173,7 @@ const themes: ThemeOption[] = [
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-    :global([data-theme="light"]) .theme-toggle {
+    :global([data-theme='light']) .theme-toggle {
         background: rgba(255, 255, 255, 0.8);
         color: #000;
         border-color: rgba(0, 0, 0, 0.1);
@@ -195,7 +186,7 @@ const themes: ThemeOption[] = [
         border-color: var(--sl-color-accent);
     }
 
-    :global([data-theme="light"]) .theme-toggle:hover {
+    :global([data-theme='light']) .theme-toggle:hover {
         background: #fff;
     }
 
@@ -217,7 +208,7 @@ const themes: ThemeOption[] = [
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
-    :global([data-theme="light"]) .theme-dropdown {
+    :global([data-theme='light']) .theme-dropdown {
         background: rgba(255, 255, 255, 0.95);
         border-color: rgba(0, 0, 0, 0.1);
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -236,8 +227,7 @@ const themes: ThemeOption[] = [
         text-transform: uppercase;
         letter-spacing: 1px;
         color: var(--sl-color-gray-3, rgba(255, 255, 255, 0.5));
-        border-bottom: 1px solid
-            var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
+        border-bottom: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
         margin-bottom: 0.5rem;
     }
 
@@ -269,7 +259,7 @@ const themes: ThemeOption[] = [
         vertical-align: middle;
     }
 
-    :global([data-theme="light"]) .mode-btn {
+    :global([data-theme='light']) .mode-btn {
         border-color: rgba(0, 0, 0, 0.06);
         color: #111;
     }
@@ -299,7 +289,7 @@ const themes: ThemeOption[] = [
         background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
     }
 
-    :global([data-theme="light"]) .theme-option:hover {
+    :global([data-theme='light']) .theme-option:hover {
         background: rgba(0, 0, 0, 0.05);
     }
 
@@ -307,7 +297,7 @@ const themes: ThemeOption[] = [
         background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.15));
     }
 
-    :global([data-theme="light"]) .theme-option.active {
+    :global([data-theme='light']) .theme-option.active {
         background: rgba(0, 0, 0, 0.1);
     }
 

@@ -1,0 +1,315 @@
+---
+/**
+ * 移动端导航组件
+ * 仅在移动端显示，提供汉堡菜单和侧滑抽屉导航
+ */
+interface NavItem {
+    label: string;
+    link: string;
+}
+
+const navItems: NavItem[] = [
+    { label: "🏠 首页", link: "/" },
+    { label: "🤝 加入我们", link: "/join/" },
+    { label: "👥 团队", link: "/team/" },
+    { label: "🚗 赛车", link: "/cars/" },
+    { label: "ℹ️ 关于 Formula Student", link: "/about-fs/" },
+    { label: "📚 2024 学习指南", link: "/2024-learning-roadmap/" },
+];
+---
+
+<div class="mobile-nav" id="mobileNav">
+    <!-- 导航栏 -->
+    <nav class="mobile-nav-bar">
+        <a href="/" class="mobile-nav-logo">
+            <span class="logo-text">HUAT</span>
+            <span class="logo-accent">FSAC</span>
+        </a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+    </nav>
+
+    <!-- 遮罩层 -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+    <!-- 抽屉菜单 -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">导航菜单</span>
+            <button class="drawer-close" id="drawerClose" aria-label="关闭菜单">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <ul class="drawer-nav-list">
+            {navItems.map((item) => (
+                <li>
+                    <a href={item.link} class="drawer-nav-link">{item.label}</a>
+                </li>
+            ))}
+        </ul>
+        <div class="drawer-footer">
+            <a href="https://github.com/HUAT-FSAC" class="drawer-footer-link" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initMobileNav() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileNavDrawer');
+        const overlay = document.getElementById('mobileNavOverlay');
+        const closeBtn = document.getElementById('drawerClose');
+        const navLinks = document.querySelectorAll('.drawer-nav-link');
+        
+        function openDrawer() {
+            drawer?.classList.add('active');
+            overlay?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDrawer() {
+            drawer?.classList.remove('active');
+            overlay?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        menuBtn?.addEventListener('click', openDrawer);
+        closeBtn?.addEventListener('click', closeDrawer);
+        overlay?.addEventListener('click', closeDrawer);
+        
+        // 点击导航链接后关闭菜单
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeDrawer);
+        });
+        
+        // ESC 键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && drawer?.classList.contains('active')) {
+                closeDrawer();
+            }
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', initMobileNav);
+    document.addEventListener('astro:page-load', initMobileNav);
+</script>
+
+<style>
+    .mobile-nav {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .mobile-nav {
+            display: block;
+        }
+    }
+    
+    .mobile-nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+        z-index: 1001;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme='light']) .mobile-nav-bar {
+        background: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-nav-logo {
+        font-size: 1.25rem;
+        font-weight: 800;
+        text-decoration: none;
+        display: flex;
+        gap: 0.25rem;
+    }
+    
+    .logo-text {
+        color: #fff;
+    }
+    
+    :global([data-theme='light']) .logo-text {
+        color: #000;
+    }
+    
+    .logo-accent {
+        color: var(--sl-color-accent, #f39c12);
+    }
+    
+    .mobile-menu-btn {
+        width: 44px;
+        height: 44px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 10px;
+    }
+    
+    .hamburger-line {
+        width: 22px;
+        height: 2px;
+        background: #fff;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    :global([data-theme='light']) .hamburger-line {
+        background: #000;
+    }
+    
+    .mobile-nav-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1002;
+    }
+    
+    .mobile-nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .mobile-nav-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 280px;
+        max-width: 85vw;
+        height: 100vh;
+        background: #0a0a0a;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 1003;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    :global([data-theme='light']) .mobile-nav-drawer {
+        background: #fff;
+    }
+    
+    .mobile-nav-drawer.active {
+        transform: translateX(0);
+    }
+    
+    .drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme='light']) .drawer-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .drawer-title {
+        font-weight: 600;
+        color: var(--sl-color-text, #fff);
+    }
+    
+    .drawer-close {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        color: var(--sl-color-text, #fff);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: background 0.2s ease;
+    }
+    
+    .drawer-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme='light']) .drawer-close:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .drawer-nav-list {
+        list-style: none;
+        padding: 1rem 0;
+        margin: 0;
+        flex: 1;
+    }
+    
+    .drawer-nav-link {
+        display: block;
+        padding: 1rem 1.25rem;
+        color: var(--sl-color-text, #fff);
+        text-decoration: none;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .drawer-nav-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-left-color: var(--sl-color-accent, #f39c12);
+        color: var(--sl-color-accent, #f39c12);
+    }
+    
+    :global([data-theme='light']) .drawer-nav-link:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+    
+    .drawer-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme='light']) .drawer-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .drawer-footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--sl-color-text, #fff);
+        opacity: 0.7;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+    
+    .drawer-footer-link:hover {
+        opacity: 1;
+        color: var(--sl-color-accent, #f39c12);
+    }
+</style>

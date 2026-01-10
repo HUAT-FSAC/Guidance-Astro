@@ -9,8 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "clean": "rimraf .astro dist",
-    "lint": "eslint . --ext .ts,.tsx,.astro",
-    "lint:fix": "eslint . --ext .ts,.tsx,.astro --fix",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "format": "prettier --write \"**/*.{ts,tsx,astro,css,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,astro,css,md,json}\"",
     "prepare": "husky install"

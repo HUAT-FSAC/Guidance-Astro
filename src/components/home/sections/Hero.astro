@@ -1,4 +1,7 @@
 ---
+import { optimizeExternalImage } from "../../../utils/image-optimization";
+import ArrowRight from "../../icons/ArrowRight.astro";
+
 interface Props {
     title: string;
     subtitle: string;
@@ -11,19 +14,11 @@ interface Props {
 const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
     Astro.props;
 
-function optimizeImageUrl(url: string, width: number) {
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=webp&w=${width}&q=80`;
-    }
-    return url;
-}
-
 const largeBg = backgroundImage
-    ? optimizeImageUrl(backgroundImage, 1600)
+    ? optimizeExternalImage(backgroundImage, 1600, 80)
     : "";
 const smallBg = backgroundImage
-    ? optimizeImageUrl(backgroundImage, 900)
+    ? optimizeExternalImage(backgroundImage, 900, 80)
     : "";
 const bgStyle = backgroundImage
     ? `--hero-bg: url(${largeBg}); --hero-bg-mobile: url(${smallBg});`
@@ -42,20 +37,7 @@ const bgStyle = backgroundImage
 
         <a class="hero-cta" href={ctaLink} role="button">
             <span class="hero-cta-text">{ctaText}</span>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path d="M5 12h14"></path>
-                <path d="M12 5l7 7-7 7"></path>
-            </svg>
+            <ArrowRight size={18} />
         </a>
     </div>
 </section>

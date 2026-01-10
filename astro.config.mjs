@@ -6,6 +6,9 @@ import sidebar from "./sidebar.mjs";
 export default defineConfig({
 	site: "https://huat-fsac.eu.org",
 	trailingSlash: "always",
+	redirects: {
+		"/docs/": "/",
+	},
 	integrations: [
 		starlight({
 			title: "FSAC AST Docs",
