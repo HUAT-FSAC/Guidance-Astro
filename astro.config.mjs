@@ -67,7 +67,7 @@ export default defineConfig({
 					tag: "meta",
 					attrs: {
 						property: "og:image",
-						content: "https://huat-fsac.eu.org/og-image.jpg",
+						content: "https://huat-fsac.eu.org/og-image.png",
 					},
 				},
 				{
@@ -95,7 +95,7 @@ export default defineConfig({
 					tag: "meta",
 					attrs: {
 						name: "twitter:image",
-						content: "https://huat-fsac.eu.org/og-image.jpg",
+						content: "https://huat-fsac.eu.org/og-image.png",
 					},
 				},
 				// 性能优化：DNS 预解析
@@ -157,6 +157,47 @@ export default defineConfig({
 						defer: true,
 					},
 				},
+				// PWA Manifest
+				{
+					tag: "link",
+					attrs: {
+						rel: "manifest",
+						href: "/manifest.json",
+					},
+				},
+				// PWA 主题色
+				{
+					tag: "meta",
+					attrs: {
+						name: "theme-color",
+						content: "#f39c12",
+					},
+				},
+				// Apple Touch Icon
+				{
+					tag: "link",
+					attrs: {
+						rel: "apple-touch-icon",
+						href: "/favicon.png",
+					},
+				},
+				// Service Worker 注册
+				{
+					tag: "script",
+					content: `
+						if ('serviceWorker' in navigator) {
+							window.addEventListener('load', function() {
+								navigator.serviceWorker.register('/sw.js')
+									.then(function(registration) {
+										console.log('[SW] Registration successful:', registration.scope);
+									})
+									.catch(function(error) {
+										console.log('[SW] Registration failed:', error);
+									});
+							});
+						}
+					`,
+				},
 			],
 			logo: { src: "./src/assets/logo-canvas.png" },
 			social: [{ icon: "github", label: "GitHub", href: "https://github.com/HUAT-FSAC" }],
@@ -165,6 +206,10 @@ export default defineConfig({
 			components: {
 				// 添加图片灯箱等全局功能
 				PageFrame: './src/components/overrides/PageFrame.astro',
+				// 自定义内容区域，添加阅读进度和编辑链接
+				MarkdownContent: './src/components/overrides/MarkdownContent.astro',
+				// 自定义页面标题，添加面包屑导航
+				PageTitle: './src/components/overrides/PageTitle.astro',
 			},
 			sidebar,
 			lastUpdated: true,

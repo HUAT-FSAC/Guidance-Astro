@@ -54,7 +54,7 @@ starlight-theme-select {
     position: relative;
 }
 
-/* 只在主要内容的 h2 上显示装饰条，子标题不显示 */
+/* 只在主要内容的 h2 上显示装饰条，子标题和嵌套元素不显示 */
 .sl-markdown-content>h2::before {
     content: '';
     position: absolute;
@@ -66,10 +66,27 @@ starlight-theme-select {
     border-radius: 2px;
 }
 
-/* 子标题不显示装饰条 */
+/* 隐藏嵌套元素中的装饰条 */
 .sl-markdown-content h3 h2::before,
 .sl-markdown-content h4 h2::before,
-.sl-markdown-content h2 h2::before {
+.sl-markdown-content h2 h2::before,
+.sl-markdown-content .starlight-aside h2::before,
+.sl-markdown-content .sl-link-card h2::before,
+.sl-markdown-content starlight-tabs h2::before,
+.sl-markdown-content blockquote h2::before,
+.sl-markdown-content details h2::before,
+.sl-markdown-content .card h2::before {
+    display: none;
+}
+
+/* 页面侧边栏目录中不显示装饰条 */
+starlight-toc h2::before,
+nav.sidebar h2::before {
+    display: none !important;
+}
+
+/* 通过 CSS 类可按需隐藏装饰条 */
+.sl-markdown-content h2.no-decoration::before {
     display: none;
 }
 

@@ -1,0 +1,160 @@
+---
+/**
+ * 搜索快捷键提示组件
+ * 显示搜索快捷键 (Ctrl+K / ⌘+K) 并增强搜索体验
+ */
+---
+
+<div class="search-hint" role="status" aria-live="polite">
+    <kbd class="search-kbd">
+        <span class="search-kbd-key ctrl">Ctrl</span>
+        <span class="search-kbd-plus">+</span>
+        <span class="search-kbd-key">K</span>
+    </kbd>
+    <span class="search-hint-text">快速搜索</span>
+</div>
+
+<script>
+    function initSearchHint() {
+        const hint = document.querySelector('.search-hint');
+        if (!hint) return;
+        
+        // Detect Mac
+        const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+        const ctrlKey = hint.querySelector('.ctrl');
+        
+        if (isMac && ctrlKey) {
+            ctrlKey.textContent = '⌘';
+        }
+        
+        // Click to trigger search
+        hint.addEventListener('click', () => {
+            // Starlight's search button
+            const searchButton = document.querySelector('[data-pagefind-ui] button, .search-input, [aria-label*="Search"], starlight-search button');
+            if (searchButton) {
+                (searchButton as HTMLElement).click();
+            } else {
+                // Fallback: dispatch keyboard event
+                document.dispatchEvent(new KeyboardEvent('keydown', {
+                    key: 'k',
+                    ctrlKey: !isMac,
+                    metaKey: isMac,
+                    bubbles: true
+                }));
+            }
+        });
+        
+        // Show/hide based on scroll
+        let ticking = false;
+        
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
+                    
+                    if (currentScrollY > 200) {
+                        hint.classList.add('hidden');
+                    } else {
+                        hint.classList.remove('hidden');
+                    }
+                    
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+    
+    // Initialize
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSearchHint);
+    } else {
+        initSearchHint();
+    }
+    
+    document.addEventListener('astro:page-load', initSearchHint);
+</script>
+
+<style>
+    .search-hint {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background: rgba(30, 30, 30, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        z-index: 90;
+    }
+    
+    .search-hint:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .search-hint.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+    }
+    
+    :global([data-theme="light"]) .search-hint {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .search-kbd {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .search-kbd-key {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.5rem;
+        padding: 0.2rem 0.4rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-family: inherit;
+        font-weight: 600;
+        color: var(--sl-color-text);
+    }
+    
+    :global([data-theme="light"]) .search-kbd-key {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.15);
+    }
+    
+    .search-kbd-plus {
+        font-size: 0.7rem;
+        opacity: 0.6;
+    }
+    
+    .search-hint-text {
+        font-size: 0.8rem;
+        color: var(--sl-color-text);
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        .search-hint {
+            display: none;
+        }
+    }
+</style>

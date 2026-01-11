@@ -1,0 +1,189 @@
+---
+/**
+ * 面包屑导航组件
+ * 显示当前页面的层级路径
+ */
+
+interface BreadcrumbItem {
+    label: string;
+    href: string;
+    current?: boolean;
+}
+
+interface Props {
+    /** 自定义面包屑项（可选，默认从 URL 解析） */
+    items?: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+// 路径映射（美化显示名称）
+const pathLabels: Record<string, string> = {
+    '2024-learning-roadmap': '2024 学习路线',
+    '2025': '2025 赛季',
+    '感知': '感知',
+    '定位建图': '定位建图',
+    '规控': '规控',
+    '仿真测试': '仿真测试',
+    '电气': '电气',
+    '机械': '机械',
+    '项管': '项管',
+    'docs': '文档',
+    'join': '加入我们',
+    'team': '团队介绍',
+    'news': '新闻',
+    '文档中心': '文档中心',
+    '入门': '入门指南',
+};
+
+// 从 URL 解析面包屑
+function parseBreadcrumbs(pathname: string): BreadcrumbItem[] {
+    const segments = pathname.split('/').filter(Boolean);
+    const breadcrumbs: BreadcrumbItem[] = [
+        { label: '首页', href: '/' }
+    ];
+    
+    let currentPath = '';
+    
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i];
+        currentPath += `/${segment}`;
+        
+        // 解码 URL 编码的中文
+        const decodedSegment = decodeURIComponent(segment);
+        const label = pathLabels[decodedSegment] || decodedSegment;
+        
+        const isLast = i === segments.length - 1;
+        
+        breadcrumbs.push({
+            label,
+            href: currentPath + '/',
+            current: isLast
+        });
+    }
+    
+    return breadcrumbs;
+}
+
+const breadcrumbs = items || parseBreadcrumbs(Astro.url.pathname);
+---
+
+{breadcrumbs.length > 1 && (
+    <nav class="breadcrumbs" aria-label="面包屑导航">
+        <ol class="breadcrumbs-list">
+            {breadcrumbs.map((item, index) => (
+                <li class="breadcrumbs-item">
+                    {index > 0 && (
+                        <span class="breadcrumbs-separator" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </span>
+                    )}
+                    {item.current ? (
+                        <span class="breadcrumbs-current" aria-current="page">
+                            {item.label}
+                        </span>
+                    ) : (
+                        <a href={item.href} class="breadcrumbs-link">
+                            {index === 0 && (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                            )}
+                            <span>{item.label}</span>
+                        </a>
+                    )}
+                </li>
+            ))}
+        </ol>
+    </nav>
+)}
+
+<style>
+    .breadcrumbs {
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme="light"]) .breadcrumbs {
+        border-bottom-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .breadcrumbs-list {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.875rem;
+    }
+    
+    .breadcrumbs-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .breadcrumbs-separator {
+        display: flex;
+        align-items: center;
+        opacity: 0.4;
+        margin: 0 0.25rem;
+    }
+    
+    .breadcrumbs-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--sl-color-text);
+        text-decoration: none;
+        opacity: 0.7;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+    
+    .breadcrumbs-link:hover {
+        opacity: 1;
+        color: var(--sl-color-accent);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    :global([data-theme="light"]) .breadcrumbs-link:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+    
+    .breadcrumbs-current {
+        color: var(--sl-color-accent);
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .breadcrumbs {
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumbs-list {
+            font-size: 0.8rem;
+        }
+        
+        /* 在移动端隐藏中间的面包屑项 */
+        .breadcrumbs-item:not(:first-child):not(:last-child) {
+            display: none;
+        }
+        
+        /* 显示省略号 */
+        .breadcrumbs-item:first-child + .breadcrumbs-item:not(:last-child)::before {
+            content: '...';
+            opacity: 0.5;
+            margin-right: 0.5rem;
+        }
+    }
+</style>

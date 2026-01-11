@@ -26,8 +26,8 @@ const bgStyle = backgroundImage
 ---
 
 <section class="hero-v2" role="region" aria-label="Hero">
-    <div class="hero-bg" style={bgStyle}></div>
-    <div class="hero-overlay"></div>
+    <div class="hero-bg" role="presentation" aria-hidden="true" style={bgStyle}></div>
+    <div class="hero-overlay" role="presentation" aria-hidden="true"></div>
 
     <div class="hero-inner">
         <div class="hero-label">FORMULA STUDENT</div>
@@ -35,9 +35,9 @@ const bgStyle = backgroundImage
         {subtitle && <div class="hero-sub">{subtitle}</div>}
         {description && <p class="hero-desc">{description}</p>}
 
-        <a class="hero-cta" href={ctaLink} role="button">
+        <a class="hero-cta" href={ctaLink} role="button" aria-label={`${ctaText} - 开始探索赛车队内容`}>
             <span class="hero-cta-text">{ctaText}</span>
-            <ArrowRight size={18} />
+            <ArrowRight size={18} aria-hidden="true" />
         </a>
     </div>
 </section>

@@ -1,0 +1,184 @@
+---
+/**
+ * 阅读进度组件
+ * 显示顶部进度条和预计阅读时间
+ */
+
+interface Props {
+    /** 文档内容（用于计算阅读时间） */
+    content?: string;
+    /** 每分钟阅读字数（中文默认 300） */
+    wordsPerMinute?: number;
+}
+
+const { content = '', wordsPerMinute = 300 } = Astro.props;
+
+// 计算预计阅读时间
+function calculateReadingTime(text: string, wpm: number): number {
+    // 移除 HTML 标签和代码块
+    const cleanText = text
+        .replace(/<[^>]*>/g, '')
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/`[^`]*`/g, '');
+    
+    // 计算中文字符和英文单词
+    const chineseChars = (cleanText.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const englishWords = cleanText
+        .replace(/[\u4e00-\u9fa5]/g, '')
+        .split(/\s+/)
+        .filter(word => word.length > 0).length;
+    
+    const totalWordEquivalent = chineseChars + englishWords;
+    const minutes = Math.ceil(totalWordEquivalent / wpm);
+    
+    return Math.max(1, minutes);
+}
+
+const readingTime = calculateReadingTime(content, wordsPerMinute);
+---
+
+<div class="reading-progress-container">
+    <!-- 顶部进度条 -->
+    <div class="reading-progress-bar" id="readingProgressBar">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+    
+    <!-- 阅读时间提示 -->
+    <div class="reading-time-badge" id="readingTimeBadge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>约 {readingTime} 分钟阅读</span>
+        <span class="progress-percent" id="progressPercent">0%</span>
+    </div>
+</div>
+
+<script>
+    function initReadingProgress() {
+        const progressFill = document.getElementById('readingProgressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const badge = document.getElementById('readingTimeBadge');
+        
+        if (!progressFill || !progressPercent) return;
+        
+        let ticking = false;
+        
+        const updateProgress = () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            
+            if (docHeight <= 0) {
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                return;
+            }
+            
+            const progress = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+            progressFill.style.width = `${progress}%`;
+            progressPercent.textContent = `${progress}%`;
+            
+            // 滚动后隐藏时间徽章
+            if (badge) {
+                if (scrollTop > 200) {
+                    badge.classList.add('scrolled');
+                } else {
+                    badge.classList.remove('scrolled');
+                }
+            }
+        };
+        
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateProgress();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        updateProgress(); // 初始化
+    }
+    
+    // 初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initReadingProgress);
+    } else {
+        initReadingProgress();
+    }
+    
+    document.addEventListener('astro:page-load', initReadingProgress);
+</script>
+
+<style>
+    .reading-progress-container {
+        position: relative;
+    }
+    
+    .reading-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+    }
+    
+    :global([data-theme="light"]) .reading-progress-bar {
+        background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .reading-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high, #f39c12));
+        transition: width 0.1s ease-out;
+        border-radius: 0 2px 2px 0;
+    }
+    
+    .reading-time-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        color: var(--sl-color-text);
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    :global([data-theme="light"]) .reading-time-badge {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .reading-time-badge.scrolled {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    
+    .progress-percent {
+        padding-left: 0.5rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+        color: var(--sl-color-accent);
+    }
+    
+    :global([data-theme="light"]) .progress-percent {
+        border-left-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .reading-time-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.75rem;
+        }
+    }
+</style>

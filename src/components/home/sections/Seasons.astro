@@ -11,9 +11,9 @@ interface Props {
 const { seasons } = Astro.props;
 ---
 
-<div class="seasons-carousel-container">
+<div class="seasons-carousel-container" role="region" aria-roledescription="carousel" aria-label="赛季回顾">
     <div class="carousel-viewport" id="seasonsViewport">
-        <div class="carousel-track" id="seasonsTrack">
+        <div class="carousel-track" id="seasonsTrack" aria-live="polite">
             {
                 seasons.map((season, index) => {
                     const teamImg = optimizeExternalImage(season.teamImg, 900);
@@ -32,7 +32,7 @@ const { seasons } = Astro.props;
                                     <div class="gallery-item">
                                         <img
                                             src={teamImg}
-                                            alt={`${season.year} Team`}
+                                            alt={`${season.year} 赛季团队合影`}
                                             loading="lazy"
                                             decoding="async"
                                         />
@@ -43,7 +43,7 @@ const { seasons } = Astro.props;
                                     <div class="gallery-item">
                                         <img
                                             src={carImg}
-                                            alt={`${season.year} Car`}
+                                            alt={`${season.year} 赛季赛车`}
                                             loading="lazy"
                                             decoding="async"
                                         />

@@ -1,0 +1,18 @@
+---
+/**
+ * 自定义 PageTitle 组件
+ * 添加面包屑导航
+ */
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+import Breadcrumbs from "../docs/Breadcrumbs.astro";
+
+// 检查是否是首页（不显示面包屑）
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+---
+
+{/* 面包屑导航 - 仅文档页面显示 */}
+{!isHomePage && <Breadcrumbs />}
+
+{/* 默认页面标题 */}
+<Default {...Astro.props} />

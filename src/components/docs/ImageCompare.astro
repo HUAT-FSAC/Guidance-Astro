@@ -1,0 +1,307 @@
+---
+/**
+ * 图片对比滑块组件
+ * 拖动滑块对比两张图片的前后效果
+ */
+
+interface Props {
+    /** 左侧图片（"之前"） */
+    beforeSrc: string;
+    /** 右侧图片（"之后"） */
+    afterSrc: string;
+    /** 左侧图片描述 */
+    beforeLabel?: string;
+    /** 右侧图片描述 */
+    afterLabel?: string;
+    /** 图片 alt 文本 */
+    alt?: string;
+    /** 初始滑块位置（0-100） */
+    initialPosition?: number;
+}
+
+const {
+    beforeSrc,
+    afterSrc,
+    beforeLabel = '之前',
+    afterLabel = '之后',
+    alt = '图片对比',
+    initialPosition = 50
+} = Astro.props;
+---
+
+<div 
+    class="image-compare" 
+    data-initial={initialPosition}
+    role="img" 
+    aria-label={alt}
+>
+    <div class="image-compare-container">
+        <!-- 之后图片（底层） -->
+        <img 
+            src={afterSrc} 
+            alt={`${alt} - ${afterLabel}`}
+            class="image-after"
+            loading="lazy"
+            decoding="async"
+        />
+        
+        <!-- 之前图片（上层，可裁剪） -->
+        <div class="image-before-wrapper" style={`width: ${initialPosition}%`}>
+            <img 
+                src={beforeSrc} 
+                alt={`${alt} - ${beforeLabel}`}
+                class="image-before"
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+        
+        <!-- 滑块手柄 -->
+        <div class="slider-handle" style={`left: ${initialPosition}%`} role="slider" aria-valuenow={initialPosition} aria-valuemin="0" aria-valuemax="100" tabindex="0">
+            <div class="slider-line"></div>
+            <div class="slider-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- 标签 -->
+        <div class="image-label label-before">{beforeLabel}</div>
+        <div class="image-label label-after">{afterLabel}</div>
+    </div>
+</div>
+
+<script>
+    function initImageCompare() {
+        const containers = document.querySelectorAll('.image-compare');
+        
+        containers.forEach(container => {
+            const wrapper = container.querySelector('.image-before-wrapper') as HTMLElement;
+            const handle = container.querySelector('.slider-handle') as HTMLElement;
+            
+            if (!wrapper || !handle) return;
+            
+            let isDragging = false;
+            
+            const updatePosition = (clientX: number) => {
+                const rect = container.getBoundingClientRect();
+                let position = ((clientX - rect.left) / rect.width) * 100;
+                
+                // 限制范围
+                position = Math.max(0, Math.min(100, position));
+                
+                wrapper.style.width = `${position}%`;
+                handle.style.left = `${position}%`;
+                handle.setAttribute('aria-valuenow', position.toString());
+            };
+            
+            // 鼠标事件
+            handle.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                container.classList.add('dragging');
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                updatePosition(e.clientX);
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                container.classList.remove('dragging');
+            });
+            
+            // 触摸事件
+            handle.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                container.classList.add('dragging');
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                updatePosition(touch.clientX);
+            }, { passive: true });
+            
+            container.addEventListener('touchend', () => {
+                isDragging = false;
+                container.classList.remove('dragging');
+            });
+            
+            // 键盘控制
+            handle.addEventListener('keydown', (e) => {
+                const currentPos = parseFloat(handle.style.left) || 50;
+                let newPos = currentPos;
+                
+                if (e.key === 'ArrowLeft') {
+                    newPos = Math.max(0, currentPos - 5);
+                } else if (e.key === 'ArrowRight') {
+                    newPos = Math.min(100, currentPos + 5);
+                } else {
+                    return;
+                }
+                
+                e.preventDefault();
+                wrapper.style.width = `${newPos}%`;
+                handle.style.left = `${newPos}%`;
+                handle.setAttribute('aria-valuenow', newPos.toString());
+            });
+            
+            // 点击容器直接跳转
+            container.addEventListener('click', (e) => {
+                if ((e.target as HTMLElement).closest('.slider-handle')) return;
+                updatePosition(e.clientX);
+            });
+        });
+    }
+    
+    // 初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initImageCompare);
+    } else {
+        initImageCompare();
+    }
+    
+    document.addEventListener('astro:page-load', initImageCompare);
+</script>
+
+<style>
+    .image-compare {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        margin: 2rem auto;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        cursor: ew-resize;
+    }
+    
+    .image-compare-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+    }
+    
+    .image-compare img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        user-select: none;
+    }
+    
+    .image-before-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .image-before {
+        width: auto;
+        min-width: 100%;
+        position: absolute;
+        left: 0;
+    }
+    
+    .slider-handle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 10;
+        transform: translateX(-50%);
+        cursor: ew-resize;
+        outline: none;
+    }
+    
+    .slider-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 3px;
+        background: #fff;
+        transform: translateX(-50%);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .slider-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        background: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+        color: #333;
+    }
+    
+    .image-compare.dragging .slider-button,
+    .slider-handle:hover .slider-button,
+    .slider-handle:focus .slider-button {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        background: var(--sl-color-accent);
+        color: #000;
+    }
+    
+    .image-label {
+        position: absolute;
+        bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        z-index: 5;
+        pointer-events: none;
+    }
+    
+    .label-before {
+        left: 1rem;
+    }
+    
+    .label-after {
+        right: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .image-compare {
+            border-radius: 0.5rem;
+            margin: 1rem auto;
+        }
+        
+        .slider-button {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .slider-button svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .image-label {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.75rem;
+        }
+    }
+</style>

@@ -28,7 +28,7 @@ const fetchPriority = getImageFetchPriority(false);
 const altText = generateAltText(title, "成就展示");
 ---
 
-<section class="achievement-section">
+<section class="achievement-section" role="region" aria-label={title}>
     <div class={`achievement-container ${reverse ? "reverse" : ""}`}>
         <div class="achievement-content">
             {badge && <span class="achievement-badge">{badge}</span>}

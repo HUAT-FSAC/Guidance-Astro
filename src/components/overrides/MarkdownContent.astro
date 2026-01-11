@@ -1,0 +1,24 @@
+---
+/**
+ * 自定义 MarkdownContent 组件
+ * 添加阅读进度条和编辑链接
+ */
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/MarkdownContent.astro";
+import ReadingProgress from "../docs/ReadingProgress.astro";
+import EditPageLink from "../docs/EditPageLink.astro";
+
+// 检查是否是首页（不显示额外组件）
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+---
+
+{/* 阅读进度条 - 仅文档页面显示 */}
+{!isHomePage && <ReadingProgress />}
+
+{/* 默认内容 */}
+<Default {...Astro.props}>
+    <slot />
+</Default>
+
+{/* 编辑链接 - 仅文档页面显示 */}
+{!isHomePage && <EditPageLink />}

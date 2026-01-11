@@ -1,0 +1,152 @@
+---
+/**
+ * "编辑此页"链接组件
+ * 生成指向 GitHub 编辑页面的链接
+ */
+
+interface Props {
+    /** 当前文件路径（相对于 src/content/docs/） */
+    filePath?: string;
+    /** GitHub 仓库 URL */
+    repoUrl?: string;
+    /** 分支名 */
+    branch?: string;
+}
+
+const { 
+    filePath,
+    repoUrl = 'https://github.com/HUAT-FSAC/Guidance-Astro',
+    branch = 'main'
+} = Astro.props;
+
+// 从 URL 推断文件路径
+function getFilePath(pathname: string): string {
+    // 移除开头和结尾的斜杠
+    const cleanPath = pathname.replace(/^\/|\/$/g, '');
+    
+    if (!cleanPath || cleanPath === '') {
+        return 'src/content/docs/index.mdx';
+    }
+    
+    // 尝试 .mdx 后缀
+    return `src/content/docs/${cleanPath}.mdx`;
+}
+
+const editFilePath = filePath || getFilePath(Astro.url.pathname);
+const editUrl = `${repoUrl}/edit/${branch}/${editFilePath}`;
+const viewUrl = `${repoUrl}/blob/${branch}/${editFilePath}`;
+const historyUrl = `${repoUrl}/commits/${branch}/${editFilePath}`;
+---
+
+<div class="edit-page-container">
+    <div class="edit-page-links">
+        <a href={editUrl} class="edit-page-link primary" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>编辑此页</span>
+        </a>
+        
+        <a href={viewUrl} class="edit-page-link secondary" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>查看源码</span>
+        </a>
+        
+        <a href={historyUrl} class="edit-page-link secondary" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>修改历史</span>
+        </a>
+    </div>
+    
+    <p class="edit-page-hint">
+        发现问题？欢迎在 GitHub 上直接编辑此文档。
+    </p>
+</div>
+
+<style>
+    .edit-page-container {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global([data-theme="light"]) .edit-page-container {
+        border-top-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .edit-page-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .edit-page-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    
+    .edit-page-link.primary {
+        background: var(--sl-color-accent);
+        color: #000;
+    }
+    
+    .edit-page-link.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    }
+    
+    .edit-page-link.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--sl-color-text);
+    }
+    
+    :global([data-theme="light"]) .edit-page-link.secondary {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .edit-page-link.secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--sl-color-accent);
+        color: var(--sl-color-accent);
+    }
+    
+    :global([data-theme="light"]) .edit-page-link.secondary:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .edit-page-hint {
+        font-size: 0.85rem;
+        opacity: 0.6;
+        margin: 0;
+    }
+    
+    @media (max-width: 640px) {
+        .edit-page-links {
+            flex-direction: column;
+        }
+        
+        .edit-page-link {
+            justify-content: center;
+        }
+    }
+</style>

@@ -1,0 +1,53 @@
+{
+    "name": "HUAT FSAC - 方程式赛车队",
+    "short_name": "HUAT FSAC",
+    "description": "湖北汽车工业学院方程式赛车队官方文档站。我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#f39c12",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "zh-CN",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "education",
+        "documentation"
+    ],
+    "shortcuts": [
+        {
+            "name": "文档中心",
+            "short_name": "文档",
+            "description": "查看技术文档",
+            "url": "/2024-learning-roadmap/",
+            "icons": [
+                {
+                    "src": "/favicon.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "加入我们",
+            "short_name": "加入",
+            "description": "了解如何加入车队",
+            "url": "/join/",
+            "icons": [
+                {
+                    "src": "/favicon.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ],
+    "screenshots": [],
+    "related_applications": [],
+    "prefer_related_applications": false
+}

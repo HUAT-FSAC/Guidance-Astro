@@ -1,8 +1,63 @@
 {
     "siteTitle": "HUAT FSAC",
+    "siteDescription": "Where Student Engineers Build Champions",
     "welcome": "Welcome to HUAT FSAC",
     "theme": {
         "light": "Light",
-        "dark": "Dark"
+        "dark": "Dark",
+        "system": "System"
+    },
+    "nav": {
+        "home": "Home",
+        "docs": "Documentation",
+        "about": "About",
+        "join": "Join Us",
+        "news": "News",
+        "team": "Team",
+        "contact": "Contact"
+    },
+    "hero": {
+        "title": "HUAT FSAC",
+        "subtitle": "Formula Student Autonomous Car",
+        "description": "We are a group of passionate engineering students dedicated to designing, building, and driving autonomous formula cars.",
+        "cta": "Start Exploring"
+    },
+    "sections": {
+        "features": "Core Modules",
+        "news": "Latest News",
+        "seasons": "Season Review",
+        "sponsors": "Partners",
+        "contributors": "Contributors",
+        "acknowledgement": "Acknowledgement"
+    },
+    "departments": {
+        "algorithm": "Algorithm",
+        "electrical": "Electrical",
+        "mechanical": "Mechanical",
+        "management": "Project Management"
+    },
+    "footer": {
+        "contact": "Contact Us",
+        "github": "GitHub",
+        "joinTeam": "Join Team",
+        "copyright": "© 2026 HUAT FSAC. All rights reserved."
+    },
+    "common": {
+        "learnMore": "Learn More",
+        "readMore": "Read More",
+        "viewAll": "View All",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "search": "Search",
+        "loading": "Loading...",
+        "error": "Error",
+        "retry": "Retry"
+    },
+    "accessibility": {
+        "skipToContent": "Skip to content",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "toggleTheme": "Toggle theme"
     }
 }
