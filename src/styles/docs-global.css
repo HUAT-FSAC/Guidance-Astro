@@ -23,6 +23,38 @@ starlight-theme-select {
     /* 过渡 */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+    --theme-transition: 0.3s ease-out;
+}
+
+/* ==================== 主题切换平滑过渡 ==================== */
+html {
+    /* 主题色过渡，避免闪烁 */
+    transition: 
+        background-color var(--theme-transition),
+        color var(--theme-transition);
+}
+
+/* 所有带颜色的元素也应用过渡 */
+*,
+*::before,
+*::after {
+    transition: 
+        background-color var(--theme-transition),
+        border-color var(--theme-transition),
+        box-shadow var(--theme-transition);
+}
+
+/* 排除需要即时响应的交互元素 */
+a, button, input, textarea, select,
+[role="button"], [role="link"],
+.no-theme-transition,
+.no-theme-transition * {
+    transition: none;
+}
+
+/* 主题切换时短暂禁用动画，完成后恢复 */
+html.theme-transitioning * {
+    animation-duration: 0s !important;
 }
 
 /* ==================== 文档内容区样式 ==================== */

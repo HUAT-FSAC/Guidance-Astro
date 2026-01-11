@@ -18,7 +18,7 @@
     // 使用立即执行函数 (IIFE) 避免污染全局作用域
     // 使用 is:inline 确保脚本在 HTML 解析时立即执行，防止页面闪烁
     (function () {
-        var loader = document.getElementById("pageLoader");
+        const loader = document.getElementById("pageLoader");
         if (!loader) return;
 
         // 防止重复初始化
@@ -27,14 +27,14 @@
             loader.dataset.huatInit = "1";
         } catch (e) {}
 
-        var STORAGE_KEY = "huat_fsac_visited";
-        var hasVisited = sessionStorage.getItem(STORAGE_KEY);
+        const STORAGE_KEY = "huat_fsac_visited";
+        const hasVisited = sessionStorage.getItem(STORAGE_KEY);
 
-        var MIN_VISIBLE_MS = 350;
-        var MAX_WAIT_MS = 1500;
-        var startTime = Date.now();
-        var revealTimeoutId = null;
-        var maxWaitId = null;
+        const MIN_VISIBLE_MS = 350;
+        const MAX_WAIT_MS = 1500;
+        const startTime = Date.now();
+        let revealTimeoutId = null;
+        let maxWaitId = null;
 
         function dispatchHidden() {
             requestAnimationFrame(function () {
@@ -60,8 +60,8 @@
         function hideLoader() {
             try {
                 if (loader.classList.contains("loaded")) return;
-                var elapsed = Date.now() - startTime;
-                var delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
+                const elapsed = Date.now() - startTime;
+                const delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
                 revealTimeoutId = window.setTimeout(revealContent, delay);
             } catch (e) {}
         }

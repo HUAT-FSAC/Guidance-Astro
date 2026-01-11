@@ -2,22 +2,38 @@
 /**
  * 错误边界组件
  * 捕获子组件中的错误，显示友好的错误信息
+ * 
+ * @example
+ * ```astro
+ * <ErrorBoundary fallback="加载失败" showErrorDetails={true}>
+ *     <MyComponent />
+ * </ErrorBoundary>
+ * ```
  */
 
 interface Props {
+    /** 错误时显示的提示信息 */
     fallback?: string;
+    /** 是否显示错误详情（仅开发环境建议开启） */
     showErrorDetails?: boolean;
+    /** 是否允许尝试恢复 */
+    allowRecover?: boolean;
 }
 
-const { fallback = "组件加载失败，请刷新页面重试。", showErrorDetails = false } = Astro.props;
+const { 
+    fallback = "组件加载失败，请刷新页面重试。", 
+    showErrorDetails = false,
+    allowRecover = true 
+} = Astro.props;
 ---
 
 <slot />
 
-<div id="error-boundary" class="error-boundary" style="display: none;">
+<div id="error-boundary" class="error-boundary" style="display: none;" data-allow-recover={allowRecover}>
     <div class="error-container">
-        <div class="error-icon">⚠️</div>
-        <h2 class="error-title">出错了</h2>
+        <div class="error-badge" id="error-badge">可恢复</div>
+        <div class="error-icon" id="error-icon">⚠️</div>
+        <h2 class="error-title" id="error-title">出错了</h2>
         <p class="error-message">{fallback}</p>
         {showErrorDetails && (
             <div class="error-details">
@@ -25,40 +41,129 @@ const { fallback = "组件加载失败，请刷新页面重试。", showErrorDet
                 <pre id="error-stack" class="error-stack"></pre>
             </div>
         )}
-        <button class="error-retry" onclick="window.location.reload()">
-            刷新页面
-        </button>
+        <div class="error-actions">
+            {allowRecover && (
+                <button class="error-recover" id="error-recover-btn">
+                    🔄 尝试恢复
+                </button>
+            )}
+            <button class="error-retry" onclick="window.location.reload()">
+                刷新页面
+            </button>
+            <button class="error-report" id="error-report-btn">
+                📝 报告问题
+            </button>
+        </div>
     </div>
 </div>
 
 <script>
     import { setupGlobalErrorHandlers, registerErrorHandler, ErrorType, type ErrorInfo } from "../utils/error-handling";
 
+    // 错误分类
+    type ErrorSeverity = 'recoverable' | 'fatal';
+    
+    function classifyError(error: ErrorInfo): ErrorSeverity {
+        // 网络错误和图片错误通常可恢复
+        if (error.type === ErrorType.NETWORK_ERROR || error.type === ErrorType.IMAGE_ERROR) {
+            return 'recoverable';
+        }
+        // 脚本错误根据消息判断
+        if (error.message?.includes('ChunkLoadError') || 
+            error.message?.includes('Loading chunk')) {
+            return 'recoverable';
+        }
+        return 'fatal';
+    }
+
+    // 上报错误到 Umami
+    function reportErrorToUmami(error: ErrorInfo, severity: ErrorSeverity) {
+        const umami = (window as unknown as { umami?: { track: (e: string, d: Record<string, unknown>) => void } }).umami;
+        if (umami?.track) {
+            umami.track('error-boundary', {
+                type: error.type,
+                severity,
+                message: error.message?.slice(0, 100),
+                url: error.url,
+            });
+        }
+    }
+
     // 设置全局错误处理器
     setupGlobalErrorHandlers();
+
+    // 使用 Symbol 防止重复清理
+    const cleanupSymbol = Symbol.for('errorBoundaryCleanup');
+    const controller = new AbortController();
+    let currentError: ErrorInfo | null = null;
 
     // 注册错误处理器
     const unregister = registerErrorHandler(ErrorType.COMPONENT_ERROR, (error: ErrorInfo) => {
         const errorBoundary = document.getElementById("error-boundary");
         if (!errorBoundary) return;
 
+        currentError = error;
+        const severity = classifyError(error);
+        
+        // 更新 UI 基于错误严重程度
+        const badge = document.getElementById("error-badge");
+        const icon = document.getElementById("error-icon");
+        const title = document.getElementById("error-title");
+        const recoverBtn = document.getElementById("error-recover-btn");
+        
+        if (severity === 'fatal') {
+            if (badge) { badge.textContent = '严重错误'; badge.classList.add('fatal'); }
+            if (icon) icon.textContent = '💥';
+            if (title) title.textContent = '发生严重错误';
+            if (recoverBtn) recoverBtn.style.display = 'none';
+        } else {
+            if (badge) { badge.textContent = '可恢复'; badge.classList.remove('fatal'); }
+            if (icon) icon.textContent = '⚠️';
+            if (title) title.textContent = '出错了';
+            if (recoverBtn) recoverBtn.style.display = 'inline-flex';
+        }
+
         const errorStack = document.getElementById("error-stack");
         if (errorStack && error.stack) {
             errorStack.textContent = error.stack;
         }
 
+        reportErrorToUmami(error, severity);
         errorBoundary.style.display = "flex";
     });
 
-    // 在页面卸载时清理事件监听器
-    document.addEventListener("astro:page-load", () => {
-        unregister();
+    // 恢复按钮处理
+    document.getElementById("error-recover-btn")?.addEventListener("click", () => {
+        const errorBoundary = document.getElementById("error-boundary");
+        if (errorBoundary) {
+            errorBoundary.style.display = "none";
+            currentError = null;
+        }
     });
 
-    // 在组件卸载时清理
-    window.addEventListener("beforeunload", () => {
-        unregister();
+    // 报告问题按钮
+    document.getElementById("error-report-btn")?.addEventListener("click", () => {
+        const subject = encodeURIComponent('网站错误报告');
+        const body = encodeURIComponent(
+            `错误信息:\n${currentError?.message || '未知错误'}\n\n` +
+            `页面: ${window.location.href}\n` +
+            `时间: ${new Date().toISOString()}\n` +
+            `浏览器: ${navigator.userAgent}`
+        );
+        window.open(`mailto:support@huat-fsac.eu.org?subject=${subject}&body=${body}`, '_blank');
     });
+
+    // 统一清理函数
+    function cleanup() {
+        const win = window as unknown as { [key: symbol]: boolean };
+        if (win[cleanupSymbol]) return;
+        win[cleanupSymbol] = true;
+        unregister();
+        controller.abort();
+    }
+
+    document.addEventListener("astro:page-load", cleanup, { signal: controller.signal });
+    window.addEventListener("beforeunload", cleanup, { signal: controller.signal });
 </script>
 
 <style>
@@ -83,11 +188,30 @@ const { fallback = "组件加载失败，请刷新页面重试。", showErrorDet
         text-align: center;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         border: 1px solid var(--sl-color-gray-5);
+        position: relative;
+    }
+
+    .error-badge {
+        position: absolute;
+        top: -0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #27ae60;
+        color: #fff;
+        padding: 0.25rem 1rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .error-badge.fatal {
+        background: #e74c3c;
     }
 
     .error-icon {
         font-size: 4rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     .error-title {
@@ -131,21 +255,55 @@ const { fallback = "组件加载失败，请刷新页面重试。", showErrorDet
         margin: 0;
     }
 
-    .error-retry {
-        background: var(--sl-color-accent);
-        color: #000;
+    .error-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .error-retry,
+    .error-recover,
+    .error-report {
         border: none;
-        padding: 0.75rem 2rem;
-        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
         font-weight: 600;
         border-radius: 0.5rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .error-retry {
+        background: var(--sl-color-accent);
+        color: #000;
+    }
+
+    .error-recover {
+        background: #27ae60;
+        color: #fff;
+    }
+
+    .error-report {
+        background: var(--sl-color-gray-5);
+        color: var(--sl-color-text);
+    }
+
+    .error-retry:hover,
+    .error-recover:hover,
+    .error-report:hover {
+        transform: translateY(-2px);
     }
 
     .error-retry:hover {
-        transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+    }
+
+    .error-recover:hover {
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
     }
 
     @media (max-width: 640px) {
@@ -160,6 +318,17 @@ const { fallback = "组件加载失败，请刷新页面重试。", showErrorDet
 
         .error-title {
             font-size: 1.5rem;
+        }
+
+        .error-actions {
+            flex-direction: column;
+        }
+
+        .error-retry,
+        .error-recover,
+        .error-report {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>

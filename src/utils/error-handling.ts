@@ -120,7 +120,7 @@ export function createErrorInfo(
  * @param component - 组件名称
  * @returns 包装后的函数
  */
-export function wrapAsync<T extends (...args: any[]) => Promise<any>>(
+export function wrapAsync<T extends (...args: unknown[]) => Promise<unknown>>(
     fn: T,
     component?: string
 ): T {
@@ -146,7 +146,7 @@ export function wrapAsync<T extends (...args: any[]) => Promise<any>>(
  * @param component - 组件名称
  * @returns 包装后的函数
  */
-export function wrapSync<T extends (...args: any[]) => any>(
+export function wrapSync<T extends (...args: unknown[]) => unknown>(
     fn: T,
     component?: string
 ): T {

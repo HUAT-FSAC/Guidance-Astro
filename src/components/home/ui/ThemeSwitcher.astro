@@ -1,12 +1,7 @@
 ---
 // 主题色切换组件 - 可在不同赛季主题色间切换
 import Sun from "../../icons/Sun.astro";
-
-interface ThemeOption {
-    name: string
-    color: string
-    accent: string
-}
+import type { ThemeOption } from "../../../data/home";
 
 const themes: ThemeOption[] = [
     { name: '经典橙', color: '#f39c12', accent: '#e67e22' },

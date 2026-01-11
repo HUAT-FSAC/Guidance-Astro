@@ -6,6 +6,12 @@ export interface StatItem {
     icon?: string;
 }
 
+export interface ThemeOption {
+    name: string;
+    color: string;
+    accent: string;
+}
+
 export interface SeasonItem {
     year: string;
     teamImg: string;

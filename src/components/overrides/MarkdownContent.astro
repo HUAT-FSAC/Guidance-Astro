@@ -1,12 +1,13 @@
 ---
 /**
  * 自定义 MarkdownContent 组件
- * 添加阅读进度条和编辑链接
+ * 添加阅读进度条、编辑链接和分享按钮
  */
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/MarkdownContent.astro";
 import ReadingProgress from "../docs/ReadingProgress.astro";
 import EditPageLink from "../docs/EditPageLink.astro";
+import ShareButton from "../docs/ShareButton.astro";
 
 // 检查是否是首页（不显示额外组件）
 const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
@@ -22,3 +23,7 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 {/* 编辑链接 - 仅文档页面显示 */}
 {!isHomePage && <EditPageLink />}
+
+{/* 分享按钮 - 仅文档页面显示 */}
+{!isHomePage && <ShareButton />}
+

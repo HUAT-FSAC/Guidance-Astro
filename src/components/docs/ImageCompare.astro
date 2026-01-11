@@ -117,7 +117,7 @@ const {
             });
             
             // 触摸事件
-            handle.addEventListener('touchstart', (e) => {
+            handle.addEventListener('touchstart', (_e) => {
                 isDragging = true;
                 container.classList.add('dragging');
             }, { passive: true });

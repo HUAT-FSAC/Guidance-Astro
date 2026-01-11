@@ -4,28 +4,48 @@
  */
 
 /**
- * 优化外部图片 URL（支持 Unsplash 和其他 CDN）
+ * 优化外部图片 URL（支持多种 CDN）
  * @param url - 原始图片 URL
  * @param width - 目标宽度
  * @param quality - 图片质量 (0-100)
+ * @param format - 输出格式 (webp/avif/auto)
  * @returns 优化后的 URL
  */
 export function optimizeExternalImage(
     url: string,
     width: number = 1920,
-    quality: number = 85
+    quality: number = 85,
+    format: "webp" | "avif" | "auto" = "webp"
 ): string {
     if (!url) return "";
 
     // Unsplash 优化
     if (url.includes("unsplash.com")) {
         const base = url.split("?")[0];
-        return `${base}?fm=webp&w=${width}&q=${quality}`;
+        return `${base}?fm=${format === "auto" ? "webp" : format}&w=${width}&q=${quality}`;
     }
 
-    // 其他 CDN 可以在这里添加优化逻辑
-    // 例如：images.unsplash.com, images.pexels.com 等
+    // Cloudinary 优化
+    if (url.includes("cloudinary.com") || url.includes("res.cloudinary.com")) {
+        // 插入转换参数到 /upload/ 之后
+        const formatParam = format === "auto" ? "f_auto" : `f_${format}`;
+        return url.replace("/upload/", `/upload/${formatParam},w_${width},q_${quality}/`);
+    }
 
+    // Imgix 优化
+    if (url.includes("imgix.net")) {
+        const separator = url.includes("?") ? "&" : "?";
+        const formatParam = format === "auto" ? "auto=format" : `fm=${format}`;
+        return `${url}${separator}${formatParam}&w=${width}&q=${quality}`;
+    }
+
+    // Pexels 优化
+    if (url.includes("pexels.com") || url.includes("images.pexels.com")) {
+        const separator = url.includes("?") ? "&" : "?";
+        return `${url}${separator}w=${width}&auto=compress&cs=tinysrgb`;
+    }
+
+    // 本地图片或其他 - 返回原 URL (可以通过 Astro 的 Image 组件优化)
     return url;
 }
 

@@ -1,0 +1,507 @@
+---
+/**
+ * 分享按钮组件
+ * 提供浮动分享菜单，支持多平台分享
+ * 
+ * @example
+ * ```astro
+ * <ShareButton position="bottom-right" />
+ * ```
+ */
+
+interface Props {
+    /** 按钮位置 */
+    position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+    /** 是否显示标签 */
+    showLabel?: boolean;
+}
+
+const { position = 'bottom-right', showLabel = false } = Astro.props;
+---
+
+<div class={`share-container ${position}`} data-share-container>
+    <!-- 主分享按钮 -->
+    <button 
+        class="share-button" 
+        id="share-toggle-btn"
+        aria-label="分享此页面"
+        aria-expanded="false"
+        aria-controls="share-menu"
+    >
+        <span class="share-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </span>
+        {showLabel && <span class="share-label">分享</span>}
+    </button>
+
+    <!-- 分享菜单 -->
+    <div class="share-menu" id="share-menu" role="menu" aria-label="分享选项">
+        <!-- 复制链接 -->
+        <button class="share-option" data-share-action="copy" role="menuitem">
+            <span class="option-icon">📋</span>
+            <span class="option-label">复制链接</span>
+        </button>
+
+        <!-- 原生分享 (如果支持) -->
+        <button class="share-option native-share" data-share-action="native" role="menuitem" style="display: none;">
+            <span class="option-icon">📤</span>
+            <span class="option-label">更多分享</span>
+        </button>
+
+        <div class="share-divider"></div>
+
+        <!-- Twitter -->
+        <button class="share-option" data-share-action="twitter" role="menuitem">
+            <span class="option-icon twitter">𝕏</span>
+            <span class="option-label">Twitter</span>
+        </button>
+
+        <!-- 微博 -->
+        <button class="share-option" data-share-action="weibo" role="menuitem">
+            <span class="option-icon weibo">🔴</span>
+            <span class="option-label">微博</span>
+        </button>
+
+        <!-- 微信二维码 -->
+        <button class="share-option" data-share-action="wechat" role="menuitem">
+            <span class="option-icon wechat">💬</span>
+            <span class="option-label">微信</span>
+        </button>
+
+        <!-- Telegram -->
+        <button class="share-option" data-share-action="telegram" role="menuitem">
+            <span class="option-icon telegram">✈️</span>
+            <span class="option-label">Telegram</span>
+        </button>
+
+        <!-- 邮件 -->
+        <button class="share-option" data-share-action="email" role="menuitem">
+            <span class="option-icon email">📧</span>
+            <span class="option-label">邮件</span>
+        </button>
+    </div>
+
+    <!-- 微信二维码弹窗 -->
+    <div class="qrcode-modal" id="qrcode-modal" role="dialog" aria-modal="true" aria-labelledby="qrcode-title">
+        <div class="qrcode-content">
+            <h3 id="qrcode-title">微信扫码分享</h3>
+            <div class="qrcode-image">
+                <img id="qrcode-img" src="" alt="微信分享二维码" />
+            </div>
+            <p class="qrcode-hint">打开微信扫一扫，分享给朋友</p>
+            <button class="qrcode-close" id="qrcode-close">关闭</button>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="share-toast" id="share-toast" role="alert" aria-live="polite"></div>
+</div>
+
+<script>
+    import { 
+        copyToClipboard, 
+        openShareWindow, 
+        nativeShare, 
+        canUseNativeShare,
+        getPageShareData,
+        generateQRCodeUrl,
+        type SharePlatform
+    } from '../../utils/share-utils';
+
+    function initShareButton() {
+        const container = document.querySelector('[data-share-container]');
+        if (!container) return;
+        if ((container as HTMLElement).dataset.initialized === 'true') return;
+        (container as HTMLElement).dataset.initialized = 'true';
+
+        const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement;
+        const menu = container.querySelector('#share-menu') as HTMLElement;
+        const toast = container.querySelector('#share-toast') as HTMLElement;
+        const qrcodeModal = container.querySelector('#qrcode-modal') as HTMLElement;
+        const qrcodeImg = container.querySelector('#qrcode-img') as HTMLImageElement;
+        const qrcodeClose = container.querySelector('#qrcode-close') as HTMLButtonElement;
+        const nativeShareBtn = container.querySelector('.native-share') as HTMLButtonElement;
+
+        // 显示原生分享按钮（如果支持）
+        if (canUseNativeShare() && nativeShareBtn) {
+            nativeShareBtn.style.display = 'flex';
+        }
+
+        // 显示 Toast 提示
+        function showToast(message: string, type: 'success' | 'error' = 'success') {
+            toast.textContent = message;
+            toast.className = `share-toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 切换菜单
+        function toggleMenu() {
+            const isOpen = menu.classList.toggle('open');
+            toggleBtn.setAttribute('aria-expanded', String(isOpen));
+            
+            if (isOpen) {
+                // 点击外部关闭
+                setTimeout(() => {
+                    document.addEventListener('click', closeOnClickOutside);
+                }, 0);
+            }
+        }
+
+        function closeMenu() {
+            menu.classList.remove('open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('click', closeOnClickOutside);
+        }
+
+        function closeOnClickOutside(e: MouseEvent) {
+            if (!container.contains(e.target as Node)) {
+                closeMenu();
+            }
+        }
+
+        // 处理分享操作
+        async function handleShare(action: string) {
+            const shareData = getPageShareData();
+            
+            switch (action) {
+                case 'copy':
+                    const copyResult = await copyToClipboard(shareData.url);
+                    showToast(copyResult.message, copyResult.success ? 'success' : 'error');
+                    break;
+
+                case 'native':
+                    const nativeResult = await nativeShare(shareData);
+                    if (!nativeResult.success && nativeResult.message !== '分享已取消') {
+                        showToast(nativeResult.message, 'error');
+                    }
+                    break;
+
+                case 'wechat':
+                    // 显示二维码
+                    qrcodeImg.src = generateQRCodeUrl(shareData.url, 200);
+                    qrcodeModal.classList.add('show');
+                    break;
+
+                case 'twitter':
+                case 'weibo':
+                case 'telegram':
+                case 'email':
+                    const result = openShareWindow(action as SharePlatform, shareData);
+                    if (!result.success) {
+                        showToast(result.message, 'error');
+                    }
+                    break;
+            }
+
+            closeMenu();
+        }
+
+        // 事件绑定
+        toggleBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // 分享选项点击
+        container.querySelectorAll('[data-share-action]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const action = (btn as HTMLElement).dataset.shareAction;
+                if (action) handleShare(action);
+            });
+        });
+
+        // 关闭二维码弹窗
+        qrcodeClose?.addEventListener('click', () => {
+            qrcodeModal.classList.remove('show');
+        });
+
+        qrcodeModal?.addEventListener('click', (e) => {
+            if (e.target === qrcodeModal) {
+                qrcodeModal.classList.remove('show');
+            }
+        });
+
+        // 键盘支持
+        toggleBtn?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleMenu();
+            }
+        });
+
+        // ESC 关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMenu();
+                qrcodeModal.classList.remove('show');
+            }
+        });
+    }
+
+    // 初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initShareButton);
+    } else {
+        initShareButton();
+    }
+
+    document.addEventListener('astro:page-load', initShareButton);
+</script>
+
+<style>
+    .share-container {
+        position: fixed;
+        z-index: 1000;
+    }
+
+    .share-container.bottom-right {
+        bottom: 2rem;
+        right: 2rem;
+    }
+
+    .share-container.bottom-left {
+        bottom: 2rem;
+        left: 2rem;
+    }
+
+    .share-container.top-right {
+        top: 5rem;
+        right: 2rem;
+    }
+
+    .share-container.top-left {
+        top: 5rem;
+        left: 2rem;
+    }
+
+    /* 主分享按钮 */
+    .share-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem;
+        background: var(--sl-color-accent);
+        color: #000;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .share-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(243, 156, 18, 0.4);
+    }
+
+    .share-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .share-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* 分享菜单 */
+    .share-menu {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 0.75rem;
+        background: var(--sl-color-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        padding: 0.5rem;
+        min-width: 160px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.2s ease;
+    }
+
+    :global([data-theme="light"]) .share-menu {
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .share-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .share-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        background: transparent;
+        border: none;
+        border-radius: 0.5rem;
+        color: var(--sl-color-text);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        text-align: left;
+    }
+
+    .share-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    :global([data-theme="light"]) .share-option:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .option-icon {
+        font-size: 1.1rem;
+        width: 1.5rem;
+        text-align: center;
+    }
+
+    .option-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .share-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 0.5rem 0;
+    }
+
+    :global([data-theme="light"]) .share-divider {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Toast 提示 */
+    .share-toast {
+        position: fixed;
+        bottom: 6rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #333;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 10001;
+    }
+
+    .share-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .share-toast.success {
+        background: #27ae60;
+    }
+
+    .share-toast.error {
+        background: #e74c3c;
+    }
+
+    /* 二维码弹窗 */
+    .qrcode-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10002;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .qrcode-modal.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .qrcode-content {
+        background: var(--sl-color-bg);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        max-width: 300px;
+    }
+
+    .qrcode-content h3 {
+        margin: 0 0 1rem 0;
+        color: var(--sl-color-text);
+    }
+
+    .qrcode-image {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+    }
+
+    .qrcode-image img {
+        display: block;
+        width: 200px;
+        height: 200px;
+    }
+
+    .qrcode-hint {
+        margin: 1rem 0;
+        color: var(--sl-color-text-gray);
+        font-size: 0.9rem;
+    }
+
+    .qrcode-close {
+        background: var(--sl-color-accent);
+        color: #000;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .qrcode-close:hover {
+        opacity: 0.9;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+        .share-container.bottom-right,
+        .share-container.bottom-left {
+            bottom: 1rem;
+        }
+
+        .share-container.bottom-right {
+            right: 1rem;
+        }
+
+        .share-container.bottom-left {
+            left: 1rem;
+        }
+
+        .share-button {
+            padding: 0.75rem;
+        }
+    }
+</style>
