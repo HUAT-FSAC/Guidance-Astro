@@ -2,10 +2,19 @@
     "siteTitle": "HUAT FSAC",
     "siteDescription": "Where Student Engineers Build Champions",
     "welcome": "Welcome to HUAT FSAC",
+    "language": {
+        "name": "English",
+        "select": "Select language"
+    },
     "theme": {
         "light": "Light",
         "dark": "Dark",
-        "system": "System"
+        "system": "System",
+        "classicOrange": "Classic Orange",
+        "gamingBlue": "Gaming Blue",
+        "racingRed": "Racing Red",
+        "techPurple": "Tech Purple",
+        "speedGreen": "Speed Green"
     },
     "nav": {
         "home": "Home",
@@ -22,25 +31,51 @@
         "description": "We are a group of passionate engineering students dedicated to designing, building, and driving autonomous formula cars.",
         "cta": "Start Exploring"
     },
+    "stats": {
+        "years": "Years",
+        "members": "Members",
+        "sponsors": "Sponsors",
+        "awards": "Awards"
+    },
     "sections": {
         "features": "Core Modules",
         "news": "Latest News",
         "seasons": "Season Review",
         "sponsors": "Partners",
         "contributors": "Contributors",
-        "acknowledgement": "Acknowledgement"
+        "acknowledgement": "Acknowledgement",
+        "recruitment": "Join Us",
+        "formulaStudent": "Formula Student"
     },
     "departments": {
         "algorithm": "Algorithm",
         "electrical": "Electrical",
         "mechanical": "Mechanical",
-        "management": "Project Management"
+        "management": "Project Management",
+        "sensing": "Sensing",
+        "localization": "Localization",
+        "planning": "Planning & Control",
+        "simulation": "Simulation"
+    },
+    "recruitment": {
+        "title": "Join Us",
+        "subtitle": "Grow with the Best",
+        "description": "We're looking for passionate tech enthusiasts who love challenges. Whether it's algorithm, electrical, mechanical, or project management, there's a place for you here.",
+        "cta": "Apply Now",
+        "requirements": "Requirements"
+    },
+    "features": {
+        "title": "Learning Resources",
+        "subtitle": "Comprehensive Technical Documentation",
+        "description": "From beginner to advanced, we've prepared a complete learning path for you."
     },
     "footer": {
         "contact": "Contact Us",
         "github": "GitHub",
         "joinTeam": "Join Team",
-        "copyright": "© 2026 HUAT FSAC. All rights reserved."
+        "copyright": "© 2026 HUAT FSAC. All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Use"
     },
     "common": {
         "learnMore": "Learn More",
@@ -52,12 +87,42 @@
         "search": "Search",
         "loading": "Loading...",
         "error": "Error",
-        "retry": "Retry"
+        "retry": "Retry",
+        "copy": "Copy",
+        "copied": "Copied",
+        "share": "Share",
+        "print": "Print"
     },
     "accessibility": {
         "skipToContent": "Skip to content",
         "openMenu": "Open menu",
         "closeMenu": "Close menu",
-        "toggleTheme": "Toggle theme"
+        "toggleTheme": "Toggle theme",
+        "languageSelector": "Select language"
+    },
+    "news": {
+        "title": "Latest News",
+        "readTime": "Read time",
+        "publishedOn": "Published on"
+    },
+    "docs": {
+        "title": "Documentation",
+        "searchDocs": "Search docs...",
+        "noResults": "No results found",
+        "lastUpdated": "Last updated",
+        "editThisPage": "Edit this page",
+        "addTranslation": "Add translation"
+    },
+    "errors": {
+        "notFound": "Page Not Found",
+        "notFoundMessage": "Sorry, the page you're looking for doesn't exist or has been moved.",
+        "backHome": "Go to homepage",
+        "serverError": "Server Error",
+        "serverErrorMessage": "Sorry, something went wrong on our end. Please try again later."
+    },
+    "pwa": {
+        "offline": "You are currently offline",
+        "refresh": "Refresh page",
+        "install": "Install app"
     }
 }

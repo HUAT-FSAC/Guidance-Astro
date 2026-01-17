@@ -1,0 +1,39 @@
+# 浏览器兼容性配置
+# 使用 browserslist 语法定义支持的浏览器
+
+# 默认配置 - 支持所有现代浏览器
+[production]
+> 0.5%
+not dead
+not op_mini all
+
+# 开发环境 - 支持更多浏览器以便于调试
+[development]
+> 0.5%
+not dead
+not op_mini all
+Firefox ESR
+Chrome >= 60
+Safari >= 11
+Edge >= 79
+
+# 移动端配置
+[mobile]
+> 0.5%
+not dead
+iOS >= 11
+Chrome >= 80
+Samsung >= 12
+
+# 详细的浏览器支持列表
+# Chrome: 80+ (2020年3月)
+# Firefox: 75+ (2020年4月)
+# Safari: 13+ (2019年9月)
+# Edge: 80+ (2020年1月)
+# iOS Safari: 13.4+ (2020年3月)
+# Samsung Internet: 12+ (2020年1月)
+
+# 渐进增强策略
+# 1. 基础功能：支持所有 ES6+ 浏览器
+# 2. 增强功能：支持最近 2 个主要版本
+# 3. 高级功能：支持最新浏览器

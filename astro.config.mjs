@@ -20,6 +20,35 @@ export default defineConfig({
 				"./src/styles/code-blocks.css",
 			],
 			head: [
+				// 安全头部
+				{
+					tag: "meta",
+					attrs: {
+						"http-equiv": "X-Content-Type-Options",
+						content: "nosniff",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						"http-equiv": "X-Frame-Options",
+						content: "SAMEORIGIN",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						"http-equiv": "X-XSS-Protection",
+						content: "1; mode=block",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "referrer",
+						content: "strict-origin-when-cross-origin",
+					},
+				},
 				// SEO 元数据
 				{
 					tag: "meta",

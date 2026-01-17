@@ -2,10 +2,19 @@
     "siteTitle": "HUAT FSAC",
     "siteDescription": "学生工程师的冠军梦工厂",
     "welcome": "欢迎来到 HUAT FSAC",
+    "language": {
+        "name": "中文",
+        "select": "选择语言"
+    },
     "theme": {
         "light": "亮色",
         "dark": "暗色",
-        "system": "跟随系统"
+        "system": "跟随系统",
+        "classicOrange": "经典橙",
+        "gamingBlue": "电竞蓝",
+        "racingRed": "赛道红",
+        "techPurple": "科技紫",
+        "speedGreen": "极速绿"
     },
     "nav": {
         "home": "首页",
@@ -22,25 +31,51 @@
         "description": "我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。",
         "cta": "开始探索"
     },
+    "stats": {
+        "years": "年历程",
+        "members": "名队员",
+        "sponsors": "家赞助商",
+        "awards": "项荣誉"
+    },
     "sections": {
         "features": "核心模块",
         "news": "新闻动态",
         "seasons": "赛季回顾",
         "sponsors": "合作伙伴",
         "contributors": "贡献者",
-        "acknowledgement": "致谢"
+        "acknowledgement": "致谢",
+        "recruitment": "招新入口",
+        "formulaStudent": "Formula Student"
     },
     "departments": {
         "algorithm": "算法部",
         "electrical": "电气部",
         "mechanical": "机械部",
-        "management": "项管部"
+        "management": "项管部",
+        "sensing": "感知部",
+        "localization": "定位建图",
+        "planning": "规控部",
+        "simulation": "仿真部"
+    },
+    "recruitment": {
+        "title": "加入我们",
+        "subtitle": "与优秀的人一起成长",
+        "description": "我们正在寻找热爱技术、敢于挑战的你。无论是算法、电气、机械还是项目管理，这里都有属于你的舞台。",
+        "cta": "立即申请",
+        "requirements": "申请要求"
+    },
+    "features": {
+        "title": "学习资源",
+        "subtitle": "全面的技术文档和教程",
+        "description": "从入门到进阶，我们为你准备了完整的学习路径。"
     },
     "footer": {
         "contact": "联系我们",
         "github": "GitHub",
         "joinTeam": "加入车队",
-        "copyright": "© 2026 HUAT FSAC. 保留所有权利。"
+        "copyright": "© 2026 HUAT FSAC. 保留所有权利。",
+        "privacy": "隐私政策",
+        "terms": "使用条款"
     },
     "common": {
         "learnMore": "了解更多",
@@ -52,12 +87,42 @@
         "search": "搜索",
         "loading": "加载中...",
         "error": "错误",
-        "retry": "重试"
+        "retry": "重试",
+        "copy": "复制",
+        "copied": "已复制",
+        "share": "分享",
+        "print": "打印"
     },
     "accessibility": {
         "skipToContent": "跳转到内容",
         "openMenu": "打开菜单",
         "closeMenu": "关闭菜单",
-        "toggleTheme": "切换主题"
+        "toggleTheme": "切换主题",
+        "languageSelector": "选择语言"
+    },
+    "news": {
+        "title": "新闻动态",
+        "readTime": "阅读时间",
+        "publishedOn": "发布于"
+    },
+    "docs": {
+        "title": "文档中心",
+        "searchDocs": "搜索文档...",
+        "noResults": "未找到相关文档",
+        "lastUpdated": "最后更新",
+        "editThisPage": "编辑此页",
+        "addTranslation": "添加翻译"
+    },
+    "errors": {
+        "notFound": "页面未找到",
+        "notFoundMessage": "抱歉，您要查找的页面不存在或已被移动。",
+        "backHome": "返回首页",
+        "serverError": "服务器错误",
+        "serverErrorMessage": "抱歉，服务器发生了错误，请稍后重试。"
+    },
+    "pwa": {
+        "offline": "您当前处于离线状态",
+        "refresh": "刷新页面",
+        "install": "安装应用"
     }
 }
