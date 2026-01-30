@@ -1,0 +1,80 @@
+---
+title: LED 屏幕使用指南
+---
+
+import { Card, CardGrid, Aside, Steps, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="设备类型" icon="seti:image">
+        LED 显示屏
+    </Card>
+    <Card title="位置" icon="star">
+        一楼大厅
+    </Card>
+    <Card title="难度" icon="approve-check">
+        <Badge text="简单" variant="success" />
+    </Card>
+</CardGrid>
+
+---
+
+## 电源配置
+
+<Steps>
+
+1. **打开大厅空气开关**
+
+    首先要保证位于一楼大厅右侧的"无标识"空气开关处于打开状态。
+
+    ![switch_box](@assets/docs/archive/led-screen-using/switch_box.jpg)
+
+    <Aside type="tip">如打开后立刻跳闸，请无视再次尝试打开即可。</Aside>
+
+2. **打开 LED 供电开关**
+
+    在 LED 控制箱旁找到位于墙上的空气开关，**推荐等待 LED 控制器启动完成后再打开**。
+
+    ![switch](@assets/docs/archive/led-screen-using/switch.jpg)
+
+    这个开关用于给 LED 屏幕直接供电。
+
+</Steps>
+
+---
+
+## 启动 LED 控制器
+
+<Steps>
+
+1. **打开控制器开关**
+
+    ![controller](@assets/docs/archive/led-screen-using/controller.jpg)
+
+2. **等待启动完成**
+
+    如启动失败，则关闭开关并重复该过程直至成功开启。
+
+    当 LED 控制器上的显示屏显示如图时，则启动完成：
+
+    ![controll_screen](@assets/docs/archive/led-screen-using/controll_screen.jpg)
+
+</Steps>
+
+<Aside type="caution" title="重要检查">
+    底下的 **6 个 port 必须亮**才说明屏幕已通电。
+</Aside>
+
+---
+
+## 连接外部视频信号
+
+<CardGrid>
+    <Card title="5G 投屏器" icon="external">
+        将投屏器连接至计算机的 USB 上，在新弹出的磁盘上安装驱动。
+    </Card>
+    <Card title="HDMI 直连" icon="right-arrow">
+        将本来连接在投屏路由器上的 HDMI 公口断开，连接到你的设备上即可。
+    </Card>
+</CardGrid>
+
+<Aside type="note">当 LED 控制器屏幕上显示有来自 **HDMI1** 的信号时则连接正常。</Aside>

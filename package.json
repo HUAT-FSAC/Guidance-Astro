@@ -2,6 +2,11 @@
   "name": "bizarre-bar",
   "type": "module",
   "version": "0.0.1",
+  "eslintConfig": {
+    "extends": "./.config/eslint.config.mjs"
+  },
+  "prettier": "./.config/.prettierrc",
+  "lint-staged": "./.config/lint-staged.config.mjs",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

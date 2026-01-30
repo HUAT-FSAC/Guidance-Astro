@@ -76,7 +76,7 @@ Guidance-Astro/
 │   └── utils/           # 工具函数
 ├── astro.config.mjs     # Astro 配置
 ├── sidebar.mjs          # 侧边栏配置
-└── TODOLIST.md          # 任务清单
+└── docs-meta/           # 项目文档（贡献指南、变更日志等）
 ```
 
 ---
@@ -86,10 +86,12 @@ Guidance-Astro/
 ### MDX 编写规范
 
 **特殊字符转义**：内容中（特别是表格里）如果包含 `<` (小于号)，必须转义：
+
 - ❌ 错误：`| <1A |`
-- ✅ 正确：`| \<1A |` 或 `` | `<1A` | ``
+- ✅ 正确：`| \<1A |` 或 ``| `<1A` |``
 
 **Aside 组件类型**：Starlight 的 Aside 组件支持的类型：
+
 - ✅ 正确：`note`, `tip`, `caution`, `danger`
 - ❌ 错误：`warning`（不支持）
 
@@ -111,9 +113,10 @@ src/assets/docs/
 ```
 
 引用方式：
+
 ```mdx
-import { Image } from 'astro:assets';
-import myImage from '../../assets/docs/2025/感知/lidar-setup.png';
+import { Image } from 'astro:assets'
+import myImage from '../../assets/docs/2025/感知/lidar-setup.png'
 
 <Image src={myImage} alt="激光雷达安装示意图" />
 ```
@@ -145,7 +148,7 @@ pnpm format
 
 ## 🤝 贡献指南
 
-欢迎贡献！请查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解详情。
+欢迎贡献！请查看 [CONTRIBUTING.md](./docs-meta/CONTRIBUTING.md) 了解详情。
 
 1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/amazing-feature`)

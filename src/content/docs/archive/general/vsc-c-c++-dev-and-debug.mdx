@@ -1,0 +1,250 @@
+---
+title: 基于 VSCode 的 C/C++ 开发调试
+author: NekoRectifier
+---
+
+import {
+    Card,
+    CardGrid,
+    Aside,
+    Tabs,
+    TabItem,
+    Steps,
+    Badge,
+    LinkCard,
+} from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="适用平台" icon="laptop">
+        主要针对 **Windows** 平台，Linux 用户可参考核心配置
+    </Card>
+    <Card title="编译器" icon="setting">
+        使用 **Clang/GCC** 编译器
+    </Card>
+    <Card title="调试器" icon="magnifier">
+        配合 **LLDB** 调试器
+    </Card>
+    <Card title="难度" icon="star">
+        <Badge text="初级" variant="success" /> 适合新手
+    </Card>
+</CardGrid>
+
+## 前言
+
+VSCode 相比 CLion/Visual Studio 来说仅仅是个简单的代码编辑器，默认并不具备 C/C++ 代码的编译/调试等功能。但如果你想要在 VSCode 上实现这样的功能的话，你可以参考如下内容进行。
+
+<Aside type="tip">
+    VSCode 的轻量级特性使其启动速度更快，同时通过插件可以实现几乎所有 IDE 的功能。
+</Aside>
+
+---
+
+## 安装 Windows 平台下 C/C++ 编译器
+
+<Aside type="note">
+    一般的 Linux 平台上都会默认安装 `gcc` 或 `clang` 作为编译器，如果没有请自行搜索并安装。
+</Aside>
+
+[Winlibs](https://winlibs.com/) 是 Windows 上最适合快速部署的编译环境，它集合了：
+
+<CardGrid stagger>
+    <Card title="GCC/Clang" icon="approve-check">
+        两大主流编译器
+    </Card>
+    <Card title="MinGW-w64" icon="seti:windows">
+        Windows 环境支持
+    </Card>
+    <Card title="GDB & LLDB" icon="magnifier">
+        完整调试器支持
+    </Card>
+    <Card title="LLVM" icon="puzzle">
+        现代编译器基础设施
+    </Card>
+</CardGrid>
+
+### 部署步骤
+
+<Steps>
+
+1. 访问 [Winlibs 官网](https://winlibs.com/) 下载压缩包
+
+2. 解压到任意目录（建议路径不含中文和空格）
+
+3. 设置系统 PATH 环境变量，添加解压后目录的 `/bin` 路径
+
+4. 打开 cmd / PowerShell 验证安装
+
+</Steps>
+
+### 检查安装
+
+打开终端输入以下命令测试：
+
+```shell
+gcc --version
+clang++ --version
+```
+
+![compiler-version](@assets/docs/archive/vsc-c-c++-dev-and-debug/compiler-versions.png)
+
+<Aside type="caution">
+    若正常输出 gcc 与 clang 的版本信息即为安装成功。如果提示"命令未找到"，请检查 PATH 环境变量设置。
+</Aside>
+
+---
+
+## 配置 Visual Studio Code 开发环境
+
+在常见的开发印象中，"编译"就应该是有一个对应的按钮🔘来解决的事情。不过在 VSCode 中要想实现这一点得提前做点配置。
+
+### 设置 tasks.json
+
+<Aside type="note" title="什么是 Task？">
+    Task 相当于 VSCode 里面的任务。按下按键所对应的任务便会执行。通过配置 `tasks.json`
+    可以实现一键编译你的程序。
+</Aside>
+
+#### 配置步骤
+
+<Steps>
+
+1. 用 VSCode 打开一个准备好的空目录
+
+2. 新建 `.vscode/` 目录
+
+3. 在其中新建 `tasks.json` 文件
+
+4. 复制以下配置内容
+
+</Steps>
+
+<Aside type="caution" title="平台注意">
+    这个 `tasks.json` 是在 **Windows 环境**下编译所配置的。如果用于其他平台请务必做出必要修改。
+</Aside>
+
+```json title="tasks.json"
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "process",
+            "command": "clang",
+            "args": ["-g", "${file}", "-o", "${fileBasenameNoExtension}.exe"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
+```
+
+<Tabs>
+    <TabItem label="配置项说明">
+        | 配置项 | 说明 | |--------|------| | `label` | 任务的标签/名称 | | `type` | 任务类型，非
+        shell 命令用 `process` | | `command` | 调用的编译器命令 | | `args` | 编译参数列表 | | `-g` |
+        启用调试信息的 flag | | `${file}` | 当前编辑文件的绝对路径 | | `group` | 指定任务所属组别 |
+    </TabItem>
+    <TabItem label="常用变量">
+        | 变量 | 含义 | |------|------| | `${file}` | 当前文件完整路径 | | `${fileBasename}` |
+        当前文件名 | | `${fileBasenameNoExtension}` | 无扩展名的文件名 | | `${workspaceFolder}` |
+        工作区根目录 | 更多变量请查看 [VSCode
+        变量参考](https://code.visualstudio.com/docs/editor/variables-reference)
+    </TabItem>
+</Tabs>
+
+完成后在转到代码编辑页面，按下键盘上的 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> 执行默认构建任务。
+
+![compiling](@assets/docs/archive/vsc-c-c++-dev-and-debug/compiling.gif)
+
+<Aside type="tip">如果你没有使用 Winlibs，可能需要手动指定编译器的绝对路径。</Aside>
+
+---
+
+### 设置一键调试
+
+#### 安装配套 VSCode 插件
+
+<Steps>
+
+1. 打开 VSCode 侧栏的插件页面
+
+2. 搜索并安装 **CodeLLDB** 插件
+
+3. 等待 LLVM 附加包自动安装
+
+</Steps>
+
+![ext-install](@assets/docs/archive/vsc-c-c++-dev-and-debug/extension-install.png)
+
+#### 配置 launch.json
+
+<Steps>
+
+1. 在 `.vscode/` 目录下新建 `launch.json` 文件
+
+2. 填入以下配置内容
+
+3. 先编译一次程序
+
+4. 在代码页面按下 <kbd>F5</kbd> 开始调试
+
+</Steps>
+
+```json title="launch.json"
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
+```
+
+<Aside type="caution" title="调试不停止？">
+    如果调试没有如想象中一样停止等待操作，请检查： - `tasks.json` 中 `-g` flag 是否已添加 -
+    是否在编辑器左侧给程序打上了断点
+</Aside>
+
+---
+
+## 推荐插件
+
+如果你使用 WinLibs 进行开发，强烈推荐以下插件：
+
+<CardGrid>
+    <Card title="clangd" icon="star">
+        配合安装的 clang 前端实时进行静态语法分析与提供编辑时提示
+        ![clangd](@assets/docs/archive/vsc-c-c++-dev-and-debug/ext-clangd.png)
+    </Card>
+    <Card title="C/C++" icon="seti:c">
+        微软官方 C/C++ 插件，提供 IntelliSense 支持
+    </Card>
+</CardGrid>
+
+---
+
+## 相关链接
+
+<CardGrid>
+    <LinkCard
+        title="VSCode 官方文档"
+        description="Visual Studio Code 官方使用指南"
+        href="https://code.visualstudio.com/docs"
+    />
+    <LinkCard
+        title="Winlibs 官网"
+        description="Windows 平台 GCC/Clang 编译器下载"
+        href="https://winlibs.com/"
+    />
+    <LinkCard title="LLDB 调试器" description="LLVM 项目调试器文档" href="https://lldb.llvm.org/" />
+    <LinkCard title="返回综合教程" description="查看更多开发环境配置教程" href="/综合/" />
+</CardGrid>
