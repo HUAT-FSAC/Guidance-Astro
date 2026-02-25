@@ -39,7 +39,9 @@ test.describe('无障碍与性能', () => {
         const initialWidth = await page.evaluate(() => document.body.scrollWidth)
 
         // 尝试切换主题
-        const themeToggle = page.locator('[data-theme-toggle], button[aria-label*="theme" i]').first()
+        const themeToggle = page
+            .locator('[data-theme-toggle], button[aria-label*="theme" i]')
+            .first()
         if (await themeToggle.isVisible()) {
             await themeToggle.click()
             await page.waitForTimeout(300)

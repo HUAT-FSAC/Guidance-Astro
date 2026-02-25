@@ -27,7 +27,7 @@ test.describe('文档功能', () => {
         await page.goto('/docs-center/')
         // Starlight 的 TOC 组件
         const toc = page.locator('starlight-toc, nav[aria-label="On this page"]')
-        if (await toc.count() > 0) {
+        if ((await toc.count()) > 0) {
             await expect(toc.first()).toBeVisible()
         }
     })
@@ -37,7 +37,7 @@ test.describe('文档功能', () => {
         await page.goto('/docs-center/')
         const codeBlocks = page.locator('pre code')
         // 不强制要求有代码块，但如果有则应正确渲染
-        if (await codeBlocks.count() > 0) {
+        if ((await codeBlocks.count()) > 0) {
             await expect(codeBlocks.first()).toBeVisible()
         }
     })

@@ -26,7 +26,9 @@ describe('analytics', () => {
 
         it('should call umami.track when available', () => {
             const mockTrack = vi.fn()
-            ;(window as unknown as { umami: { track: typeof mockTrack } }).umami = { track: mockTrack }
+            ;(window as unknown as { umami: { track: typeof mockTrack } }).umami = {
+                track: mockTrack,
+            }
 
             trackEvent(AnalyticsEvent.THEME_CHANGE, { theme: 'dark' })
             expect(mockTrack).toHaveBeenCalledWith(AnalyticsEvent.THEME_CHANGE, { theme: 'dark' })
