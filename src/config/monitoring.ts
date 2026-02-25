@@ -111,23 +111,23 @@ export function checkPerformanceThresholds(metrics: {
     const config = getMonitorConfig()
     const failed: string[] = []
 
-    if (metrics.fcp && metrics.fcp > config.performance.thresholds.fcp) {
+    if (metrics.fcp !== undefined && metrics.fcp > config.performance.thresholds.fcp) {
         failed.push(`FCP: ${metrics.fcp}ms > ${config.performance.thresholds.fcp}ms`)
     }
 
-    if (metrics.lcp && metrics.lcp > config.performance.thresholds.lcp) {
+    if (metrics.lcp !== undefined && metrics.lcp > config.performance.thresholds.lcp) {
         failed.push(`LCP: ${metrics.lcp}ms > ${config.performance.thresholds.lcp}ms`)
     }
 
-    if (metrics.cls && metrics.cls > config.performance.thresholds.cls) {
+    if (metrics.cls !== undefined && metrics.cls > config.performance.thresholds.cls) {
         failed.push(`CLS: ${metrics.cls} > ${config.performance.thresholds.cls}`)
     }
 
-    if (metrics.fid && metrics.fid > config.performance.thresholds.fid) {
+    if (metrics.fid !== undefined && metrics.fid > config.performance.thresholds.fid) {
         failed.push(`FID: ${metrics.fid}ms > ${config.performance.thresholds.fid}ms`)
     }
 
-    if (metrics.ttfb && metrics.ttfb > config.performance.thresholds.ttfb) {
+    if (metrics.ttfb !== undefined && metrics.ttfb > config.performance.thresholds.ttfb) {
         failed.push(`TTFB: ${metrics.ttfb}ms > ${config.performance.thresholds.ttfb}ms`)
     }
 
