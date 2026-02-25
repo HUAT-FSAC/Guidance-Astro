@@ -7,60 +7,57 @@
  * 错误类型
  */
 export enum ErrorType {
-    COMPONENT_ERROR = "COMPONENT_ERROR",
-    IMAGE_ERROR = "IMAGE_ERROR",
-    SCRIPT_ERROR = "SCRIPT_ERROR",
-    NETWORK_ERROR = "NETWORK_ERROR",
+    COMPONENT_ERROR = 'COMPONENT_ERROR',
+    IMAGE_ERROR = 'IMAGE_ERROR',
+    SCRIPT_ERROR = 'SCRIPT_ERROR',
+    NETWORK_ERROR = 'NETWORK_ERROR',
 }
 
 /**
  * 错误信息接口
  */
 export interface ErrorInfo {
-    type: ErrorType;
-    message: string;
-    stack?: string;
-    component?: string;
-    timestamp: number;
-    userAgent?: string;
-    url?: string;
+    type: ErrorType
+    message: string
+    stack?: string
+    component?: string
+    timestamp: number
+    userAgent?: string
+    url?: string
 }
 
 /**
  * 错误处理器类型
  */
-export type ErrorHandler = (error: ErrorInfo) => void;
+export type ErrorHandler = (error: ErrorInfo) => void
 
 /**
  * 错误处理器注册表
  */
-const errorHandlers = new Map<ErrorType, Set<ErrorHandler>>();
+const errorHandlers = new Map<ErrorType, Set<ErrorHandler>>()
 
 /**
  * 错误历史记录（用于调试）
  */
-const errorHistory: ErrorInfo[] = [];
-const MAX_ERROR_HISTORY = 50;
+const errorHistory: ErrorInfo[] = []
+const MAX_ERROR_HISTORY = 50
 
 /**
  * 注册错误处理器
  * @param type - 错误类型
  * @param handler - 错误处理器
  */
-export function registerErrorHandler(
-    type: ErrorType,
-    handler: ErrorHandler
-): () => void {
+export function registerErrorHandler(type: ErrorType, handler: ErrorHandler): () => void {
     if (!errorHandlers.has(type)) {
-        errorHandlers.set(type, new Set());
+        errorHandlers.set(type, new Set())
     }
 
-    const handlers = errorHandlers.get(type)!;
-    handlers.add(handler);
+    const handlers = errorHandlers.get(type)!
+    handlers.add(handler)
 
     return () => {
-        handlers.delete(handler);
-    };
+        handlers.delete(handler)
+    }
 }
 
 /**
@@ -68,25 +65,25 @@ export function registerErrorHandler(
  * @param error - 错误信息
  */
 export function triggerError(error: ErrorInfo): void {
-    const handlers = errorHandlers.get(error.type);
+    const handlers = errorHandlers.get(error.type)
     if (handlers) {
         handlers.forEach((handler) => {
             try {
-                handler(error);
+                handler(error)
             } catch (e) {
-                console.error("Error handler failed:", e);
+                console.error('Error handler failed:', e)
             }
-        });
+        })
     }
 
     // 记录错误历史
-    errorHistory.push(error);
+    errorHistory.push(error)
     if (errorHistory.length > MAX_ERROR_HISTORY) {
-        errorHistory.shift();
+        errorHistory.shift()
     }
 
     // 默认日志
-    console.error(`[${error.type}]`, error.message, error);
+    console.error(`[${error.type}]`, error.message, error)
 }
 
 /**
@@ -109,9 +106,9 @@ export function createErrorInfo(
         stack: error?.stack,
         component,
         timestamp: Date.now(),
-        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
-        url: typeof window !== "undefined" ? window.location.href : undefined,
-    };
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+    }
 }
 
 /**
@@ -126,18 +123,18 @@ export function wrapAsync<T extends (...args: unknown[]) => Promise<unknown>>(
 ): T {
     return (async (...args: Parameters<T>) => {
         try {
-            return await fn(...args);
+            return await fn(...args)
         } catch (error) {
             const errorInfo = createErrorInfo(
                 ErrorType.COMPONENT_ERROR,
                 error instanceof Error ? error.message : String(error),
                 component,
                 error instanceof Error ? error : undefined
-            );
-            triggerError(errorInfo);
-            throw error;
+            )
+            triggerError(errorInfo)
+            throw error
         }
-    }) as T;
+    }) as T
 }
 
 /**
@@ -146,24 +143,21 @@ export function wrapAsync<T extends (...args: unknown[]) => Promise<unknown>>(
  * @param component - 组件名称
  * @returns 包装后的函数
  */
-export function wrapSync<T extends (...args: unknown[]) => unknown>(
-    fn: T,
-    component?: string
-): T {
-    return (...args: Parameters<T>) => {
+export function wrapSync<T extends (...args: unknown[]) => unknown>(fn: T, component?: string): T {
+    return ((...args: Parameters<T>): ReturnType<T> => {
         try {
-            return fn(...args);
+            return fn(...args) as ReturnType<T>
         } catch (error) {
             const errorInfo = createErrorInfo(
                 ErrorType.COMPONENT_ERROR,
                 error instanceof Error ? error.message : String(error),
                 component,
                 error instanceof Error ? error : undefined
-            );
-            triggerError(errorInfo);
-            throw error;
+            )
+            triggerError(errorInfo)
+            throw error
         }
-    };
+    }) as T
 }
 
 /**
@@ -171,45 +165,43 @@ export function wrapSync<T extends (...args: unknown[]) => unknown>(
  * @returns 错误历史记录
  */
 export function getErrorHistory(): ErrorInfo[] {
-    return [...errorHistory];
+    return [...errorHistory]
 }
 
 /**
  * 清除错误历史
  */
 export function clearErrorHistory(): void {
-    errorHistory.length = 0;
+    errorHistory.length = 0
 }
 
 /**
  * 设置全局错误处理器
  */
 export function setupGlobalErrorHandlers(): void {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return
 
     // 全局错误处理
-    window.addEventListener("error", (event) => {
+    window.addEventListener('error', (event) => {
         const errorInfo = createErrorInfo(
             ErrorType.SCRIPT_ERROR,
-            event.message || "Unknown error",
-            "Global",
+            event.message || 'Unknown error',
+            'Global',
             event.error
-        );
-        triggerError(errorInfo);
-    });
+        )
+        triggerError(errorInfo)
+    })
 
     // 未处理的 Promise 拒绝
-    window.addEventListener("unhandledrejection", (event) => {
+    window.addEventListener('unhandledrejection', (event) => {
         const errorInfo = createErrorInfo(
             ErrorType.SCRIPT_ERROR,
-            event.reason instanceof Error
-                ? event.reason.message
-                : String(event.reason),
-            "Global",
+            event.reason instanceof Error ? event.reason.message : String(event.reason),
+            'Global',
             event.reason instanceof Error ? event.reason : undefined
-        );
-        triggerError(errorInfo);
-    });
+        )
+        triggerError(errorInfo)
+    })
 }
 
 /**
@@ -217,23 +209,20 @@ export function setupGlobalErrorHandlers(): void {
  * @param img - 图片元素
  * @param fallbackSrc - 备用图片 URL
  */
-export function handleImageError(
-    img: HTMLImageElement,
-    fallbackSrc?: string
-): void {
+export function handleImageError(img: HTMLImageElement, fallbackSrc?: string): void {
     const errorInfo = createErrorInfo(
         ErrorType.IMAGE_ERROR,
         `Failed to load image: ${img.src}`,
-        "Image",
+        'Image',
         new Error(`Image load failed: ${img.src}`)
-    );
-    triggerError(errorInfo);
+    )
+    triggerError(errorInfo)
 
     if (fallbackSrc && img.src !== fallbackSrc) {
-        img.src = fallbackSrc;
+        img.src = fallbackSrc
     } else {
-        img.style.display = "none";
-        img.alt = "图片加载失败";
+        img.style.display = 'none'
+        img.alt = '图片加载失败'
     }
 }
 
@@ -250,18 +239,18 @@ export function createSafeImageLoader(
     onLoad?: () => void,
     onError?: () => void
 ): HTMLImageElement {
-    const img = new Image();
+    const img = new Image()
 
     img.onload = () => {
-        if (onLoad) onLoad();
-    };
+        if (onLoad) onLoad()
+    }
 
     img.onerror = () => {
-        handleImageError(img, fallbackSrc);
-        if (onError) onError();
-    };
+        handleImageError(img, fallbackSrc)
+        if (onError) onError()
+    }
 
-    img.src = src;
+    img.src = src
 
-    return img;
+    return img
 }

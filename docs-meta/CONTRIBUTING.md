@@ -74,6 +74,10 @@ pnpm dev
 | `pnpm lint` | 运行代码检查 |
 | `pnpm lint:fix` | 自动修复代码问题 |
 | `pnpm format` | 格式化代码 |
+| `pnpm test:run` | 执行单元测试 |
+| `pnpm test:coverage` | 生成测试覆盖率报告 |
+| `pnpm test:e2e` | 执行关键路径烟雾测试 |
+| `pnpm quality:bundle` | 执行构建体积预算检查 |
 
 ---
 
@@ -202,9 +206,17 @@ git commit -m "docs: update README with development guide"
 git commit -m "style(hero): improve button hover animation"
 ```
 
+### 本地提交钩子
+
+- 项目通过 `husky` + `lint-staged` 在 `pre-commit` 阶段自动检查 **staged** 文件。
+- 首次拉取后执行 `pnpm install` 会自动安装 Git hooks（`prepare` 脚本）。
+- 若提交被阻断，请先运行 `pnpm lint:fix` 与 `pnpm format`，重新 `git add` 后再提交。
+
 ---
 
 ## Pull Request 流程
+
+分支保护、评审门禁与发布策略请参见 `docs-meta/VERSION_CONTROL_POLICY.md`。
 
 ### 创建 PR 前
 

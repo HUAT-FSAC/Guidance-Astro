@@ -1,50 +1,61 @@
-## 描述
+## 概述
 
-简要描述此 PR 的更改内容。
+- **变更摘要**：
+- **业务价值**：
+- **风险说明**：
 
-## 更改类型
+## Projects 字段映射（与 Issue 对齐）
+
+- **Priority**: `priority:p0 | priority:p1 | priority:p2 | priority:p3`
+- **Status**: `status:review`（PR 阶段）
+- **Owner**:
+- **ETA**: `YYYY-MM-DD`
+- **Risk**: `risk:low | risk:medium | risk:high | risk:blocker`
+- **Area**: `area:frontend | area:backend | area:docs | area:devops | area:quality | area:content`
+- **Sprint**: `2026Wxx`
+
+## 关联 Issue
+
+- Closes #
+- Related #
+
+## 变更类型
 
 - [ ] 🐛 Bug 修复
 - [ ] ✨ 新功能
 - [ ] 📝 文档更新
-- [ ] 💄 样式优化
 - [ ] ⚡ 性能优化
-- [ ] ♻️ 代码重构
-- [ ] 🔧 配置变更
-- [ ] 其他
+- [ ] ♻️ 重构
+- [ ] 🔧 工程/配置变更
 
-## 相关 Issue
+## 验证证据（必填）
 
-关联的 Issue 编号：#
+请粘贴关键日志摘要或截图链接，至少覆盖 `lint/typecheck/test/build`。
 
-## 更改详情
+- **Lint** (`pnpm lint`):
+  - 结果：
+  - 证据：
+- **TypeCheck** (`pnpm exec tsc --noEmit`):
+  - 结果：
+  - 证据：
+- **Test** (`pnpm test:run` 或相关测试命令):
+  - 结果：
+  - 证据：
+- **Build** (`pnpm build`):
+  - 结果：
+  - 证据：
 
-请描述您所做的更改：
+## 影响范围
 
--
--
--
-
-## 测试
-
-描述你如何测试这些更改：
-
-- [ ] 本地开发服务器测试通过
-- [ ] 构建测试通过 (`pnpm build`)
-- [ ] 代码检查通过 (`pnpm lint`)
-
-## 截图
-
-如有 UI 变更，请附上截图（可选）：
-
-| 更改前 | 更改后 |
-|--------|--------|
-| 截图 | 截图 |
+- [ ] `src/components`
+- [ ] `src/content`
+- [ ] `docs-meta`
+- [ ] `.github/workflows`
+- [ ] 其他：
 
 ## 检查清单
 
-- [ ] 我的代码遵循项目的代码风格
-- [ ] 我已运行 `pnpm lint` 且无错误
-- [ ] 我已运行 `pnpm build` 且构建成功
-- [ ] 我已更新相关文档（如适用）
-- [ ] 我的提交信息遵循 Conventional Commits 规范
+- [ ] 我已提供可追溯验证证据（日志/截图/链接）
+- [ ] 我已更新相关文档与模板（如适用）
+- [ ] 我确认无敏感信息泄露（token/密钥/内部地址）
+- [ ] 我的提交信息遵循 Conventional Commits

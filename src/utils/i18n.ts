@@ -3,32 +3,32 @@
  * 提供多语言支持功能
  */
 
-import enTranslations from '../content/i18n/en.json';
-import zhTranslations from '../content/i18n/zh.json';
+import enTranslations from '../content/i18n/en.json'
+import zhTranslations from '../content/i18n/zh.json'
 
-export type Locale = 'en' | 'zh';
+export type Locale = 'en' | 'zh'
 
-export const defaultLocale: Locale = 'zh';
+export const defaultLocale: Locale = 'zh'
 
-export const locales: Locale[] = ['zh', 'en'];
+export const locales: Locale[] = ['zh', 'en']
 
 export const localeNames: Record<Locale, string> = {
     zh: '中文',
-    en: 'English'
-};
+    en: 'English',
+}
 
-type TranslationData = typeof zhTranslations;
+type TranslationData = typeof zhTranslations
 
 const translations: Record<Locale, TranslationData> = {
     en: enTranslations,
-    zh: zhTranslations
-};
+    zh: zhTranslations,
+}
 
 /**
  * 获取指定语言的翻译对象
  */
 export function getTranslations(locale: Locale = defaultLocale): TranslationData {
-    return translations[locale] || translations[defaultLocale];
+    return translations[locale] || translations[defaultLocale]
 }
 
 /**
@@ -38,33 +38,33 @@ export function getTranslations(locale: Locale = defaultLocale): TranslationData
  * @param fallback 未找到时的默认值
  */
 export function t(locale: Locale, key: string, fallback?: string): string {
-    const trans = getTranslations(locale);
-    const keys = key.split('.');
+    const trans = getTranslations(locale)
+    const keys = key.split('.')
 
-    let result: unknown = trans;
+    let result: unknown = trans
     for (const k of keys) {
         if (result && typeof result === 'object' && k in result) {
-            result = (result as Record<string, unknown>)[k];
+            result = (result as Record<string, unknown>)[k]
         } else {
-            return fallback || key;
+            return fallback || key
         }
     }
 
-    return typeof result === 'string' ? result : (fallback || key);
+    return typeof result === 'string' ? result : fallback || key
 }
 
 /**
  * 从 URL 路径中获取语言代码
  */
 export function getLocaleFromPath(pathname: string): Locale {
-    const segments = pathname.split('/').filter(Boolean);
-    const firstSegment = segments[0];
+    const segments = pathname.split('/').filter(Boolean)
+    const firstSegment = segments[0]
 
     if (firstSegment && locales.includes(firstSegment as Locale)) {
-        return firstSegment as Locale;
+        return firstSegment as Locale
     }
 
-    return defaultLocale;
+    return defaultLocale
 }
 
 /**
@@ -72,37 +72,40 @@ export function getLocaleFromPath(pathname: string): Locale {
  */
 export function localePath(path: string, locale: Locale): string {
     // 移除开头的斜杠
-    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path
 
     // 如果是默认语言（中文），不添加语言前缀
     if (locale === defaultLocale) {
-        return `/${cleanPath}`;
+        return `/${cleanPath}`
     }
 
     // 其他语言添加前缀
-    return `/${locale}/${cleanPath}`;
+    return `/${locale}/${cleanPath}`
 }
 
 /**
  * 获取当前路径的其他语言版本
  */
-export function getAlternateLocales(pathname: string, currentLocale: Locale): Array<{ locale: Locale; path: string; name: string }> {
+export function getAlternateLocales(
+    pathname: string,
+    currentLocale: Locale
+): Array<{ locale: Locale; path: string; name: string }> {
     // 移除当前语言前缀
-    let cleanPath = pathname;
+    let cleanPath = pathname
     for (const locale of locales) {
         if (pathname.startsWith(`/${locale}/`)) {
-            cleanPath = pathname.slice(locale.length + 1);
-            break;
+            cleanPath = pathname.slice(locale.length + 1)
+            break
         }
     }
 
     return locales
-        .filter(locale => locale !== currentLocale)
-        .map(locale => ({
+        .filter((locale) => locale !== currentLocale)
+        .map((locale) => ({
             locale,
             path: localePath(cleanPath, locale),
-            name: localeNames[locale]
-        }));
+            name: localeNames[locale],
+        }))
 }
 
 /**
@@ -110,17 +113,17 @@ export function getAlternateLocales(pathname: string, currentLocale: Locale): Ar
  */
 export function getBrowserLocale(): Locale {
     if (typeof navigator === 'undefined') {
-        return defaultLocale;
+        return defaultLocale
     }
 
-    const browserLang = navigator.language.toLowerCase();
+    const browserLang = navigator.language.toLowerCase()
 
     if (browserLang.startsWith('zh')) {
-        return 'zh';
+        return 'zh'
     }
     if (browserLang.startsWith('en')) {
-        return 'en';
+        return 'en'
     }
 
-    return defaultLocale;
+    return defaultLocale
 }

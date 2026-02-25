@@ -1,10 +1,26 @@
 ---
 name: 功能请求
 about: 提出新功能或改进建议
-title: '[Feature] '
-labels: enhancement
+title: '[Feature] <模块>: '
+labels: 'type:improvement, area:frontend, priority:p2, risk:low, status:backlog'
 assignees: ''
 ---
+
+## 概述
+
+- **需求摘要**：
+- **业务价值**：
+- **当前状态**：Backlog
+
+## 项目字段映射（必填）
+
+- **Priority**: `priority:p0 | priority:p1 | priority:p2 | priority:p3`
+- **Status**: `status:backlog`（默认）
+- **Owner**:
+- **ETA**: `YYYY-MM-DD`
+- **Risk**: `risk:low | risk:medium | risk:high | risk:blocker`
+- **Area**: `area:frontend | area:backend | area:docs | area:devops | area:quality | area:content`
+- **Sprint**: `2026Wxx`
 
 ## 功能描述
 

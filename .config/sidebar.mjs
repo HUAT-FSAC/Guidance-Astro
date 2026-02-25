@@ -8,6 +8,7 @@ export default [
             { label: '👥 团队', link: '/team/' },
             { label: '🚗 赛车', link: '/cars/' },
             { label: 'ℹ️ 关于 Formula Student', link: '/about-fs/' },
+            { label: '📊 项目进度看板', link: '/docs-center/运营与协作/项目进度看板/' },
         ],
     },
     {

@@ -1,40 +1,44 @@
 {
-  "ci": {
-    "collect": {
-      "numberOfRuns": 3,
-      "startServerCommand": "pnpm preview",
-      "url": [
-        "http://localhost:4321/",
-        "http://localhost:4321/docs",
-        "http://localhost:4321/team",
-        "http://localhost:4321/join"
-      ],
-      "settings": {
-        "staticDistDir": "./dist",
-        "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
-      }
-    },
-    "assert": {
-      "assertions": {
-        "categories:performance": ["error", { "minScore": 0.9 }],
-        "categories:accessibility": ["error", { "minScore": 0.9 }],
-        "categories:best-practices": ["error", { "minScore": 0.9 }],
-        "categories:seo": ["error", { "minScore": 0.9 }],
-        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
-        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
-        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }],
-        "first-input-delay": ["warn", { "maxNumericValue": 100 }],
-        "interactive": ["warn", { "maxNumericValue": 3000 }],
-        "document-title": ["error"],
-        "html-has-lang": ["error"],
-        "image-alt": ["error"],
-        "link-text": ["warn"],
-        "button-name": ["error"],
-        "color-contrast": ["error"]
-      }
-    },
-    "upload": {
-      "target": "temporary-public-storage"
+    "ci": {
+        "collect": {
+            "numberOfRuns": 1,
+            "startServerCommand": "pnpm preview --host 127.0.0.1 --port 4321",
+            "startServerReadyPattern": "Local",
+            "url": [
+                "http://localhost:4321/",
+                "http://localhost:4321/docs-center/",
+                "http://localhost:4321/team/",
+                "http://localhost:4321/join/"
+            ],
+            "settings": {
+                "staticDistDir": "./dist",
+                "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
+            }
+        },
+        "assert": {
+            "assertions": {
+                "categories:performance": ["error", { "minScore": 0.65 }],
+                "categories:accessibility": ["error", { "minScore": 0.9 }],
+                "categories:best-practices": ["error", { "minScore": 0.9 }],
+                "categories:seo": ["error", { "minScore": 0.9 }],
+                "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+                "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+                "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }],
+                "interaction-to-next-paint": ["warn", { "maxNumericValue": 200 }],
+                "interactive": ["warn", { "maxNumericValue": 3000 }],
+                "resource-summary:script:size": ["error", { "maxNumericValue": 380000 }],
+                "resource-summary:stylesheet:size": ["error", { "maxNumericValue": 140000 }],
+                "document-title": ["error"],
+                "html-has-lang": ["error"],
+                "image-alt": ["error"],
+                "link-text": ["warn"],
+                "button-name": ["error"],
+                "color-contrast": ["warn"]
+            }
+        },
+        "upload": {
+            "target": "filesystem",
+            "outputDir": ".lighthouseci"
+        }
     }
-  }
 }

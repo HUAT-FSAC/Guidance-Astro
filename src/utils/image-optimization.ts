@@ -15,38 +15,38 @@ export function optimizeExternalImage(
     url: string,
     width: number = 1920,
     quality: number = 85,
-    format: "webp" | "avif" | "auto" = "webp"
+    format: 'webp' | 'avif' | 'auto' = 'webp'
 ): string {
-    if (!url) return "";
+    if (!url) return ''
 
     // Unsplash 优化
-    if (url.includes("unsplash.com")) {
-        const base = url.split("?")[0];
-        return `${base}?fm=${format === "auto" ? "webp" : format}&w=${width}&q=${quality}`;
+    if (url.includes('unsplash.com')) {
+        const base = url.split('?')[0]
+        return `${base}?fm=${format === 'auto' ? 'webp' : format}&w=${width}&q=${quality}`
     }
 
     // Cloudinary 优化
-    if (url.includes("cloudinary.com") || url.includes("res.cloudinary.com")) {
+    if (url.includes('cloudinary.com') || url.includes('res.cloudinary.com')) {
         // 插入转换参数到 /upload/ 之后
-        const formatParam = format === "auto" ? "f_auto" : `f_${format}`;
-        return url.replace("/upload/", `/upload/${formatParam},w_${width},q_${quality}/`);
+        const formatParam = format === 'auto' ? 'f_auto' : `f_${format}`
+        return url.replace('/upload/', `/upload/${formatParam},w_${width},q_${quality}/`)
     }
 
     // Imgix 优化
-    if (url.includes("imgix.net")) {
-        const separator = url.includes("?") ? "&" : "?";
-        const formatParam = format === "auto" ? "auto=format" : `fm=${format}`;
-        return `${url}${separator}${formatParam}&w=${width}&q=${quality}`;
+    if (url.includes('imgix.net')) {
+        const separator = url.includes('?') ? '&' : '?'
+        const formatParam = format === 'auto' ? 'auto=format' : `fm=${format}`
+        return `${url}${separator}${formatParam}&w=${width}&q=${quality}`
     }
 
     // Pexels 优化
-    if (url.includes("pexels.com") || url.includes("images.pexels.com")) {
-        const separator = url.includes("?") ? "&" : "?";
-        return `${url}${separator}w=${width}&auto=compress&cs=tinysrgb`;
+    if (url.includes('pexels.com') || url.includes('images.pexels.com')) {
+        const separator = url.includes('?') ? '&' : '?'
+        return `${url}${separator}w=${width}&auto=compress&cs=tinysrgb`
     }
 
     // 本地图片或其他 - 返回原 URL (可以通过 Astro 的 Image 组件优化)
-    return url;
+    return url
 }
 
 /**
@@ -55,13 +55,8 @@ export function optimizeExternalImage(
  * @param widths - 宽度数组
  * @returns srcset 字符串
  */
-export function generateSrcSet(
-    url: string,
-    widths: number[] = [400, 800, 1200, 1920]
-): string {
-    return widths
-        .map((width) => `${optimizeExternalImage(url, width)} ${width}w`)
-        .join(", ");
+export function generateSrcSet(url: string, widths: number[] = [400, 800, 1200, 1920]): string {
+    return widths.map((width) => `${optimizeExternalImage(url, width)} ${width}w`).join(', ')
 }
 
 /**
@@ -69,8 +64,8 @@ export function generateSrcSet(
  * @param isAboveFold - 是否在首屏
  * @returns loading 属性值
  */
-export function getImageLoadingStrategy(isAboveFold: boolean): "lazy" | "eager" {
-    return isAboveFold ? "eager" : "lazy";
+export function getImageLoadingStrategy(isAboveFold: boolean): 'lazy' | 'eager' {
+    return isAboveFold ? 'eager' : 'lazy'
 }
 
 /**
@@ -78,8 +73,8 @@ export function getImageLoadingStrategy(isAboveFold: boolean): "lazy" | "eager" 
  * @param isAboveFold - 是否在首屏
  * @returns fetchpriority 属性值
  */
-export function getImageFetchPriority(isAboveFold: boolean): "high" | "auto" | "low" {
-    return isAboveFold ? "high" : "auto";
+export function getImageFetchPriority(isAboveFold: boolean): 'high' | 'auto' | 'low' {
+    return isAboveFold ? 'high' : 'auto'
 }
 
 /**
@@ -88,7 +83,7 @@ export function getImageFetchPriority(isAboveFold: boolean): "high" | "auto" | "
  * @param context - 图片上下文描述
  * @returns alt 文本
  */
-export function generateAltText(title: string, context: string = ""): string {
-    if (!title) return "";
-    return context ? `${title} - ${context}` : title;
+export function generateAltText(title: string, context: string = ''): string {
+    if (!title) return ''
+    return context ? `${title} - ${context}` : title
 }

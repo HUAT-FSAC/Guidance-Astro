@@ -29,24 +29,37 @@ starlight-theme-select {
 /* ==================== 主题切换平滑过渡 ==================== */
 html {
     /* 主题色过渡，避免闪烁 */
-    transition: 
+    transition:
         background-color var(--theme-transition),
         color var(--theme-transition);
 }
 
-/* 所有带颜色的元素也应用过渡 */
-*,
-*::before,
-*::after {
-    transition: 
+/* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */
+.sl-markdown-content,
+.sidebar-content,
+nav.sidebar,
+starlight-toc,
+.sl-link-card,
+.starlight-aside,
+starlight-tabs,
+.error-boundary,
+.error-container,
+header,
+footer {
+    transition:
         background-color var(--theme-transition),
         border-color var(--theme-transition),
         box-shadow var(--theme-transition);
 }
 
 /* 排除需要即时响应的交互元素 */
-a, button, input, textarea, select,
-[role="button"], [role="link"],
+a,
+button,
+input,
+textarea,
+select,
+[role='button'],
+[role='link'],
 .no-theme-transition,
 .no-theme-transition * {
     transition: none;
@@ -87,7 +100,7 @@ html.theme-transitioning * {
 }
 
 /* 只在主要内容的 h2 上显示装饰条，子标题和嵌套元素不显示 */
-.sl-markdown-content>h2::before {
+.sl-markdown-content > h2::before {
     content: '';
     position: absolute;
     left: 0;
@@ -178,11 +191,11 @@ nav.sidebar h2::before {
     position: relative;
 }
 
-.sl-markdown-content ul>li::marker {
+.sl-markdown-content ul > li::marker {
     color: var(--sl-color-accent);
 }
 
-.sl-markdown-content ol>li::marker {
+.sl-markdown-content ol > li::marker {
     color: var(--sl-color-accent);
     font-weight: 700;
 }
@@ -218,7 +231,7 @@ nav.sidebar h2::before {
 }
 
 /* 图片描述 */
-.sl-markdown-content p:has(img)+p {
+.sl-markdown-content p:has(img) + p {
     text-align: center;
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.6);
@@ -271,7 +284,6 @@ nav.sidebar h2::before {
 }
 
 @media (max-width: 768px) {
-
     .sl-markdown-content table,
     .sl-markdown-content .table-wrapper table {
         font-size: 0.9rem;
@@ -284,7 +296,6 @@ nav.sidebar h2::before {
 }
 
 @media (max-width: 480px) {
-
     .sl-markdown-content table,
     .sl-markdown-content .table-wrapper table {
         font-size: 0.85rem;
@@ -359,7 +370,7 @@ starlight-toc a:hover {
     color: var(--sl-color-accent);
 }
 
-starlight-toc a[aria-current="true"] {
+starlight-toc a[aria-current='true'] {
     background: rgba(243, 156, 18, 0.15);
     color: var(--sl-color-accent);
     font-weight: 600;
@@ -379,7 +390,7 @@ nav.sidebar a:hover {
     background: rgba(255, 255, 255, 0.05);
 }
 
-nav.sidebar a[aria-current="page"] {
+nav.sidebar a[aria-current='page'] {
     background: rgba(243, 156, 18, 0.15);
     border-left: 3px solid var(--sl-color-accent);
 }
@@ -390,8 +401,8 @@ nav.sidebar a[aria-current="page"] {
     color: rgba(255, 255, 255, 0.92);
 }
 
-:root[data-theme='dark'] nav.sidebar a[aria-current="page"],
-:root[data-theme='dark'] starlight-toc a[aria-current="true"] {
+:root[data-theme='dark'] nav.sidebar a[aria-current='page'],
+:root[data-theme='dark'] starlight-toc a[aria-current='true'] {
     background: rgba(243, 156, 18, 0.22);
     color: #0b0b08;
     /* 深色的文字可在浅色强调背景上更清晰 */
@@ -403,8 +414,8 @@ nav.sidebar a[aria-current="page"] {
     color: #0f1724;
 }
 
-:root[data-theme='light'] nav.sidebar a[aria-current="page"],
-:root[data-theme='light'] starlight-toc a[aria-current="true"] {
+:root[data-theme='light'] nav.sidebar a[aria-current='page'],
+:root[data-theme='light'] starlight-toc a[aria-current='true'] {
     background: rgba(243, 156, 18, 0.18);
     color: #0b1220;
     border-left-color: var(--sl-color-accent);
@@ -437,16 +448,16 @@ starlight-tabs {
     --_border-color: rgba(255, 255, 255, 0.1);
 }
 
-starlight-tabs [role="tablist"] {
+starlight-tabs [role='tablist'] {
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     background: rgba(255, 255, 255, 0.03);
 }
 
-starlight-tabs [role="tab"] {
+starlight-tabs [role='tab'] {
     transition: all var(--transition-fast);
 }
 
-starlight-tabs [role="tab"][aria-selected="true"] {
+starlight-tabs [role='tab'][aria-selected='true'] {
     color: var(--sl-color-accent);
     border-bottom-color: var(--sl-color-accent);
 }
@@ -598,12 +609,12 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     }
 
     /* Tabs 优化 */
-    starlight-tabs [role="tablist"] {
+    starlight-tabs [role='tablist'] {
         overflow-x: auto;
         flex-wrap: nowrap;
     }
 
-    starlight-tabs [role="tab"] {
+    starlight-tabs [role='tab'] {
         white-space: nowrap;
         font-size: 0.85rem;
     }
@@ -638,27 +649,27 @@ starlight-tabs [role="tab"][aria-selected="true"] {
     }
 }
 
-.sl-markdown-content>* {
+.sl-markdown-content > * {
     animation: fadeIn 0.5s ease forwards;
 }
 
 /* 延迟动画 */
-.sl-markdown-content>*:nth-child(1) {
+.sl-markdown-content > *:nth-child(1) {
     animation-delay: 0.05s;
 }
 
-.sl-markdown-content>*:nth-child(2) {
+.sl-markdown-content > *:nth-child(2) {
     animation-delay: 0.1s;
 }
 
-.sl-markdown-content>*:nth-child(3) {
+.sl-markdown-content > *:nth-child(3) {
     animation-delay: 0.15s;
 }
 
-.sl-markdown-content>*:nth-child(4) {
+.sl-markdown-content > *:nth-child(4) {
     animation-delay: 0.2s;
 }
 
-.sl-markdown-content>*:nth-child(5) {
+.sl-markdown-content > *:nth-child(5) {
     animation-delay: 0.25s;
 }

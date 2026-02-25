@@ -6,20 +6,20 @@
 /**
  * 组件清理函数类型
  */
-type CleanupFunction = () => void;
+type CleanupFunction = () => void
 
 /**
  * 组件信息接口
  */
 interface ComponentInfo {
-    initialized: boolean;
-    cleanup?: CleanupFunction;
+    initialized: boolean
+    cleanup?: CleanupFunction
 }
 
 /**
  * 使用 WeakMap 跟踪组件状态，避免内存泄漏
  */
-const componentRegistry = new WeakMap<HTMLElement, ComponentInfo>();
+const componentRegistry = new WeakMap<HTMLElement, ComponentInfo>()
 
 /**
  * 初始化组件（防止重复初始化）
@@ -31,12 +31,12 @@ export function initComponent(
     selector: string,
     initFn: (element: HTMLElement) => CleanupFunction | void
 ): boolean {
-    if (typeof document === "undefined") return false;
+    if (typeof document === 'undefined') return false
 
-    const element = document.querySelector(selector) as HTMLElement | null;
-    if (!element) return false;
+    const element = document.querySelector(selector) as HTMLElement | null
+    if (!element) return false
 
-    return initElement(element, initFn);
+    return initElement(element, initFn)
 }
 
 /**
@@ -49,24 +49,24 @@ export function initElement(
     element: HTMLElement,
     initFn: (element: HTMLElement) => CleanupFunction | void
 ): boolean {
-    const info = componentRegistry.get(element);
+    const info = componentRegistry.get(element)
 
     if (info?.initialized) {
-        return false;
+        return false
     }
 
     try {
-        const cleanup = initFn(element);
+        const cleanup = initFn(element)
 
         componentRegistry.set(element, {
             initialized: true,
             cleanup: cleanup || undefined,
-        });
+        })
 
-        return true;
+        return true
     } catch (error) {
-        console.error(`Failed to initialize component:`, error);
-        return false;
+        console.error(`Failed to initialize component:`, error)
+        return false
     }
 }
 
@@ -75,12 +75,12 @@ export function initElement(
  * @param selector - 组件选择器
  */
 export function cleanupComponent(selector: string): void {
-    if (typeof document === "undefined") return;
+    if (typeof document === 'undefined') return
 
-    const element = document.querySelector(selector) as HTMLElement | null;
-    if (!element) return;
+    const element = document.querySelector(selector) as HTMLElement | null
+    if (!element) return
 
-    cleanupElement(element);
+    cleanupElement(element)
 }
 
 /**
@@ -88,30 +88,30 @@ export function cleanupComponent(selector: string): void {
  * @param element - DOM 元素
  */
 export function cleanupElement(element: HTMLElement): void {
-    const info = componentRegistry.get(element);
-    if (!info) return;
+    const info = componentRegistry.get(element)
+    if (!info) return
 
     if (info.cleanup) {
         try {
-            info.cleanup();
+            info.cleanup()
         } catch (error) {
-            console.error(`Failed to cleanup component:`, error);
+            console.error(`Failed to cleanup component:`, error)
         }
     }
 
-    componentRegistry.delete(element);
+    componentRegistry.delete(element)
 }
 
 /**
  * 清理所有组件
  */
 export function cleanupAllComponents(): void {
-    if (typeof document === "undefined") return;
+    if (typeof document === 'undefined') return
 
-    const elements = document.querySelectorAll<HTMLElement>("[data-component-init]");
+    const elements = document.querySelectorAll<HTMLElement>('[data-component-init]')
     elements.forEach((element) => {
-        cleanupElement(element);
-    });
+        cleanupElement(element)
+    })
 }
 
 /**
@@ -120,12 +120,12 @@ export function cleanupAllComponents(): void {
  * @returns 是否已初始化
  */
 export function isComponentInitialized(selector: string): boolean {
-    if (typeof document === "undefined") return false;
+    if (typeof document === 'undefined') return false
 
-    const element = document.querySelector(selector) as HTMLElement | null;
-    if (!element) return false;
+    const element = document.querySelector(selector) as HTMLElement | null
+    if (!element) return false
 
-    return isElementInitialized(element);
+    return isElementInitialized(element)
 }
 
 /**
@@ -134,8 +134,8 @@ export function isComponentInitialized(selector: string): boolean {
  * @returns 是否已初始化
  */
 export function isElementInitialized(element: HTMLElement): boolean {
-    const info = componentRegistry.get(element);
-    return info?.initialized ?? false;
+    const info = componentRegistry.get(element)
+    return info?.initialized ?? false
 }
 
 /**
@@ -143,11 +143,8 @@ export function isElementInitialized(element: HTMLElement): boolean {
  * @param element - DOM 元素
  * @param componentName - 组件名称
  */
-export function markComponentInitialized(
-    element: HTMLElement,
-    componentName: string
-): void {
-    element.dataset.componentInit = componentName;
+export function markComponentInitialized(element: HTMLElement, componentName: string): void {
+    element.dataset.componentInit = componentName
 }
 
 /**
@@ -156,7 +153,7 @@ export function markComponentInitialized(
  * @returns 组件名称
  */
 export function getComponentName(element: HTMLElement): string | undefined {
-    return element.dataset.componentInit;
+    return element.dataset.componentInit
 }
 
 /**
@@ -167,26 +164,26 @@ export function setupComponentLifecycle(
     selector: string,
     initFn: (element: HTMLElement) => CleanupFunction | void
 ): void {
-    if (typeof document === "undefined") return;
+    if (typeof document === 'undefined') return
 
     const init = () => {
-        initComponent(selector, initFn);
-    };
+        initComponent(selector, initFn)
+    }
 
     const cleanup = () => {
-        cleanupComponent(selector);
-    };
+        cleanupComponent(selector)
+    }
 
     // DOMContentLoaded 事件
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", init, { once: true });
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true })
     } else {
-        init();
+        init()
     }
 
     // Astro 页面导航事件
-    document.addEventListener("astro:page-load", init);
-    document.addEventListener("astro:after-preparation", cleanup);
+    document.addEventListener('astro:page-load', init)
+    document.addEventListener('astro:after-preparation', cleanup)
 }
 
 /**
@@ -195,11 +192,11 @@ export function setupComponentLifecycle(
  */
 export function initComponents(
     configs: Array<{
-        selector: string;
-        initFn: (element: HTMLElement) => CleanupFunction | void;
+        selector: string
+        initFn: (element: HTMLElement) => CleanupFunction | void
     }>
 ): void {
     configs.forEach((config) => {
-        setupComponentLifecycle(config.selector, config.initFn);
-    });
+        setupComponentLifecycle(config.selector, config.initFn)
+    })
 }

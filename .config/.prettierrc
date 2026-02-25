@@ -10,14 +10,7 @@
   "bracketSameLine": false,
   "proseWrap": "preserve",
   "htmlWhitespaceSensitivity": "css",
-  "astroAllowShorthand": false,
   "overrides": [
-    {
-      "files": "*.astro",
-      "options": {
-        "parser": "astro"
-      }
-    },
     {
       "files": "*.json",
       "options": {

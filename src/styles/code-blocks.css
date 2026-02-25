@@ -25,7 +25,11 @@
 
 /* ==================== 代码块头部 (文件名/标题) ==================== */
 .expressive-code .header {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 100%
+    ) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     padding: 0.75rem 1rem !important;
 }
@@ -74,7 +78,11 @@
 }
 
 :root[data-theme='light'] .expressive-code .header {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 247, 250, 0.9) 100%) !important;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(245, 247, 250, 0.9) 100%
+    ) !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
@@ -241,15 +249,15 @@
 }
 
 /* ==================== 终端样式 ==================== */
-.expressive-code[data-language="bash"] pre,
-.expressive-code[data-language="shell"] pre,
-.expressive-code[data-language="sh"] pre {
+.expressive-code[data-language='bash'] pre,
+.expressive-code[data-language='shell'] pre,
+.expressive-code[data-language='sh'] pre {
     background: linear-gradient(180deg, #1e1e1e 0%, #0d0d0d 100%) !important;
 }
 
-.expressive-code[data-language="bash"] .header::before,
-.expressive-code[data-language="shell"] .header::before,
-.expressive-code[data-language="sh"] .header::before {
+.expressive-code[data-language='bash'] .header::before,
+.expressive-code[data-language='shell'] .header::before,
+.expressive-code[data-language='sh'] .header::before {
     /* 保持 macOS 窗口样式 */
 }
 
@@ -273,7 +281,7 @@
 }
 
 /* ==================== 行内代码样式 ==================== */
-.sl-markdown-content :not(pre)>code {
+.sl-markdown-content :not(pre) > code {
     background: rgba(243, 156, 18, 0.15) !important;
     color: var(--sl-color-accent) !important;
     padding: 0.2em 0.5em !important;
@@ -285,7 +293,7 @@
     transition: all 0.2s ease;
 }
 
-.sl-markdown-content :not(pre)>code:hover {
+.sl-markdown-content :not(pre) > code:hover {
     background: rgba(243, 156, 18, 0.25) !important;
     border-color: rgba(243, 156, 18, 0.4);
 }
@@ -420,7 +428,7 @@
         padding: 1rem !important;
         font-size: 0.85rem !important;
     }
-    
+
     /* 确保代码块可以横向滚动 */
     .expressive-code pre code {
         white-space: pre;

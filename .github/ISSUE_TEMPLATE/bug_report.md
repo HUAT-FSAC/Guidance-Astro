@@ -1,10 +1,26 @@
 ---
 name: Bug 报告
 about: 报告一个问题或错误
-title: '[Bug] '
-labels: bug
+title: '[Bug] <模块>: '
+labels: 'type:bug, area:frontend, priority:p1, risk:medium, status:backlog'
 assignees: ''
 ---
+
+## 概述
+
+- **问题摘要**：
+- **影响范围**：
+- **当前状态**：Backlog
+
+## 项目字段映射（必填）
+
+- **Priority**: `priority:p0 | priority:p1 | priority:p2 | priority:p3`
+- **Status**: `status:backlog`（默认）
+- **Owner**:
+- **ETA**: `YYYY-MM-DD`
+- **Risk**: `risk:low | risk:medium | risk:high | risk:blocker`
+- **Area**: `area:frontend | area:backend | area:docs | area:devops | area:quality | area:content`
+- **Sprint**: `2026Wxx`
 
 ## Bug 描述
 
@@ -34,6 +50,7 @@ assignees: ''
 - **浏览器**: [如 Chrome 120]
 - **操作系统**: [如 Windows 11]
 - **设备类型**: [Desktop / Mobile / Tablet]
+- **提交/版本**: [如 commit sha / tag]
 
 ## 其他信息
 
