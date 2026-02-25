@@ -1,0 +1,56 @@
+name: Collect Project Metrics
+
+on:
+  schedule:
+    - cron: '15 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  collect:
+    name: Collect and Persist Metrics
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+      issues: read
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collect metrics snapshot
+        run: node scripts/metrics/collect-github-metrics.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Commit updated metrics
+        id: commit-metrics
+        run: |
+          if git diff --quiet -- src/data/metrics/project-progress.json; then
+            echo "No metrics changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/metrics/project-progress.json
+          git commit -m "chore(metrics): update project progress snapshot"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger site rebuild
+        if: steps.commit-metrics.outputs.changed == 'true'
+        run: |
+          curl -sf -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/huat-fsac/deployments" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' || echo "Rebuild trigger skipped (Cloudflare secrets may not be configured)"

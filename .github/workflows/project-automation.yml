@@ -234,6 +234,14 @@ jobs:
 
             await ensureLabels();
 
+            // 检查 Projects v2 变量是否已配置
+            if (!process.env.PROJECT_V2_ID) {
+              core.warning(
+                'PROJECT_V2_ID 未配置，工作流将以"仅标签驱动"模式运行。' +
+                '如需启用看板自动化，请参考 docs-meta/PROJECT_MANAGEMENT_MODEL.md 配置仓库变量。'
+              );
+            }
+
             if (context.eventName === 'issues') {
               const issue = context.payload.issue;
               if (!issue || context.payload.issue.pull_request) return;

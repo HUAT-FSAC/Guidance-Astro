@@ -1,0 +1,280 @@
+name: Collaboration Notifications
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  workflow_run:
+    workflows: ['CI/CD Pipeline']
+    types: [completed]
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  notify-pr-created:
+    name: Notify PR Created
+    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Push notification
+        uses: actions/github-script@v7
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const reviewers = (pr.requested_reviewers || []).map((item) => `@${item.login}`).join(', ') || '未指定';
+            const assignees = (pr.assignees || []).map((item) => `@${item.login}`).join(', ') || '未指定';
+            const text = [
+              '🔔 [PR 创建]',
+              `仓库: ${context.repo.owner}/${context.repo.repo}`,
+              `分支: ${pr.head.ref} -> ${pr.base.ref}`,
+              `责任人: ${assignees}`,
+              `评审人: ${reviewers}`,
+              `标题: ${pr.title}`,
+              `链接: ${pr.html_url}`,
+            ].join('\n');
+
+            async function send(url, payload) {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              if (!response.ok) {
+                const body = await response.text();
+                throw new Error(`notify failed: ${response.status} ${body}`);
+              }
+            }
+
+            if (process.env.FEISHU_WEBHOOK_URL) {
+              await send(process.env.FEISHU_WEBHOOK_URL, {
+                msg_type: 'text',
+                content: { text },
+              });
+            }
+            if (process.env.WECOM_WEBHOOK_URL) {
+              await send(process.env.WECOM_WEBHOOK_URL, {
+                msgtype: 'text',
+                text: { content: text },
+              });
+            }
+            if (!process.env.FEISHU_WEBHOOK_URL && !process.env.WECOM_WEBHOOK_URL) {
+              core.warning('No collaboration webhook configured.');
+            }
+
+  notify-pr-merged:
+    name: Notify PR Merged
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Push notification
+        uses: actions/github-script@v7
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const mergedBy = pr.merged_by?.login ? `@${pr.merged_by.login}` : '未知';
+            const text = [
+              '✅ [PR 合并]',
+              `仓库: ${context.repo.owner}/${context.repo.repo}`,
+              `分支: ${pr.head.ref} -> ${pr.base.ref}`,
+              `责任人: @${pr.user.login}`,
+              `合并人: ${mergedBy}`,
+              `标题: ${pr.title}`,
+              `链接: ${pr.html_url}`,
+            ].join('\n');
+
+            async function send(url, payload) {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              if (!response.ok) {
+                const body = await response.text();
+                throw new Error(`notify failed: ${response.status} ${body}`);
+              }
+            }
+
+            if (process.env.FEISHU_WEBHOOK_URL) {
+              await send(process.env.FEISHU_WEBHOOK_URL, {
+                msg_type: 'text',
+                content: { text },
+              });
+            }
+            if (process.env.WECOM_WEBHOOK_URL) {
+              await send(process.env.WECOM_WEBHOOK_URL, {
+                msgtype: 'text',
+                text: { content: text },
+              });
+            }
+            if (!process.env.FEISHU_WEBHOOK_URL && !process.env.WECOM_WEBHOOK_URL) {
+              core.warning('No collaboration webhook configured.');
+            }
+
+  notify-ci-failed:
+    name: Notify CI Failure
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Push notification
+        uses: actions/github-script@v7
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const text = [
+              '🚨 [CI 失败]',
+              `仓库: ${context.repo.owner}/${context.repo.repo}`,
+              `分支: ${run.head_branch}`,
+              `触发人: @${run.actor?.login || 'unknown'}`,
+              `阻塞环节: ${run.name}`,
+              `状态: ${run.conclusion}`,
+              `定位链接: ${run.html_url}`,
+            ].join('\n');
+
+            async function send(url, payload) {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              if (!response.ok) {
+                const body = await response.text();
+                throw new Error(`notify failed: ${response.status} ${body}`);
+              }
+            }
+
+            if (process.env.FEISHU_WEBHOOK_URL) {
+              await send(process.env.FEISHU_WEBHOOK_URL, {
+                msg_type: 'text',
+                content: { text },
+              });
+            }
+            if (process.env.WECOM_WEBHOOK_URL) {
+              await send(process.env.WECOM_WEBHOOK_URL, {
+                msgtype: 'text',
+                text: { content: text },
+              });
+            }
+            if (!process.env.FEISHU_WEBHOOK_URL && !process.env.WECOM_WEBHOOK_URL) {
+              core.warning('No collaboration webhook configured.');
+            }
+
+  notify-milestone-overdue:
+    name: Notify Milestone Overdue
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Restore notification cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .milestone-notified
+          key: milestone-notified-${{ github.run_id }}
+          restore-keys: milestone-notified-
+
+      - name: Scan and push notification
+        uses: actions/github-script@v7
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
+        with:
+          script: |
+            const fs = require('fs');
+            const cachePath = '.milestone-notified';
+            const today = new Date().toISOString().slice(0, 10);
+
+            // 读取已通知记录（格式：每行 "milestoneId:date"）
+            let notified = new Set();
+            try {
+              const content = fs.readFileSync(cachePath, 'utf8');
+              content.split('\n').filter(Boolean).forEach((line) => notified.add(line));
+            } catch { /* 首次运行无缓存 */ }
+
+            const { data: milestones } = await github.rest.issues.listMilestones({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const now = Date.now();
+            const overdue = milestones.filter((item) => item.due_on && new Date(item.due_on).getTime() < now);
+            if (overdue.length === 0) {
+              core.info('No overdue milestones.');
+              return;
+            }
+
+            // 过滤今天已通知的里程碑
+            const toNotify = overdue.filter((item) => !notified.has(`${item.id}:${today}`));
+            if (toNotify.length === 0) {
+              core.info('All overdue milestones already notified today.');
+              return;
+            }
+
+            async function send(url, payload) {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              if (!response.ok) {
+                const body = await response.text();
+                throw new Error(`notify failed: ${response.status} ${body}`);
+              }
+            }
+
+            for (const item of toNotify) {
+              const text = [
+                '⏰ [里程碑延期]',
+                `仓库: ${context.repo.owner}/${context.repo.repo}`,
+                `里程碑: ${item.title}`,
+                `截止日期: ${item.due_on}`,
+                `未完成事项: ${item.open_issues}`,
+                `定位链接: ${item.html_url}`,
+              ].join('\n');
+
+              if (process.env.FEISHU_WEBHOOK_URL) {
+                await send(process.env.FEISHU_WEBHOOK_URL, {
+                  msg_type: 'text',
+                  content: { text },
+                });
+              }
+              if (process.env.WECOM_WEBHOOK_URL) {
+                await send(process.env.WECOM_WEBHOOK_URL, {
+                  msgtype: 'text',
+                  text: { content: text },
+                });
+              }
+
+              notified.add(`${item.id}:${today}`);
+            }
+
+            if (!process.env.FEISHU_WEBHOOK_URL && !process.env.WECOM_WEBHOOK_URL) {
+              core.warning('No collaboration webhook configured.');
+            }
+
+            // 写入缓存（只保留最近 7 天的记录）
+            const sevenDaysAgo = new Date(now - 7 * 86400000).toISOString().slice(0, 10);
+            const freshEntries = [...notified].filter((entry) => {
+              const date = entry.split(':').pop();
+              return date >= sevenDaysAgo;
+            });
+            fs.writeFileSync(cachePath, freshEntries.join('\n') + '\n');
