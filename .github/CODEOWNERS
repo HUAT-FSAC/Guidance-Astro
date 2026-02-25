@@ -1,0 +1,13 @@
+# 默认负责人（请按实际组织成员维护）
+# 建议至少保持两名 owner 以避免单点瓶颈
+* @nekorectifier @HUAT-FSAC/core-team
+
+# 关键目录责任边界
+/src/components/ @nekorectifier @HUAT-FSAC/core-team
+/src/content/ @nekorectifier @HUAT-FSAC/core-team
+/docs-meta/ @nekorectifier @HUAT-FSAC/core-team
+/.github/ @nekorectifier @HUAT-FSAC/core-team
+
+# 配置与基础设施（需要 DevOps 审核）
+/scripts/ @nekorectifier
+/src/config/ @nekorectifier
