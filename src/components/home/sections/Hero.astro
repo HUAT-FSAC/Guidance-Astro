@@ -21,7 +21,7 @@ const smallBg = backgroundImage
     ? optimizeExternalImage(backgroundImage, 900, 80)
     : "";
 const bgStyle = backgroundImage
-    ? `--hero-bg: url(${largeBg}); --hero-bg-mobile: url(${smallBg});`
+    ? `--hero-bg: url("${largeBg}"); --hero-bg-mobile: url("${smallBg}");`
     : "";
 ---
 
