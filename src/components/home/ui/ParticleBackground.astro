@@ -5,13 +5,19 @@
 <canvas id="particleCanvas" class="particle-canvas"></canvas>
 
 <script>
+    let _particleCleanup: (() => void) | undefined;
+
     function initParticles() {
         const canvas = document.getElementById(
             "particleCanvas",
         ) as HTMLCanvasElement;
         if (!canvas) return;
-        if (canvas.dataset.initialized === "true") return;
-        canvas.dataset.initialized = "true";
+
+        // 清理上一次的实例
+        if (_particleCleanup) {
+            _particleCleanup();
+            _particleCleanup = undefined;
+        }
 
         const prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
@@ -156,15 +162,10 @@
             animationId = 0;
         }
 
-        updateColors();
-        resize();
-        startAnimation();
-
-        window.addEventListener("resize", resize);
-        document.addEventListener("visibilitychange", () => {
+        const handleVisibility = () => {
             if (document.hidden) stopAnimation();
             else startAnimation();
-        });
+        };
 
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -177,12 +178,26 @@
             });
         });
 
+        updateColors();
+        resize();
+        startAnimation();
+
+        window.addEventListener("resize", resize);
+        document.addEventListener("visibilitychange", handleVisibility);
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ["data-theme"],
         });
 
         canvas.style.opacity = "1";
+
+        // 注册清理函数
+        _particleCleanup = () => {
+            stopAnimation();
+            window.removeEventListener("resize", resize);
+            document.removeEventListener("visibilitychange", handleVisibility);
+            observer.disconnect();
+        };
     }
 
     function scheduleInit() {

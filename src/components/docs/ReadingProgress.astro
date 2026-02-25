@@ -55,29 +55,37 @@ const readingTime = calculateReadingTime(content, wordsPerMinute);
 </div>
 
 <script>
+    let _scrollCleanup: (() => void) | undefined;
+
     function initReadingProgress() {
         const progressFill = document.getElementById('readingProgressFill');
         const progressPercent = document.getElementById('progressPercent');
         const badge = document.getElementById('readingTimeBadge');
-        
+
         if (!progressFill || !progressPercent) return;
-        
+
+        // 清理上一次的监听器
+        if (_scrollCleanup) {
+            _scrollCleanup();
+            _scrollCleanup = undefined;
+        }
+
         let ticking = false;
-        
+
         const updateProgress = () => {
             const scrollTop = window.scrollY;
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            
+
             if (docHeight <= 0) {
                 progressFill.style.width = '100%';
                 progressPercent.textContent = '100%';
                 return;
             }
-            
+
             const progress = Math.min(100, Math.round((scrollTop / docHeight) * 100));
             progressFill.style.width = `${progress}%`;
             progressPercent.textContent = `${progress}%`;
-            
+
             // 滚动后隐藏时间徽章
             if (badge) {
                 if (scrollTop > 200) {
@@ -87,7 +95,7 @@ const readingTime = calculateReadingTime(content, wordsPerMinute);
                 }
             }
         };
-        
+
         const handleScroll = () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
@@ -97,18 +105,19 @@ const readingTime = calculateReadingTime(content, wordsPerMinute);
                 ticking = true;
             }
         };
-        
+
         window.addEventListener('scroll', handleScroll, { passive: true });
+        _scrollCleanup = () => window.removeEventListener('scroll', handleScroll);
         updateProgress(); // 初始化
     }
-    
+
     // 初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReadingProgress);
     } else {
         initReadingProgress();
     }
-    
+
     document.addEventListener('astro:page-load', initReadingProgress);
 </script>
 

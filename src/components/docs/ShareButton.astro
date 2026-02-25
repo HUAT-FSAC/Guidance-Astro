@@ -104,21 +104,29 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
 </div>
 
 <script>
-    import { 
-        copyToClipboard, 
-        openShareWindow, 
-        nativeShare, 
+    import {
+        copyToClipboard,
+        openShareWindow,
+        nativeShare,
         canUseNativeShare,
         getPageShareData,
         generateQRCodeUrl,
         type SharePlatform
     } from '../../utils/share';
 
+    let _escCleanup: (() => void) | undefined;
+
     function initShareButton() {
         const container = document.querySelector('[data-share-container]');
         if (!container) return;
         if ((container as HTMLElement).dataset.initialized === 'true') return;
         (container as HTMLElement).dataset.initialized = 'true';
+
+        // 清理上一次的 ESC 监听器
+        if (_escCleanup) {
+            _escCleanup();
+            _escCleanup = undefined;
+        }
 
         const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement;
         const menu = container.querySelector('#share-menu') as HTMLElement;
@@ -146,7 +154,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         function toggleMenu() {
             const isOpen = menu.classList.toggle('open');
             toggleBtn.setAttribute('aria-expanded', String(isOpen));
-            
+
             if (isOpen) {
                 // 点击外部关闭
                 setTimeout(() => {
@@ -170,7 +178,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         // 处理分享操作
         async function handleShare(action: string) {
             const shareData = getPageShareData();
-            
+
             switch (action) {
                 case 'copy':
                     const copyResult = await copyToClipboard(shareData.url);
@@ -237,13 +245,15 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
             }
         });
 
-        // ESC 关闭
-        document.addEventListener('keydown', (e) => {
+        // ESC 关闭（使用命名函数以便清理）
+        const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 closeMenu();
                 qrcodeModal.classList.remove('show');
             }
-        });
+        };
+        document.addEventListener('keydown', handleEsc);
+        _escCleanup = () => document.removeEventListener('keydown', handleEsc);
     }
 
     // 初始化
