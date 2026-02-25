@@ -188,36 +188,17 @@ export async function sendAlert(
     }
 }
 
-export function trackPageView(url: string, referrer?: string): void {
-    if (
-        typeof window !== 'undefined' &&
-        (window as { umami?: { trackView: (u: string, r?: string) => void } }).umami
-    ) {
-        const w = window as { umami?: { trackView: (u: string, r?: string) => void } }
-        if (w.umami) {
-            w.umami.trackView(url, referrer)
-        }
-    }
-}
+/**
+ * 事件追踪统一收口到 analytics.ts，此处仅做 re-export 保持向后兼容
+ */
+export { trackEvent } from '../utils/analytics'
 
-export function trackEvent(name: string, data?: Record<string, string | number | boolean>): void {
-    if (
-        typeof window !== 'undefined' &&
-        (
-            window as {
-                umami?: {
-                    trackEvent: (n: string, d?: Record<string, string | number | boolean>) => void
-                }
-            }
-        ).umami
-    ) {
-        const w = window as {
-            umami?: {
-                trackEvent: (n: string, d?: Record<string, string | number | boolean>) => void
-            }
-        }
-        if (w.umami) {
-            w.umami.trackEvent(name, data)
-        }
+export function trackPageView(url: string, referrer?: string): void {
+    if (typeof window === 'undefined') return
+    if (window.umami) {
+        ;(window.umami as { track: (name: string, data?: Record<string, unknown>) => void }).track(
+            'pageview',
+            { url, referrer }
+        )
     }
 }

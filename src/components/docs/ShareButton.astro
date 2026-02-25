@@ -110,7 +110,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         nativeShare,
         canUseNativeShare,
         getPageShareData,
-        generateQRCodeUrl,
+        generateQRCodeDataUrl,
         type SharePlatform
     } from '../../utils/share';
 
@@ -193,8 +193,8 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
                     break;
 
                 case 'wechat':
-                    // 显示二维码
-                    qrcodeImg.src = generateQRCodeUrl(shareData.url, 200);
+                    // 本地生成二维码
+                    qrcodeImg.src = await generateQRCodeDataUrl(shareData.url, 200);
                     qrcodeModal.classList.add('show');
                     break;
 

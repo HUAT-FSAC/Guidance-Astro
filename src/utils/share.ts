@@ -238,14 +238,21 @@ export function getPageShareData(): ShareData {
 }
 
 /**
- * 生成微信分享二维码 URL (使用 QR 服务)
+ * 生成微信分享二维码 Data URL（客户端本地生成，无第三方请求）
  * @param url - 要分享的链接
  * @param size - 二维码尺寸
- * @returns 二维码图片 URL
+ * @returns 二维码 Data URL
+ */
+export async function generateQRCodeDataUrl(url: string, size: number = 200): Promise<string> {
+    const QRCode = await import('qrcode')
+    return QRCode.toDataURL(url, { width: size, margin: 1 })
+}
+
+/**
+ * @deprecated 使用 generateQRCodeDataUrl 替代，避免向第三方泄露 URL
  */
 export function generateQRCodeUrl(url: string, size: number = 200): string {
     const encodedUrl = encodeURIComponent(url)
-    // 使用免费的二维码 API
     return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodedUrl}`
 }
 
