@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-pnpm lint-staged
+pnpm lint-staged --config .config/lint-staged.config.mjs
