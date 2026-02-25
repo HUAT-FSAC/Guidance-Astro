@@ -1,0 +1,21 @@
+---
+title: 项目进度看板
+description: 基于 GitHub Issues/PR/CI 的自动化项目指标面板
+---
+
+import { Aside } from '@astrojs/starlight/components'
+import ProjectMetricsDashboard from '../../../../components/docs/ProjectMetricsDashboard.astro'
+
+<Aside type="tip" title="数据刷新频率">
+指标数据由 `collect-metrics` 工作流每日自动更新。若需立即刷新，请手动触发对应 workflow。
+</Aside>
+
+## 项目运营核心指标
+
+<ProjectMetricsDashboard />
+
+## 使用建议
+
+- 周会优先关注：`燃尽/关闭率`、`WIP 分布`、`CI 成功率`
+- 里程碑评审优先关注：`Issue Lead Time`、`PR Cycle Time`
+- 当 `CI 成功率` 连续下降时，优先排查最近 3 次失败构建链接

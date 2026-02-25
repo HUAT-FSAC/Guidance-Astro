@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全问题上报
+    url: https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new
+    about: 请勿在公开 Issue 提交安全漏洞细节

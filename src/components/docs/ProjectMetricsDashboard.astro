@@ -1,0 +1,180 @@
+---
+import metricsData from '../../data/metrics/project-progress.json'
+
+const {
+    generatedAt = '',
+    repository = '',
+    windowDays = 30,
+    status = 'unknown',
+    metrics = {},
+    counts = {},
+} = metricsData
+
+function asPercent(value: unknown): string {
+    if (typeof value !== 'number' || Number.isNaN(value)) return '--'
+    return `${value.toFixed(2)}%`
+}
+
+function asNumber(value: unknown): string {
+    if (typeof value !== 'number' || Number.isNaN(value)) return '--'
+    return value.toFixed(2)
+}
+
+function clampPercent(value: unknown): number {
+    if (typeof value !== 'number' || Number.isNaN(value)) return 0
+    return Math.max(0, Math.min(100, value))
+}
+
+const burnDownRate = clampPercent(metrics.issueCloseRatePercent)
+const ciSuccessRate = clampPercent(metrics.ciSuccessRatePercent)
+const mergeRate = clampPercent(metrics.prMergeRatePercent)
+const statusText = status === 'ok' ? '正常' : status === 'degraded' ? '降级' : '初始化'
+
+const generatedAtText = generatedAt
+    ? new Intl.DateTimeFormat('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+      }).format(new Date(generatedAt))
+    : '--'
+---
+
+<section class="metrics-dashboard">
+    <header class="dashboard-header">
+        <h2>项目进度数据面板</h2>
+        <p>仓库：{repository || '--'} · 统计窗口：近 {windowDays} 天 · 状态：{statusText}</p>
+        <p>数据更新时间：{generatedAtText}</p>
+    </header>
+
+    <div class="metric-grid">
+        <article class="metric-card">
+            <h3>燃尽/关闭率</h3>
+            <p class="metric-value">{asPercent(metrics.issueCloseRatePercent)}</p>
+            <div class="progress-track">
+                <span class="progress-fill" style={`width: ${burnDownRate}%`}></span>
+            </div>
+            <p class="metric-meta">
+                已关闭 {counts.closedIssuesInWindow ?? 0} / 新增 {counts.openedIssuesInWindow ?? 0}
+            </p>
+        </article>
+
+        <article class="metric-card">
+            <h3>需求 Lead Time</h3>
+            <p class="metric-value">{asNumber(metrics.issueLeadTimeDays)} 天</p>
+            <p class="metric-meta">Issue 从创建到关闭的平均周期</p>
+        </article>
+
+        <article class="metric-card">
+            <h3>PR Cycle Time</h3>
+            <p class="metric-value">{asNumber(metrics.prCycleTimeDays)} 天</p>
+            <p class="metric-meta">PR 从创建到合并的平均周期</p>
+        </article>
+
+        <article class="metric-card">
+            <h3>CI 成功率</h3>
+            <p class="metric-value">{asPercent(metrics.ciSuccessRatePercent)}</p>
+            <div class="progress-track">
+                <span class="progress-fill success" style={`width: ${ciSuccessRate}%`}></span>
+            </div>
+            <p class="metric-meta">
+                失败 {counts.ciFailedRunsInWindow ?? 0} / 总计 {counts.ciRunsInWindow ?? 0}
+            </p>
+        </article>
+
+        <article class="metric-card">
+            <h3>PR 合并率</h3>
+            <p class="metric-value">{asPercent(metrics.prMergeRatePercent)}</p>
+            <div class="progress-track">
+                <span class="progress-fill" style={`width: ${mergeRate}%`}></span>
+            </div>
+            <p class="metric-meta">
+                已合并 {counts.mergedPullRequestsInWindow ?? 0} / 新建 {counts.openedPullRequestsInWindow ?? 0}
+            </p>
+        </article>
+
+        <article class="metric-card">
+            <h3>WIP 分布</h3>
+            <ul class="wip-list">
+                <li>Backlog：{metrics.backlogIssueCount ?? 0}</li>
+                <li>In Progress：{metrics.wipIssueCount ?? 0}</li>
+                <li>Review：{metrics.reviewIssueCount ?? 0}</li>
+                <li>Open PR：{counts.openPullRequestCount ?? 0}</li>
+            </ul>
+        </article>
+    </div>
+</section>
+
+<style>
+    .metrics-dashboard {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .dashboard-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .dashboard-header p {
+        margin: 0.35rem 0 0;
+        color: var(--sl-color-text-accent);
+        font-size: 0.9rem;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.9rem;
+    }
+
+    .metric-card {
+        border: 1px solid var(--sl-color-hairline-light);
+        border-radius: 0.7rem;
+        padding: 0.9rem;
+        background: var(--sl-color-bg-nav);
+    }
+
+    .metric-card h3 {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--sl-color-text-accent);
+    }
+
+    .metric-value {
+        margin: 0.45rem 0 0.5rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .metric-meta {
+        margin: 0.45rem 0 0;
+        font-size: 0.82rem;
+        color: var(--sl-color-text-accent);
+    }
+
+    .progress-track {
+        height: 0.45rem;
+        border-radius: 999px;
+        background: var(--sl-color-gray-5);
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, #4f46e5, #06b6d4);
+    }
+
+    .progress-fill.success {
+        background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+
+    .wip-list {
+        margin: 0.45rem 0 0;
+        padding-left: 1rem;
+        font-size: 0.9rem;
+    }
+</style>
