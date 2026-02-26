@@ -2,6 +2,7 @@
 /**
  * 自定义文档页面框架
  * 在所有文档页面中添加全局组件（灯箱、分享按钮等）
+ * 添加导航栏登录状态显示
  */
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/PageFrame.astro";
@@ -11,7 +12,10 @@ import ErrorBoundary from "../ErrorBoundary.astro";
 
 <ErrorBoundary>
     <Default {...Astro.props}>
-        <slot name="header" slot="header" />
+        <div class="header-with-user-nav" slot="header">
+            <slot name="header" />
+            <div id="user-nav" class="user-nav print:hidden" aria-label="用户菜单"></div>
+        </div>
         <slot name="sidebar" slot="sidebar" />
         <slot />
     </Default>
@@ -19,3 +23,94 @@ import ErrorBoundary from "../ErrorBoundary.astro";
 
 <!-- 全局文档组件 -->
 <ImageLightbox />
+
+<style>
+    .header-with-user-nav {
+        display: contents;
+    }
+    /* user-nav sits in the Starlight header flex row */
+    .user-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+        padding-inline-start: 0.75rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    .user-nav :global(a) {
+        color: var(--sl-color-text);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .user-nav :global(a:hover) {
+        color: var(--sl-color-accent);
+    }
+    .user-nav :global(.user-nav-avatar) {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        vertical-align: middle;
+    }
+    .user-nav :global(.user-nav-name) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .user-nav :global(.user-nav-sep) {
+        opacity: 0.3;
+        margin: 0 0.15rem;
+    }
+    .user-nav :global(.user-nav-login) {
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm, 0.5rem);
+        background: var(--sl-color-accent);
+        color: var(--sl-color-black);
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+    .user-nav :global(.user-nav-login:hover) {
+        opacity: 0.85;
+        color: var(--sl-color-black);
+    }
+</style>
+
+<script>
+    const ROLE_HIERARCHY = ['visitor', 'user', 'member', 'admin', 'super_admin'];
+
+    function hasRole(userRole: string, required: string): boolean {
+        return ROLE_HIERARCHY.indexOf(userRole) >= ROLE_HIERARCHY.indexOf(required);
+    }
+
+    async function initUserNav() {
+        const nav = document.getElementById('user-nav');
+        if (!nav) return;
+
+        try {
+            const res = await fetch('/api/auth/me/', { credentials: 'same-origin' });
+            const data = await res.json();
+
+            if (data.user) {
+                const u = data.user;
+                const name = u.displayName || u.username;
+                let html = '<a href="/profile/" class="user-nav-name">';
+                if (u.avatarUrl) {
+                    html += `<img src="${u.avatarUrl}" alt="" class="user-nav-avatar" />`;
+                }
+                html += `${name}</a>`;
+                if (hasRole(u.role, 'admin')) {
+                    html += '<span class="user-nav-sep">|</span>';
+                    html += '<a href="/admin/">管理后台</a>';
+                }
+                nav.innerHTML = html;
+            } else {
+                nav.innerHTML = '<a href="/login/" class="user-nav-login">登录</a>';
+            }
+        } catch {
+            // Silently fail — nav stays empty
+        }
+    }
+
+    initUserNav();
+</script>
