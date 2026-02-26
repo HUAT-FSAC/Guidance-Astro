@@ -1,0 +1,69 @@
+---
+export const prerender = false
+import '../styles/auth.css'
+---
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>登录 — FSAC AST Docs</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>登录</h1>
+            <div class="auth-error" id="error-msg"></div>
+            <form id="login-form">
+                <div class="auth-field">
+                    <label for="account">邮箱或用户名</label>
+                    <input id="account" name="account" type="text" required autocomplete="username" />
+                </div>
+                <div class="auth-field">
+                    <label for="password">密码</label>
+                    <input id="password" name="password" type="password" required autocomplete="current-password" />
+                </div>
+                <button type="submit" class="auth-btn auth-btn-primary">登录</button>
+            </form>
+            <div class="auth-divider">或</div>
+            <a href="/api/auth/github/" class="auth-btn auth-btn-github" style="display:block;text-align:center;text-decoration:none;">GitHub 登录</a>
+            <a href="/api/auth/qq/" class="auth-btn auth-btn-qq" style="display:block;text-align:center;text-decoration:none;">QQ 登录</a>
+            <div class="auth-link">还没有账号？<a href="/register/">注册</a></div>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('login-form') as HTMLFormElement;
+        const errorEl = document.getElementById('error-msg') as HTMLDivElement;
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || '/';
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorEl.style.display = 'none';
+            const account = (form.querySelector('#account') as HTMLInputElement).value;
+            const password = (form.querySelector('#password') as HTMLInputElement).value;
+            try {
+                const res = await fetch('/api/auth/login/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ account, password }),
+                });
+                if (res.ok) {
+                    location.href = redirect;
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    errorEl.textContent = data.error || '登录失败，请重试';
+                    errorEl.style.display = 'block';
+                }
+            } catch {
+                errorEl.textContent = '网络错误，请稍后重试';
+                errorEl.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+---
+export const prerender = false
+import '../styles/auth.css'
+
+const user = Astro.locals.user
+if (!user) {
+    return Astro.redirect('/login/')
+}
+---
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>个人资料 — FSAC AST Docs</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+        .profile-avatar { text-align: center; margin-bottom: 1.5rem; }
+        .profile-avatar img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+        .avatar-placeholder {
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto;
+            background: var(--sl-color-accent); color: var(--sl-color-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 700;
+        }
+        .profile-info { margin-bottom: 1.5rem; }
+        .profile-row {
+            display: flex; justify-content: space-between; padding: 0.5rem 0;
+            border-bottom: 1px solid var(--sl-color-hairline); font-size: 0.9rem;
+        }
+        .profile-label { color: var(--sl-color-gray-3); }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>个人资料</h1>
+            <div class="profile-avatar">
+                {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.username} width="80" height="80" />
+                ) : (
+                    <div class="avatar-placeholder">{user.username.charAt(0).toUpperCase()}</div>
+                )}
+            </div>
+            <div class="profile-info">
+                <div class="profile-row"><span class="profile-label">用户名</span><span>{user.username}</span></div>
+                <div class="profile-row"><span class="profile-label">邮箱</span><span>{user.email}</span></div>
+                <div class="profile-row"><span class="profile-label">角色</span><span>{user.role}</span></div>
+            </div>
+            <button id="logout-btn" class="auth-btn auth-btn-primary">退出登录</button>
+            <div class="auth-link"><a href="/">返回首页</a></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('logout-btn')!.addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/auth/logout/', { method: 'POST' });
+                if (res.ok) {
+                    location.href = '/';
+                }
+            } catch {
+                alert('退出失败，请重试');
+            }
+        });
+    </script>
+</body>
+</html>
