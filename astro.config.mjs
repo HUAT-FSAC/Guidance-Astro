@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config'
+import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 
 // https://astro.build/config
 export default defineConfig({
+    adapter: cloudflare(),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
     redirects: {
