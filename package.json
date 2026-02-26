@@ -20,6 +20,10 @@
         "quality:bundle": "node scripts/quality/check-bundle-budget.mjs",
         "quality:lighthouse": "lhci collect --config=.config/lighthouserc.json && lhci assert --config=.config/lighthouserc.json",
         "metrics:collect": "node scripts/metrics/collect-github-metrics.mjs",
+        "dev:worker": "wrangler pages dev dist",
+        "db:migrate": "wrangler d1 execute fsac-auth --file=src/db/schema.sql",
+        "db:migrate:local": "wrangler d1 execute fsac-auth --local --file=src/db/schema.sql",
+        "db:seed:local": "wrangler d1 execute fsac-auth --local --file=src/db/seed.sql",
         "prepare": "husky"
     },
     "dependencies": {
