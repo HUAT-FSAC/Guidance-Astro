@@ -1,0 +1,73 @@
+---
+export const prerender = false
+import '../../styles/admin.css'
+
+const user = Astro.locals.user
+const env = Astro.locals.runtime.env
+
+const roleStats = await env.DB.prepare('SELECT role, COUNT(*) as count FROM users GROUP BY role').all<{ role: string; count: number }>()
+const totalUsers = roleStats.results.reduce((sum, r) => sum + r.count, 0)
+
+const recentUsers = await env.DB.prepare(
+    'SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC LIMIT 5'
+).all<{ id: string; username: string; email: string; role: string; created_at: number }>()
+---
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>管理后台 — FSAC AST Docs</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h2>管理后台</h2>
+            <nav>
+                <a href="/admin/" class="active">仪表盘</a>
+                <a href="/admin/users/">用户管理</a>
+                <a href="/admin/members/">成员管理</a>
+            </nav>
+            <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
+                {user?.username} ({user?.role})
+            </div>
+        </aside>
+        <main class="admin-main">
+            <h1>仪表盘</h1>
+            <div class="admin-stats">
+                <div class="admin-stat">
+                    <div class="stat-value">{totalUsers}</div>
+                    <div class="stat-label">总用户数</div>
+                </div>
+                {roleStats.results.map((r) => (
+                    <div class="admin-stat">
+                        <div class="stat-value">{r.count}</div>
+                        <div class="stat-label">{r.role}</div>
+                    </div>
+                ))}
+            </div>
+
+            <h2 style="font-size:1.1rem;margin-bottom:1rem;">最近注册</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr><th>用户名</th><th>邮箱</th><th>角色</th><th>注册时间</th></tr>
+                </thead>
+                <tbody>
+                    {recentUsers.results.map((u) => (
+                        <tr>
+                            <td>{u.username}</td>
+                            <td>{u.email}</td>
+                            <td>{u.role}</td>
+                            <td>{new Date(u.created_at).toLocaleDateString('zh-CN')}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
