@@ -1,0 +1,104 @@
+---
+export const prerender = false
+import '../../styles/admin.css'
+
+const user = Astro.locals.user
+const env = Astro.locals.runtime.env
+
+const page = parseInt(Astro.url.searchParams.get('page') || '1')
+const limit = 20
+const offset = (page - 1) * limit
+
+const countResult = await env.DB.prepare('SELECT COUNT(*) as total FROM users').first<{ total: number }>()
+const total = countResult?.total || 0
+const totalPages = Math.ceil(total / limit)
+
+const users = await env.DB.prepare(
+    'SELECT id, username, email, display_name, avatar_url, role, created_at FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?'
+).bind(limit, offset).all<{ id: string; username: string; email: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>()
+---
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>用户管理 — FSAC AST Docs</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h2>管理后台</h2>
+            <nav>
+                <a href="/admin/">仪表盘</a>
+                <a href="/admin/users/" class="active">用户管理</a>
+                <a href="/admin/members/">成员管理</a>
+            </nav>
+            <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
+                {user?.username} ({user?.role})
+            </div>
+        </aside>
+        <main class="admin-main">
+            <h1>用户管理 <span style="font-size:0.875rem;font-weight:400;color:var(--sl-color-gray-3)">共 {total} 人</span></h1>
+            <table class="admin-table">
+                <thead>
+                    <tr><th>用户名</th><th>邮箱</th><th>角色</th><th>注册时间</th></tr>
+                </thead>
+                <tbody>
+                    {users.results.map((u) => (
+                        <tr>
+                            <td>{u.username}</td>
+                            <td>{u.email}</td>
+                            <td>
+                                <select data-user-id={u.id} data-current-role={u.role} class="role-select">
+                                    {['user', 'member', 'admin', 'super_admin'].map((r) => (
+                                        <option value={r} selected={r === u.role}>{r}</option>
+                                    ))}
+                                </select>
+                            </td>
+                            <td>{new Date(u.created_at).toLocaleDateString('zh-CN')}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            {totalPages > 1 && (
+                <div class="admin-pagination">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                        <a href={`/admin/users/?page=${p}`} class={p === page ? 'active' : ''}>{p}</a>
+                    ))}
+                </div>
+            )}
+        </main>
+    </div>
+    <script>
+        document.querySelectorAll<HTMLSelectElement>('.role-select').forEach((sel) => {
+            sel.addEventListener('change', async () => {
+                const userId = sel.dataset.userId;
+                const newRole = sel.value;
+                const prev = sel.dataset.currentRole!;
+                try {
+                    const res = await fetch(`/api/admin/users/${userId}/`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: newRole }),
+                    });
+                    if (res.ok) {
+                        sel.dataset.currentRole = newRole;
+                    } else {
+                        const data = await res.json().catch(() => ({}));
+                        alert(data.error || '修改失败');
+                        sel.value = prev;
+                    }
+                } catch {
+                    alert('网络错误');
+                    sel.value = prev;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

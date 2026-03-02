@@ -1,0 +1,97 @@
+.auth-container {
+    max-width: 420px;
+    margin: 4rem auto;
+    padding: 2rem;
+}
+
+.auth-card {
+    background: var(--sl-color-bg-nav);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.auth-card h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.auth-field {
+    margin-bottom: 1rem;
+}
+
+.auth-field label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--sl-color-text);
+}
+
+.auth-field input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 6px;
+    background: var(--sl-color-bg);
+    color: var(--sl-color-text);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.auth-field input:focus {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: -1px;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 0.625rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.auth-btn-primary {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-bg);
+}
+
+.auth-btn-github {
+    background: #24292e;
+    color: #fff;
+}
+
+.auth-btn-qq {
+    background: #12b7f5;
+    color: #fff;
+}
+
+.auth-divider {
+    text-align: center;
+    margin: 1.25rem 0;
+    color: var(--sl-color-gray-3);
+    font-size: 0.875rem;
+}
+
+.auth-error {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+
+.auth-link a {
+    color: var(--sl-color-accent);
+}

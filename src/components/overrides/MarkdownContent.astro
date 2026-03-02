@@ -2,6 +2,7 @@
 /**
  * 自定义 MarkdownContent 组件
  * 添加阅读进度条、编辑链接和分享按钮
+ * 添加客户端权限检查（受限文档路径）
  */
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/MarkdownContent.astro";
@@ -11,19 +12,153 @@ import ShareButton from "../docs/ShareButton.astro";
 
 // 检查是否是首页（不显示额外组件）
 const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+
+// 受限路径前缀 — 需要 member 角色
+const RESTRICTED_PREFIXES = ['/docs-center/', '/archive/'];
+const isRestricted = RESTRICTED_PREFIXES.some((p) => Astro.url.pathname.startsWith(p));
 ---
 
 {/* 阅读进度条 - 仅文档页面显示 */}
 {!isHomePage && <ReadingProgress />}
 
-{/* 默认内容 */}
-<Default {...Astro.props}>
-    <slot />
-</Default>
+{/* 受限内容：初始隐藏，auth 检查通过后显示 */}
+<div id="doc-content-wrapper" class:list={[{ 'auth-gated': isRestricted }]}>
+    <Default {...Astro.props}>
+        <slot />
+    </Default>
 
-{/* 编辑链接 - 仅文档页面显示 */}
-{!isHomePage && <EditPageLink />}
+    {/* 编辑链接 - 仅文档页面显示 */}
+    {!isHomePage && <EditPageLink />}
 
-{/* 分享按钮 - 仅文档页面显示 */}
-{!isHomePage && <ShareButton />}
+    {/* 分享按钮 - 仅文档页面显示 */}
+    {!isHomePage && <ShareButton />}
+</div>
 
+{/* 登录提示覆盖层 — 仅受限页面渲染 */}
+{isRestricted && (
+    <div id="auth-gate-overlay" class="auth-gate-overlay" style="display:none;">
+        <div class="auth-gate-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="auth-gate-icon">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <h2>需要登录</h2>
+            <p>此内容仅对团队成员开放，请登录后查看。</p>
+            <a id="auth-gate-login-btn" href="/login/" class="auth-gate-btn">登录</a>
+            <p class="auth-gate-hint">还没有账号？<a href="/register/">立即注册</a></p>
+        </div>
+    </div>
+)}
+
+<style>
+    /* 受限内容初始隐藏 */
+    .auth-gated {
+        visibility: hidden;
+    }
+    .auth-gated.auth-passed {
+        visibility: visible;
+    }
+
+    /* 登录提示覆盖层 */
+    .auth-gate-overlay {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40vh;
+        padding: 2rem;
+    }
+    .auth-gate-box {
+        text-align: center;
+        max-width: 400px;
+        padding: 2.5rem 2rem;
+        border-radius: var(--radius-md, 1rem);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    :root[data-theme='light'] .auth-gate-box {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    .auth-gate-icon {
+        color: var(--sl-color-accent);
+        margin-bottom: 1rem;
+    }
+    .auth-gate-box h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+    }
+    .auth-gate-box p {
+        margin: 0 0 1.25rem;
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+    .auth-gate-btn {
+        display: inline-block;
+        padding: 0.6rem 2rem;
+        background: var(--sl-color-accent);
+        color: var(--sl-color-black);
+        border-radius: var(--radius-sm, 0.5rem);
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+    .auth-gate-btn:hover {
+        opacity: 0.85;
+    }
+    .auth-gate-hint {
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+    .auth-gate-hint a {
+        color: var(--sl-color-accent);
+    }
+</style>
+
+<script>
+    // Client-side auth gate for restricted Starlight pages
+    const RESTRICTED_PREFIXES = ['/docs-center/', '/archive/'];
+    const ROLE_HIERARCHY = ['visitor', 'user', 'member', 'admin', 'super_admin'];
+
+    function _isRestricted(path: string): boolean {
+        return RESTRICTED_PREFIXES.some((p) => path.startsWith(p));
+    }
+
+    function hasRole(userRole: string, required: string): boolean {
+        return ROLE_HIERARCHY.indexOf(userRole) >= ROLE_HIERARCHY.indexOf(required);
+    }
+
+    async function checkAuth() {
+        const wrapper = document.getElementById('doc-content-wrapper');
+        const overlay = document.getElementById('auth-gate-overlay');
+        const loginBtn = document.getElementById('auth-gate-login-btn');
+
+        if (!wrapper || !wrapper.classList.contains('auth-gated')) return;
+
+        // Set login redirect
+        if (loginBtn) {
+            (loginBtn as HTMLAnchorElement).href =
+                `/login/?redirect=${encodeURIComponent(window.location.pathname)}`;
+        }
+
+        try {
+            const res = await fetch('/api/auth/me/', { credentials: 'same-origin' });
+            const data = await res.json();
+
+            if (data.user && hasRole(data.user.role, 'member')) {
+                // Authorized — show content
+                wrapper.classList.add('auth-passed');
+                if (overlay) overlay.style.display = 'none';
+            } else {
+                // Not authorized — show login prompt
+                wrapper.style.display = 'none';
+                if (overlay) overlay.style.display = 'flex';
+            }
+        } catch {
+            // Network error — show content as fallback (fail open for UX)
+            wrapper.classList.add('auth-passed');
+            if (overlay) overlay.style.display = 'none';
+        }
+    }
+
+    checkAuth();
+</script>

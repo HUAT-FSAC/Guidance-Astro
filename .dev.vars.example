@@ -1,0 +1,5 @@
+SESSION_SECRET=your-secret-key-min-32-chars
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+QQ_APP_ID=your-qq-app-id
+QQ_APP_KEY=your-qq-app-key

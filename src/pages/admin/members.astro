@@ -1,0 +1,57 @@
+---
+export const prerender = false
+import '../../styles/admin.css'
+
+const user = Astro.locals.user
+const env = Astro.locals.runtime.env
+
+const members = await env.DB.prepare(
+    "SELECT id, username, email, display_name, avatar_url, role, created_at FROM users WHERE role IN ('member', 'admin', 'super_admin') ORDER BY created_at DESC"
+).all<{ id: string; username: string; email: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>()
+---
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>成员管理 — FSAC AST Docs</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h2>管理后台</h2>
+            <nav>
+                <a href="/admin/">仪表盘</a>
+                <a href="/admin/users/">用户管理</a>
+                <a href="/admin/members/" class="active">成员管理</a>
+            </nav>
+            <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
+                {user?.username} ({user?.role})
+            </div>
+        </aside>
+        <main class="admin-main">
+            <h1>成员管理</h1>
+            <table class="admin-table">
+                <thead>
+                    <tr><th>用户名</th><th>邮箱</th><th>角色</th><th>注册时间</th></tr>
+                </thead>
+                <tbody>
+                    {members.results.map((m) => (
+                        <tr>
+                            <td>{m.username}</td>
+                            <td>{m.email}</td>
+                            <td>{m.role}</td>
+                            <td>{new Date(m.created_at).toLocaleDateString('zh-CN')}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <p class="admin-placeholder">未来扩展：编辑赛季数据</p>
+        </main>
+    </div>
+</body>
+</html>

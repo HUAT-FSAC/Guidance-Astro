@@ -84,6 +84,7 @@ function logMetric(metric: PerformanceMetric): void {
             poor: '\x1b[31m',
         }
         const reset = '\x1b[0m'
+        // eslint-disable-next-line no-console
         console.log(
             `${colors[metric.rating]}[${metric.name}]${reset} ${metric.value.toFixed(2)} (${metric.rating})`
         )

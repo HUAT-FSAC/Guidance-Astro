@@ -105,12 +105,12 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
 
 <script>
     import {
-        copyToClipboard,
-        openShareWindow,
-        nativeShare,
         canUseNativeShare,
-        getPageShareData,
+        copyToClipboard,
         generateQRCodeDataUrl,
+        getPageShareData,
+        nativeShare,
+        openShareWindow,
         type SharePlatform
     } from '../../utils/share';
 
