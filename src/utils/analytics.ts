@@ -59,6 +59,7 @@ export function trackEvent(
 
     // 开发模式下打印到控制台
     if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
         console.log(`[Analytics] ${eventName}`, eventData)
     }
 }

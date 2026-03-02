@@ -2,10 +2,10 @@
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 
-type D1Database = import('@cloudflare/workers-types').D1Database
-type KVNamespace = import('@cloudflare/workers-types').KVNamespace
+import type { D1Database, KVNamespace } from '@cloudflare/workers-types'
+import type { Runtime as CloudflareRuntime } from '@astrojs/cloudflare'
 
-type Runtime = import('@astrojs/cloudflare').Runtime<{
+type Runtime = CloudflareRuntime<{
     DB: D1Database
     SESSION_KV: KVNamespace
     SESSION_SECRET: string

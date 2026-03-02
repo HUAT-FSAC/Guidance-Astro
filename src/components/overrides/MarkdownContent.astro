@@ -119,7 +119,7 @@ const isRestricted = RESTRICTED_PREFIXES.some((p) => Astro.url.pathname.startsWi
     const RESTRICTED_PREFIXES = ['/docs-center/', '/archive/'];
     const ROLE_HIERARCHY = ['visitor', 'user', 'member', 'admin', 'super_admin'];
 
-    function isRestricted(path: string): boolean {
+    function _isRestricted(path: string): boolean {
         return RESTRICTED_PREFIXES.some((p) => path.startsWith(p));
     }
 
@@ -162,4 +162,3 @@ const isRestricted = RESTRICTED_PREFIXES.some((p) => Astro.url.pathname.startsWi
 
     checkAuth();
 </script>
-

@@ -1,28 +1,23 @@
 ---
-import { optimizeExternalImage } from "../../../utils/image-optimization";
-import ArrowRight from "../../icons/ArrowRight.astro";
+import { optimizeExternalImage } from '../../../utils/image-optimization'
+import ArrowRight from '../../icons/ArrowRight.astro'
 
 interface Props {
-    title: string;
-    subtitle: string;
-    description: string;
-    ctaText: string;
-    ctaLink: string;
-    backgroundImage?: string;
+    title: string
+    subtitle: string
+    description: string
+    ctaText: string
+    ctaLink: string
+    backgroundImage?: string
 }
 
-const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
-    Astro.props;
+const { title, subtitle, description, ctaText, ctaLink, backgroundImage } = Astro.props
 
-const largeBg = backgroundImage
-    ? optimizeExternalImage(backgroundImage, 1600, 80)
-    : "";
-const smallBg = backgroundImage
-    ? optimizeExternalImage(backgroundImage, 900, 80)
-    : "";
+const largeBg = backgroundImage ? optimizeExternalImage(backgroundImage, 1600, 80) : ''
+const smallBg = backgroundImage ? optimizeExternalImage(backgroundImage, 900, 80) : ''
 const bgStyle = backgroundImage
-    ? `--hero-bg: url("${largeBg}"); --hero-bg-mobile: url("${smallBg}");`
-    : "";
+    ? `--hero-bg: url(${largeBg}); --hero-bg-mobile: url(${smallBg});`
+    : ''
 ---
 
 <section class="hero-v2" role="region" aria-label="Hero">
@@ -35,7 +30,12 @@ const bgStyle = backgroundImage
         {subtitle && <div class="hero-sub">{subtitle}</div>}
         {description && <p class="hero-desc">{description}</p>}
 
-        <a class="hero-cta" href={ctaLink} role="button" aria-label={`${ctaText} - 开始探索赛车队内容`}>
+        <a
+            class="hero-cta"
+            href={ctaLink}
+            role="button"
+            aria-label={`${ctaText} - 开始探索赛车队内容`}
+        >
             <span class="hero-cta-text">{ctaText}</span>
             <ArrowRight size={18} aria-hidden="true" />
         </a>
@@ -56,7 +56,7 @@ const bgStyle = backgroundImage
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     }
 
-    :global([data-theme="light"]) .hero-v2 {
+    :global([data-theme='light']) .hero-v2 {
         background: linear-gradient(135deg, #f5f7fa 0%, #e9eef8 100%);
     }
 
@@ -73,20 +73,12 @@ const bgStyle = backgroundImage
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0),
-            rgba(0, 0, 0, 0.05)
-        );
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
         pointer-events: none;
     }
 
-    :global([data-theme="light"]) .hero-overlay {
-        background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0),
-            rgba(255, 255, 255, 0.6)
-        );
+    :global([data-theme='light']) .hero-overlay {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6));
     }
 
     .hero-inner {
@@ -113,7 +105,7 @@ const bgStyle = backgroundImage
         color: var(--sl-color-text, #ffffff);
     }
 
-    :global([data-theme="light"]) .hero-heading {
+    :global([data-theme='light']) .hero-heading {
         color: var(--sl-color-text);
     }
 
@@ -130,7 +122,7 @@ const bgStyle = backgroundImage
         line-height: 1.7;
     }
 
-    :global([data-theme="light"]) .hero-desc {
+    :global([data-theme='light']) .hero-desc {
         color: var(--sl-color-text-gray);
     }
 
@@ -148,7 +140,7 @@ const bgStyle = backgroundImage
         box-shadow: 0 8px 28px rgba(71, 82, 255, 0.18);
     }
 
-    :global([data-theme="light"]) .hero-cta {
+    :global([data-theme='light']) .hero-cta {
         color: #000 !important;
     }
 
