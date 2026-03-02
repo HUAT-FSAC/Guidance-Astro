@@ -3,7 +3,8 @@ dist/
 # generated types
 .astro/
 .claude/
-
+.omc/
+test-results/
 # dependencies
 node_modules/
 
