@@ -26,6 +26,9 @@ importers:
       astro:
         specifier: ^5.17.3
         version: 5.17.3(@types/node@17.0.45)(jiti@2.6.1)(rollup@4.59.0)(typescript@5.9.3)(yaml@2.8.2)
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -1836,9 +1839,8 @@ packages:
   bcp-47@2.1.0:
     resolution: {integrity: sha512-9IIS3UPrvIa1Ej+lVDdDwO7zLehjqsaByECw0bu2RRGP73jALm6FYbzI5gWbgHLvNdkvfXB5YrSbocZdOS0c0w==}
 
-  bcryptjs@3.0.3:
-    resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
-    hasBin: true
+  bcryptjs@2.4.3:
+    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
 
   bidi-js@1.0.3:
     resolution: {integrity: sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==}
@@ -5317,7 +5319,7 @@ snapshots:
 
   '@types/bcryptjs@3.0.0':
     dependencies:
-      bcryptjs: 3.0.3
+      bcryptjs: 2.4.3
 
   '@types/chai@5.2.3':
     dependencies:
@@ -5788,7 +5790,7 @@ snapshots:
       is-alphanumerical: 2.0.1
       is-decimal: 2.0.1
 
-  bcryptjs@3.0.3: {}
+  bcryptjs@2.4.3: {}
 
   bidi-js@1.0.3:
     dependencies:
