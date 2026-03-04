@@ -1,0 +1,532 @@
+---
+/**
+ * 文档页面浮动操作按钮组
+ * 将主题切换和分享按钮统一管理在右下角，避免位置冲突
+ */
+---
+
+<div class="doc-fab-group" id="doc-fab-group">
+    <!-- 主题切换按钮 -->
+    <div class="fab-item" id="fab-theme-toggle-wrap">
+        <button class="fab-btn" id="doc-theme-toggle" aria-label="切换主题" title="切换亮/暗模式">
+            <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- 分享按钮 -->
+    <div class="fab-item" data-share-container>
+        <button
+            class="fab-btn share-button"
+            id="share-toggle-btn"
+            aria-label="分享此页面"
+            aria-expanded="false"
+            aria-controls="share-menu"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <!-- 分享菜单 - 向左展开 -->
+        <div class="share-menu" id="share-menu" role="menu" aria-label="分享选项">
+            <button class="share-option" data-share-action="copy" role="menuitem">
+                <span class="option-icon">📋</span>
+                <span class="option-label">复制链接</span>
+            </button>
+
+            <button class="share-option native-share" data-share-action="native" role="menuitem" style="display: none;">
+                <span class="option-icon">📤</span>
+                <span class="option-label">更多分享</span>
+            </button>
+
+            <div class="share-divider"></div>
+
+            <button class="share-option" data-share-action="twitter" role="menuitem">
+                <span class="option-icon twitter">𝕏</span>
+                <span class="option-label">Twitter</span>
+            </button>
+
+            <button class="share-option" data-share-action="weibo" role="menuitem">
+                <span class="option-icon weibo">🔴</span>
+                <span class="option-label">微博</span>
+            </button>
+
+            <button class="share-option" data-share-action="wechat" role="menuitem">
+                <span class="option-icon wechat">💬</span>
+                <span class="option-label">微信</span>
+            </button>
+
+            <button class="share-option" data-share-action="telegram" role="menuitem">
+                <span class="option-icon telegram">✈️</span>
+                <span class="option-label">Telegram</span>
+            </button>
+
+            <button class="share-option" data-share-action="email" role="menuitem">
+                <span class="option-icon email">📧</span>
+                <span class="option-label">邮件</span>
+            </button>
+        </div>
+
+        <!-- 微信二维码弹窗 -->
+        <div class="qrcode-modal" id="qrcode-modal" role="dialog" aria-modal="true" aria-labelledby="qrcode-title">
+            <div class="qrcode-content">
+                <h3 id="qrcode-title">微信扫码分享</h3>
+                <div class="qrcode-image">
+                    <img id="qrcode-img" src="" alt="微信分享二维码" />
+                </div>
+                <p class="qrcode-hint">打开微信扫一扫，分享给朋友</p>
+                <button class="qrcode-close" id="qrcode-close">关闭</button>
+            </div>
+        </div>
+
+        <!-- Toast 提示 -->
+        <div class="share-toast" id="share-toast" role="alert" aria-live="polite"></div>
+    </div>
+</div>
+
+<script>
+    let _themeToggleCleanup: (() => void) | undefined;
+
+    // ── 主题切换逻辑 ──────────────────────────────────────────────
+    function safeSetItem(key: string, value: string): void {
+        try { localStorage.setItem(key, value); }
+        catch { console.warn(`Failed to save ${key} to localStorage`); }
+    }
+
+    function initThemeToggle() {
+        const toggleBtn = document.getElementById('doc-theme-toggle');
+        if (!toggleBtn) return;
+
+        if (_themeToggleCleanup) {
+            _themeToggleCleanup();
+            _themeToggleCleanup = undefined;
+        }
+
+        const html = document.documentElement;
+
+        function updateIcon() {
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            toggleBtn.querySelector('.icon-sun')?.classList.toggle('hidden', isDark);
+            toggleBtn.querySelector('.icon-moon')?.classList.toggle('hidden', !isDark);
+        }
+
+        const handleToggleClick = () => {
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            safeSetItem('huat-color-scheme', newTheme);
+            updateIcon();
+        };
+        toggleBtn.addEventListener('click', handleToggleClick);
+        _themeToggleCleanup = () => toggleBtn.removeEventListener('click', handleToggleClick);
+
+        updateIcon();
+    }
+
+    // ── 分享逻辑 ─────────────────────────────────────────────────
+    import {
+        canUseNativeShare,
+        copyToClipboard,
+        generateQRCodeDataUrl,
+        getPageShareData,
+        nativeShare,
+        openShareWindow,
+        type SharePlatform
+    } from '../../utils/share';
+
+    let _escCleanup: (() => void) | undefined;
+
+    function initShareButton() {
+        const container = document.querySelector('[data-share-container]');
+        if (!container) return;
+        if ((container as HTMLElement).dataset.initialized === 'true') return;
+        (container as HTMLElement).dataset.initialized = 'true';
+
+        if (_escCleanup) { _escCleanup(); _escCleanup = undefined; }
+
+        const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement;
+        const menu      = container.querySelector('#share-menu') as HTMLElement;
+        const toast     = container.querySelector('#share-toast') as HTMLElement;
+        const qrcodeModal = container.querySelector('#qrcode-modal') as HTMLElement;
+        const qrcodeImg   = container.querySelector('#qrcode-img') as HTMLImageElement;
+        const qrcodeClose = container.querySelector('#qrcode-close') as HTMLButtonElement;
+        const nativeShareBtn = container.querySelector('.native-share') as HTMLButtonElement;
+
+        if (canUseNativeShare() && nativeShareBtn) {
+            nativeShareBtn.style.display = 'flex';
+        }
+
+        function showToast(message: string, type: 'success' | 'error' = 'success') {
+            toast.textContent = message;
+            toast.className = `share-toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function toggleMenu() {
+            const isOpen = menu.classList.toggle('open');
+            toggleBtn.setAttribute('aria-expanded', String(isOpen));
+            if (isOpen) {
+                setTimeout(() => document.addEventListener('click', closeOnClickOutside), 0);
+            }
+        }
+
+        function closeMenu() {
+            menu.classList.remove('open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('click', closeOnClickOutside);
+        }
+
+        function closeOnClickOutside(e: MouseEvent) {
+            if (!container?.contains(e.target as Node)) closeMenu();
+        }
+
+        async function handleShare(action: string) {
+            const shareData = getPageShareData();
+            switch (action) {
+                case 'copy': {
+                    const r = await copyToClipboard(shareData.url);
+                    showToast(r.message, r.success ? 'success' : 'error');
+                    break;
+                }
+                case 'native': {
+                    const r = await nativeShare(shareData);
+                    if (!r.success && r.message !== '分享已取消') showToast(r.message, 'error');
+                    break;
+                }
+                case 'wechat':
+                    qrcodeImg.src = await generateQRCodeDataUrl(shareData.url, 200);
+                    qrcodeModal.classList.add('show');
+                    break;
+                default: {
+                    const r = openShareWindow(action as SharePlatform, shareData);
+                    if (!r.success) showToast(r.message, 'error');
+                }
+            }
+            closeMenu();
+        }
+
+        toggleBtn?.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+        toggleBtn?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); }
+        });
+
+        container.querySelectorAll('[data-share-action]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const action = (btn as HTMLElement).dataset.shareAction;
+                if (action) handleShare(action);
+            });
+        });
+
+        qrcodeClose?.addEventListener('click', () => qrcodeModal.classList.remove('show'));
+        qrcodeModal?.addEventListener('click', (e) => {
+            if (e.target === qrcodeModal) qrcodeModal.classList.remove('show');
+        });
+
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') { closeMenu(); qrcodeModal.classList.remove('show'); }
+        };
+        document.addEventListener('keydown', handleEsc);
+        _escCleanup = () => document.removeEventListener('keydown', handleEsc);
+    }
+
+    // ── 统一初始化 ────────────────────────────────────────────────
+    function init() {
+        initThemeToggle();
+        initShareButton();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+    /* ── 浮动按钮组容器 ── */
+    .doc-fab-group {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: var(--z-floating, 1000);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    /* ── 每个按钮的相对定位包裹层 ── */
+    .fab-item {
+        position: relative;
+    }
+
+    /* ── 统一按钮样式 ── */
+    .fab-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(180deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%);
+        border: 1px solid var(--fs-border-subtle);
+        color: var(--sl-color-text, white);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition-normal);
+        box-shadow: var(--card-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    :global([data-theme='light']) .fab-btn {
+        background: rgba(255, 255, 255, 0.9);
+        color: #111;
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .fab-btn:hover {
+        transform: scale(1.05);
+        border-color: var(--fs-border-focus);
+        background: linear-gradient(180deg, #1c1c21 0%, var(--fs-bg-surface) 100%);
+        box-shadow: var(--card-shadow-hover), 0 0 15px var(--fs-accent-glow);
+    }
+
+    :global([data-theme='light']) .fab-btn:hover {
+        background: #fff;
+        border-color: rgba(0,0,0,0.2);
+    }
+
+    /* 分享按钮特殊色 */
+    .share-button {
+        background: var(--sl-color-accent);
+        color: #000;
+        border-color: transparent;
+    }
+
+    :global([data-theme='light']) .share-button {
+        background: var(--sl-color-accent);
+        color: #000;
+        border-color: transparent;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .share-button:hover {
+        background: var(--sl-color-accent-high, var(--sl-color-accent));
+        border-color: transparent;
+        box-shadow: 0 6px 25px color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+    }
+
+    :global([data-theme='light']) .share-button:hover {
+        background: var(--sl-color-accent-high, var(--sl-color-accent));
+    }
+
+    /* ── 图标显隐 ── */
+    .icon-sun,
+    .icon-moon {
+        transition: opacity 0.2s ease;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    /* ── 分享菜单（向左展开） ── */
+    .share-menu {
+        position: absolute;
+        bottom: 0;
+        right: 56px; /* 按钮宽48px + 8px间距 */
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-focus);
+        border-radius: var(--radius-md);
+        padding: 0.5rem;
+        min-width: 160px;
+        box-shadow: var(--card-shadow-hover);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(8px);
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+    }
+
+    :global([data-theme='light']) .share-menu {
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .share-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+
+    .share-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        background: transparent;
+        border: none;
+        border-radius: 0.5rem;
+        color: var(--sl-color-text);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        text-align: left;
+    }
+
+    .share-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    :global([data-theme='light']) .share-option:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .option-icon {
+        font-size: 1.1rem;
+        width: 1.5rem;
+        text-align: center;
+    }
+
+    .option-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .share-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 0.5rem 0;
+    }
+
+    :global([data-theme='light']) .share-divider {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* ── Toast ── */
+    .share-toast {
+        position: fixed;
+        bottom: 6rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #333;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: var(--z-toast, 10001);
+    }
+
+    .share-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .share-toast.success { background: #27ae60; }
+    .share-toast.error   { background: #e74c3c; }
+
+    /* ── 二维码弹窗 ── */
+    .qrcode-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: var(--z-modal, 10000);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .qrcode-modal.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .qrcode-content {
+        background: var(--sl-color-bg);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        max-width: 300px;
+    }
+
+    .qrcode-content h3 {
+        margin: 0 0 1rem 0;
+        color: var(--sl-color-text);
+    }
+
+    .qrcode-image {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+    }
+
+    .qrcode-image img {
+        display: block;
+        width: 200px;
+        height: 200px;
+    }
+
+    .qrcode-hint {
+        margin: 1rem 0;
+        color: var(--sl-color-text-gray);
+        font-size: 0.9rem;
+    }
+
+    .qrcode-close {
+        background: var(--sl-color-accent);
+        color: #000;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .qrcode-close:hover { opacity: 0.9; }
+
+    /* ── 响应式 ── */
+    @media (max-width: 768px) {
+        .doc-fab-group {
+            bottom: 1rem;
+            right: 1rem;
+        }
+
+        .fab-btn {
+            width: 44px;
+            height: 44px;
+        }
+
+        .share-menu {
+            right: 52px;
+        }
+    }
+</style>

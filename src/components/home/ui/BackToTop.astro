@@ -17,9 +17,16 @@
 </button>
 
 <script>
+    let _backToTopCleanup: (() => void) | undefined;
+
     function initBackToTop() {
         const btn = document.querySelector(".back-to-top") as HTMLElement;
         if (!btn) return;
+
+        if (_backToTopCleanup) {
+            _backToTopCleanup();
+            _backToTopCleanup = undefined;
+        }
 
         function toggleVisibility() {
             if (window.scrollY > 500) {
@@ -29,15 +36,21 @@
             }
         }
 
-        btn.addEventListener("click", () => {
+        const handleClick = () => {
             window.scrollTo({
                 top: 0,
                 behavior: "smooth",
             });
-        });
+        };
 
+        btn.addEventListener("click", handleClick);
         window.addEventListener("scroll", toggleVisibility, { passive: true });
         toggleVisibility();
+
+        _backToTopCleanup = () => {
+            btn.removeEventListener("click", handleClick);
+            window.removeEventListener("scroll", toggleVisibility);
+        };
     }
 
     document.addEventListener("DOMContentLoaded", initBackToTop);
@@ -66,7 +79,7 @@
         transform: translateY(20px);
         transition: all 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        z-index: 999;
+        z-index: var(--z-floating, 1000);
     }
 
     :global([data-theme='light']) .back-to-top {

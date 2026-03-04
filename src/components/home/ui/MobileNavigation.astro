@@ -64,12 +64,22 @@ const navItems: NavItem[] = [
 </div>
 
 <script>
+    let _mobileNavCleanup: (() => void) | undefined;
+
     function initMobileNav() {
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const drawer = document.getElementById('mobileNavDrawer');
-        const overlay = document.getElementById('mobileNavOverlay');
-        const closeBtn = document.getElementById('drawerClose');
-        const navLinks = document.querySelectorAll('.drawer-nav-link');
+        if (_mobileNavCleanup) {
+            _mobileNavCleanup();
+            _mobileNavCleanup = undefined;
+        }
+
+        const root = document.getElementById('mobileNav');
+        if (!root) return;
+
+        const menuBtn = root.querySelector('#mobileMenuBtn') as HTMLButtonElement | null;
+        const drawer = root.querySelector('#mobileNavDrawer') as HTMLElement | null;
+        const overlay = root.querySelector('#mobileNavOverlay') as HTMLElement | null;
+        const closeBtn = root.querySelector('#drawerClose') as HTMLButtonElement | null;
+        const navLinks = root.querySelectorAll('.drawer-nav-link');
         
         function openDrawer() {
             drawer?.classList.add('active');
@@ -93,11 +103,23 @@ const navItems: NavItem[] = [
         });
         
         // ESC 键关闭
-        document.addEventListener('keydown', (e) => {
+        const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && drawer?.classList.contains('active')) {
                 closeDrawer();
             }
-        });
+        };
+        document.addEventListener('keydown', handleEsc);
+
+        _mobileNavCleanup = () => {
+            menuBtn?.removeEventListener('click', openDrawer);
+            closeBtn?.removeEventListener('click', closeDrawer);
+            overlay?.removeEventListener('click', closeDrawer);
+            navLinks.forEach(link => {
+                link.removeEventListener('click', closeDrawer);
+            });
+            document.removeEventListener('keydown', handleEsc);
+            document.body.style.overflow = '';
+        };
     }
     
     document.addEventListener('DOMContentLoaded', initMobileNav);
@@ -107,6 +129,9 @@ const navItems: NavItem[] = [
 <style>
     .mobile-nav {
         display: none;
+        /* 防止被全局 fadeIn 动画注入 transform，影响 fixed 子元素定位参考系 */
+        animation: none !important;
+        transform: none !important;
     }
     
     @media (max-width: 768px) {
@@ -128,10 +153,10 @@ const navItems: NavItem[] = [
         align-items: center;
         justify-content: space-between;
         padding: 0 1rem;
-        z-index: 1001;
+        z-index: var(--z-navigation, 100);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     :global([data-theme='light']) .mobile-nav-bar {
         background: rgba(255, 255, 255, 0.9);
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -190,7 +215,7 @@ const navItems: NavItem[] = [
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-        z-index: 1002;
+        z-index: var(--z-navigation, 100);
     }
     
     .mobile-nav-overlay.active {
@@ -208,7 +233,7 @@ const navItems: NavItem[] = [
         background: #0a0a0a;
         transform: translateX(100%);
         transition: transform 0.3s ease;
-        z-index: 1003;
+        z-index: var(--z-navigation, 100);
         display: flex;
         flex-direction: column;
         overflow-y: auto;

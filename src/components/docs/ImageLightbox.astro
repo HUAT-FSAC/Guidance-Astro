@@ -41,16 +41,12 @@
     import { setupComponentLifecycle } from "../../utils/component-init";
 
     function initLightbox() {
-        const lightbox = document.getElementById("imageLightbox") as HTMLElement | null;
-        const lightboxImg = lightbox?.querySelector(
-            ".lightbox-image",
-        ) as HTMLImageElement | null;
-        const lightboxCaption = lightbox?.querySelector(
-            ".lightbox-caption",
-        ) as HTMLElement | null;
-        const closeBtn = lightbox?.querySelector(".lightbox-close");
-        const prevBtn = lightbox?.querySelector(".lightbox-prev");
-        const nextBtn = lightbox?.querySelector(".lightbox-next");
+        const lightbox = document.getElementById("imageLightbox");
+        const lightboxImg = lightbox?.querySelector<HTMLImageElement>(".lightbox-image");
+        const lightboxCaption = lightbox?.querySelector<HTMLElement>(".lightbox-caption");
+        const closeBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-close");
+        const prevBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-prev");
+        const nextBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-next");
 
         if (!lightbox || !lightboxImg) return;
 
@@ -59,7 +55,7 @@
         const imgHandlers = new WeakMap<HTMLImageElement, () => void>();
 
         function onKeydown(e: KeyboardEvent) {
-            if (!lightbox.classList.contains("active")) return;
+            if (!lightbox?.classList.contains("active")) return;
             switch (e.key) {
                 case "Escape":
                     closeLightbox();
@@ -76,14 +72,14 @@
         function openLightbox(index: number) {
             currentIndex = index;
             updateLightboxImage();
-            lightbox.classList.add("active");
+            lightbox?.classList.add("active");
             try {
                 document.body.style.overflow = "hidden";
             } catch (err) {}
         }
 
         function closeLightbox() {
-            lightbox.classList.remove("active");
+            lightbox?.classList.remove("active");
             try {
                 document.body.style.overflow = "";
             } catch (err) {}
@@ -91,7 +87,7 @@
 
         function updateLightboxImage() {
             const img = images[currentIndex];
-            if (!img) return;
+            if (!img || !lightboxImg) return;
 
             lightboxImg.src = img.src;
             lightboxImg.alt = img.alt;
@@ -155,12 +151,12 @@
         closeBtn?.addEventListener("click", closeLightbox);
         prevBtn?.addEventListener("click", showPrev);
         nextBtn?.addEventListener("click", showNext);
-        lightbox.addEventListener("click", onBackgroundClick);
+        lightbox?.addEventListener("click", onBackgroundClick);
         document.addEventListener("keydown", onKeydown);
-        lightbox.addEventListener("touchstart", onTouchStart, {
+        lightbox?.addEventListener("touchstart", onTouchStart, {
             passive: true,
         });
-        lightbox.addEventListener("touchend", onTouchEnd, { passive: true });
+        lightbox?.addEventListener("touchend", onTouchEnd, { passive: true });
 
         collectImages();
 
@@ -174,10 +170,10 @@
             closeBtn?.removeEventListener("click", closeLightbox);
             prevBtn?.removeEventListener("click", showPrev);
             nextBtn?.removeEventListener("click", showNext);
-            lightbox.removeEventListener("click", onBackgroundClick);
+            lightbox?.removeEventListener("click", onBackgroundClick);
             document.removeEventListener("keydown", onKeydown);
-            lightbox.removeEventListener("touchstart", onTouchStart);
-            lightbox.removeEventListener("touchend", onTouchEnd);
+            lightbox?.removeEventListener("touchstart", onTouchStart);
+            lightbox?.removeEventListener("touchend", onTouchEnd);
 
             try {
                 document.body.style.overflow = "";
@@ -195,7 +191,7 @@
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        z-index: 99999;
+        z-index: var(--z-modal, 10000);
         display: flex;
         align-items: center;
         justify-content: center;

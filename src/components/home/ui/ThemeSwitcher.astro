@@ -40,6 +40,8 @@ const themes: ThemeOption[] = [
 </div>
 
 <script>
+    let _themeSwitcherCleanup: (() => void) | undefined
+
     // 安全的 localStorage 操作函数
     function safeGetItem(key: string): string | null {
         try {
@@ -58,10 +60,18 @@ const themes: ThemeOption[] = [
     }
 
     function initThemeSwitcher() {
-        const toggle = document.querySelector('.theme-toggle')
-        const dropdown = document.querySelector('.theme-dropdown')
-        const options = document.querySelectorAll('.theme-option')
-        const modeButtons = document.querySelectorAll('.mode-btn')
+        const root = document.querySelector('.theme-switcher') as HTMLElement | null
+        if (!root) return
+
+        if (_themeSwitcherCleanup) {
+            _themeSwitcherCleanup()
+            _themeSwitcherCleanup = undefined
+        }
+
+        const toggle = root.querySelector('.theme-toggle') as HTMLButtonElement | null
+        const dropdown = root.querySelector('.theme-dropdown') as HTMLElement | null
+        const options = root.querySelectorAll('.theme-option')
+        const modeButtons = root.querySelectorAll('.mode-btn')
 
         // 读取并应用已保存的亮/暗模式（优先）
         const savedScheme = safeGetItem('huat-color-scheme')
@@ -81,14 +91,16 @@ const themes: ThemeOption[] = [
         }
 
         // 切换下拉菜单
-        toggle?.addEventListener('click', (e) => {
+        const handleToggleClick = (e: Event) => {
             e.stopPropagation()
             dropdown?.classList.toggle('active')
-        })
+        }
+        toggle?.addEventListener('click', handleToggleClick)
 
         // 点击选项应用主题
+        const optionHandlers = new Map<Element, EventListener>()
         options.forEach((option) => {
-            option.addEventListener('click', () => {
+            const handleOptionClick = () => {
                 const color = (option as HTMLElement).dataset.color
                 const accent = (option as HTMLElement).dataset.accent
                 if (color && accent) {
@@ -97,17 +109,21 @@ const themes: ThemeOption[] = [
                     safeSetItem('huat-theme-accent', accent)
                 }
                 dropdown?.classList.remove('active')
-            })
+            }
+            optionHandlers.set(option, handleOptionClick)
+            option.addEventListener('click', handleOptionClick)
         })
 
         // 点击外部关闭下拉菜单
-        document.addEventListener('click', () => {
+        const handleDocumentClick = () => {
             dropdown?.classList.remove('active')
-        })
+        }
+        document.addEventListener('click', handleDocumentClick)
 
         // 亮/暗模式按钮处理
+        const modeHandlers = new Map<Element, EventListener>()
         modeButtons.forEach((btn) => {
-            btn.addEventListener('click', (e) => {
+            const handleModeClick = (e: Event) => {
                 e.stopPropagation()
                 const mode = (btn as HTMLElement).dataset.mode
                 if (mode === 'light' || mode === 'dark') {
@@ -115,8 +131,21 @@ const themes: ThemeOption[] = [
                     safeSetItem('huat-color-scheme', mode)
                     updateModeButtons(mode)
                 }
-            })
+            }
+            modeHandlers.set(btn, handleModeClick)
+            btn.addEventListener('click', handleModeClick)
         })
+
+        _themeSwitcherCleanup = () => {
+            toggle?.removeEventListener('click', handleToggleClick)
+            document.removeEventListener('click', handleDocumentClick)
+            optionHandlers.forEach((handler, option) => {
+                option.removeEventListener('click', handler)
+            })
+            modeHandlers.forEach((handler, btn) => {
+                btn.removeEventListener('click', handler)
+            })
+        }
     }
 
     function applyTheme(color: string, accent: string) {
@@ -148,7 +177,7 @@ const themes: ThemeOption[] = [
         position: fixed;
         bottom: 2rem;
         right: 2rem;
-        z-index: 1000;
+        z-index: var(--z-floating, 1000);
     }
 
     .theme-toggle {

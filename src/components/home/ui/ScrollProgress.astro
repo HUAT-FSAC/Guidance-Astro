@@ -7,14 +7,24 @@
 </div>
 
 <script>
+    let _scrollProgressCleanup: (() => void) | undefined;
+
     function initScrollProgress() {
         const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-        if (isSmallScreen) return;
-
         const progressBar = document.querySelector(
             ".scroll-progress-bar",
         ) as HTMLElement;
         if (!progressBar) return;
+
+        if (_scrollProgressCleanup) {
+            _scrollProgressCleanup();
+            _scrollProgressCleanup = undefined;
+        }
+
+        if (isSmallScreen) {
+            progressBar.style.width = "0%";
+            return;
+        }
 
         function updateProgress() {
             const scrollTop = window.scrollY;
@@ -26,6 +36,10 @@
 
         window.addEventListener("scroll", updateProgress, { passive: true });
         updateProgress();
+
+        _scrollProgressCleanup = () => {
+            window.removeEventListener("scroll", updateProgress);
+        };
     }
 
     document.addEventListener("DOMContentLoaded", initScrollProgress);
@@ -40,7 +54,7 @@
         width: 100%;
         height: 3px;
         background: rgba(255, 255, 255, 0.1);
-        z-index: 9999;
+        z-index: var(--z-progress, 1100);
     }
 
     .scroll-progress-bar {

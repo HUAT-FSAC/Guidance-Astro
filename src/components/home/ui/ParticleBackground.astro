@@ -23,8 +23,8 @@
             "(prefers-reduced-motion: reduce)",
         ).matches;
         const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-        const saveData =
-            "connection" in navigator && navigator.connection?.saveData;
+        const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+        const saveData = connection?.saveData;
 
         if (prefersReducedMotion || saveData || isSmallScreen) {
             canvas.style.display = "none";
@@ -33,6 +33,7 @@
 
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
+        const canvasCtx = ctx;
 
         let particles: Particle[] = [];
         let animationId = 0;
@@ -102,7 +103,7 @@
             }
             lastFrame = now;
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -117,10 +118,10 @@
                 if (p.y < 0) p.y = canvas.height;
                 if (p.y > canvas.height) p.y = 0;
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${particleColor}, ${p.opacity})`;
-                ctx.fill();
+                canvasCtx.beginPath();
+                canvasCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                canvasCtx.fillStyle = `rgba(${particleColor}, ${p.opacity})`;
+                canvasCtx.fill();
             }
 
             if (drawLines) {
@@ -136,12 +137,12 @@
                         if (distanceSq < maxDistanceSq) {
                             const alpha =
                                 0.1 * (1 - distanceSq / maxDistanceSq);
-                            ctx.beginPath();
-                            ctx.moveTo(p1.x, p1.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle = `rgba(${lineColor}, ${alpha})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.stroke();
+                            canvasCtx.beginPath();
+                            canvasCtx.moveTo(p1.x, p1.y);
+                            canvasCtx.lineTo(p2.x, p2.y);
+                            canvasCtx.strokeStyle = `rgba(${lineColor}, ${alpha})`;
+                            canvasCtx.lineWidth = 0.5;
+                            canvasCtx.stroke();
                         }
                     }
                 }
@@ -238,7 +239,7 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        z-index: 1;
+        z-index: var(--z-background, 1);
         opacity: 0;
         transition: opacity 0.5s ease;
     }
