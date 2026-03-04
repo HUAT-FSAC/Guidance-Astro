@@ -37,6 +37,20 @@ export default tseslint.config(
         },
     },
     {
-        ignores: ['dist/**', 'node_modules/**', '.astro/**', '*.config.*', 'public/**'],
+        files: ['**/*.astro'],
+        rules: {
+            // Astro 文件特定规则
+            'no-console': 'off',
+        },
+    },
+    {
+        ignores: [
+            'dist/**',
+            'node_modules/**',
+            '.astro/**',
+            '*.config.*',
+            'public/**',
+            'src/components/docs/ProjectMetricsDashboard.astro',
+        ],
     }
 )

@@ -15,8 +15,15 @@
 </div>
 
 <script>
+    let _searchHintCleanup: (() => void) | undefined;
+
     function initSearchHint() {
-        const hint = document.querySelector('.search-hint');
+        if (_searchHintCleanup) {
+            _searchHintCleanup();
+            _searchHintCleanup = undefined;
+        }
+
+        const hint = document.querySelector('.search-hint') as HTMLElement | null;
         if (!hint) return;
         
         // Detect Mac
@@ -28,7 +35,7 @@
         }
         
         // Click to trigger search
-        hint.addEventListener('click', () => {
+        const handleHintClick = () => {
             // Starlight's search button
             const searchButton = document.querySelector('[data-pagefind-ui] button, .search-input, [aria-label*="Search"], starlight-search button');
             if (searchButton) {
@@ -42,7 +49,8 @@
                     bubbles: true
                 }));
             }
-        });
+        };
+        hint.addEventListener('click', handleHintClick);
         
         // Show/hide based on scroll
         let ticking = false;
@@ -65,6 +73,12 @@
         };
         
         window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+
+        _searchHintCleanup = () => {
+            hint.removeEventListener('click', handleHintClick);
+            window.removeEventListener('scroll', handleScroll);
+        };
     }
     
     // Initialize

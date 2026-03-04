@@ -1,38 +1,41 @@
 ---
-title: HUAT FSAC 
+title: HUAT FSAC
 description: Where Student Engineers Build Champions.
 template: splash
 hero:
-  title: ""
-  tagline: ""
+    title: ''
+    tagline: ''
 ---
 
-import Hero from '../../components/home/sections/Hero.astro';
-import Achievement from '../../components/home/sections/Achievement.astro';
-import NewsSection from '../../components/home/sections/NewsSection.astro';
-import FormulaStudentInfo from '../../components/home/sections/FormulaStudentInfo.astro';
-import Stats from '../../components/home/sections/Stats.astro';
-import Features from '../../components/home/sections/Features.astro';
-import Seasons from '../../components/home/sections/Seasons.astro';
-import Sponsors from '../../components/home/sections/Sponsors.astro';
-import Acknowledgement from '../../components/home/sections/Acknowledgement.astro';
-import Recruitment from '../../components/home/sections/Recruitment.astro';
-import PageLoader from '../../components/home/PageLoader.astro';
-import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro';
-import ScrollProgress from '../../components/home/ui/ScrollProgress.astro';
-import BackToTop from '../../components/home/ui/BackToTop.astro';
-import KeyboardNav from '../../components/home/ui/KeyboardNav.astro';
-import ParticleBackground from '../../components/home/ui/ParticleBackground.astro';
-import MobileNavigation from '../../components/home/ui/MobileNavigation.astro';
-import { 
-  heroConfig, 
-  stats, 
-  achievements, 
-  newsItems, 
-  formulaStudentInfo, 
-  seasons, 
-  sponsorGroups 
-} from '../../data/home';
+import Hero from '../../components/home/sections/Hero.astro'
+import Achievement from '../../components/home/sections/Achievement.astro'
+import NewsSection from '../../components/home/sections/NewsSection.astro'
+import FormulaStudentInfo from '../../components/home/sections/FormulaStudentInfo.astro'
+import Stats from '../../components/home/sections/Stats.astro'
+import Countdown from '../../components/home/sections/Countdown.astro'
+import Features from '../../components/home/sections/Features.astro'
+import Seasons from '../../components/home/sections/Seasons.astro'
+import Sponsors from '../../components/home/sections/Sponsors.astro'
+import Acknowledgement from '../../components/home/sections/Acknowledgement.astro'
+import Recruitment from '../../components/home/sections/Recruitment.astro'
+import PageLoader from '../../components/home/PageLoader.astro'
+import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro'
+import ScrollProgress from '../../components/home/ui/ScrollProgress.astro'
+import BackToTop from '../../components/home/ui/BackToTop.astro'
+import KeyboardNav from '../../components/home/ui/KeyboardNav.astro'
+import ParticleBackground from '../../components/home/ui/ParticleBackground.astro'
+import MobileNavigation from '../../components/home/ui/MobileNavigation.astro'
+import ScrollReveal from '../../components/home/ui/ScrollReveal.astro'
+import ParallaxScroll from '../../components/home/ui/ParallaxScroll.astro'
+import {
+    heroConfig,
+    stats,
+    achievements,
+    newsItems,
+    formulaStudentInfo,
+    seasons,
+    sponsorGroups,
+} from '../../data/home'
 
 <style>{`
   :root {
@@ -164,29 +167,7 @@ import {
     opacity: 0.6;
   }
 
-  /* 全局淡入动画 */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  section {
-    animation: fadeInUp 0.8s ease-out forwards;
-    opacity: 0; /* 初始隐藏，由动画控制显示 */
-    animation-delay: 0.2s; /* 稍微延迟 */
-  }
-  
-  /* 针对不同 section 设置不同的延迟，制造层次感 */
-  section:nth-of-type(1) { animation-delay: 0.1s; }
-  section:nth-of-type(2) { animation-delay: 0.3s; }
-  section:nth-of-type(3) { animation-delay: 0.5s; }
-  section:nth-of-type(4) { animation-delay: 0.7s; }
+  /* 全局淡入动画 - 移除，由 ScrollReveal 替代 */
 
   @media (max-width: 768px) {
     .home-block {
@@ -215,6 +196,7 @@ import {
 `}</style>
 
 {/* ==================== 全局增强组件 ==================== */}
+
 <PageLoader />
 <ScrollProgress />
 <BackToTop />
@@ -222,22 +204,31 @@ import {
 <ParticleBackground />
 <ThemeSwitcher />
 <MobileNavigation />
+<ScrollReveal />
+<ParallaxScroll />
 
 {/* ==================== Hero 区域 ==================== */}
-<Hero 
-  title={heroConfig.title}
-  subtitle={heroConfig.subtitle}
-  description={heroConfig.description}
-  ctaText={heroConfig.ctaText}
-  ctaLink={heroConfig.ctaLink}
-  backgroundImage={heroConfig.backgroundImage}
+
+<Hero
+    title={heroConfig.title}
+    subtitle={heroConfig.subtitle}
+    description={heroConfig.description}
+    ctaText={heroConfig.ctaText}
+    ctaLink={heroConfig.ctaLink}
+    backgroundImage={heroConfig.backgroundImage}
 />
 
 {/* ==================== 统计数据 ==================== */}
+
 <Stats stats={stats} />
+
+{/* ==================== 比赛倒计时 ==================== */}
+
+<Countdown />
 
 {/* ==================== 成就展示区域 ==================== */}
 {achievements.map((achievement, index) => (
+
   <Achievement 
     badge={achievement.badge}
     title={achievement.title}
@@ -250,95 +241,108 @@ import {
 ))}
 
 {/* ==================== 核心模块 ==================== */}
+
 <section class="home-block">
-  <div class="home-block-header">
-    <span class="home-block-label">学习资源</span>
-    <h2 class="home-block-title">📚 核心模块</h2>
-  </div>
-  <Features />
+    <div class="home-block-header">
+        <span class="home-block-label">学习资源</span>
+        <h2 class="home-block-title">📚 核心模块</h2>
+    </div>
+    <Features />
 </section>
 
 {/* ==================== 新闻动态 ==================== */}
-<NewsSection 
-  title="新闻动态"
-  subtitle="保持更新，了解最新进展"
-  news={newsItems}
-/>
+
+<NewsSection title="新闻动态" subtitle="保持更新，了解最新进展" news={newsItems} />
 
 {/* ==================== 赛季回顾 ==================== */}
+
 <section class="home-block">
-  <div class="home-block-header">
-    <span class="home-block-label">我们的足迹</span>
-    <h2 class="home-block-title">🏎️ 赛季回顾</h2>
-  </div>
-  <Seasons seasons={seasons} />
+    <div class="home-block-header">
+        <span class="home-block-label">我们的足迹</span>
+        <h2 class="home-block-title">🏎️ 赛季回顾</h2>
+    </div>
+    <Seasons seasons={seasons} />
 </section>
 
 {/* ==================== 招新入口 ==================== */}
+
 <Recruitment />
 
 {/* ==================== Formula Student 介绍 ==================== */}
-<FormulaStudentInfo 
-  title={formulaStudentInfo.title}
-  subtitle={formulaStudentInfo.subtitle}
-  description={formulaStudentInfo.description}
-  ctaText={formulaStudentInfo.ctaText}
-  ctaLink={formulaStudentInfo.ctaLink}
+
+<FormulaStudentInfo
+    title={formulaStudentInfo.title}
+    subtitle={formulaStudentInfo.subtitle}
+    description={formulaStudentInfo.description}
+    ctaText={formulaStudentInfo.ctaText}
+    ctaLink={formulaStudentInfo.ctaLink}
 />
 
 {/* ==================== 赞助商 ==================== */}
+
 <section class="home-block">
-  <div class="home-block-header">
-    <h2 class="home-block-title">❤️ 合作伙伴</h2>
-  </div>
-  <Sponsors groups={sponsorGroups} />
+    <div class="home-block-header">
+        <h2 class="home-block-title">❤️ 合作伙伴</h2>
+    </div>
+    <Sponsors groups={sponsorGroups} />
 </section>
 
 {/* ==================== 致谢 ==================== */}
+
 <section class="home-block">
-  <Acknowledgement />
+    <Acknowledgement />
 </section>
 
 {/* ==================== 贡献者 ==================== */}
+
 <section class="home-block home-block--center">
-  <div class="home-block-header">
-    <span class="home-block-label">开源贡献</span>
-    <h2 class="home-block-title">🤝 贡献者</h2>
-  </div>
-  <div class="contributors-image">
-    <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
-      <img
-        src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro"
-        alt="GitHub contributors"
-        loading="lazy"
-        decoding="async"
-      />
-    </a>
-  </div>
-  <div class="contributors-meta">
-    Made with <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">contrib.rocks</a>
-  </div>
+    <div class="home-block-header">
+        <span class="home-block-label">开源贡献</span>
+        <h2 class="home-block-title">🤝 贡献者</h2>
+    </div>
+    <div class="contributors-image">
+        <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
+            <img
+                src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro"
+                alt="GitHub contributors"
+                loading="lazy"
+                decoding="async"
+            />
+        </a>
+    </div>
+    <div class="contributors-meta">
+        Made with{' '}
+        <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">
+            contrib.rocks
+        </a>
+    </div>
 </section>
 
 {/* ==================== 页脚联系信息 ==================== */}
+
 <footer class="home-footer">
-  <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">
-    HUAT FSAC - 方程式赛车队
-  </p>
-  <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
-    <a href="https://github.com/HUAT-FSAC" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 GitHub 页面">
-      GitHub
-    </a>
-    <a href="mailto:contact@huat-fsac.eu.org" class="footer-link" rel="noopener noreferrer" aria-label="通过邮件联系我们">
-      联系我们
-    </a>
-    <a href="/join/" class="footer-link" aria-label="了解如何加入车队">
-      加入车队
-    </a>
-  </div>
-  <p style="font-size: 0.85rem; opacity: 0.5;">
-    © 2026 HUAT FSAC. All rights reserved.
-  </p>
+    <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">HUAT FSAC - 方程式赛车队</p>
+    <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+        <a
+            href="https://github.com/HUAT-FSAC"
+            class="footer-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="访问我们的 GitHub 页面"
+        >
+            GitHub
+        </a>
+        <a
+            href="mailto:contact@huat-fsac.eu.org"
+            class="footer-link"
+            rel="noopener noreferrer"
+            aria-label="通过邮件联系我们"
+        >
+            联系我们
+        </a>
+        <a href="/join/" class="footer-link" aria-label="了解如何加入车队">
+            加入车队
+        </a>
+    </div>
+    <p style="font-size: 0.85rem; opacity: 0.5;">© 2026 HUAT FSAC. All rights reserved.</p>
 </footer>
-
-

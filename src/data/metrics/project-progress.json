@@ -1,13 +1,13 @@
 {
-    "generatedAt": "2026-02-25T00:00:00.000Z",
+    "generatedAt": "2026-03-02T17:07:32.071Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
-    "status": "bootstrap",
+    "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 0,
         "prCycleTimeDays": 0,
         "issueCloseRatePercent": 0,
-        "prMergeRatePercent": 0,
+        "prMergeRatePercent": 100,
         "ciSuccessRatePercent": 0,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
@@ -15,16 +15,16 @@
     },
     "counts": {
         "openIssueCount": 0,
-        "openPullRequestCount": 0,
+        "openPullRequestCount": 1,
         "openedIssuesInWindow": 0,
         "closedIssuesInWindow": 0,
-        "openedPullRequestsInWindow": 0,
-        "mergedPullRequestsInWindow": 0,
-        "ciRunsInWindow": 0,
-        "ciFailedRunsInWindow": 0
+        "openedPullRequestsInWindow": 1,
+        "mergedPullRequestsInWindow": 1,
+        "ciRunsInWindow": 9,
+        "ciFailedRunsInWindow": 9
     },
     "samples": {
         "latestIssueUpdatedAt": null,
-        "latestMergedPullRequestAt": null
+        "latestMergedPullRequestAt": "2026-03-02T15:29:11.000Z"
     }
 }

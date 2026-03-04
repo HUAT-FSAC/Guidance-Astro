@@ -1,0 +1,239 @@
+---
+/**
+ * 比赛倒计时组件
+ * 展示下一场比赛距今的倒计时，已过期则显示回顾状态
+ */
+import { raceEvents } from '../../../data/home';
+const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
+---
+
+<section class="countdown-section">
+    <div class="countdown-inner">
+        <div class="countdown-header">
+            <span class="countdown-label">赛前冲刺</span>
+            <h2 class="countdown-event">{primary.name}</h2>
+            <p class="countdown-meta">
+                <span class="meta-icon">📍</span>{primary.location}
+                &nbsp;·&nbsp;
+                <span class="meta-icon">📅</span>{primary.startDate} — {primary.endDate}
+            </p>
+        </div>
+
+        <!-- 倒计时显示区 -->
+        <div class="countdown-display" id="countdown-display">
+            <div class="cd-unit">
+                <span class="cd-num" id="cd-days">--</span>
+                <span class="cd-label">天</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+                <span class="cd-num" id="cd-hours">--</span>
+                <span class="cd-label">时</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+                <span class="cd-num" id="cd-minutes">--</span>
+                <span class="cd-label">分</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+                <span class="cd-num" id="cd-seconds">--</span>
+                <span class="cd-label">秒</span>
+            </div>
+        </div>
+
+        <p class="countdown-ended hidden" id="countdown-ended">
+            🏁 赛事已圆满结束，感谢所有人的付出！
+        </p>
+
+        <a href="/about-fs/" class="countdown-cta">了解更多赛事信息 →</a>
+    </div>
+</section>
+
+<script define:vars={{ startDate: primary.startDate }}>
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function updateCountdown() {
+        const target = new Date(startDate).getTime();
+        const now = Date.now();
+        const diff = target - now;
+
+        const displayEl = document.getElementById('countdown-display');
+        const endedEl   = document.getElementById('countdown-ended');
+
+        if (diff <= 0) {
+            displayEl?.classList.add('hidden');
+            endedEl?.classList.remove('hidden');
+            return;
+        }
+
+        const days    = Math.floor(diff / 86400000);
+        const hours   = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+
+        const d = document.getElementById('cd-days');
+        const h = document.getElementById('cd-hours');
+        const m = document.getElementById('cd-minutes');
+        const s = document.getElementById('cd-seconds');
+
+        if (d) d.textContent = String(days);
+        if (h) h.textContent = pad(hours);
+        if (m) m.textContent = pad(minutes);
+        if (s) s.textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    document.addEventListener('astro:before-swap', () => clearInterval(timer));
+</script>
+
+<style>
+    .countdown-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg,
+            rgba(243, 156, 18, 0.08) 0%,
+            transparent 60%
+        );
+        border-top: 1px solid rgba(243, 156, 18, 0.15);
+        border-bottom: 1px solid rgba(243, 156, 18, 0.15);
+    }
+
+    :global([data-theme='light']) .countdown-section {
+        background: linear-gradient(135deg,
+            rgba(243, 156, 18, 0.06) 0%,
+            rgba(255, 255, 255, 0) 60%
+        );
+        border-color: rgba(243, 156, 18, 0.2);
+    }
+
+    .countdown-inner {
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .countdown-label {
+        display: inline-block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--sl-color-accent, #f39c12);
+        margin-bottom: 0.75rem;
+    }
+
+    .countdown-event {
+        font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+        font-weight: 800;
+        margin: 0 0 0.75rem 0;
+        color: var(--sl-color-text);
+        line-height: 1.2;
+    }
+
+    .countdown-meta {
+        font-size: 0.9rem;
+        opacity: 0.65;
+        margin: 0 0 2.5rem 0;
+    }
+
+    .meta-icon { margin-right: 0.2rem; }
+
+    /* ── 倒计时数字 ── */
+    .countdown-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .cd-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        min-width: 90px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(243, 156, 18, 0.2);
+        border-radius: 1rem;
+        padding: 1.25rem 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cd-unit::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(243,156,18,0.06), transparent);
+        pointer-events: none;
+    }
+
+    :global([data-theme='light']) .cd-unit {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(243, 156, 18, 0.25);
+    }
+
+    .cd-num {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 900;
+        color: var(--sl-color-accent, #f39c12);
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -1px;
+    }
+
+    .cd-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        opacity: 0.6;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .cd-sep {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--sl-color-accent, #f39c12);
+        opacity: 0.4;
+        margin-bottom: 1.5rem;
+        align-self: center;
+    }
+
+    /* ── 结束状态 ── */
+    .countdown-ended {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: var(--sl-color-text);
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── CTA ── */
+    .countdown-cta {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        border-radius: 99px;
+        border: 1.5px solid var(--sl-color-accent);
+        color: var(--sl-color-accent);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .countdown-cta:hover {
+        background: var(--sl-color-accent);
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(243,156,18,0.3);
+    }
+
+    @media (max-width: 480px) {
+        .cd-unit { min-width: 68px; padding: 1rem 0.75rem; }
+        .cd-sep  { font-size: 1.8rem; }
+    }
+</style>

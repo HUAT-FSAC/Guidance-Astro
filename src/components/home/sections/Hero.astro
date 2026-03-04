@@ -20,8 +20,13 @@ const bgStyle = backgroundImage
     : ''
 ---
 
+<!-- HTML Head Injection for LCP preloading -->
+{largeBg && (
+    <link rel="preload" as="image" href={largeBg} fetchpriority="high" />
+)}
+
 <section class="hero-v2" role="region" aria-label="Hero">
-    <div class="hero-bg" role="presentation" aria-hidden="true" style={bgStyle}></div>
+    <div class="hero-bg" role="presentation" aria-hidden="true" style={bgStyle} data-parallax data-parallax-speed="0.25"></div>
     <div class="hero-overlay" role="presentation" aria-hidden="true"></div>
 
     <div class="hero-inner">
@@ -34,6 +39,7 @@ const bgStyle = backgroundImage
             class="hero-cta"
             href={ctaLink}
             role="button"
+            data-astro-prefetch="hover"
             aria-label={`${ctaText} - 开始探索赛车队内容`}
         >
             <span class="hero-cta-text">{ctaText}</span>
@@ -43,6 +49,9 @@ const bgStyle = backgroundImage
 </section>
 
 <style>
+    /* 引入更硬核的字体给标题 */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap');
+
     .hero-v2 {
         position: relative;
         padding: 6rem 1.5rem;
@@ -50,14 +59,23 @@ const bgStyle = backgroundImage
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        border-radius: 1rem;
-        margin: 2rem auto;
-        max-width: 1400px;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 0;
+        margin: 0 auto 3rem auto;
+        max-width: 100%;
+        background-color: var(--fs-bg-base);
+        /* 赛道发车线网格背景 */
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        border-bottom: 1px solid var(--fs-border-subtle);
     }
 
     :global([data-theme='light']) .hero-v2 {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e9eef8 100%);
+        background-color: #f8f9fa;
+        background-image: 
+            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     }
 
     .hero-bg {
@@ -65,15 +83,18 @@ const bgStyle = backgroundImage
         inset: 0;
         background-image: var(--hero-bg);
         background-size: cover;
-        background-position: center;
-        opacity: 0.18;
+        background-position: center bottom;
+        opacity: 0.35;
         pointer-events: none;
+        /* 压暗图片，使其只在底部浮现 */
+        mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
     }
 
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+        background: linear-gradient(180deg, rgba(3, 3, 3, 0), rgba(3, 3, 3, 0.6));
         pointer-events: none;
     }
 
@@ -85,77 +106,108 @@ const bgStyle = backgroundImage
         position: relative;
         z-index: 3;
         text-align: center;
-        padding: 3rem 2rem;
+        padding: 4rem 2rem;
         max-width: 900px;
     }
 
     .hero-label {
-        color: var(--sl-color-accent, #4752ff);
-        font-weight: 700;
-        letter-spacing: 4px;
+        color: var(--sl-color-accent);
+        font-weight: 800;
+        letter-spacing: 6px;
         text-transform: uppercase;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.85rem;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
     }
 
     .hero-heading {
-        font-size: clamp(2rem, 4.5vw, 3.5rem);
-        margin: 0 0 1rem 0;
-        font-weight: 800;
-        color: var(--sl-color-text, #ffffff);
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin: 0 0 1.5rem 0;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1.1;
+        color: #ffffff;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     :global([data-theme='light']) .hero-heading {
-        color: var(--sl-color-text);
+        color: #050505;
+        text-shadow: none;
     }
 
     .hero-sub {
-        color: var(--sl-color-accent, #f39c12);
-        margin-bottom: 1rem;
+        color: var(--sl-color-accent);
+        margin-bottom: 1.5rem;
         font-weight: 700;
+        font-size: 1.2rem;
     }
 
     .hero-desc {
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0 auto 2rem auto;
-        max-width: 720px;
-        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 auto 3rem auto;
+        max-width: 680px;
+        line-height: 1.8;
+        font-size: 1.1rem;
     }
 
     :global([data-theme='light']) .hero-desc {
-        color: var(--sl-color-text-gray);
+        color: rgba(0, 0, 0, 0.7);
     }
 
+    /* 具有工程风的斜切 CTA 按钮 */
     .hero-cta {
+        position: relative;
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 1rem 2.2rem;
-        border-radius: 0.6rem;
-        background: var(--sl-color-accent, #4752ff);
+        gap: 0.8rem;
+        padding: 1rem 3rem;
         color: #fff !important;
-        text-decoration: none;
+        background: transparent !important;
+        border: 1px solid var(--sl-color-accent) !important;
+        border-radius: 0 !important;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
         font-weight: 700;
-        transition: all 0.24s ease;
-        box-shadow: 0 8px 28px rgba(71, 82, 255, 0.18);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: all 0.3s var(--fs-ease-out);
+        /* 经典电竞/机械切角 */
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        overflow: hidden;
     }
 
     :global([data-theme='light']) .hero-cta {
-        color: #000 !important;
+        color: var(--sl-color-accent) !important;
+    }
+
+    /* 内部填充动效 */
+    .hero-cta::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--sl-color-accent);
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s var(--fs-ease-out);
     }
 
     .hero-cta:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 36px rgba(71, 82, 255, 0.24);
-        background: #fff;
+        color: #000 !important;
+        border-color: transparent !important;
+        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
+    }
+
+    .hero-cta:hover::before {
+        transform: scaleX(1);
+        transform-origin: left;
     }
 
     @media (max-width: 900px) {
         .hero-v2 {
             padding: 4rem 1.5rem;
-        }
-        .hero-heading {
-            font-size: 2.5rem;
         }
         .hero-bg {
             background-image: var(--hero-bg-mobile, var(--hero-bg));
@@ -165,16 +217,13 @@ const bgStyle = backgroundImage
     @media (max-width: 480px) {
         .hero-v2 {
             padding: 3rem 1rem;
-            margin: 1rem auto;
+            margin-bottom: 2rem;
         }
         .hero-inner {
-            padding: 1.5rem 1rem;
-        }
-        .hero-heading {
-            font-size: 2rem;
+            padding: 1.5rem 0;
         }
         .hero-desc {
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
         .hero-cta {
             width: 100%;

@@ -1,0 +1,79 @@
+<script>
+    /**
+     * Parallax Scrolling logic for elements with data-parallax
+     */
+    let _parallaxCleanup: (() => void) | undefined;
+
+    function initParallax() {
+        if (_parallaxCleanup) {
+            _parallaxCleanup();
+            _parallaxCleanup = undefined;
+        }
+
+        const parallaxElements = document.querySelectorAll<HTMLElement>('[data-parallax]');
+        
+        if (parallaxElements.length === 0) return;
+
+        // Listen to scroll events on the window using requestAnimationFrame for smooth performance
+        let isTicking = false;
+        
+        function onScroll() {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    updateParallax();
+                    isTicking = false;
+                });
+                isTicking = true;
+            }
+        }
+        
+        function updateParallax() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            parallaxElements.forEach(el => {
+                // Determine if element is in viewport
+                const rect = el.getBoundingClientRect();
+                
+                // If it's visible or about to be visible
+                if (rect.top <= windowHeight && rect.bottom >= 0) {
+                    // Extract speed from data attribute, default to 0.3
+                    const speed = parseFloat(el.getAttribute('data-parallax-speed') || '0.3');
+                    
+                    // Simple logic: Shift it relative to its distance from top viewport
+                    // We can move it visually down or up using translateY or modifying background position
+                    
+                    const parallaxType = el.getAttribute('data-parallax-type') || 'background'; // 'background' or 'transform'
+                    
+                    if (parallaxType === 'background') {
+                        // For background Parallax the element itself stays still, the inner bg moves
+                        // We calculate how far the center of the element is from the center of the viewport
+                        const centerDistance = rect.top + (rect.height / 2) - (windowHeight / 2);
+                        const move = centerDistance * speed;
+                        el.style.backgroundPositionY = `calc(50% + ${move}px)`;
+                    } else if (parallaxType === 'transform') {
+                        // For transform Parallax the element physically shifts Y coordinates
+                        const move = scrollY * speed;
+                        el.style.transform = `translateY(${move}px)`;
+                    }
+                }
+            });
+        }
+        
+        // Initial setup
+        updateParallax();
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        _parallaxCleanup = () => window.removeEventListener('scroll', onScroll);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initParallax);
+    } else {
+        initParallax();
+    }
+    
+    // Support Astro View Transitions
+    document.addEventListener('astro:page-load', initParallax);
+</script>

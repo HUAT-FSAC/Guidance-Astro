@@ -1,0 +1,234 @@
+---
+/**
+ * 成员 3D 身份卡片组件
+ */
+interface Props {
+  name: string;
+  role: string;
+  avatar?: string;
+  group?: string;
+}
+
+const { 
+  name, 
+  role, 
+  group = 'FSAC',
+  avatar = `https://api.dicebear.com/7.x/notionists/svg?seed=${name}&backgroundColor=transparent` 
+} = Astro.props;
+---
+
+<div class="team-id-card">
+  <div class="card-inner">
+    <div class="card-header">
+      <span class="card-group">{group}</span>
+      <span class="card-logo">HUAT</span>
+    </div>
+    
+    <div class="avatar-wrapper">
+      <div class="avatar-bg"></div>
+      <img src={avatar} alt={name} class="avatar-img" loading="lazy" />
+      <div class="avatar-scanline"></div>
+    </div>
+
+    <div class="card-info">
+      <h3 class="member-name">{name}</h3>
+      <p class="member-role">{role}</p>
+    </div>
+
+    <div class="card-footer">
+      <div class="barcode"></div>
+      <span class="id-number">ID: {Math.random().toString(36).substr(2, 8).toUpperCase()}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .team-id-card {
+    perspective: 1000px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-inner {
+    position: relative;
+    background: linear-gradient(145deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%);
+    border: 1px solid var(--fs-border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+    transform-style: preserve-3d;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  /* 悬停时的 3D 偏转和发光 */
+  .team-id-card:hover .card-inner {
+    transform: translateY(-5px) rotateX(4deg) rotateY(-4deg);
+    box-shadow: -10px 15px 30px rgba(0,0,0,0.6), 0 0 20px var(--fs-accent-glow);
+    border-color: var(--fs-border-focus);
+  }
+
+  /* 顶部标识 */
+  .card-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.6;
+  }
+  
+  .card-logo {
+    color: var(--sl-color-accent);
+  }
+
+  /* 头像区 */
+  .avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.25rem;
+    transform: translateZ(20px); /* 3D 悬浮效果 */
+  }
+
+  .avatar-bg {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      rgba(255, 61, 0, 0.1) 5px,
+      rgba(255, 61, 0, 0.1) 10px
+    );
+    border-radius: 50%;
+    border: 2px solid var(--sl-color-accent);
+    opacity: 0.5;
+  }
+
+  .avatar-img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 2;
+    background: var(--fs-bg-base);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  /* 照片扫描线动效 */
+  .avatar-scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 10px var(--sl-color-accent);
+    z-index: 3;
+    opacity: 0;
+    animation: scan 3s infinite linear;
+    animation-play-state: paused;
+  }
+
+  .team-id-card:hover .avatar-scanline {
+    opacity: 0.8;
+    animation-play-state: running;
+  }
+
+  @keyframes scan {
+    0% { top: 0; }
+    50% { top: 100%; }
+    100% { top: 0; }
+  }
+
+  /* 文本信息 */
+  .card-info {
+    text-align: center;
+    transform: translateZ(15px);
+    width: 100%;
+  }
+
+  .member-name {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: 1px;
+  }
+
+  :global([data-theme='light']) .member-name {
+    color: #000;
+  }
+
+  .member-role {
+    font-size: 0.85rem;
+    color: var(--sl-color-accent);
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  /* 底部防伪/条码区 */
+  .card-footer {
+    width: 100%;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--fs-border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.5;
+  }
+
+  .barcode {
+    height: 12px;
+    width: 60px;
+    background-image: repeating-linear-gradient(
+      to right,
+      #fff 0, #fff 2px,
+      transparent 2px, transparent 4px,
+      #fff 4px, #fff 5px,
+      transparent 5px, transparent 8px
+    );
+  }
+
+  :global([data-theme='light']) .barcode {
+    background-image: repeating-linear-gradient(
+      to right,
+      #000 0, #000 2px,
+      transparent 2px, transparent 4px,
+      #000 4px, #000 5px,
+      transparent 5px, transparent 8px
+    );
+  }
+
+  .id-number {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+
+  /* 卡片底部光效点缀 */
+  .card-inner::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--sl-color-accent), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+  }
+
+  .team-id-card:hover .card-inner::after {
+    opacity: 1;
+  }
+</style>

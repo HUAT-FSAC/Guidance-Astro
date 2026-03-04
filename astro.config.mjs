@@ -5,7 +5,7 @@ import sidebar from './.config/sidebar.mjs'
 
 // https://astro.build/config
 export default defineConfig({
-    adapter: cloudflare(),
+    adapter: cloudflare({ imageService: 'compile' }),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
     redirects: {
@@ -263,6 +263,7 @@ export default defineConfig({
             sidebar,
             lastUpdated: true,
             pagination: false,
+            pagefind: true,
         }),
     ],
 })

@@ -12,9 +12,9 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
     Astro.props;
 ---
 
-<section class="fs-section">
-    <div class="fs-background"></div>
-    <div class="fs-content">
+<section class="fs-section reveal-upon-scroll">
+    <div class="fs-background" data-parallax data-parallax-speed="0.2"></div>
+    <div class="fs-content reveal-upon-scroll" style="transition-delay: 0.1s;">
         <span class="fs-label">{subtitle}</span>
         <h2 class="fs-title">{title}</h2>
         <p class="fs-description">{description}</p>
@@ -45,15 +45,20 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         padding: 8rem 2rem;
         text-align: center;
         overflow: hidden;
+        border-top: 1px solid var(--fs-border-subtle);
+        border-bottom: 1px solid var(--fs-border-subtle);
+        background-color: var(--fs-bg-base);
     }
 
     .fs-background {
         position: absolute;
         inset: 0;
         background: var(--backgroundImage) center/cover no-repeat;
-        background-color: var(--sl-color-gray-6, #0f0f0f);
-        opacity: 0.25;
-        filter: blur(2px);
+        /* 深色叠加层让背景图片不那么突兀 */
+        background-color: rgba(3, 3, 3, 0.85);
+        background-blend-mode: overlay;
+        opacity: 0.4;
+        filter: blur(4px) grayscale(50%);
     }
 
     .fs-content {
@@ -61,73 +66,115 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         z-index: 1;
         max-width: 800px;
         margin: 0 auto;
-        background: var(--sl-color-gray-6, rgba(255, 255, 255, 0.02));
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.06));
-        border-radius: 2rem;
-        padding: 3rem 2rem;
+        background: linear-gradient(180deg, rgba(21, 21, 24, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--fs-border-focus);
+        border-radius: var(--radius-sm);
+        padding: 4rem 3rem;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+        /* 工程切角 */
+        clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+    }
+    
+    .fs-content::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--sl-color-accent), transparent);
     }
 
     :global([data-theme='light']) .fs-content {
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.9);
         border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     }
 
     .fs-label {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
         display: inline-block;
         font-size: 0.85rem;
-        font-weight: 700;
+        font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 4px;
-        color: var(--sl-color-accent, #f39c12);
+        color: var(--sl-color-accent);
         margin-bottom: 1.5rem;
     }
 
     .fs-title {
-        font-size: clamp(2rem, 5vw, 3.5rem);
-        font-weight: 800;
-        line-height: 1.2;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
         margin: 0 0 1.5rem;
-        color: var(--sl-color-text);
+        color: #fff;
+    }
+    
+    :global([data-theme='light']) .fs-title {
+        color: #000;
     }
 
     .fs-description {
         font-size: 1.15rem;
         line-height: 1.8;
-        color: var(--sl-color-text-gray, rgba(255, 255, 255, 0.8));
-        margin: 0 0 2.5rem;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 0 0 3rem;
+    }
+    
+    :global([data-theme='light']) .fs-description {
+        color: rgba(0, 0, 0, 0.75);
     }
 
     .fs-cta {
+        position: relative;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 1rem 2.5rem;
-        font-size: 0.9rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        gap: 0.8rem;
+        padding: 1.2rem 3rem;
         color: #fff !important;
-        background: var(--sl-color-accent, #f39c12);
-        border: none;
-        border-radius: 50px;
-        text-decoration: none;
-        transition: all 0.3s ease;
+        background: transparent !important;
+        border: 1px solid var(--sl-color-accent) !important;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none !important;
+        transition: all 0.3s var(--fs-ease-out);
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        overflow: hidden;
     }
 
     :global([data-theme='light']) .fs-cta {
-        color: #000 !important;
+        color: var(--sl-color-accent) !important;
+    }
+    
+    .fs-cta::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--sl-color-accent);
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s var(--fs-ease-out);
     }
 
     .fs-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        color: #000 !important;
+        border-color: transparent !important;
+        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
     }
     
+    .fs-cta:hover::before {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
     .fs-cta svg {
-        transition: transform 0.3s ease;
+        transition: transform var(--transition-normal);
     }
 
     .fs-cta:hover svg {
@@ -140,11 +187,12 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         }
 
         .fs-content {
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 1.5rem;
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
         }
 
         .fs-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
     }
 </style>

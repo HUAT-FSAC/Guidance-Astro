@@ -2,282 +2,122 @@ name: Project Automation
 
 on:
   issues:
-    types: [opened, reopened, assigned, closed]
+    types: [opened, edited, closed, reopened, labeled, unlabeled]
   pull_request:
-    types: [opened, reopened, ready_for_review, closed]
+    types: [opened, edited, closed, reopened, labeled, unlabeled, synchronize]
+  issue_comment:
+    types: [created, edited]
 
 jobs:
-  project-sync:
-    name: Sync Project Status
+  # 新 Issue 自动进入 Projects 看板
+  add-to-project:
+    name: Add to Project
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: read
-      repository-projects: write
+    if: github.event_name == 'issues' && github.event.action == 'opened'
     steps:
-      - name: Sync labels and project state
-        uses: actions/github-script@v7
-        env:
-          PROJECT_V2_ID: ${{ vars.PROJECT_V2_ID }}
-          PROJECT_STATUS_FIELD_ID: ${{ vars.PROJECT_STATUS_FIELD_ID }}
-          PROJECT_STATUS_BACKLOG_OPTION_ID: ${{ vars.PROJECT_STATUS_BACKLOG_OPTION_ID }}
-          PROJECT_STATUS_IN_PROGRESS_OPTION_ID: ${{ vars.PROJECT_STATUS_IN_PROGRESS_OPTION_ID }}
-          PROJECT_STATUS_REVIEW_OPTION_ID: ${{ vars.PROJECT_STATUS_REVIEW_OPTION_ID }}
-          PROJECT_STATUS_DONE_OPTION_ID: ${{ vars.PROJECT_STATUS_DONE_OPTION_ID }}
+      - name: Add to GitHub Project
+        uses: actions/add-to-project@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          project-url: https://github.com/orgs/HUAT-FSAC/projects/1
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+
+  # 自动更新 Issue 状态标签
+  update-issue-status:
+    name: Update Issue Status
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update status based on labels
+        uses: actions/github-script@v7
+        with:
           script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name);
+            
+            // 根据标签确定状态
+            let status = 'status:backlog';
+            if (labels.includes('status:in-progress')) status = 'status:in-progress';
+            if (labels.includes('status:review')) status = 'status:review';
+            if (labels.includes('status:blocked')) status = 'status:blocked';
+            if (issue.state === 'closed') status = 'status:done';
+            
+            console.log(`Issue #${issue.number} status: ${status}`);
 
-            const STATUS_LABELS = ['status:backlog', 'status:in-progress', 'status:review', 'status:done'];
-            const STATUS_OPTION_ENV = {
-              'status:backlog': process.env.PROJECT_STATUS_BACKLOG_OPTION_ID,
-              'status:in-progress': process.env.PROJECT_STATUS_IN_PROGRESS_OPTION_ID,
-              'status:review': process.env.PROJECT_STATUS_REVIEW_OPTION_ID,
-              'status:done': process.env.PROJECT_STATUS_DONE_OPTION_ID,
-            };
-
-            const TAXONOMY_LABELS = [
-              ['priority:p0', 'B60205', '最高优先级'],
-              ['priority:p1', 'D93F0B', '高优先级'],
-              ['priority:p2', 'FBCA04', '中优先级'],
-              ['priority:p3', '0E8A16', '低优先级'],
-              ['status:backlog', '1D76DB', '待开始'],
-              ['status:in-progress', '0052CC', '进行中'],
-              ['status:review', '5319E7', '评审中'],
-              ['status:done', '0E8A16', '已完成'],
-              ['risk:low', '0E8A16', '低风险'],
-              ['risk:medium', 'FBCA04', '中风险'],
-              ['risk:high', 'D93F0B', '高风险'],
-              ['risk:blocker', 'B60205', '阻塞风险'],
-              ['area:frontend', '006B75', '前端'],
-              ['area:backend', '5319E7', '后端'],
-              ['area:docs', 'A2EEEF', '文档'],
-              ['area:devops', 'C5DEF5', 'DevOps'],
-              ['area:quality', 'BFD4F2', '质量'],
-              ['area:content', 'D4C5F9', '内容'],
-              ['type:task', '0E8A16', '任务卡'],
-              ['type:bug', 'D73A4A', '缺陷'],
-              ['type:tech-debt', '8A2BE2', '技术债'],
-              ['type:retrospective', '5C6BC0', '复盘'],
-              ['type:improvement', '1D76DB', '改进'],
-            ];
-
-            async function ensureLabels() {
-              // 批量获取已有 label，避免逐个 API 调用
-              const existingLabels = new Set();
-              try {
-                const perPage = 100;
-                let page = 1;
-                let hasMore = true;
-                while (hasMore) {
-                  const { data } = await github.rest.issues.listLabelsForRepo({
-                    owner, repo, per_page: perPage, page,
-                  });
-                  data.forEach((l) => existingLabels.add(l.name));
-                  hasMore = data.length === perPage;
-                  page++;
-                }
-              } catch (error) {
-                core.warning(`Failed to list labels: ${error.message}`);
-                return;
-              }
-
-              // 只创建缺失的 label
-              for (const [name, color, description] of TAXONOMY_LABELS) {
-                if (existingLabels.has(name)) continue;
-                try {
-                  await github.rest.issues.createLabel({ owner, repo, name, color, description });
-                } catch (error) {
-                  core.warning(`label create failed for ${name}: ${error.message}`);
-                }
-              }
-            }
-
-            function labelNames(issue) {
-              return (issue.labels || [])
-                .map((item) => (typeof item === 'string' ? item : item.name))
-                .filter(Boolean);
-            }
-
-            function hasPrefixedLabel(labels, prefix) {
-              return labels.some((name) => name.startsWith(prefix));
-            }
-
-            async function setIssueLabels(issueNumber, nextStatus, defaults = false) {
-              const { data: issue } = await github.rest.issues.get({
-                owner,
-                repo,
+  # PR 合并后自动更新关联 Issue 状态
+  update-linked-issues:
+    name: Update Linked Issues
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    steps:
+      - name: Find and close linked issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            
+            // 提取 Closes/Fixes/Resolves 关键字后的 issue 编号
+            const closesRegex = /(?:closes|fixes|resolves)\s+#(\d+)/gi;
+            const matches = [...body.matchAll(closesRegex)];
+            
+            for (const match of matches) {
+              const issueNumber = parseInt(match[1]);
+              
+              // 添加评论
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: issueNumber,
+                body: `✅ 已在 PR #${pr.number} 中完成并合并到主分支。`
               });
-              const existing = labelNames(issue);
-              const next = existing.filter((name) => !STATUS_LABELS.includes(name));
-              next.push(nextStatus);
-
-              if (defaults) {
-                if (!hasPrefixedLabel(next, 'priority:')) next.push('priority:p2');
-                if (!hasPrefixedLabel(next, 'risk:')) next.push('risk:low');
-                if (!hasPrefixedLabel(next, 'area:')) next.push('area:docs');
-                if (!hasPrefixedLabel(next, 'type:')) next.push('type:task');
-              }
-
-              await github.rest.issues.setLabels({
-                owner,
-                repo,
+              
+              // 关闭 Issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: issueNumber,
-                labels: [...new Set(next)],
+                state: 'closed',
+                labels: ['status:done']
               });
+              
+              console.log(`Closed issue #${issueNumber}`);
             }
 
-            async function ensureProjectItem(issueNodeId) {
-              const projectId = process.env.PROJECT_V2_ID;
-              if (!projectId) return null;
-
-              const nodeQuery = `
-                query ($issueId: ID!) {
-                  node(id: $issueId) {
-                    ... on Issue {
-                      projectItems(first: 20) {
-                        nodes {
-                          id
-                          project {
-                            id
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              `;
-
-              const existed = await github.graphql(nodeQuery, { issueId: issueNodeId });
-              const matched = existed?.node?.projectItems?.nodes?.find(
-                (item) => item?.project?.id === projectId
-              );
-              if (matched?.id) return matched.id;
-
-              try {
-                const addMutation = `
-                  mutation ($projectId: ID!, $contentId: ID!) {
-                    addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
-                      item {
-                        id
-                      }
-                    }
-                  }
-                `;
-                const added = await github.graphql(addMutation, {
-                  projectId,
-                  contentId: issueNodeId,
+  # 检查里程碑延期
+  check-milestone-deadline:
+    name: Check Milestone Deadline
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * *'  # 每天上午9点运行
+    steps:
+      - name: Check milestones
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const milestones = await github.rest.issues.listMilestones({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+            
+            const now = new Date();
+            const warningDays = 3;
+            
+            for (const milestone of milestones.data) {
+              if (!milestone.due_on) continue;
+              
+              const dueDate = new Date(milestone.due_on);
+              const daysUntilDue = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+              
+              if (daysUntilDue <= warningDays && daysUntilDue >= 0) {
+                // 创建警告评论
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: 1,  // 或者创建一个新 issue
+                  body: `⚠️ 里程碑 "${milestone.title}" 将在 ${daysUntilDue} 天后到期 (${milestone.due_on})`
                 });
-                return added?.addProjectV2ItemById?.item?.id ?? null;
-              } catch (error) {
-                core.warning(`project add skipped: ${error.message}`);
-                return null;
-              }
-            }
-
-            async function syncProjectStatus(issueNodeId, statusLabel) {
-              const projectId = process.env.PROJECT_V2_ID;
-              const fieldId = process.env.PROJECT_STATUS_FIELD_ID;
-              const optionId = STATUS_OPTION_ENV[statusLabel];
-              if (!projectId || !fieldId || !optionId) return;
-
-              const itemId = await ensureProjectItem(issueNodeId);
-              if (!itemId) return;
-
-              const mutation = `
-                mutation ($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-                  updateProjectV2ItemFieldValue(
-                    input: {
-                      projectId: $projectId
-                      itemId: $itemId
-                      fieldId: $fieldId
-                      value: { singleSelectOptionId: $optionId }
-                    }
-                  ) {
-                    projectV2Item {
-                      id
-                    }
-                  }
-                }
-              `;
-
-              await github.graphql(mutation, { projectId, itemId, fieldId, optionId });
-            }
-
-            async function setIssueStatus(issueNumber, issueNodeId, statusLabel, defaults = false) {
-              await setIssueLabels(issueNumber, statusLabel, defaults);
-              await syncProjectStatus(issueNodeId, statusLabel);
-            }
-
-            async function linkedIssuesFromPullRequest(prNumber) {
-              const query = `
-                query ($owner: String!, $repo: String!, $number: Int!) {
-                  repository(owner: $owner, name: $repo) {
-                    pullRequest(number: $number) {
-                      closingIssuesReferences(first: 20) {
-                        nodes {
-                          number
-                          id
-                        }
-                      }
-                    }
-                  }
-                }
-              `;
-              const result = await github.graphql(query, { owner, repo, number: prNumber });
-              return result?.repository?.pullRequest?.closingIssuesReferences?.nodes ?? [];
-            }
-
-            await ensureLabels();
-
-            // 检查 Projects v2 变量是否已配置
-            if (!process.env.PROJECT_V2_ID) {
-              core.warning(
-                'PROJECT_V2_ID 未配置，工作流将以"仅标签驱动"模式运行。' +
-                '如需启用看板自动化，请参考 docs-meta/PROJECT_MANAGEMENT_MODEL.md 配置仓库变量。'
-              );
-            }
-
-            if (context.eventName === 'issues') {
-              const issue = context.payload.issue;
-              if (!issue || context.payload.issue.pull_request) return;
-
-              const action = context.payload.action;
-              if (action === 'opened' || action === 'reopened') {
-                await setIssueStatus(issue.number, issue.node_id, 'status:backlog', true);
-                await ensureProjectItem(issue.node_id);
-              } else if (action === 'assigned') {
-                await setIssueStatus(issue.number, issue.node_id, 'status:in-progress');
-              } else if (action === 'closed') {
-                await setIssueStatus(issue.number, issue.node_id, 'status:done');
-              }
-              return;
-            }
-
-            if (context.eventName === 'pull_request') {
-              const pr = context.payload.pull_request;
-              if (!pr) return;
-
-              const linkedIssues = await linkedIssuesFromPullRequest(pr.number);
-              if (linkedIssues.length === 0) {
-                core.info('No linked issues found for this PR.');
-                return;
-              }
-
-              let nextStatus = null;
-              if (context.payload.action === 'opened' || context.payload.action === 'reopened' || context.payload.action === 'ready_for_review') {
-                nextStatus = 'status:review';
-              }
-              if (context.payload.action === 'closed' && pr.merged) {
-                nextStatus = 'status:done';
-              }
-              if (!nextStatus) return;
-
-              for (const linked of linkedIssues) {
-                await setIssueStatus(linked.number, linked.id, nextStatus);
               }
             }

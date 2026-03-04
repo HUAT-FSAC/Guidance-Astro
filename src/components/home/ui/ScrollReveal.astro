@@ -1,0 +1,59 @@
+<script>
+    /**
+     * Initializes the IntersectionObserver for scroll reveal animations.
+     * Elements with the 'reveal-upon-scroll' class will fade in and translate up
+     * when they enter the viewport.
+     */
+    let _scrollRevealCleanup: (() => void) | undefined;
+
+    function initScrollReveal() {
+        if (_scrollRevealCleanup) {
+            _scrollRevealCleanup();
+            _scrollRevealCleanup = undefined;
+        }
+
+        // Find all elements meant to be revealed
+        const revealElements = document.querySelectorAll('.reveal-upon-scroll');
+
+        if (revealElements.length === 0) return;
+
+        // Configuration for the observer
+        const observerOptions = {
+            root: null, // Use the viewport as the root
+            rootMargin: '0px',
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        };
+
+        // Create the observer
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add the 'is-visible' class to trigger the CSS transition
+                    entry.target.classList.add('is-visible');
+                    
+                    // Once revealed, we don't need to observe it anymore
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Start observing each element
+        revealElements.forEach(el => {
+            // Initially ensure it does not have the visible class
+            el.classList.remove('is-visible');
+            revealObserver.observe(el);
+        });
+
+        _scrollRevealCleanup = () => revealObserver.disconnect();
+    }
+
+    // Run initialization on DOM load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollReveal);
+    } else {
+        initScrollReveal();
+    }
+    
+    // Also run on Astro view transitions
+    document.addEventListener('astro:page-load', initScrollReveal);
+</script>

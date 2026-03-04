@@ -76,68 +76,88 @@ const {
 </div>
 
 <script>
+    let _imageCompareCleanup: (() => void) | undefined;
+
     function initImageCompare() {
-        const containers = document.querySelectorAll('.image-compare');
-        
-        containers.forEach(container => {
-            const wrapper = container.querySelector('.image-before-wrapper') as HTMLElement;
-            const handle = container.querySelector('.slider-handle') as HTMLElement;
-            
+        if (_imageCompareCleanup) {
+            _imageCompareCleanup();
+            _imageCompareCleanup = undefined;
+        }
+
+        const containers = document.querySelectorAll<HTMLElement>('.image-compare');
+        if (containers.length === 0) return;
+
+        const cleanupTasks: Array<() => void> = [];
+
+        containers.forEach((container) => {
+            const wrapper = container.querySelector('.image-before-wrapper') as HTMLElement | null;
+            const handle = container.querySelector('.slider-handle') as HTMLElement | null;
+
             if (!wrapper || !handle) return;
-            
+
             let isDragging = false;
-            
+
             const updatePosition = (clientX: number) => {
                 const rect = container.getBoundingClientRect();
                 let position = ((clientX - rect.left) / rect.width) * 100;
-                
+
                 // 限制范围
                 position = Math.max(0, Math.min(100, position));
-                
+
                 wrapper.style.width = `${position}%`;
                 handle.style.left = `${position}%`;
                 handle.setAttribute('aria-valuenow', position.toString());
             };
-            
+
             // 鼠标事件
-            handle.addEventListener('mousedown', (e) => {
+            const handleMouseDown = (e: MouseEvent) => {
                 e.preventDefault();
                 isDragging = true;
                 container.classList.add('dragging');
-            });
-            
-            document.addEventListener('mousemove', (e) => {
+            };
+            handle.addEventListener('mousedown', handleMouseDown);
+
+            const handleMouseMove = (e: MouseEvent) => {
                 if (!isDragging) return;
                 updatePosition(e.clientX);
-            });
-            
-            document.addEventListener('mouseup', () => {
+            };
+            document.addEventListener('mousemove', handleMouseMove);
+
+            const handleMouseUp = () => {
                 isDragging = false;
                 container.classList.remove('dragging');
-            });
-            
+            };
+            document.addEventListener('mouseup', handleMouseUp);
+
             // 触摸事件
-            handle.addEventListener('touchstart', (_e) => {
+            const handleTouchStart = () => {
                 isDragging = true;
                 container.classList.add('dragging');
-            }, { passive: true });
-            
-            container.addEventListener('touchmove', (e) => {
+            };
+            handle.addEventListener('touchstart', handleTouchStart, {
+                passive: true,
+            });
+
+            const handleTouchMove = (e: TouchEvent) => {
                 if (!isDragging) return;
                 const touch = e.touches[0];
                 updatePosition(touch.clientX);
-            }, { passive: true });
-            
-            container.addEventListener('touchend', () => {
+            };
+            container.addEventListener('touchmove', handleTouchMove, {
+                passive: true,
+            });
+
+            const handleTouchEnd = () => {
                 isDragging = false;
                 container.classList.remove('dragging');
-            });
-            
+            };
+            container.addEventListener('touchend', handleTouchEnd);
+
             // 键盘控制
-            handle.addEventListener('keydown', (e) => {
+            const handleKeydown = (e: KeyboardEvent) => {
                 const currentPos = parseFloat(handle.style.left) || 50;
                 let newPos = currentPos;
-                
+
                 if (e.key === 'ArrowLeft') {
                     newPos = Math.max(0, currentPos - 5);
                 } else if (e.key === 'ArrowRight') {
@@ -145,28 +165,45 @@ const {
                 } else {
                     return;
                 }
-                
+
                 e.preventDefault();
                 wrapper.style.width = `${newPos}%`;
                 handle.style.left = `${newPos}%`;
                 handle.setAttribute('aria-valuenow', newPos.toString());
-            });
-            
+            };
+            handle.addEventListener('keydown', handleKeydown);
+
             // 点击容器直接跳转
-            container.addEventListener('click', (e) => {
+            const handleContainerClick = (e: MouseEvent) => {
                 if ((e.target as HTMLElement).closest('.slider-handle')) return;
                 updatePosition(e.clientX);
+            };
+            container.addEventListener('click', handleContainerClick);
+
+            cleanupTasks.push(() => {
+                handle.removeEventListener('mousedown', handleMouseDown);
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+                handle.removeEventListener('touchstart', handleTouchStart);
+                container.removeEventListener('touchmove', handleTouchMove);
+                container.removeEventListener('touchend', handleTouchEnd);
+                handle.removeEventListener('keydown', handleKeydown);
+                container.removeEventListener('click', handleContainerClick);
             });
         });
+
+        _imageCompareCleanup = () => {
+            cleanupTasks.forEach((cleanup) => cleanup());
+        };
     }
-    
+
     // 初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initImageCompare);
     } else {
         initImageCompare();
     }
-    
+
     document.addEventListener('astro:page-load', initImageCompare);
 </script>
 

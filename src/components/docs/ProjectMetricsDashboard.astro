@@ -1,180 +1,484 @@
 ---
-import metricsData from '../../data/metrics/project-progress.json'
+/**
+ * 项目进度看板组件
+ * 展示项目指标、里程碑进度、质量数据
+ */
+import projectData from '../../data/metrics/project-progress.json';
 
-const {
-    generatedAt = '',
-    repository = '',
-    windowDays = 30,
-    status = 'unknown',
-    metrics = {},
-    counts = {},
-} = metricsData
+const { summary, byStatus, byPriority, milestones, qualityMetrics } = projectData;
 
-function asPercent(value: unknown): string {
-    if (typeof value !== 'number' || Number.isNaN(value)) return '--'
-    return `${value.toFixed(2)}%`
-}
+// 状态颜色映射
+const statusColors: Record<string, string> = {
+  backlog: 'var(--sl-color-gray-5)',
+  ready: 'var(--sl-color-blue)',
+  inProgress: 'var(--sl-color-accent)',
+  review: 'var(--sl-color-purple)',
+  blocked: 'var(--sl-color-red)',
+  done: 'var(--sl-color-green)',
+};
 
-function asNumber(value: unknown): string {
-    if (typeof value !== 'number' || Number.isNaN(value)) return '--'
-    return value.toFixed(2)
-}
+// 优先级颜色映射
+const priorityColors: Record<string, string> = {
+  p0: 'var(--sl-color-red)',
+  p1: 'var(--sl-color-orange)',
+  p2: 'var(--sl-color-yellow)',
+  p3: 'var(--sl-color-gray-5)',
+};
 
-function clampPercent(value: unknown): number {
-    if (typeof value !== 'number' || Number.isNaN(value)) return 0
-    return Math.max(0, Math.min(100, value))
-}
+// 里程碑状态映射
+const milestoneStatusMap: Record<string, { label: string; color: string }> = {
+  completed: { label: '已完成', color: 'var(--sl-color-green)' },
+  'in-progress': { label: '进行中', color: 'var(--sl-color-accent)' },
+  backlog: { label: '待开始', color: 'var(--sl-color-gray-5)' },
+};
 
-const burnDownRate = clampPercent(metrics.issueCloseRatePercent)
-const ciSuccessRate = clampPercent(metrics.ciSuccessRatePercent)
-const mergeRate = clampPercent(metrics.prMergeRatePercent)
-const statusText = status === 'ok' ? '正常' : status === 'degraded' ? '降级' : '初始化'
+// 状态名称映射
+const statusNames: Record<string, string> = {
+  backlog: '待办',
+  ready: '就绪',
+  inProgress: '进行中',
+  review: '审核中',
+  blocked: '阻塞',
+  done: '已完成',
+};
 
-const generatedAtText = generatedAt
-    ? new Intl.DateTimeFormat('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-      }).format(new Date(generatedAt))
-    : '--'
+// 优先级名称映射
+const priorityNames: Record<string, string> = {
+  p0: 'P0 - 紧急',
+  p1: 'P1 - 高',
+  p2: 'P2 - 中',
+  p3: 'P3 - 低',
+};
+
+const totalTasks = Object.values(byStatus).reduce((a, b) => a + b, 0);
+
+// 预计算状态分布数据
+const statusEntries = Object.entries(byStatus).filter(([_, count]) => count > 0);
+
+// 预计算优先级分布数据
+const priorityEntries = Object.entries(byPriority);
 ---
 
-<section class="metrics-dashboard">
-    <header class="dashboard-header">
-        <h2>项目进度数据面板</h2>
-        <p>仓库：{repository || '--'} · 统计窗口：近 {windowDays} 天 · 状态：{statusText}</p>
-        <p>数据更新时间：{generatedAtText}</p>
-    </header>
-
-    <div class="metric-grid">
-        <article class="metric-card">
-            <h3>燃尽/关闭率</h3>
-            <p class="metric-value">{asPercent(metrics.issueCloseRatePercent)}</p>
-            <div class="progress-track">
-                <span class="progress-fill" style={`width: ${burnDownRate}%`}></span>
-            </div>
-            <p class="metric-meta">
-                已关闭 {counts.closedIssuesInWindow ?? 0} / 新增 {counts.openedIssuesInWindow ?? 0}
-            </p>
-        </article>
-
-        <article class="metric-card">
-            <h3>需求 Lead Time</h3>
-            <p class="metric-value">{asNumber(metrics.issueLeadTimeDays)} 天</p>
-            <p class="metric-meta">Issue 从创建到关闭的平均周期</p>
-        </article>
-
-        <article class="metric-card">
-            <h3>PR Cycle Time</h3>
-            <p class="metric-value">{asNumber(metrics.prCycleTimeDays)} 天</p>
-            <p class="metric-meta">PR 从创建到合并的平均周期</p>
-        </article>
-
-        <article class="metric-card">
-            <h3>CI 成功率</h3>
-            <p class="metric-value">{asPercent(metrics.ciSuccessRatePercent)}</p>
-            <div class="progress-track">
-                <span class="progress-fill success" style={`width: ${ciSuccessRate}%`}></span>
-            </div>
-            <p class="metric-meta">
-                失败 {counts.ciFailedRunsInWindow ?? 0} / 总计 {counts.ciRunsInWindow ?? 0}
-            </p>
-        </article>
-
-        <article class="metric-card">
-            <h3>PR 合并率</h3>
-            <p class="metric-value">{asPercent(metrics.prMergeRatePercent)}</p>
-            <div class="progress-track">
-                <span class="progress-fill" style={`width: ${mergeRate}%`}></span>
-            </div>
-            <p class="metric-meta">
-                已合并 {counts.mergedPullRequestsInWindow ?? 0} / 新建 {counts.openedPullRequestsInWindow ?? 0}
-            </p>
-        </article>
-
-        <article class="metric-card">
-            <h3>WIP 分布</h3>
-            <ul class="wip-list">
-                <li>Backlog：{metrics.backlogIssueCount ?? 0}</li>
-                <li>In Progress：{metrics.wipIssueCount ?? 0}</li>
-                <li>Review：{metrics.reviewIssueCount ?? 0}</li>
-                <li>Open PR：{counts.openPullRequestCount ?? 0}</li>
-            </ul>
-        </article>
+<div class="metrics-dashboard">
+  <!-- 概览卡片 -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-value">{summary.totalIssues}</div>
+      <div class="metric-label">总任务数</div>
     </div>
-</section>
+    <div class="metric-card">
+      <div class="metric-value">{summary.closedIssues}</div>
+      <div class="metric-label">已完成</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">{summary.ciPassRate}%</div>
+      <div class="metric-label">CI 通过率</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">{qualityMetrics.testCoverage}%</div>
+      <div class="metric-label">测试覆盖率</div>
+    </div>
+  </div>
+
+  <!-- 状态分布 -->
+  <div class="dashboard-section">
+    <h3>任务状态分布</h3>
+    <div class="status-bar">
+      {statusEntries.map(([status, count]) => {
+        const percentage = totalTasks > 0 ? (count / totalTasks) * 100 : 0;
+        return (
+          <div
+            class="status-segment"
+            style={`width: ${percentage}%; background-color: ${statusColors[status] || 'var(--sl-color-gray-5)'}`}
+            title={`${status}: ${count}`}
+          />
+        );
+      })}
+    </div>
+    <div class="status-legend">
+      {statusEntries.map(([status, count]) => (
+        <div class="legend-item">
+          <span
+            class="legend-dot"
+            style={`background-color: ${statusColors[status]}`}
+          />
+          <span class="legend-label">{statusNames[status]}</span>
+          <span class="legend-value">{count}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- 优先级分布 -->
+  <div class="dashboard-section">
+    <h3>优先级分布</h3>
+    <div class="priority-grid">
+      {priorityEntries.map(([priority, count]) => (
+        <div class="priority-item">
+          <div class="priority-header">
+            <span
+              class="priority-indicator"
+              style={`background-color: ${priorityColors[priority]}`}
+            />
+            <span class="priority-name">{priorityNames[priority]}</span>
+          </div>
+          <div class="priority-count">{count}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- 里程碑进度 -->
+  <div class="dashboard-section">
+    <h3>里程碑进度</h3>
+    <div class="milestones-list">
+      {milestones.map((milestone) => {
+        const status = milestoneStatusMap[milestone.status];
+        return (
+          <div class="milestone-card">
+            <div class="milestone-header">
+              <h4>{milestone.title}</h4>
+              <span
+                class="milestone-status-badge"
+                style={`background-color: ${status.color}`}
+              >
+                {status.label}
+              </span>
+            </div>
+            <p class="milestone-description">{milestone.description}</p>
+            <div class="milestone-progress">
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  style={`width: ${milestone.completionRate}%; background-color: ${status.color}`}
+                />
+              </div>
+              <span class="progress-text">{milestone.completionRate}%</span>
+            </div>
+            <div class="milestone-meta">
+              <span>截止: {milestone.dueDate}</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  <!-- 质量指标 -->
+  <div class="dashboard-section">
+    <h3>质量指标</h3>
+    <div class="quality-grid">
+      <div class="quality-item">
+        <div class="quality-label">Lint 错误</div>
+        <div class="quality-value" style={`color: ${qualityMetrics.lintErrors === 0 ? 'var(--sl-color-green)' : 'var(--sl-color-red)'}`}>
+          {qualityMetrics.lintErrors}
+        </div>
+      </div>
+      <div class="quality-item">
+        <div class="quality-label">类型错误</div>
+        <div class="quality-value" style={`color: ${qualityMetrics.typeErrors === 0 ? 'var(--sl-color-green)' : 'var(--sl-color-red)'}`}>
+          {qualityMetrics.typeErrors}
+        </div>
+      </div>
+      <div class="quality-item">
+        <div class="quality-label">Bundle 体积</div>
+        <div class="quality-value">
+          {(qualityMetrics.bundleSize.current / 1024).toFixed(1)} KB
+        </div>
+        <div class="bundle-bar">
+          <div
+            class="bundle-fill"
+            style={`width: ${qualityMetrics.bundleSize.percentage}%; background-color: ${qualityMetrics.bundleSize.percentage > 80 ? 'var(--sl-color-red)' : qualityMetrics.bundleSize.percentage > 60 ? 'var(--sl-color-yellow)' : 'var(--sl-color-green)'}`}
+          />
+        </div>
+        <div class="bundle-budget">预算: {(qualityMetrics.bundleSize.budget / 1024).toFixed(0)} KB</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer">
+    <p>数据更新时间: {new Date(projectData.generatedAt).toLocaleString('zh-CN')}</p>
+    <p class="data-source">数据来源: GitHub API / CI Pipeline</p>
+  </div>
+</div>
 
 <style>
-    .metrics-dashboard {
-        display: grid;
-        gap: 1rem;
-    }
+  .metrics-dashboard {
+    --card-bg: var(--sl-color-bg-nav);
+    --card-border: var(--sl-color-hairline);
+    --accent: var(--sl-color-accent);
+    --text: var(--sl-color-text);
+    --text-muted: var(--sl-color-gray-3);
+  }
 
-    .dashboard-header h2 {
-        margin: 0;
-        font-size: 1.25rem;
-    }
+  /* 概览卡片 */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
 
-    .dashboard-header p {
-        margin: 0.35rem 0 0;
-        color: var(--sl-color-text-accent);
-        font-size: 0.9rem;
-    }
+  .metric-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
 
-    .metric-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 0.9rem;
-    }
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
 
-    .metric-card {
-        border: 1px solid var(--sl-color-hairline-light);
-        border-radius: 0.7rem;
-        padding: 0.9rem;
-        background: var(--sl-color-bg-nav);
-    }
+  .metric-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
 
-    .metric-card h3 {
-        margin: 0;
-        font-size: 0.95rem;
-        color: var(--sl-color-text-accent);
-    }
+  /* 通用区块 */
+  .dashboard-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+  }
 
-    .metric-value {
-        margin: 0.45rem 0 0.5rem;
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
+  .dashboard-section h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
 
-    .metric-meta {
-        margin: 0.45rem 0 0;
-        font-size: 0.82rem;
-        color: var(--sl-color-text-accent);
-    }
+  /* 状态分布 */
+  .status-bar {
+    display: flex;
+    height: 24px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
 
-    .progress-track {
-        height: 0.45rem;
-        border-radius: 999px;
-        background: var(--sl-color-gray-5);
-        overflow: hidden;
-    }
+  .status-segment {
+    height: 100%;
+    transition: opacity 0.2s;
+  }
 
-    .progress-fill {
-        display: block;
-        height: 100%;
-        background: linear-gradient(90deg, #4f46e5, #06b6d4);
-    }
+  .status-segment:hover {
+    opacity: 0.8;
+  }
 
-    .progress-fill.success {
-        background: linear-gradient(90deg, #16a34a, #22c55e);
-    }
+  .status-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 
-    .wip-list {
-        margin: 0.45rem 0 0;
-        padding-left: 1rem;
-        font-size: 0.9rem;
-    }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .legend-label {
+    color: var(--text-muted);
+  }
+
+  .legend-value {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* 优先级分布 */
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .priority-item {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+  }
+
+  :root[data-theme='light'] .priority-item {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .priority-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .priority-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  .priority-name {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .priority-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* 里程碑 */
+  .milestones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .milestone-card {
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  :root[data-theme='light'] .milestone-card {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .milestone-header h4 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .milestone-status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+  }
+
+  .milestone-description {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .milestone-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  :root[data-theme='light'] .progress-bar {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .milestone-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* 质量指标 */
+  .quality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .quality-item {
+    text-align: center;
+  }
+
+  .quality-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .quality-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .bundle-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+  }
+
+  :root[data-theme='light'] .bundle-bar {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .bundle-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .bundle-budget {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* 页脚 */
+  .dashboard-footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .data-source {
+    opacity: 0.7;
+  }
 </style>

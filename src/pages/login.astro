@@ -55,7 +55,7 @@ import '../styles/auth.css'
                 if (res.ok) {
                     location.href = redirect;
                 } else {
-                    const data = await res.json().catch(() => ({}));
+                    const data = await res.json().catch(() => ({})) as { error?: string };
                     errorEl.textContent = data.error || '登录失败，请重试';
                     errorEl.style.display = 'block';
                 }

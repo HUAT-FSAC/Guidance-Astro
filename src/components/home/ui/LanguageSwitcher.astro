@@ -3,7 +3,17 @@
  * 语言切换器组件
  * 提供中英文切换功能
  */
-import { locales, localeNames, defaultLocale, type Locale } from '../../utils/i18n';
+
+type Locale = 'en' | 'zh';
+
+const defaultLocale: Locale = 'zh';
+
+const locales: Locale[] = ['zh', 'en'];
+
+const localeNames: Record<Locale, string> = {
+    zh: '中文',
+    en: 'English',
+};
 
 interface Props {
     currentLocale?: Locale;
@@ -31,7 +41,7 @@ const { currentLocale = defaultLocale } = Astro.props;
     </button>
     
     <ul class="language-menu" role="listbox" aria-label="Available languages">
-        {locales.map((locale) => (
+        {locales.map((locale: Locale) => (
             <li role="option" aria-selected={locale === currentLocale}>
                 <button 
                     class={`language-option ${locale === currentLocale ? 'active' : ''}`}
@@ -45,29 +55,46 @@ const { currentLocale = defaultLocale } = Astro.props;
 </div>
 
 <script>
+    let _languageSwitcherCleanup: (() => void) | undefined;
+
+    function safeSetPreferredLocale(locale: string) {
+        try {
+            localStorage.setItem('preferred-locale', locale);
+        } catch {
+            // ignore storage errors
+        }
+    }
+
     function initLanguageSwitcher() {
-        const switcher = document.querySelector('.language-switcher');
-        const toggle = switcher?.querySelector('.language-toggle');
-        const menu = switcher?.querySelector('.language-menu');
+        if (_languageSwitcherCleanup) {
+            _languageSwitcherCleanup();
+            _languageSwitcherCleanup = undefined;
+        }
+
+        const switcher = document.querySelector('.language-switcher') as HTMLElement | null;
+        const toggle = switcher?.querySelector('.language-toggle') as HTMLButtonElement | null;
+        const menu = switcher?.querySelector('.language-menu') as HTMLElement | null;
         const options = switcher?.querySelectorAll('.language-option');
         
         if (!toggle || !menu) return;
         
         // Toggle menu
-        toggle.addEventListener('click', () => {
+        const handleToggleClick = () => {
             const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
             toggle.setAttribute('aria-expanded', (!isExpanded).toString());
             menu.classList.toggle('open');
-        });
+        };
+        toggle.addEventListener('click', handleToggleClick);
         
         // Handle language selection
+        const optionHandlers = new Map<Element, EventListener>();
         options?.forEach(option => {
-            option.addEventListener('click', () => {
+            const handleOptionClick = () => {
                 const locale = (option as HTMLElement).dataset.locale;
                 if (!locale) return;
                 
                 // Store preference
-                localStorage.setItem('preferred-locale', locale);
+                safeSetPreferredLocale(locale);
                 
                 // Redirect to new locale path
                 const currentPath = window.location.pathname;
@@ -86,24 +113,37 @@ const { currentLocale = defaultLocale } = Astro.props;
                 
                 // Navigate
                 window.location.href = newPath;
-            });
+            };
+            optionHandlers.set(option, handleOptionClick);
+            option.addEventListener('click', handleOptionClick);
         });
         
         // Close on outside click
-        document.addEventListener('click', (e) => {
+        const handleDocumentClick = (e: Event) => {
             if (!switcher?.contains(e.target as Node)) {
                 toggle.setAttribute('aria-expanded', 'false');
                 menu.classList.remove('open');
             }
-        });
+        };
+        document.addEventListener('click', handleDocumentClick);
         
         // Keyboard navigation
-        toggle.addEventListener('keydown', (e) => {
+        const handleToggleKeydown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 toggle.setAttribute('aria-expanded', 'false');
                 menu.classList.remove('open');
             }
-        });
+        };
+        toggle.addEventListener('keydown', handleToggleKeydown);
+
+        _languageSwitcherCleanup = () => {
+            toggle.removeEventListener('click', handleToggleClick);
+            toggle.removeEventListener('keydown', handleToggleKeydown);
+            document.removeEventListener('click', handleDocumentClick);
+            optionHandlers.forEach((handler, option) => {
+                option.removeEventListener('click', handler);
+            });
+        };
     }
     
     // Initialize

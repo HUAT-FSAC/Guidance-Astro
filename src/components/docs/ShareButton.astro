@@ -170,7 +170,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         }
 
         function closeOnClickOutside(e: MouseEvent) {
-            if (!container.contains(e.target as Node)) {
+            if (!container?.contains(e.target as Node)) {
                 closeMenu();
             }
         }
@@ -274,7 +274,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
 
     .share-container.bottom-right {
         bottom: 2rem;
-        right: 2rem;
+        left: 2rem;
     }
 
     .share-container.bottom-left {
@@ -296,20 +296,25 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
     .share-button {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
-        padding: 0.875rem;
+        width: 48px;
+        height: 48px;
+        padding: 0;
         background: var(--sl-color-accent);
         color: #000;
         border: none;
-        border-radius: 50%;
+        border-radius: var(--radius-sm);
         cursor: pointer;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
+        box-shadow: var(--card-shadow);
+        transition: all var(--transition-normal);
+        position: relative;
+        overflow: hidden;
     }
 
     .share-button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 25px rgba(243, 156, 18, 0.4);
+        transform: scale(1.05);
+        box-shadow: var(--card-shadow-hover), 0 0 15px var(--fs-accent-glow);
     }
 
     .share-icon {
@@ -319,8 +324,10 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
     }
 
     .share-label {
-        font-weight: 600;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 700;
         font-size: 0.9rem;
+        text-transform: uppercase;
     }
 
     /* 分享菜单 */
@@ -329,16 +336,16 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         bottom: 100%;
         right: 0;
         margin-bottom: 0.75rem;
-        background: var(--sl-color-bg);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 0.75rem;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-focus);
+        border-radius: var(--radius-md);
         padding: 0.5rem;
         min-width: 160px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--card-shadow-hover);
         opacity: 0;
         visibility: hidden;
         transform: translateY(10px);
-        transition: all 0.2s ease;
+        transition: all var(--transition-fast);
     }
 
     :global([data-theme="light"]) .share-menu {
@@ -503,7 +510,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         }
 
         .share-container.bottom-right {
-            right: 1rem;
+            left: 1rem;
         }
 
         .share-container.bottom-left {
@@ -511,7 +518,8 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         }
 
         .share-button {
-            padding: 0.75rem;
+            width: 44px;
+            height: 44px;
         }
     }
 </style>

@@ -8,8 +8,8 @@ ENVIRONMENT = "production"
 [[d1_databases]]
 binding = "DB"
 database_name = "fsac-auth"
-database_id = "placeholder-replace-after-create"
+database_id = "040eee6d-8032-4d37-a792-21a3eaccd493"
 
 [[kv_namespaces]]
 binding = "SESSION_KV"
-id = "placeholder-replace-after-create"
+id = "5e52b97f8318452d858fff5249d84858"

@@ -154,6 +154,8 @@ const { seasons } = Astro.props;
 </div>
 
 <script>
+    let _resizeInitBound = false;
+
     function initCarousel() {
         const viewport = document.getElementById("seasonsViewport");
         const track = document.getElementById("seasonsTrack");
@@ -170,7 +172,6 @@ const { seasons } = Astro.props;
         if (!track || slides.length === 0) return;
         if ((track as HTMLElement).dataset.initialized === "true") return;
         if (isSmallScreen) {
-            (track as HTMLElement).dataset.initialized = "true";
             return;
         }
 
@@ -293,6 +294,14 @@ const { seasons } = Astro.props;
         }
     }
 
+    function handleViewportResize() {
+        const track = document.getElementById("seasonsTrack");
+        if (!track) return;
+        if (window.matchMedia("(max-width: 768px)").matches) return;
+        if ((track as HTMLElement).dataset.initialized === "true") return;
+        scheduleInit();
+    }
+
     // 初始化
     function scheduleInit() {
         const viewport = document.getElementById("seasonsViewport");
@@ -325,6 +334,13 @@ const { seasons } = Astro.props;
         document.addEventListener("DOMContentLoaded", scheduleInit, {
             once: true,
         });
+    }
+
+    if (!_resizeInitBound) {
+        window.addEventListener("resize", handleViewportResize, {
+            passive: true,
+        });
+        _resizeInitBound = true;
     }
 
     document.addEventListener("astro:page-load", scheduleInit);

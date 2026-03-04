@@ -1,0 +1,569 @@
+---
+/**
+ * 赛车展示组件
+ * 年份 Tab 切换 + 参数卡片 + 技术亮点 + 赛绩 + 演进时间线
+ */
+import { carsData, techEvolution } from '../../data/cars';
+---
+
+<div class="cars-showcase" id="cars-showcase">
+
+    <!-- 年份 Tab 导航 -->
+    <div class="year-tabs" role="tablist" aria-label="选择赛车年份">
+        {carsData.map((car, i) => (
+            <button
+                class={`year-tab ${i === 0 ? 'active' : ''}`}
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                aria-controls={`car-panel-${car.year}`}
+                data-year={car.year}
+                id={`tab-${car.year}`}
+            >
+                <span class="tab-year">{car.year}</span>
+                <span class="tab-name">{car.nickname}</span>
+            </button>
+        ))}
+    </div>
+
+    <!-- 赛车卡片面板 -->
+    {carsData.map((car, i) => (
+        <div
+            class={`car-panel ${i === 0 ? 'active' : ''}`}
+            role="tabpanel"
+            id={`car-panel-${car.year}`}
+            aria-labelledby={`tab-${car.year}`}
+        >
+            <!-- 主视图：图片 + 基础信息 -->
+            <div class="car-hero">
+                <div class="car-image-wrap">
+                    <img
+                        src={car.image}
+                        alt={`${car.year} 赛车 ${car.nickname}`}
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                        class="car-image"
+                    />
+                    <div class="car-badge">
+                        <span class="badge-year">{car.year}</span>
+                        <span class="badge-name">{car.name}</span>
+                        <span class="badge-nickname">「{car.nickname}」</span>
+                    </div>
+                </div>
+                <div class="car-info">
+                    <p class="car-description">{car.description}</p>
+                    <!-- 技术标签 -->
+                    <div class="car-tags">
+                        {car.tags.map(tag => <span class="tag">{tag}</span>)}
+                    </div>
+                    <!-- 参数网格 -->
+                    <div class="specs-grid">
+                        {car.specs.map(spec => (
+                            <div class="spec-card">
+                                <span class="spec-value">{spec.value}</span>
+                                {spec.unit && <span class="spec-unit">{spec.unit}</span>}
+                                <span class="spec-label">{spec.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 技术亮点 -->
+            <div class="highlights-section">
+                <h3 class="section-title">核心技术</h3>
+                <div class="highlights-grid">
+                    {car.highlights.map(h => (
+                        <div class="highlight-card">
+                            <div class="highlight-icon">{h.icon}</div>
+                            <h4 class="highlight-title">{h.title}</h4>
+                            <ul class="highlight-points">
+                                {h.points.map(p => <li>{p}</li>)}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <!-- 赛季成绩 -->
+            {car.achievements.length > 0 && (
+                <div class="achievements-section">
+                    <h3 class="section-title">赛季成绩</h3>
+                    <div class="achievements-list">
+                        {car.achievements.map(a => (
+                            <div class="achievement-item">
+                                <span class="achievement-medal">{a.medal}</span>
+                                <div class="achievement-body">
+                                    <span class="achievement-event">{a.event}</span>
+                                    <span class="achievement-result">{a.result}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    ))}
+
+    <!-- 技术演进时间线 -->
+    <div class="evolution-section">
+        <h3 class="section-title">技术演进</h3>
+        <div class="evolution-track">
+            {techEvolution.map((node, i) => (
+                <div class="evolution-node">
+                    <div class="node-icon">{node.icon}</div>
+                    <div class="node-year">{node.year}</div>
+                    <div class="node-milestone">{node.milestone}</div>
+                    {i < techEvolution.length - 1 && <div class="node-line" />}
+                </div>
+            ))}
+        </div>
+    </div>
+</div>
+
+<script>
+    function initCarsShowcase() {
+        const tabs = document.querySelectorAll<HTMLButtonElement>('.year-tab');
+        const panels = document.querySelectorAll<HTMLElement>('.car-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const year = tab.dataset.year;
+
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                panels.forEach(p => p.classList.remove('active'));
+
+                tab.classList.add('active');
+                tab.setAttribute('aria-selected', 'true');
+                document.getElementById(`car-panel-${year}`)?.classList.add('active');
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCarsShowcase);
+    } else {
+        initCarsShowcase();
+    }
+    document.addEventListener('astro:page-load', initCarsShowcase);
+</script>
+
+<style>
+    .cars-showcase {
+        margin: 2rem 0;
+    }
+
+    /* ── 年份 Tab ── */
+    .year-tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid rgba(255,255,255,0.08);
+        padding-bottom: 0;
+    }
+
+    .year-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-bottom: 3px solid transparent;
+        background: transparent;
+        color: var(--sl-color-text);
+        cursor: pointer;
+        border-radius: 0.5rem 0.5rem 0 0;
+        transition: all 0.2s ease;
+        margin-bottom: -2px;
+    }
+
+    .year-tab:hover {
+        background: rgba(255,255,255,0.05);
+        color: var(--sl-color-accent);
+    }
+
+    .year-tab.active {
+        border-bottom-color: var(--sl-color-accent);
+        color: var(--sl-color-accent);
+        background: rgba(243,156,18,0.08);
+    }
+
+    .tab-year {
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .tab-name {
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    :global([data-theme='light']) .year-tab:hover {
+        background: rgba(0,0,0,0.04);
+    }
+
+    :global([data-theme='light']) .year-tab.active {
+        background: rgba(243,156,18,0.1);
+    }
+
+    /* ── 面板 ── */
+    .car-panel {
+        display: none;
+    }
+
+    .car-panel.active {
+        display: block;
+        animation: fadeUp 0.3s ease forwards;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── 主视图 ── */
+    .car-hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .car-hero { grid-template-columns: 1fr; }
+    }
+
+    .car-image-wrap {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+    }
+
+    .car-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        cursor: default !important;
+    }
+
+    .car-image-wrap:hover .car-image {
+        transform: scale(1.04);
+    }
+
+    .car-badge {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(12px);
+        border-radius: 0.75rem;
+        padding: 0.625rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .badge-year {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        font-weight: 600;
+        color: var(--sl-color-accent);
+        letter-spacing: 1px;
+    }
+
+    .badge-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .badge-nickname {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.6);
+    }
+
+    /* ── 信息区 ── */
+    .car-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .car-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--sl-color-text);
+        margin: 0;
+    }
+
+    .car-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tag {
+        padding: 0.3rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: rgba(243,156,18,0.12);
+        color: var(--sl-color-accent);
+        border: 1px solid rgba(243,156,18,0.25);
+    }
+
+    /* ── 参数网格 ── */
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+        .specs-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .spec-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 0.75rem;
+        padding: 0.875rem 0.75rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .spec-card:hover {
+        border-color: var(--sl-color-accent);
+    }
+
+    :global([data-theme='light']) .spec-card {
+        background: rgba(0,0,0,0.03);
+        border-color: rgba(0,0,0,0.08);
+    }
+
+    .spec-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--sl-color-accent);
+        line-height: 1;
+    }
+
+    .spec-unit {
+        font-size: 0.7rem;
+        font-weight: 600;
+        opacity: 0.6;
+        margin-top: -0.1rem;
+    }
+
+    .spec-label {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        margin-top: 0.2rem;
+    }
+
+    /* ── 标题 ── */
+    .section-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--sl-color-text);
+        margin: 0 0 1.25rem 0;
+        padding-left: 0.75rem;
+        border-left: 3px solid var(--sl-color-accent);
+    }
+
+    /* ── 技术亮点 ── */
+    .highlights-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .highlights-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+        .highlights-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+        .highlights-grid { grid-template-columns: 1fr; }
+    }
+
+    .highlight-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 1rem;
+        padding: 1.25rem;
+        transition: all 0.25s ease;
+    }
+
+    .highlight-card:hover {
+        border-color: var(--sl-color-accent);
+        background: rgba(243,156,18,0.05);
+        transform: translateY(-3px);
+    }
+
+    :global([data-theme='light']) .highlight-card {
+        background: rgba(0,0,0,0.02);
+        border-color: rgba(0,0,0,0.08);
+    }
+
+    .highlight-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .highlight-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--sl-color-accent);
+        margin: 0 0 0.75rem 0;
+    }
+
+    .highlight-points {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .highlight-points li {
+        font-size: 0.82rem;
+        color: var(--sl-color-text);
+        opacity: 0.85;
+        padding-left: 1rem;
+        position: relative;
+    }
+
+    .highlight-points li::before {
+        content: '›';
+        position: absolute;
+        left: 0;
+        color: var(--sl-color-accent);
+        font-weight: 700;
+    }
+
+    /* ── 赛季成绩 ── */
+    .achievements-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .achievements-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .achievement-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 0.75rem;
+        padding: 0.875rem 1.25rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .achievement-item:hover {
+        border-color: var(--sl-color-accent);
+    }
+
+    :global([data-theme='light']) .achievement-item {
+        background: rgba(0,0,0,0.02);
+        border-color: rgba(0,0,0,0.08);
+    }
+
+    .achievement-medal {
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+
+    .achievement-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .achievement-event {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--sl-color-text);
+    }
+
+    .achievement-result {
+        font-size: 0.83rem;
+        opacity: 0.65;
+    }
+
+    /* ── 技术演进时间线 ── */
+    .evolution-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    :global([data-theme='light']) .evolution-section {
+        border-top-color: rgba(0,0,0,0.08);
+    }
+
+    .evolution-track {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+    }
+
+    .evolution-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        min-width: 90px;
+        position: relative;
+    }
+
+    .node-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        z-index: 1;
+    }
+
+    .node-year {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--sl-color-accent);
+        margin-bottom: 0.3rem;
+    }
+
+    .node-milestone {
+        font-size: 0.72rem;
+        text-align: center;
+        opacity: 0.75;
+        line-height: 1.4;
+        padding: 0 0.25rem;
+    }
+
+    .node-line {
+        position: absolute;
+        top: 0.85rem;
+        left: calc(50% + 1rem);
+        right: calc(-50% + 1rem);
+        height: 2px;
+        background: linear-gradient(90deg, var(--sl-color-accent), rgba(243,156,18,0.2));
+    }
+</style>

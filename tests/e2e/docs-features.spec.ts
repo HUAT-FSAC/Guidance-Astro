@@ -6,6 +6,7 @@ test.describe('文档功能', () => {
         const progressBar = page.locator('#readingProgressBar')
         if (await progressBar.isVisible()) {
             const fill = page.locator('#readingProgressFill')
+            await page.mouse.wheel(0, 300)
             await expect(fill).toBeVisible()
         }
     })

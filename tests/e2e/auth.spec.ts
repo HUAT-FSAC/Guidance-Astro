@@ -19,7 +19,7 @@ test.describe('认证页面 — 登录', () => {
         expect(response?.status()).toBeLessThan(500)
 
         await expect(page).toHaveTitle(/登录/)
-        await expect(page.locator('h1')).toContainText('登录')
+        await expect(page.locator('.auth-card h1')).toContainText('登录')
     })
 
     test('登录表单包含必要字段', async ({ page }) => {
@@ -72,7 +72,7 @@ test.describe('认证页面 — 注册', () => {
         expect(response?.status()).toBeLessThan(500)
 
         await expect(page).toHaveTitle(/注册/)
-        await expect(page.locator('h1')).toContainText('注册')
+        await expect(page.locator('.auth-card h1')).toContainText('注册')
     })
 
     test('注册表单包含必要字段', async ({ page }) => {

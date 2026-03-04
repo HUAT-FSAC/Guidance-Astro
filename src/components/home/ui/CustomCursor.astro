@@ -1,0 +1,204 @@
+---
+// Custom Cursor Component for Desktop
+---
+
+<!-- 仅在支持 hover 的设备（桌面端）上显示自定义光标 -->
+<div id="custom-cursor" class="tech-cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+</div>
+
+<style>
+        /* 仅在自定义光标已激活时隐藏系统光标，避免初始化失败时光标消失 */
+        :global(html.fsac-custom-cursor-enabled),
+        :global(html.fsac-custom-cursor-enabled *) {
+            cursor: none !important;
+        }
+
+        .tech-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 2147483647 !important; /* Extremely high z-index and !important */
+            will-change: transform;
+            /* Default to invisible */
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        /* 中心的光点 */
+        .cursor-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background-color: var(--fs-accent-primary, #ff3d00);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--fs-accent-glow, rgba(255, 61, 0, 0.5));
+            transition: transform 0.15s ease-out, background-color 0.2s ease;
+        }
+
+        /* 外围跟随的科技环 */
+        .cursor-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 32px;
+            height: 32px;
+            border: 1px solid rgba(255, 61, 0, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s ease-out;
+            box-sizing: border-box;
+            
+            /* 准星十字线效果 */
+            clip-path: polygon(
+                0% 0%, 100% 0%, 100% 45%, 90% 45%, 90% 55%, 100% 55%, 100% 100%, 
+                0% 100%, 0% 55%, 10% 55%, 10% 45%, 0% 45%
+            );
+        }
+
+        /* 鼠标悬停到可交互元素 */
+        .tech-cursor.is-hovering .cursor-dot {
+            transform: translate(-50%, -50%) scale(0.5);
+            background-color: #fff;
+            box-shadow: 0 0 8px #fff;
+        }
+
+        .tech-cursor.is-hovering .cursor-ring {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 61, 0, 0.1);
+            border-color: var(--fs-accent-primary, #ff3d00);
+            border-width: 1.5px;
+        }
+
+        /* 浅色主题适配 */
+        :global([data-theme='light']) .cursor-dot {
+            background-color: var(--sl-color-accent);
+        }
+        
+        :global([data-theme='light']) .cursor-ring {
+            border-color: rgba(255, 61, 0, 0.8);
+        }
+
+    /* 触屏设备完全隐藏并恢复默认光标行为 */
+    @media (hover: none), (pointer: coarse) {
+        .tech-cursor {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    const CURSOR_ENABLED_CLASS = 'fsac-custom-cursor-enabled';
+
+    function initCustomCursor() {
+        const root = document.documentElement;
+
+        // 仅在支持 hover + fine pointer 的设备上初始化（防止移动端冲突）
+        if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+            root.classList.remove(CURSOR_ENABLED_CLASS);
+            return;
+        }
+
+        const cursor = document.getElementById('custom-cursor');
+        if (!cursor || cursor.getAttribute('data-initialized') === 'true') return;
+
+        cursor.setAttribute('data-initialized', 'true');
+        root.classList.add(CURSOR_ENABLED_CLASS);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let ringX = 0;
+        let ringY = 0;
+
+        // Ensure cursor becomes visible upon first mouse movement
+        document.addEventListener('mousemove', function onFirstMove() {
+            cursor.style.opacity = '1';
+        }, { once: true });
+
+        // 更新鼠标物理位置
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // 立刻更新光标外层容器位置
+            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        });
+
+        // 运用 requestAnimationFrame 实现圆环的平滑随动扩散效果 (类似 GSAP)
+        const render = () => {
+            // Smoothly move ring towards mouse
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            const ring = cursor.querySelector('.cursor-ring');
+            if (ring instanceof HTMLElement) {
+                // Because the container is already moved to mouseX, mouseY...
+                // The ring needs a negative offset to create the "lagging behind" trail effect
+                const dx = ringX - mouseX;
+                const dy = ringY - mouseY;
+                ring.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+            }
+            
+            requestAnimationFrame(render);
+        };
+        requestAnimationFrame(render);
+
+        // 交互元素的 Hover 监听
+        const initHoverListeners = () => {
+             // 筛选所有的链接和按钮
+            const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, [role="button"], .sl-link-card, .card, .feature-card, .sponsor-card');
+            
+            interactiveElements.forEach(el => {
+                // 避免重复绑定
+                if (el.hasAttribute('data-cursor-bound')) return;
+                el.setAttribute('data-cursor-bound', 'true');
+
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('is-hovering');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('is-hovering');
+                });
+            });
+        };
+
+        initHoverListeners();
+
+        // 当页面出现新元素时（如 React, Vue 或 Astro Page Load），重新绑定
+        const observer = new MutationObserver((mutations) => {
+            let shouldRebind = false;
+            mutations.forEach(m => {
+                if (m.addedNodes.length > 0) shouldRebind = true;
+            });
+            if (shouldRebind) {
+                initHoverListeners();
+            }
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // 处理鼠标离开浏览器窗口
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+        });
+    }
+
+    // Astro 的视图过渡支持
+    document.addEventListener('astro:page-load', initCustomCursor);
+    
+    // 首屏加载
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCustomCursor);
+    } else {
+        initCustomCursor();
+    }
+</script>

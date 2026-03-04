@@ -38,7 +38,14 @@
 </div>
 
 <script>
+    let _keyboardNavCleanup: (() => void) | undefined;
+
     function initKeyboardNav() {
+        if (_keyboardNavCleanup) {
+            _keyboardNavCleanup();
+            _keyboardNavCleanup = undefined;
+        }
+
         const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
         if (isSmallScreen) return;
 
@@ -54,11 +61,12 @@
         }
 
         closeBtn?.addEventListener("click", hideHelp);
-        helpModal?.addEventListener("click", (e) => {
+        const handleOverlayClick = (e: Event) => {
             if (e.target === helpModal) hideHelp();
-        });
+        };
+        helpModal?.addEventListener("click", handleOverlayClick);
 
-        document.addEventListener("keydown", (e) => {
+        const handleKeydown = (e: KeyboardEvent) => {
             // 忽略输入框中的按键
             if (
                 ["INPUT", "TEXTAREA"].includes(
@@ -95,7 +103,14 @@
                     window.location.href = "/join/";
                     break;
             }
-        });
+        };
+
+        document.addEventListener("keydown", handleKeydown);
+        _keyboardNavCleanup = () => {
+            closeBtn?.removeEventListener("click", hideHelp);
+            helpModal?.removeEventListener("click", handleOverlayClick);
+            document.removeEventListener("keydown", handleKeydown);
+        };
     }
 
     document.addEventListener("DOMContentLoaded", initKeyboardNav);

@@ -75,11 +75,12 @@ const users = await env.DB.prepare(
         </main>
     </div>
     <script>
-        document.querySelectorAll<HTMLSelectElement>('.role-select').forEach((sel) => {
-            sel.addEventListener('change', async () => {
-                const userId = sel.dataset.userId;
-                const newRole = sel.value;
-                const prev = sel.dataset.currentRole!;
+        document.querySelectorAll('.role-select').forEach((sel) => {
+            const selectEl = sel as unknown as HTMLSelectElement;
+            selectEl.addEventListener('change', async () => {
+                const userId = selectEl.dataset.userId;
+                const newRole = selectEl.value;
+                const prev = selectEl.dataset.currentRole!;
                 try {
                     const res = await fetch(`/api/admin/users/${userId}/`, {
                         method: 'PATCH',
@@ -87,15 +88,15 @@ const users = await env.DB.prepare(
                         body: JSON.stringify({ role: newRole }),
                     });
                     if (res.ok) {
-                        sel.dataset.currentRole = newRole;
+                        selectEl.dataset.currentRole = newRole;
                     } else {
-                        const data = await res.json().catch(() => ({}));
+                        const data = await res.json().catch(() => ({})) as { error?: string };
                         alert(data.error || '修改失败');
-                        sel.value = prev;
+                        selectEl.value = prev;
                     }
                 } catch {
                     alert('网络错误');
-                    sel.value = prev;
+                    selectEl.value = prev;
                 }
             });
         });

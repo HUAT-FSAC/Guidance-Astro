@@ -6,6 +6,21 @@ export interface StatItem {
     icon?: string
 }
 
+export interface RaceEvent {
+    /** 赛事全称 */
+    name: string
+    /** 简短标签 */
+    abbr: string
+    /** 赛事地点 */
+    location: string
+    /** 赛事开始日期 ISO 8601，如 "2025-08-01" */
+    startDate: string
+    /** 赛事结束日期 */
+    endDate: string
+    /** 是否为当前重点备战赛事 */
+    isPrimary?: boolean
+}
+
 export interface ThemeOption {
     name: string
     color: string
@@ -144,3 +159,15 @@ export const seasons: SeasonItem[] = [...seasons2025, ...seasons2024, ...seasons
 import sponsorsData from './sponsors.json'
 
 export const sponsorGroups: SponsorGroup[] = sponsorsData.groups
+
+// ==================== 赛事配置 ====================
+export const raceEvents: RaceEvent[] = [
+    {
+        name: '中国大学生方程式系列赛 2025',
+        abbr: 'FSC 2025',
+        location: '上海国际赛车场',
+        startDate: '2025-09-01',
+        endDate: '2025-09-05',
+        isPrimary: true,
+    },
+]

@@ -1,43 +1,36 @@
 import { defineMiddleware } from 'astro:middleware'
 import { getSession, getTokenFromCookie } from '@lib/session'
-import { getUserById } from '@lib/db'
-import { hasRole, type Role } from '@lib/auth'
-
-// Fully public route prefixes — no checks needed
-const PUBLIC_PREFIXES = ['/_', '/api/auth/', '/login', '/register']
-
-// Routes requiring admin role
-const ADMIN_PREFIXES = ['/admin']
-
-// Routes requiring member role (restricted docs)
-const MEMBER_PREFIXES = ['/docs-center/', '/archive/']
-
-function isPublicRoute(pathname: string): boolean {
-    if (pathname === '/' || pathname === '/join/' || pathname === '/about-fs/') return true
-    return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))
-}
-
-function getRequiredRole(pathname: string): Role | null {
-    if (ADMIN_PREFIXES.some((p) => pathname.startsWith(p))) return 'admin'
-    if (MEMBER_PREFIXES.some((p) => pathname.startsWith(p))) return 'member'
-    return null
-}
+import { hasRole } from '@lib/auth'
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    const { pathname } = context.url
-    const env = context.locals.runtime.env
+    const { url, request, locals } = context
+    const pathname = url.pathname
+    const isAdminRoute = pathname.startsWith('/admin/')
+    const isAdminApiRoute = pathname.startsWith('/api/admin/')
 
-    // Public routes pass through
-    if (isPublicRoute(pathname)) return next()
+    // 尝试恢复会话并注入用户上下文
+    const cookieHeader = context.isPrerendered ? null : request.headers.get('cookie')
+    const token = getTokenFromCookie(cookieHeader)
+    const env = locals.runtime?.env
 
-    // Try to read session
-    const token = getTokenFromCookie(context.request.headers.get('cookie'))
-    if (token) {
+    if (token && env?.SESSION_KV && env?.DB) {
         const session = await getSession(env.SESSION_KV, token)
         if (session) {
-            const user = await getUserById(env.DB, session.userId)
+            const user = await env.DB.prepare(
+                'SELECT id, username, email, display_name, avatar_url, role FROM users WHERE id = ?'
+            )
+                .bind(session.userId)
+                .first<{
+                    id: string
+                    username: string
+                    email: string
+                    display_name?: string | null
+                    avatar_url?: string | null
+                    role: string
+                }>()
+
             if (user) {
-                context.locals.user = {
+                locals.user = {
                     id: user.id,
                     username: user.username,
                     email: user.email,
@@ -49,25 +42,27 @@ export const onRequest = defineMiddleware(async (context, next) => {
         }
     }
 
-    // Check route permissions
-    const requiredRole = getRequiredRole(pathname)
-    if (requiredRole) {
-        if (!context.locals.user) {
-            return context.redirect(`/login/?redirect=${encodeURIComponent(pathname)}`)
-        }
-        if (!hasRole(context.locals.user.role, requiredRole)) {
-            return new Response('Forbidden', { status: 403 })
-        }
-    }
-
-    // Non-auth API routes require login
-    if (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/')) {
-        if (!context.locals.user) {
-            return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    // 管理后台需要登录
+    if ((isAdminRoute || isAdminApiRoute) && !locals.user) {
+        const redirectTo = encodeURIComponent(`${pathname}${url.search}`)
+        if (isAdminApiRoute) {
+            return new Response(JSON.stringify({ error: '未登录' }), {
                 status: 401,
                 headers: { 'Content-Type': 'application/json' },
             })
         }
+        return context.redirect(`/login/?redirect=${redirectTo}`)
+    }
+
+    // 管理后台需要 admin 及以上
+    if ((isAdminRoute || isAdminApiRoute) && locals.user && !hasRole(locals.user.role, 'admin')) {
+        if (isAdminApiRoute) {
+            return new Response(JSON.stringify({ error: '权限不足' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        }
+        return context.redirect('/')
     }
 
     return next()

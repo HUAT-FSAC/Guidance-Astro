@@ -2,11 +2,11 @@ import { expect, test } from '@playwright/test'
 
 test.describe('导航功能', () => {
     test('侧边栏导航可用', async ({ page }) => {
+        await page.setViewportSize({ width: 1600, height: 900 })
         await page.goto('/docs-center/')
-        const sidebar = page.locator('nav[aria-label="Main"]')
-        await expect(sidebar).toBeVisible()
-        // 侧边栏应包含至少一个链接
-        const links = sidebar.locator('a')
+        const links = page.locator('nav[aria-label="Main"] a')
+        await expect(links.first()).toBeVisible()
+        // 侧边栏应包含至少一个可访问链接
         expect(await links.count()).toBeGreaterThan(0)
     })
 

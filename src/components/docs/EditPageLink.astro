@@ -4,6 +4,13 @@
  * 生成指向 GitHub 编辑页面的链接
  */
 
+const docsModuleMap = import.meta.glob('/src/content/docs/**/*.{md,mdx}');
+const existingDocs = new Set(
+    Object.keys(docsModuleMap).map((path) =>
+        path.replace(/^\/src\/content\/docs\//, 'src/content/docs/'),
+    ),
+);
+
 interface Props {
     /** 当前文件路径（相对于 src/content/docs/） */
     filePath?: string;
@@ -19,17 +26,21 @@ const {
     branch = 'main'
 } = Astro.props;
 
-// 从 URL 推断文件路径
+// 从 URL 推断并解析真实文档文件路径
 function getFilePath(pathname: string): string {
-    // 移除开头和结尾的斜杠
-    const cleanPath = pathname.replace(/^\/|\/$/g, '');
-    
-    if (!cleanPath || cleanPath === '') {
-        return 'src/content/docs/index.mdx';
-    }
-    
-    // 尝试 .mdx 后缀
-    return `src/content/docs/${cleanPath}.mdx`;
+    const cleanPath = decodeURIComponent(pathname).replace(/^\/|\/$/g, '');
+    const candidates = !cleanPath
+        ? ['src/content/docs/index.mdx', 'src/content/docs/index.md']
+        : [
+              `src/content/docs/${cleanPath}.mdx`,
+              `src/content/docs/${cleanPath}.md`,
+              `src/content/docs/${cleanPath}/index.mdx`,
+              `src/content/docs/${cleanPath}/index.md`,
+          ];
+
+    const resolved = candidates.find((candidate) => existingDocs.has(candidate));
+
+    return resolved || candidates[0];
 }
 
 const editFilePath = filePath || getFilePath(Astro.url.pathname);

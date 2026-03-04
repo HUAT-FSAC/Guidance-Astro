@@ -9,6 +9,11 @@
             "@content/*": ["src/content/*"],
             "@data/*": ["src/data/*"],
             "@lib/*": ["src/lib/*"]
-        }
-    }
+        },
+        "types": ["@cloudflare/workers-types"],
+        "skipLibCheck": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true
+    },
+    "include": ["src/**/*", "src/env.d.ts", ".astro/types.d.ts"]
 }
