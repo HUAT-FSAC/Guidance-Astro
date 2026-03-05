@@ -1,0 +1,49 @@
+---
+interface Props {
+    bvid: string
+    title?: string
+}
+
+const { bvid, title } = Astro.props
+---
+
+<div class="bilibili-video">
+    <iframe
+        src={`//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0`}
+        scrolling="no"
+        allowfullscreen="true"
+        title={title || 'B 站视频'}></iframe>
+    {title && <p class="video-title">{title}</p>}
+</div>
+
+<style>
+    .bilibili-video {
+        width: 100%;
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #000;
+    }
+
+    iframe {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border: none;
+    }
+
+    .video-title {
+        margin: 0.5rem 0 0;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--sl-color-gray-3, #888);
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        iframe {
+            min-height: 200px;
+        }
+    }
+</style>

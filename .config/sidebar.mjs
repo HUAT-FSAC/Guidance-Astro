@@ -60,6 +60,11 @@ export default [
                 collapsed: true,
                 autogenerate: { directory: 'archive/2025/management' },
             },
+            {
+                label: '📁 过检模块',
+                collapsed: true,
+                autogenerate: { directory: 'archive/2025/inspection' },
+            },
         ],
     },
     {

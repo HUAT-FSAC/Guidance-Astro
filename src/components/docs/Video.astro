@@ -1,0 +1,56 @@
+---
+interface Props {
+  src: string;
+  type?: 'webm' | 'mp4';
+  poster?: string;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+}
+
+const {
+  src,
+  type = 'mp4',
+  poster,
+  autoplay = false,
+  loop = false,
+  muted = false
+} = Astro.props;
+---
+
+<div class="video-container">
+  <video
+    controls
+    preload="metadata"
+    poster={poster}
+    autoplay={autoplay}
+    loop={loop}
+    muted={muted}
+  >
+    <source src={src} type={`video/${type}`} />
+    您的浏览器不支持 video 标签。
+  </video>
+</div>
+
+<style>
+  .video-container {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    video {
+      max-height: 300px;
+    }
+  }
+</style>
