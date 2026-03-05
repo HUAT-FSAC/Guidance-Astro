@@ -60,8 +60,8 @@
 <style>
     .back-to-top {
         position: fixed;
-        bottom: 6rem;
-        right: 2rem;
+        bottom: 5.5rem;
+        right: 2.25rem;
         width: 48px;
         height: 48px;
         border-radius: 50%;
@@ -79,7 +79,7 @@
         transform: translateY(20px);
         transition: all 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        z-index: var(--z-floating, 1000);
+        z-index: 999;
     }
 
     :global([data-theme='light']) .back-to-top {
@@ -112,8 +112,8 @@
 
     @media (max-width: 768px) {
         .back-to-top {
-            bottom: 5rem;
-            right: 1rem;
+            bottom: 4.5rem;
+            right: 1.25rem;
             width: 44px;
             height: 44px;
         }

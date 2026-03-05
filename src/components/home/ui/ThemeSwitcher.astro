@@ -183,7 +183,6 @@ const themeColors: ThemeColor[] = [
         }
 
         const handleMouseDown = (e: Event) => {
-            e.preventDefault()
             isLongPress = false
             longPressTimer = setTimeout(() => {
                 isLongPress = true
@@ -234,6 +233,13 @@ const themeColors: ThemeColor[] = [
         toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
         toggle.addEventListener('touchend', handleTouchEnd)
 
+        const handleClick = (e: Event) => {
+            if (isDropdownVisible()) {
+                e.stopPropagation()
+            }
+        }
+        toggle.addEventListener('click', handleClick)
+
         const colorHandlers: Map<Element, EventListener> = new Map()
         colorOptions.forEach((option) => {
             const handler = () => {
@@ -278,6 +284,7 @@ const themeColors: ThemeColor[] = [
             toggle.removeEventListener('mouseleave', handleMouseLeave)
             toggle.removeEventListener('touchstart', handleTouchStart)
             toggle.removeEventListener('touchend', handleTouchEnd)
+            toggle.removeEventListener('click', handleClick)
             colorHandlers.forEach((handler, option) => {
                 option.removeEventListener('click', handler)
             })
