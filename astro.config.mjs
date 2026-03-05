@@ -230,6 +230,28 @@ export default defineConfig({
                         href: '/favicon.png',
                     },
                 },
+                // 主题初始化脚本 - 防止闪烁
+                {
+                    tag: 'script',
+                    content: `
+                        (function() {
+                            try {
+                                var scheme = localStorage.getItem('huat-color-scheme');
+                                var color = localStorage.getItem('huat-theme-color');
+                                var accent = localStorage.getItem('huat-theme-accent');
+                                if (scheme) {
+                                    document.documentElement.setAttribute('data-theme', scheme);
+                                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                                    document.documentElement.setAttribute('data-theme', 'light');
+                                }
+                                if (color && accent) {
+                                    document.documentElement.style.setProperty('--sl-color-accent', color);
+                                    document.documentElement.style.setProperty('--sl-color-accent-high', accent);
+                                }
+                            } catch (e) {}
+                        })();
+                    `,
+                },
                 // Service Worker 注册
                 {
                     tag: 'script',

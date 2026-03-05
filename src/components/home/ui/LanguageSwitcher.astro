@@ -2,13 +2,14 @@
 /**
  * 语言切换器组件
  * 提供中英文切换功能
+ * 注意：目前项目未配置 Starlight 多语言支持，英文内容建设中
  */
 
 type Locale = 'en' | 'zh';
 
 const defaultLocale: Locale = 'zh';
 
-const locales: Locale[] = ['zh', 'en'];
+const locales: Locale[] = ['zh'];
 
 const localeNames: Record<Locale, string> = {
     zh: '中文',
@@ -51,6 +52,9 @@ const { currentLocale = defaultLocale } = Astro.props;
                 </button>
             </li>
         ))}
+        <li class="language-option-disabled" role="option" aria-disabled="true">
+            <span class="disabled-text">English (建设中)</span>
+        </li>
     </ul>
 </div>
 
@@ -262,5 +266,21 @@ const { currentLocale = defaultLocale } = Astro.props;
     .language-option.active {
         color: var(--sl-color-accent);
         font-weight: 600;
+    }
+    
+    .language-option-disabled {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .disabled-text {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        color: var(--sl-color-text);
+        opacity: 0.5;
+        font-size: 0.875rem;
+        text-align: left;
+        cursor: not-allowed;
     }
 </style>

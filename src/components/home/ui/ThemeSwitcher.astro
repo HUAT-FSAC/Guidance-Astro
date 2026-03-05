@@ -1,9 +1,17 @@
 ---
-// 主题色切换组件 - 可在不同赛季主题色间切换
-import Sun from "../../icons/Sun.astro";
-import type { ThemeOption } from "../../../data/home";
+/**
+ * 主题切换组件 - 重构版
+ * 功能：一键切换亮暗模式 + 长按选择主题色
+ * 设计：现代简洁风格，图标动态变化
+ */
 
-const themes: ThemeOption[] = [
+interface ThemeColor {
+    name: string
+    color: string
+    accent: string
+}
+
+const themeColors: ThemeColor[] = [
     { name: '经典橙', color: '#f39c12', accent: '#e67e22' },
     { name: '电竞蓝', color: '#3498db', accent: '#2980b9' },
     { name: '赛道红', color: '#e74c3c', accent: '#c0392b' },
@@ -12,164 +20,275 @@ const themes: ThemeOption[] = [
 ]
 ---
 
-<div class="theme-switcher">
-    <button class="theme-toggle" aria-label="切换主题色" title="切换主题色">
-        <Sun size={20} />
+<div class="theme-switcher" data-theme-switcher>
+    <button 
+        class="theme-toggle" 
+        type="button"
+        aria-label="切换主题"
+        title="点击切换亮暗模式，长按选择主题色"
+    >
+        <span class="icon-sun">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </span>
+        <span class="icon-moon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </span>
     </button>
-    <div class="theme-dropdown">
-        <div class="theme-dropdown-header">🎨 主题色</div>
-        <div class="mode-controls" aria-hidden="false">
-            <button class="mode-btn" data-mode="light" aria-label="切换到亮色模式">亮</button>
-            <button class="mode-btn" data-mode="dark" aria-label="切换到暗色模式">暗</button>
+    
+    <div class="theme-dropdown" aria-hidden="true">
+        <div class="dropdown-header">
+            <span class="header-icon">🎨</span>
+            <span class="header-text">主题色</span>
         </div>
-        {
-            themes.map((theme, index) => (
+        <div class="color-grid">
+            {themeColors.map((theme) => (
                 <button
-                    class="theme-option"
+                    class="color-option"
+                    type="button"
                     data-color={theme.color}
                     data-accent={theme.accent}
-                    data-index={index}
-                    style={`--preview-color: ${theme.color}`}
+                    title={theme.name}
+                    style={`--theme-color: ${theme.color}`}
                 >
-                    <span class="color-preview" />
-                    <span class="theme-name">{theme.name}</span>
+                    <span class="color-dot"></span>
+                    <span class="color-name">{theme.name}</span>
                 </button>
-            ))
-        }
+            ))}
+        </div>
     </div>
 </div>
 
 <script>
-    let _themeSwitcherCleanup: (() => void) | undefined
+    const STORAGE_KEY_SCHEME = 'huat-color-scheme'
+    const STORAGE_KEY_COLOR = 'huat-theme-color'
+    const STORAGE_KEY_ACCENT = 'huat-theme-accent'
+    const LONG_PRESS_DURATION = 400
 
-    // 安全的 localStorage 操作函数
+    type ColorScheme = 'light' | 'dark'
+
+    let cleanup: (() => void) | undefined
+    let longPressTimer: ReturnType<typeof setTimeout> | undefined
+    let isLongPress = false
+
     function safeGetItem(key: string): string | null {
         try {
-            return localStorage.getItem(key);
+            return localStorage.getItem(key)
         } catch {
-            return null;
+            return null
         }
     }
 
     function safeSetItem(key: string, value: string): void {
         try {
-            localStorage.setItem(key, value);
+            localStorage.setItem(key, value)
         } catch {
-            console.warn(`Failed to save ${key} to localStorage`);
+            // ignore
         }
     }
 
-    function initThemeSwitcher() {
-        const root = document.querySelector('.theme-switcher') as HTMLElement | null
-        if (!root) return
+    function getSystemScheme(): ColorScheme {
+        if (typeof window !== 'undefined' && window.matchMedia) {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        return 'dark'
+    }
 
-        if (_themeSwitcherCleanup) {
-            _themeSwitcherCleanup()
-            _themeSwitcherCleanup = undefined
+    function applyScheme(scheme: ColorScheme): void {
+        document.documentElement.setAttribute('data-theme', scheme)
+        updateToggleIcon(scheme)
+    }
+
+    function updateToggleIcon(scheme: ColorScheme): void {
+        const switcher = document.querySelector('[data-theme-switcher]')
+        if (switcher) {
+            switcher.setAttribute('data-current-scheme', scheme)
+        }
+    }
+
+    function applyThemeColor(color: string, accent: string): void {
+        document.documentElement.style.setProperty('--sl-color-accent', color)
+        document.documentElement.style.setProperty('--sl-color-accent-high', accent)
+        updateColorSelection(color)
+    }
+
+    function updateColorSelection(color: string): void {
+        document.querySelectorAll('[data-theme-switcher] .color-option').forEach((opt) => {
+            const el = opt as HTMLElement
+            if (el.dataset.color === color) {
+                el.classList.add('active')
+            } else {
+                el.classList.remove('active')
+            }
+        })
+    }
+
+    function toggleScheme(): ColorScheme {
+        const current = document.documentElement.getAttribute('data-theme') as ColorScheme || 'dark'
+        const next: ColorScheme = current === 'dark' ? 'light' : 'dark'
+        applyScheme(next)
+        safeSetItem(STORAGE_KEY_SCHEME, next)
+        return next
+    }
+
+    function showDropdown(): void {
+        const dropdown = document.querySelector('[data-theme-switcher] .theme-dropdown')
+        dropdown?.classList.add('active')
+    }
+
+    function hideDropdown(): void {
+        const dropdown = document.querySelector('[data-theme-switcher] .theme-dropdown')
+        dropdown?.classList.remove('active')
+    }
+
+    function isDropdownVisible(): boolean {
+        const dropdown = document.querySelector('[data-theme-switcher] .theme-dropdown')
+        return dropdown?.classList.contains('active') || false
+    }
+
+    function initThemeSwitcher(): void {
+        if (cleanup) {
+            cleanup()
+            cleanup = undefined
         }
 
-        const toggle = root.querySelector('.theme-toggle') as HTMLButtonElement | null
-        const dropdown = root.querySelector('.theme-dropdown') as HTMLElement | null
-        const options = root.querySelectorAll('.theme-option')
-        const modeButtons = root.querySelectorAll('.mode-btn')
+        const switcher = document.querySelector('[data-theme-switcher]')
+        if (!switcher) return
 
-        // 读取并应用已保存的亮/暗模式（优先）
-        const savedScheme = safeGetItem('huat-color-scheme')
-        if (savedScheme) {
-            document.documentElement.setAttribute('data-theme', savedScheme)
-            updateModeButtons(savedScheme)
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark')
-            updateModeButtons('dark')
+        const toggle = switcher.querySelector('.theme-toggle') as HTMLButtonElement | null
+        const dropdown = switcher.querySelector('.theme-dropdown') as HTMLElement | null
+        const colorOptions = switcher.querySelectorAll('.color-option')
+
+        if (!toggle) return
+
+        const savedScheme = safeGetItem(STORAGE_KEY_SCHEME) as ColorScheme | null
+        const scheme = savedScheme || getSystemScheme()
+        applyScheme(scheme)
+
+        const savedColor = safeGetItem(STORAGE_KEY_COLOR)
+        const savedAccent = safeGetItem(STORAGE_KEY_ACCENT)
+        if (savedColor && savedAccent) {
+            applyThemeColor(savedColor, savedAccent)
         }
 
-        // 从 localStorage 读取保存的主题
-        const savedTheme = safeGetItem('huat-theme-color')
-        const savedAccent = safeGetItem('huat-theme-accent')
-        if (savedTheme && savedAccent) {
-            applyTheme(savedTheme, savedAccent)
+        const handleMouseDown = (e: Event) => {
+            e.preventDefault()
+            isLongPress = false
+            longPressTimer = setTimeout(() => {
+                isLongPress = true
+                showDropdown()
+            }, LONG_PRESS_DURATION)
         }
 
-        // 切换下拉菜单
-        const handleToggleClick = (e: Event) => {
-            e.stopPropagation()
-            dropdown?.classList.toggle('active')
+        const handleMouseUp = (e: Event) => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer)
+                longPressTimer = undefined
+            }
+            if (!isLongPress && !isDropdownVisible()) {
+                toggleScheme()
+            }
         }
-        toggle?.addEventListener('click', handleToggleClick)
 
-        // 点击选项应用主题
-        const optionHandlers = new Map<Element, EventListener>()
-        options.forEach((option) => {
-            const handleOptionClick = () => {
+        const handleMouseLeave = () => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer)
+                longPressTimer = undefined
+            }
+        }
+
+        const handleTouchStart = (e: Event) => {
+            isLongPress = false
+            longPressTimer = setTimeout(() => {
+                isLongPress = true
+                showDropdown()
+            }, LONG_PRESS_DURATION)
+        }
+
+        const handleTouchEnd = (e: Event) => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer)
+                longPressTimer = undefined
+            }
+            if (!isLongPress && !isDropdownVisible()) {
+                toggleScheme()
+            } else if (isLongPress) {
+                // 长按后不执行点击
+            }
+        }
+
+        toggle.addEventListener('mousedown', handleMouseDown)
+        toggle.addEventListener('mouseup', handleMouseUp)
+        toggle.addEventListener('mouseleave', handleMouseLeave)
+        toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
+        toggle.addEventListener('touchend', handleTouchEnd)
+
+        const colorHandlers: Map<Element, EventListener> = new Map()
+        colorOptions.forEach((option) => {
+            const handler = () => {
                 const color = (option as HTMLElement).dataset.color
                 const accent = (option as HTMLElement).dataset.accent
                 if (color && accent) {
-                    applyTheme(color, accent)
-                    safeSetItem('huat-theme-color', color)
-                    safeSetItem('huat-theme-accent', accent)
+                    applyThemeColor(color, accent)
+                    safeSetItem(STORAGE_KEY_COLOR, color)
+                    safeSetItem(STORAGE_KEY_ACCENT, accent)
                 }
-                dropdown?.classList.remove('active')
+                hideDropdown()
             }
-            optionHandlers.set(option, handleOptionClick)
-            option.addEventListener('click', handleOptionClick)
+            colorHandlers.set(option, handler)
+            option.addEventListener('click', handler)
         })
 
-        // 点击外部关闭下拉菜单
-        const handleDocumentClick = () => {
-            dropdown?.classList.remove('active')
+        const handleDocumentClick = (e: Event) => {
+            if (!switcher.contains(e.target as Node)) {
+                hideDropdown()
+            }
         }
         document.addEventListener('click', handleDocumentClick)
 
-        // 亮/暗模式按钮处理
-        const modeHandlers = new Map<Element, EventListener>()
-        modeButtons.forEach((btn) => {
-            const handleModeClick = (e: Event) => {
-                e.stopPropagation()
-                const mode = (btn as HTMLElement).dataset.mode
-                if (mode === 'light' || mode === 'dark') {
-                    document.documentElement.setAttribute('data-theme', mode)
-                    safeSetItem('huat-color-scheme', mode)
-                    updateModeButtons(mode)
-                }
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                hideDropdown()
             }
-            modeHandlers.set(btn, handleModeClick)
-            btn.addEventListener('click', handleModeClick)
-        })
+        }
+        document.addEventListener('keydown', handleKeyDown)
 
-        _themeSwitcherCleanup = () => {
-            toggle?.removeEventListener('click', handleToggleClick)
-            document.removeEventListener('click', handleDocumentClick)
-            optionHandlers.forEach((handler, option) => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        const handleSystemChange = (e: MediaQueryListEvent) => {
+            if (!safeGetItem(STORAGE_KEY_SCHEME)) {
+                applyScheme(e.matches ? 'dark' : 'light')
+            }
+        }
+        mediaQuery.addEventListener('change', handleSystemChange)
+
+        cleanup = () => {
+            toggle.removeEventListener('mousedown', handleMouseDown)
+            toggle.removeEventListener('mouseup', handleMouseUp)
+            toggle.removeEventListener('mouseleave', handleMouseLeave)
+            toggle.removeEventListener('touchstart', handleTouchStart)
+            toggle.removeEventListener('touchend', handleTouchEnd)
+            colorHandlers.forEach((handler, option) => {
                 option.removeEventListener('click', handler)
             })
-            modeHandlers.forEach((handler, btn) => {
-                btn.removeEventListener('click', handler)
-            })
+            document.removeEventListener('click', handleDocumentClick)
+            document.removeEventListener('keydown', handleKeyDown)
+            mediaQuery.removeEventListener('change', handleSystemChange)
         }
-    }
-
-    function applyTheme(color: string, accent: string) {
-        document.documentElement.style.setProperty('--sl-color-accent', color)
-        document.documentElement.style.setProperty('--sl-color-accent-high', accent)
-
-        // 更新选中状态
-        document.querySelectorAll('.theme-option').forEach((opt) => {
-            opt.classList.remove('active')
-            if ((opt as HTMLElement).dataset.color === color) {
-                opt.classList.add('active')
-            }
-        })
     }
 
     document.addEventListener('DOMContentLoaded', initThemeSwitcher)
     document.addEventListener('astro:page-load', initThemeSwitcher)
-
-    function updateModeButtons(mode: string) {
-        document.querySelectorAll('.mode-btn').forEach((b) => {
-            b.classList.remove('active')
-            if ((b as HTMLElement).dataset.mode === mode) b.classList.add('active')
-        })
-    }
 </script>
 
 <style>
@@ -178,180 +297,269 @@ const themes: ThemeOption[] = [
         bottom: 2rem;
         right: 2rem;
         z-index: var(--z-floating, 1000);
+        --toggle-size: 52px;
+        --dropdown-gap: 12px;
     }
 
     .theme-toggle {
-        width: 48px;
-        height: 48px;
+        width: var(--toggle-size);
+        height: var(--toggle-size);
         border-radius: 50%;
-        background: var(--sl-color-gray-6, rgba(255, 255, 255, 0.1));
+        background: linear-gradient(135deg, rgba(30, 30, 35, 0.9), rgba(20, 20, 25, 0.95));
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.15));
-        color: var(--sl-color-text, white);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.4),
+            0 0 0 0 rgba(255, 255, 255, 0);
+        position: relative;
+        overflow: hidden;
     }
 
-    :global([data-theme='light']) .theme-toggle {
-        background: rgba(255, 255, 255, 0.8);
-        color: #000;
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    .theme-toggle::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--sl-color-accent, #f39c12), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
     .theme-toggle:hover {
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.2));
-        transform: scale(1.1);
-        border-color: var(--sl-color-accent);
+        transform: scale(1.08);
+        border-color: var(--sl-color-accent, #f39c12);
+        box-shadow: 
+            0 8px 30px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(243, 156, 18, 0.2);
+    }
+
+    .theme-toggle:hover::before {
+        opacity: 0.15;
+    }
+
+    .theme-toggle:active {
+        transform: scale(0.95);
+    }
+
+    :global([data-theme='light']) .theme-toggle {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 247, 0.9));
+        border-color: rgba(0, 0, 0, 0.1);
+        color: #1a1a1a;
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.1),
+            0 0 0 0 rgba(0, 0, 0, 0);
     }
 
     :global([data-theme='light']) .theme-toggle:hover {
-        background: #fff;
+        box-shadow: 
+            0 8px 30px rgba(0, 0, 0, 0.15),
+            0 0 20px rgba(243, 156, 18, 0.15);
+    }
+
+    .icon-sun,
+    .icon-moon {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .icon-sun {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+
+    .icon-moon {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0.5);
+    }
+
+    [data-current-scheme='light'] .icon-sun {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.5);
+    }
+
+    [data-current-scheme='light'] .icon-moon {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
     }
 
     .theme-dropdown {
         position: absolute;
-        bottom: 60px;
+        bottom: calc(var(--toggle-size) + var(--dropdown-gap));
         right: 0;
-        background: var(--sl-color-bg-nav, rgba(20, 20, 20, 0.95));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
-        border-radius: 1rem;
-        padding: 0.5rem;
-        min-width: 160px;
+        background: linear-gradient(180deg, rgba(25, 25, 30, 0.98), rgba(15, 15, 20, 0.98));
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 12px;
+        min-width: 200px;
         opacity: 0;
         visibility: hidden;
-        transform: translateY(10px);
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    :global([data-theme='light']) .theme-dropdown {
-        background: rgba(255, 255, 255, 0.95);
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        transform: translateY(8px) scale(0.95);
+        transform-origin: bottom right;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.5),
+            0 0 1px rgba(255, 255, 255, 0.1);
     }
 
     .theme-dropdown.active {
         opacity: 1;
         visibility: visible;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 
-    .theme-dropdown-header {
-        padding: 0.75rem 1rem 0.5rem;
-        font-size: 0.8rem;
+    :global([data-theme='light']) .theme-dropdown {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 250, 252, 0.98));
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.15),
+            0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 8px;
+    }
+
+    :global([data-theme='light']) .dropdown-header {
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .header-icon {
+        font-size: 1rem;
+    }
+
+    .header-text {
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: var(--sl-color-gray-3, rgba(255, 255, 255, 0.5));
-        border-bottom: 1px solid var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
-        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.5);
     }
 
-    .mode-controls {
+    :global([data-theme='light']) .header-text {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .color-grid {
         display: flex;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem 0.75rem;
-        justify-content: flex-end;
-        align-items: stretch;
+        flex-direction: column;
+        gap: 4px;
     }
 
-    .mode-btn {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: var(--sl-color-text);
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        cursor: pointer;
-        font-size: 0.85rem;
-        min-width: 64px;
-        width: 64px;
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        line-height: 1;
-        box-sizing: border-box;
-        vertical-align: middle;
-    }
-
-    :global([data-theme='light']) .mode-btn {
-        border-color: rgba(0, 0, 0, 0.06);
-        color: #111;
-    }
-
-    .mode-btn.active {
-        background: var(--sl-color-accent);
-        color: #fff;
-        border-color: var(--sl-color-accent);
-    }
-
-    .theme-option {
+    .color-option {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 12px;
         width: 100%;
-        padding: 0.75rem 1rem;
+        padding: 10px 12px;
         background: transparent;
         border: none;
-        border-radius: 0.5rem;
-        color: var(--sl-color-text, white);
+        border-radius: 10px;
+        color: rgba(255, 255, 255, 0.9);
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: left;
     }
 
-    .theme-option:hover {
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.1));
+    :global([data-theme='light']) .color-option {
+        color: rgba(0, 0, 0, 0.85);
     }
 
-    :global([data-theme='light']) .theme-option:hover {
+    .color-option:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    :global([data-theme='light']) .color-option:hover {
         background: rgba(0, 0, 0, 0.05);
     }
 
-    .theme-option.active {
-        background: var(--sl-color-gray-5, rgba(255, 255, 255, 0.15));
+    .color-option.active {
+        background: rgba(255, 255, 255, 0.12);
     }
 
-    :global([data-theme='light']) .theme-option.active {
-        background: rgba(0, 0, 0, 0.1);
+    :global([data-theme='light']) .color-option.active {
+        background: rgba(0, 0, 0, 0.08);
     }
 
-    .color-preview {
-        width: 20px;
-        height: 20px;
+    .color-dot {
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
-        background: var(--preview-color);
-        box-shadow: 0 2px 8px var(--preview-color);
-        transition: transform 0.2s ease;
+        background: var(--theme-color);
+        box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-color) 40%, transparent);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        flex-shrink: 0;
     }
 
-    .theme-option:hover .color-preview {
-        transform: scale(1.2);
+    .color-option:hover .color-dot {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-color) 50%, transparent);
     }
 
-    .theme-name {
-        font-size: 0.9rem;
+    .color-option.active .color-dot {
+        box-shadow: 
+            0 2px 8px color-mix(in srgb, var(--theme-color) 40%, transparent),
+            0 0 0 3px color-mix(in srgb, var(--theme-color) 30%, transparent);
+    }
+
+    .color-name {
+        font-size: 0.875rem;
         font-weight: 500;
     }
 
     @media (max-width: 768px) {
         .theme-switcher {
+            bottom: 1.25rem;
+            right: 1.25rem;
+            --toggle-size: 48px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .theme-switcher {
             bottom: 1rem;
             right: 1rem;
+            --toggle-size: 44px;
         }
 
-        .theme-toggle {
-            width: 44px;
-            height: 44px;
+        .theme-dropdown {
+            min-width: 180px;
+            padding: 10px;
+        }
+
+        .color-option {
+            padding: 8px 10px;
+        }
+
+        .color-name {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .theme-toggle,
+        .theme-dropdown,
+        .icon-sun,
+        .icon-moon,
+        .color-dot,
+        .color-option {
+            transition: none;
         }
     }
 </style>
