@@ -51,9 +51,6 @@ importers:
       '@playwright/test':
         specifier: ^1.58.2
         version: 1.58.2
-      '@types/bcryptjs':
-        specifier: ^3.0.0
-        version: 3.0.0
       '@types/qrcode':
         specifier: ^1.5.6
         version: 1.5.6
@@ -1511,10 +1508,6 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
-
-  '@types/bcryptjs@3.0.0':
-    resolution: {integrity: sha512-WRZOuCuaz8UcZZE4R5HXTco2goQSI2XxjGY3hbM/xDvwmqFWd4ivooImsMx65OKM6CtNKbnZ5YL+YwAwK7c1dg==}
-    deprecated: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -5316,10 +5309,6 @@ snapshots:
   '@speed-highlight/core@1.2.14': {}
 
   '@standard-schema/spec@1.1.0': {}
-
-  '@types/bcryptjs@3.0.0':
-    dependencies:
-      bcryptjs: 2.4.3
 
   '@types/chai@5.2.3':
     dependencies:
