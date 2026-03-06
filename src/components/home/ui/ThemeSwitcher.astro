@@ -83,7 +83,7 @@ const themeColors: ThemeColor[] = [
 
     let cleanup: (() => void) | undefined
     let longPressTimer: ReturnType<typeof setTimeout> | undefined
-    let isLongPress = false
+    let _isLongPress = false
     let suppressClick = false
 
     function safeGetItem(key: string): string | null {
@@ -169,7 +169,7 @@ const themeColors: ThemeColor[] = [
 
     function hideDropdown(): void {
         setDropdownState(false)
-        isLongPress = false
+        _isLongPress = false
     }
 
     function isDropdownVisible(): boolean {
@@ -187,7 +187,7 @@ const themeColors: ThemeColor[] = [
         if (!switcher) return
 
         const toggle = switcher.querySelector('.theme-toggle') as HTMLButtonElement | null
-        const dropdown = switcher.querySelector('.theme-dropdown') as HTMLElement | null
+        const _dropdown = switcher.querySelector('.theme-dropdown') as HTMLElement | null
         const colorOptions = switcher.querySelectorAll('.color-option')
 
         if (!toggle) return
@@ -207,10 +207,10 @@ const themeColors: ThemeColor[] = [
         const startLongPress = (button?: number) => {
             if (typeof button === 'number' && button !== 0) return
 
-            isLongPress = false
+            _isLongPress = false
             clearLongPressTimer()
             longPressTimer = setTimeout(() => {
-                isLongPress = true
+                _isLongPress = true
                 suppressClick = true
                 showDropdown()
             }, LONG_PRESS_DURATION)
@@ -249,7 +249,7 @@ const themeColors: ThemeColor[] = [
         const handleClick = (e: Event) => {
             if (suppressClick) {
                 suppressClick = false
-                isLongPress = false
+                _isLongPress = false
                 e.preventDefault()
                 e.stopPropagation()
                 return
