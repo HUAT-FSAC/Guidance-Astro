@@ -25,6 +25,9 @@ const themeColors: ThemeColor[] = [
         class="theme-toggle" 
         type="button"
         aria-label="切换主题"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="theme-dropdown"
         title="点击切换亮暗模式，长按选择主题色"
     >
         <span class="icon-sun">
@@ -47,7 +50,7 @@ const themeColors: ThemeColor[] = [
         </span>
     </button>
     
-    <div class="theme-dropdown" aria-hidden="true">
+    <div class="theme-dropdown" id="theme-dropdown" aria-hidden="true">
         <div class="dropdown-header">
             <span class="header-icon">🎨</span>
             <span class="header-text">主题色</span>
@@ -81,6 +84,7 @@ const themeColors: ThemeColor[] = [
     let cleanup: (() => void) | undefined
     let longPressTimer: ReturnType<typeof setTimeout> | undefined
     let isLongPress = false
+    let suppressClick = false
 
     function safeGetItem(key: string): string | null {
         try {
@@ -142,14 +146,30 @@ const themeColors: ThemeColor[] = [
         return next
     }
 
+    function clearLongPressTimer(): void {
+        if (longPressTimer) {
+            clearTimeout(longPressTimer)
+            longPressTimer = undefined
+        }
+    }
+
+    function setDropdownState(isOpen: boolean): void {
+        const switcher = document.querySelector('[data-theme-switcher]')
+        const dropdown = switcher?.querySelector('.theme-dropdown')
+        const toggle = switcher?.querySelector('.theme-toggle')
+
+        dropdown?.classList.toggle('active', isOpen)
+        dropdown?.setAttribute('aria-hidden', String(!isOpen))
+        toggle?.setAttribute('aria-expanded', String(isOpen))
+    }
+
     function showDropdown(): void {
-        const dropdown = document.querySelector('[data-theme-switcher] .theme-dropdown')
-        dropdown?.classList.add('active')
+        setDropdownState(true)
     }
 
     function hideDropdown(): void {
-        const dropdown = document.querySelector('[data-theme-switcher] .theme-dropdown')
-        dropdown?.classList.remove('active')
+        setDropdownState(false)
+        isLongPress = false
     }
 
     function isDropdownVisible(): boolean {
@@ -182,61 +202,67 @@ const themeColors: ThemeColor[] = [
             applyThemeColor(savedColor, savedAccent)
         }
 
-        const handleMouseDown = (e: Event) => {
+        setDropdownState(false)
+
+        const startLongPress = (button?: number) => {
+            if (typeof button === 'number' && button !== 0) return
+
             isLongPress = false
+            clearLongPressTimer()
             longPressTimer = setTimeout(() => {
                 isLongPress = true
+                suppressClick = true
                 showDropdown()
             }, LONG_PRESS_DURATION)
         }
 
-        const handleMouseUp = (e: Event) => {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer)
-                longPressTimer = undefined
-            }
-            if (!isLongPress && !isDropdownVisible()) {
-                toggleScheme()
-            }
+        const stopLongPress = () => {
+            clearLongPressTimer()
         }
 
-        const handleMouseLeave = () => {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer)
-                longPressTimer = undefined
-            }
+        const handlePointerDown = (e: PointerEvent) => {
+            startLongPress(e.button)
         }
 
-        const handleTouchStart = (e: Event) => {
-            isLongPress = false
-            longPressTimer = setTimeout(() => {
-                isLongPress = true
-                showDropdown()
-            }, LONG_PRESS_DURATION)
+        const handleMouseDown = (e: MouseEvent) => {
+            startLongPress(e.button)
         }
 
-        const handleTouchEnd = (e: Event) => {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer)
-                longPressTimer = undefined
-            }
-            if (!isLongPress && !isDropdownVisible()) {
-                toggleScheme()
-            } else if (isLongPress) {
-                // 长按后不执行点击
-            }
+        const handleTouchStart = () => {
+            startLongPress()
         }
 
-        toggle.addEventListener('mousedown', handleMouseDown)
-        toggle.addEventListener('mouseup', handleMouseUp)
-        toggle.addEventListener('mouseleave', handleMouseLeave)
-        toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
-        toggle.addEventListener('touchend', handleTouchEnd)
+        if ('PointerEvent' in window) {
+            toggle.addEventListener('pointerdown', handlePointerDown)
+            toggle.addEventListener('pointerup', stopLongPress)
+            toggle.addEventListener('pointercancel', stopLongPress)
+            toggle.addEventListener('pointerleave', stopLongPress)
+        } else {
+            toggle.addEventListener('mousedown', handleMouseDown)
+            toggle.addEventListener('mouseup', stopLongPress)
+            toggle.addEventListener('mouseleave', stopLongPress)
+            toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
+            toggle.addEventListener('touchend', stopLongPress)
+            toggle.addEventListener('touchcancel', stopLongPress)
+        }
 
         const handleClick = (e: Event) => {
-            if (isDropdownVisible()) {
+            if (suppressClick) {
+                suppressClick = false
+                isLongPress = false
+                e.preventDefault()
                 e.stopPropagation()
+                return
             }
+
+            if (isDropdownVisible()) {
+                hideDropdown()
+                e.preventDefault()
+                e.stopPropagation()
+                return
+            }
+
+            toggleScheme()
         }
         toggle.addEventListener('click', handleClick)
 
@@ -250,6 +276,7 @@ const themeColors: ThemeColor[] = [
                     safeSetItem(STORAGE_KEY_COLOR, color)
                     safeSetItem(STORAGE_KEY_ACCENT, accent)
                 }
+                suppressClick = false
                 hideDropdown()
             }
             colorHandlers.set(option, handler)
@@ -279,11 +306,20 @@ const themeColors: ThemeColor[] = [
         mediaQuery.addEventListener('change', handleSystemChange)
 
         cleanup = () => {
-            toggle.removeEventListener('mousedown', handleMouseDown)
-            toggle.removeEventListener('mouseup', handleMouseUp)
-            toggle.removeEventListener('mouseleave', handleMouseLeave)
-            toggle.removeEventListener('touchstart', handleTouchStart)
-            toggle.removeEventListener('touchend', handleTouchEnd)
+            clearLongPressTimer()
+            if ('PointerEvent' in window) {
+                toggle.removeEventListener('pointerdown', handlePointerDown)
+                toggle.removeEventListener('pointerup', stopLongPress)
+                toggle.removeEventListener('pointercancel', stopLongPress)
+                toggle.removeEventListener('pointerleave', stopLongPress)
+            } else {
+                toggle.removeEventListener('mousedown', handleMouseDown)
+                toggle.removeEventListener('mouseup', stopLongPress)
+                toggle.removeEventListener('mouseleave', stopLongPress)
+                toggle.removeEventListener('touchstart', handleTouchStart)
+                toggle.removeEventListener('touchend', stopLongPress)
+                toggle.removeEventListener('touchcancel', stopLongPress)
+            }
             toggle.removeEventListener('click', handleClick)
             colorHandlers.forEach((handler, option) => {
                 option.removeEventListener('click', handler)
@@ -327,6 +363,7 @@ const themeColors: ThemeColor[] = [
             0 0 0 0 rgba(255, 255, 255, 0);
         position: relative;
         overflow: hidden;
+        touch-action: manipulation;
     }
 
     .theme-toggle::before {
@@ -412,6 +449,7 @@ const themeColors: ThemeColor[] = [
         min-width: 200px;
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
         transform: translateY(8px) scale(0.95);
         transform-origin: bottom right;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -423,6 +461,7 @@ const themeColors: ThemeColor[] = [
     .theme-dropdown.active {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
         transform: translateY(0) scale(1);
     }
 

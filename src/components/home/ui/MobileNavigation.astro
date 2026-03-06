@@ -214,6 +214,7 @@ const navItems: NavItem[] = [
         background: rgba(0, 0, 0, 0.5);
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
         transition: all 0.3s ease;
         z-index: var(--z-navigation, 100);
     }
@@ -221,6 +222,7 @@ const navItems: NavItem[] = [
     .mobile-nav-overlay.active {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
     }
     
     .mobile-nav-drawer {
@@ -232,6 +234,7 @@ const navItems: NavItem[] = [
         height: 100vh;
         background: #0a0a0a;
         transform: translateX(100%);
+        pointer-events: none;
         transition: transform 0.3s ease;
         z-index: var(--z-navigation, 100);
         display: flex;
@@ -245,6 +248,7 @@ const navItems: NavItem[] = [
     
     .mobile-nav-drawer.active {
         transform: translateX(0);
+        pointer-events: auto;
     }
     
     .drawer-header {

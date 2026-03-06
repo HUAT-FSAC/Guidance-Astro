@@ -29,35 +29,73 @@ test.describe('主题切换组件', () => {
         expect(themeSwitcher).toBe(0)
     })
 
-    test('主题切换按钮可点击且功能正常', async ({ page }) => {
+    test('主题切换按钮点击后可切换主题并持久化', async ({ page }) => {
         await page.goto('/')
         await page.waitForLoadState('networkidle')
 
-        // 获取初始主题
-        const initialTheme = await page.evaluate(() => {
-            return document.documentElement.getAttribute('data-theme')
-        })
+        const initialTheme = await page.evaluate(
+            () => document.documentElement.getAttribute('data-theme') || 'dark'
+        )
 
-        // 点击主题切换按钮
         await page.click('.theme-toggle')
 
-        // 等待下拉菜单出现
-        await page.waitForSelector('.theme-dropdown.active', { state: 'visible' })
+        await expect
+            .poll(async () => {
+                return page.evaluate(() => document.documentElement.getAttribute('data-theme'))
+            })
+            .not.toBe(initialTheme)
 
-        // 点击亮色模式
-        await page.click('[data-mode="light"]')
+        const newTheme = await page.evaluate(
+            () => document.documentElement.getAttribute('data-theme') || 'dark'
+        )
+        const savedTheme = await page.evaluate(() => localStorage.getItem('huat-color-scheme'))
+        expect(savedTheme).toBe(newTheme)
+    })
 
-        // 验证主题已切换
-        const newTheme = await page.evaluate(() => {
-            return document.documentElement.getAttribute('data-theme')
-        })
-        expect(newTheme).toBe('light')
+    test('主题切换按钮支持键盘激活', async ({ page }) => {
+        await page.goto('/')
+        await page.waitForLoadState('networkidle')
 
-        // 验证 localStorage 已更新
-        const savedTheme = await page.evaluate(() => {
-            return localStorage.getItem('huat-color-scheme')
-        })
-        expect(savedTheme).toBe('light')
+        const toggle = page.locator('.theme-toggle')
+        await toggle.focus()
+
+        const initialTheme = await page.evaluate(
+            () => document.documentElement.getAttribute('data-theme') || 'dark'
+        )
+
+        await page.keyboard.press('Enter')
+
+        await expect
+            .poll(async () => {
+                return page.evaluate(() => document.documentElement.getAttribute('data-theme'))
+            })
+            .not.toBe(initialTheme)
+    })
+
+    test('主题切换按钮长按后可打开主题色面板并保存颜色', async ({ page }) => {
+        await page.goto('/')
+        await page.waitForLoadState('networkidle')
+
+        const toggle = page.locator('.theme-toggle')
+        const box = await toggle.boundingBox()
+        expect(box).not.toBeNull()
+
+        await page.mouse.move(
+            (box?.x ?? 0) + (box?.width ?? 0) / 2,
+            (box?.y ?? 0) + (box?.height ?? 0) / 2
+        )
+        await page.mouse.down()
+        await page.waitForTimeout(450)
+
+        await expect(page.locator('.theme-dropdown.active')).toBeVisible()
+
+        await page.mouse.up()
+        await page.click('.color-option[data-color="#2ecc71"]')
+
+        await expect(page.locator('.theme-dropdown.active')).toHaveCount(0)
+
+        const savedColor = await page.evaluate(() => localStorage.getItem('huat-theme-color'))
+        expect(savedColor).toBe('#2ecc71')
     })
 })
 

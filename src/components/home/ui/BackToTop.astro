@@ -60,8 +60,8 @@
 <style>
     .back-to-top {
         position: fixed;
-        bottom: 5.5rem;
-        right: 2.25rem;
+        bottom: calc(2rem + 52px + 12px);
+        right: 2rem;
         width: 48px;
         height: 48px;
         border-radius: 50%;
@@ -80,6 +80,7 @@
         transition: all 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         z-index: 999;
+        pointer-events: none;
     }
 
     :global([data-theme='light']) .back-to-top {
@@ -93,6 +94,7 @@
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
+        pointer-events: auto;
     }
 
     .back-to-top:hover {
@@ -112,10 +114,17 @@
 
     @media (max-width: 768px) {
         .back-to-top {
-            bottom: 4.5rem;
+            bottom: calc(1.25rem + 48px + 12px);
             right: 1.25rem;
             width: 44px;
             height: 44px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .back-to-top {
+            bottom: calc(1rem + 44px + 16px);
+            right: 1rem;
         }
     }
 </style>
