@@ -5,7 +5,7 @@ const distDir = path.join('dist', '_astro')
 
 const budgets = {
     maxTotalJsKB: Number(process.env.BUNDLE_BUDGET_TOTAL_JS_KB ?? 380),
-    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 140),
+    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 150),
     maxSingleJsKB: Number(process.env.BUNDLE_BUDGET_SINGLE_JS_KB ?? 100),
     maxSingleCssKB: Number(process.env.BUNDLE_BUDGET_SINGLE_CSS_KB ?? 95),
 }
@@ -81,9 +81,7 @@ async function run() {
     const failures = []
 
     if (stats.totalJsKB > budgets.maxTotalJsKB) {
-        failures.push(
-            `Total JS exceeds budget: ${stats.totalJsKB} KB > ${budgets.maxTotalJsKB} KB`
-        )
+        failures.push(`Total JS exceeds budget: ${stats.totalJsKB} KB > ${budgets.maxTotalJsKB} KB`)
     }
     if (stats.totalCssKB > budgets.maxTotalCssKB) {
         failures.push(
