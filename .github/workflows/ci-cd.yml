@@ -92,6 +92,7 @@ jobs:
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
     name: Build
