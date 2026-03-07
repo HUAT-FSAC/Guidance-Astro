@@ -1,3 +1,5 @@
+// Astro 生成的类型声明文件需要使用三斜杠引用指令
+// 这是 Astro 框架的要求，无法使用 ES 模块的 import 语法
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />

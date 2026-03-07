@@ -57,7 +57,8 @@ export function trackEvent(
         window.umami.track(eventName, eventData)
     }
 
-    // 开发模式下打印到控制台
+    // 开发模式下打印到控制台，便于调试分析事件
+    // 这是有意的设计，仅在开发环境执行
     if (import.meta.env.DEV) {
         // eslint-disable-next-line no-console
         console.log(`[Analytics] ${eventName}`, eventData)

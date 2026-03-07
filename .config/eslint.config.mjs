@@ -45,12 +45,14 @@ export default tseslint.config(
     },
     {
         ignores: [
+            // 构建输出目录
             'dist/**',
             'node_modules/**',
             '.astro/**',
+            // 配置文件使用独立配置
             '*.config.*',
+            // 静态资源目录
             'public/**',
-            'src/components/docs/ProjectMetricsDashboard.astro',
         ],
     }
 )

@@ -182,7 +182,8 @@ export async function sendAlert(
         }
     }
 
-    // Log to console in development
+    // 开发环境下输出告警信息到控制台，便于调试
+    // 这是有意的设计，仅在开发环境执行
     if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.log('Alert sent:', alertData)

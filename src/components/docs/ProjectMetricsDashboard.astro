@@ -53,7 +53,7 @@ const priorityNames: Record<string, string> = {
 const totalTasks = Object.values(byStatus).reduce((a, b) => a + b, 0);
 
 // 预计算状态分布数据
-const statusEntries = Object.entries(byStatus).filter(([_, count]) => count > 0);
+const statusEntries = Object.entries(byStatus).filter(([, count]) => count > 0);
 
 // 预计算优先级分布数据
 const priorityEntries = Object.entries(byPriority);

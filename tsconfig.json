@@ -13,7 +13,8 @@
         "types": ["@cloudflare/workers-types"],
         "skipLibCheck": true,
         "strictNullChecks": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "forceConsistentCasingInFileNames": true
     },
     "include": ["src/**/*", "src/env.d.ts", ".astro/types.d.ts"]
 }

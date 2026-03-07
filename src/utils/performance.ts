@@ -84,6 +84,8 @@ function logMetric(metric: PerformanceMetric): void {
             poor: '\x1b[31m',
         }
         const reset = '\x1b[0m'
+        // 开发环境下输出性能指标到控制台，用于调试
+        // 这是有意的设计，不是代码异味
         // eslint-disable-next-line no-console
         console.log(
             `${colors[metric.rating]}[${metric.name}]${reset} ${metric.value.toFixed(2)} (${metric.rating})`
