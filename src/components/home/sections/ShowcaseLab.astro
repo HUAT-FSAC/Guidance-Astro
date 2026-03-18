@@ -1,0 +1,812 @@
+---
+import { showcaseScenarios } from '../../../data/showcase-lab'
+import {
+    SHOWCASE_SELECTION_STORAGE_KEY,
+    buildTrendPolyline,
+    getShowcaseSnapshot,
+} from '../../../utils/showcase-lab'
+
+const { scenario: initialScenario, subsystem: initialSubsystem } = getShowcaseSnapshot()
+const toneBadge = {
+    optimal: 'READY',
+    tracking: 'TRACK',
+    watch: 'GUARD',
+}
+---
+
+<section class="showcase-lab home-block" data-showcase-lab data-storage-key={SHOWCASE_SELECTION_STORAGE_KEY} aria-labelledby="showcase-lab-heading">
+    <div class="showcase-shell">
+        <header class="showcase-header">
+            <div>
+                <span class="showcase-kicker">Autonomous Showcase</span>
+                <h2 class="showcase-heading" id="showcase-lab-heading">智能驾驶交互实验室</h2>
+                <p class="showcase-intro">用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。</p>
+            </div>
+            <div class="showcase-badges" id="showcase-badges">
+                {initialScenario.badges.map((badge) => <span class="showcase-badge">{badge}</span>)}
+            </div>
+        </header>
+
+        <div class="showcase-grid">
+            <aside class="showcase-panel">
+                <span class="panel-eyebrow">Mission Presets</span>
+                <h3 class="scenario-name" data-showcase-scenario-name>{initialScenario.name}</h3>
+                <p class="scenario-tagline" id="showcase-tagline">{initialScenario.tagline}</p>
+                <p class="scenario-description" id="showcase-description">{initialScenario.description}</p>
+
+                <div class="scenario-switcher" role="toolbar" aria-label="切换展示场景">
+                    {showcaseScenarios.map((scenario) => (
+                        <button
+                            class={`scenario-chip ${scenario.id === initialScenario.id ? 'is-active' : ''}`}
+                            type="button"
+                            data-scenario-id={scenario.id}
+                            aria-pressed={scenario.id === initialScenario.id ? 'true' : 'false'}
+                        >
+                            <span class="chip-title">{scenario.name}</span>
+                            <span class="chip-copy">{scenario.tagline}</span>
+                        </button>
+                    ))}
+                </div>
+
+                <div class="strategy-card">
+                    <span class="strategy-label">当前策略</span>
+                    <strong class="strategy-title" id="showcase-strategy-title">{initialScenario.strategy.title}</strong>
+                    <p class="strategy-copy" id="showcase-strategy-copy">{initialScenario.strategy.copy}</p>
+                </div>
+            </aside>
+
+            <div class="showcase-panel showcase-panel--viz">
+                <article class="viz-card">
+                    <div class="viz-head">
+                        <div>
+                            <span class="panel-eyebrow">Track Preview</span>
+                            <h3 class="viz-title" id="showcase-track-label">{initialScenario.track.label}</h3>
+                        </div>
+                        <p class="viz-objective" id="showcase-track-objective">{initialScenario.track.objective}</p>
+                    </div>
+                    <svg class="track-map" viewBox="0 0 320 220" role="img" aria-label="场景赛道示意图">
+                        <defs>
+                            <linearGradient id="showcase-track-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#f59e0b"></stop>
+                                <stop offset="100%" stop-color="#fb7185"></stop>
+                            </linearGradient>
+                        </defs>
+                        <path class="track-outline" id="showcase-track-path" d={initialScenario.track.path}></path>
+                        <path class="track-progress" id="showcase-track-progress" d={initialScenario.track.progressPath}></path>
+                        <g id="showcase-track-markers">
+                            {initialScenario.track.markers.map((marker) => (
+                                <circle class={`track-marker track-marker--${marker.type}`} cx={marker.x} cy={marker.y} r="6"></circle>
+                            ))}
+                        </g>
+                        <circle class="track-car" id="showcase-track-car" cx={initialScenario.track.car.x} cy={initialScenario.track.car.y} r="9"></circle>
+                    </svg>
+                </article>
+
+                <article class="viz-card">
+                    <div class="viz-head">
+                        <div>
+                            <span class="panel-eyebrow">Trend</span>
+                            <h3 class="viz-title" id="showcase-trend-label">{initialScenario.trend.label}</h3>
+                        </div>
+                    </div>
+                    <svg class="trend-chart" viewBox="0 0 320 110" role="img" aria-label="趋势图">
+                        <polyline class="trend-line" id="showcase-trend-line" points={buildTrendPolyline(initialScenario.trend.values, 320, 110, 14)}></polyline>
+                    </svg>
+                    <div class="trend-footer">
+                        <span id="showcase-trend-start">{initialScenario.trend.startLabel}</span>
+                        <span id="showcase-trend-end">{initialScenario.trend.endLabel}</span>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="showcase-panel showcase-panel--detail">
+                <div class="metrics-grid" id="showcase-metrics-grid">
+                    {initialScenario.metrics.map((metric) => (
+                        <article class={`metric-card metric-card--${metric.tone ?? 'accent'}`} data-showcase-metric={metric.id}>
+                            <span class="metric-label">{metric.label}</span>
+                            <div class="metric-value-row">
+                                <strong class="metric-value">{metric.value}</strong>
+                                <span class="metric-unit">{metric.unit}</span>
+                            </div>
+                            <p class="metric-note">{metric.note}</p>
+                        </article>
+                    ))}
+                </div>
+
+                <article class="pipeline-card">
+                    <div class="title-row">
+                        <h3>系统链路</h3>
+                        <span class="panel-eyebrow">System Loop</span>
+                    </div>
+                    <div class="stage-list" id="showcase-stage-list">
+                        {initialScenario.stages.map((stage) => (
+                            <article class={`stage-card tone-${stage.tone}`}>
+                                <div class="stage-head">
+                                    <strong>{stage.label}</strong>
+                                    <span class="stage-badge">{toneBadge[stage.tone]}</span>
+                                </div>
+                                <p class="stage-state">{stage.state}</p>
+                                <p class="stage-detail">{stage.detail}</p>
+                            </article>
+                        ))}
+                    </div>
+                </article>
+
+                <article class="subsystem-card">
+                    <div class="title-row">
+                        <h3>关注子系统</h3>
+                        <span class="panel-eyebrow">Subsystem Focus</span>
+                    </div>
+                    <div class="subsystem-tabs" id="showcase-subsystem-tabs" role="toolbar" aria-label="切换关注子系统">
+                        {initialScenario.subsystems.map((subsystem) => (
+                            <button
+                                class={`subsystem-tab ${subsystem.id === initialSubsystem.id ? 'is-active' : ''}`}
+                                type="button"
+                                data-subsystem-id={subsystem.id}
+                                aria-pressed={subsystem.id === initialSubsystem.id ? 'true' : 'false'}
+                            >
+                                {subsystem.label}
+                            </button>
+                        ))}
+                    </div>
+                    <div class="subsystem-panel" data-showcase-subsystem-panel>
+                        <span class="subsystem-eyebrow" id="showcase-subsystem-eyebrow">{initialSubsystem.eyebrow}</span>
+                        <h4 class="subsystem-headline" id="showcase-subsystem-headline">{initialSubsystem.headline}</h4>
+                        <p class="subsystem-summary" id="showcase-subsystem-summary">{initialSubsystem.summary}</p>
+                        <ul class="subsystem-list" id="showcase-subsystem-list">
+                            {initialSubsystem.bullets.map((bullet) => <li>{bullet}</li>)}
+                        </ul>
+                    </div>
+                </article>
+            </aside>
+        </div>
+    </div>
+</section>
+<script>
+    import { safeGetJSON, safeSetJSON } from '../../../utils/storage'
+    import {
+        buildTrendPolyline,
+        getShowcaseSnapshot,
+        resolveShowcaseSelection,
+    } from '../../../utils/showcase-lab'
+
+    const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
+
+    function getRequiredElement(root, selector) {
+        const element = root.querySelector(selector)
+
+        if (!element) {
+            throw new Error(`Missing showcase element: ${selector}`)
+        }
+
+        return element
+    }
+
+    function createHtmlElement(document, tagName, className, text) {
+        const element = document.createElement(tagName)
+
+        if (className) {
+            element.className = className
+        }
+
+        if (typeof text === 'string') {
+            element.textContent = text
+        }
+
+        return element
+    }
+
+    function createSvgElement(document, tagName, className) {
+        const element = document.createElementNS(SVG_NAMESPACE, tagName)
+
+        if (className) {
+            element.setAttribute('class', className)
+        }
+
+        return element
+    }
+
+    function metricToneClassName(tone) {
+        return `metric-card metric-card--${tone || 'accent'}`
+    }
+
+    function stageToneClassName(tone) {
+        return `stage-card tone-${tone}`
+    }
+
+    function stageBadge(tone) {
+        if (tone === 'optimal') return 'READY'
+        if (tone === 'tracking') return 'TRACK'
+        return 'GUARD'
+    }
+
+    function renderBadges(root, badges) {
+        const container = getRequiredElement(root, '#showcase-badges')
+        const document = root.ownerDocument
+
+        container.replaceChildren(
+            ...badges.map((badge) => createHtmlElement(document, 'span', 'showcase-badge', badge)),
+        )
+    }
+
+    function renderMetrics(root, metrics) {
+        const container = getRequiredElement(root, '#showcase-metrics-grid')
+        const document = root.ownerDocument
+        const metricCards = metrics.map((metric) => {
+            const card = createHtmlElement(document, 'article', metricToneClassName(metric.tone))
+            card.dataset.showcaseMetric = metric.id
+
+            const label = createHtmlElement(document, 'span', 'metric-label', metric.label)
+            const valueRow = createHtmlElement(document, 'div', 'metric-value-row')
+            const value = createHtmlElement(document, 'strong', 'metric-value', metric.value)
+            const unit = createHtmlElement(document, 'span', 'metric-unit', metric.unit)
+            const note = createHtmlElement(document, 'p', 'metric-note', metric.note)
+
+            valueRow.append(value, unit)
+            card.append(label, valueRow, note)
+            return card
+        })
+
+        container.replaceChildren(...metricCards)
+    }
+
+    function renderStages(root, stages) {
+        const container = getRequiredElement(root, '#showcase-stage-list')
+        const document = root.ownerDocument
+        const stageCards = stages.map((stage) => {
+            const card = createHtmlElement(document, 'article', stageToneClassName(stage.tone))
+            const head = createHtmlElement(document, 'div', 'stage-head')
+            const label = createHtmlElement(document, 'strong', '', stage.label)
+            const badge = createHtmlElement(document, 'span', 'stage-badge', stageBadge(stage.tone))
+            const state = createHtmlElement(document, 'p', 'stage-state', stage.state)
+            const detail = createHtmlElement(document, 'p', 'stage-detail', stage.detail)
+
+            head.append(label, badge)
+            card.append(head, state, detail)
+            return card
+        })
+
+        container.replaceChildren(...stageCards)
+    }
+
+    function renderMarkers(root, markers) {
+        const container = getRequiredElement(root, '#showcase-track-markers')
+        const document = root.ownerDocument
+        const circles = markers.map((marker) => {
+            const circle = createSvgElement(
+                document,
+                'circle',
+                `track-marker track-marker--${marker.type}`,
+            )
+            circle.setAttribute('cx', String(marker.x))
+            circle.setAttribute('cy', String(marker.y))
+            circle.setAttribute('r', '6')
+            return circle
+        })
+
+        container.replaceChildren(...circles)
+    }
+
+    function renderSubsystemTabs(root, subsystems, activeSubsystemId) {
+        const container = getRequiredElement(root, '#showcase-subsystem-tabs')
+        const document = root.ownerDocument
+        const tabs = subsystems.map((subsystem) => {
+            const isActive = subsystem.id === activeSubsystemId
+            const button = createHtmlElement(
+                document,
+                'button',
+                `subsystem-tab${isActive ? ' is-active' : ''}`,
+                subsystem.label,
+            )
+            button.type = 'button'
+            button.dataset.subsystemId = subsystem.id
+            button.setAttribute('aria-pressed', String(isActive))
+            return button
+        })
+
+        container.replaceChildren(...tabs)
+    }
+
+    function renderSubsystemList(root, bullets) {
+        const container = getRequiredElement(root, '#showcase-subsystem-list')
+        const document = root.ownerDocument
+
+        container.replaceChildren(
+            ...bullets.map((bullet) => createHtmlElement(document, 'li', '', bullet)),
+        )
+    }
+
+    function syncScenarioChips(root, scenarioId) {
+        root.querySelectorAll('[data-scenario-id]').forEach((button) => {
+            const isActive = button.dataset.scenarioId === scenarioId
+            button.classList.toggle('is-active', isActive)
+            button.setAttribute('aria-pressed', String(isActive))
+        })
+    }
+
+    function renderShowcase(root, state) {
+        const snapshot = getShowcaseSnapshot(state)
+        const { scenario, subsystem, selection } = snapshot
+
+        getRequiredElement(root, '[data-showcase-scenario-name]').textContent = scenario.name
+        getRequiredElement(root, '#showcase-tagline').textContent = scenario.tagline
+        getRequiredElement(root, '#showcase-description').textContent = scenario.description
+        getRequiredElement(root, '#showcase-strategy-title').textContent = scenario.strategy.title
+        getRequiredElement(root, '#showcase-strategy-copy').textContent = scenario.strategy.copy
+        getRequiredElement(root, '#showcase-track-label').textContent = scenario.track.label
+        getRequiredElement(root, '#showcase-track-objective').textContent = scenario.track.objective
+        getRequiredElement(root, '#showcase-track-path').setAttribute('d', scenario.track.path)
+        getRequiredElement(root, '#showcase-track-progress').setAttribute(
+            'd',
+            scenario.track.progressPath,
+        )
+        renderMarkers(root, scenario.track.markers)
+        getRequiredElement(root, '#showcase-track-car').setAttribute(
+            'cx',
+            String(scenario.track.car.x),
+        )
+        getRequiredElement(root, '#showcase-track-car').setAttribute(
+            'cy',
+            String(scenario.track.car.y),
+        )
+        getRequiredElement(root, '#showcase-trend-label').textContent = scenario.trend.label
+        getRequiredElement(root, '#showcase-trend-line').setAttribute(
+            'points',
+            buildTrendPolyline(scenario.trend.values, 320, 110, 14),
+        )
+        getRequiredElement(root, '#showcase-trend-start').textContent = scenario.trend.startLabel
+        getRequiredElement(root, '#showcase-trend-end').textContent = scenario.trend.endLabel
+        renderMetrics(root, scenario.metrics)
+        renderStages(root, scenario.stages)
+        renderBadges(root, scenario.badges)
+        renderSubsystemTabs(root, scenario.subsystems, selection.subsystemId)
+        getRequiredElement(root, '#showcase-subsystem-eyebrow').textContent = subsystem.eyebrow
+        getRequiredElement(root, '#showcase-subsystem-headline').textContent = subsystem.headline
+        getRequiredElement(root, '#showcase-subsystem-summary').textContent = subsystem.summary
+        renderSubsystemList(root, subsystem.bullets)
+        syncScenarioChips(root, selection.scenarioId)
+
+        return selection
+    }
+
+    function bindShowcaseLab(root) {
+        if (root.dataset.showcaseReady === 'true') {
+            return
+        }
+
+        root.dataset.showcaseReady = 'true'
+
+        const storageKey = root.getAttribute('data-storage-key') || 'huat-showcase-lab-selection'
+        let state = renderShowcase(root, resolveShowcaseSelection(safeGetJSON(storageKey, null)))
+
+        root.addEventListener('click', (event) => {
+            if (!(event.target instanceof Element)) {
+                return
+            }
+
+            const trigger = event.target.closest('[data-scenario-id], [data-subsystem-id]')
+
+            if (!(trigger instanceof HTMLElement) || !root.contains(trigger)) {
+                return
+            }
+
+            if (trigger.dataset.scenarioId) {
+                state = resolveShowcaseSelection({ scenarioId: trigger.dataset.scenarioId })
+            } else if (trigger.dataset.subsystemId) {
+                state = resolveShowcaseSelection({
+                    scenarioId: state.scenarioId,
+                    subsystemId: trigger.dataset.subsystemId,
+                })
+            } else {
+                return
+            }
+
+            safeSetJSON(storageKey, state)
+            state = renderShowcase(root, state)
+        })
+    }
+
+    function initShowcaseLabs() {
+        document.querySelectorAll('[data-showcase-lab]').forEach((root) => {
+            if (root instanceof HTMLElement) {
+                bindShowcaseLab(root)
+            }
+        })
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initShowcaseLabs, { once: true })
+    } else {
+        initShowcaseLabs()
+    }
+
+    document.addEventListener('astro:page-load', initShowcaseLabs)
+</script>
+<style>
+    .showcase-lab {
+        max-width: none;
+        margin: 0;
+        padding: 4.5rem 2rem;
+        border-top: 1px solid rgba(245, 158, 11, 0.18);
+        border-bottom: 1px solid rgba(245, 158, 11, 0.14);
+        background:
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.16), transparent 42%),
+            radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.12), transparent 38%),
+            linear-gradient(180deg, rgba(7, 10, 18, 0.96), rgba(9, 12, 20, 0.92));
+    }
+
+    :global([data-theme='light']) .showcase-lab {
+        background:
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.16), transparent 42%),
+            radial-gradient(circle at bottom right, rgba(248, 113, 113, 0.1), transparent 40%),
+            linear-gradient(180deg, rgba(255, 248, 240, 0.96), rgba(255, 255, 255, 0.94));
+        border-color: rgba(224, 113, 38, 0.18);
+    }
+
+    .showcase-shell {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .showcase-header,
+    .title-row,
+    .stage-head,
+    .viz-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: start;
+    }
+
+    .showcase-header {
+        flex-wrap: wrap;
+        align-items: end;
+    }
+
+    .showcase-kicker,
+    .panel-eyebrow,
+    .subsystem-eyebrow,
+    .strategy-label {
+        display: inline-flex;
+        font-size: 0.72rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--sl-color-accent, #f59e0b);
+    }
+
+    .showcase-heading,
+    .scenario-name,
+    .viz-title,
+    .title-row h3,
+    .subsystem-headline,
+    .metric-value {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    .showcase-heading {
+        margin: 0.75rem 0;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1;
+    }
+
+    .showcase-intro,
+    .scenario-description,
+    .strategy-copy,
+    .viz-objective,
+    .stage-detail,
+    .subsystem-summary,
+    .metric-note,
+    .chip-copy,
+    .trend-footer,
+    .metric-label,
+    .metric-unit {
+        color: rgba(255, 255, 255, 0.68);
+    }
+
+    :global([data-theme='light']) .showcase-intro,
+    :global([data-theme='light']) .scenario-description,
+    :global([data-theme='light']) .strategy-copy,
+    :global([data-theme='light']) .viz-objective,
+    :global([data-theme='light']) .stage-detail,
+    :global([data-theme='light']) .subsystem-summary,
+    :global([data-theme='light']) .metric-note,
+    :global([data-theme='light']) .chip-copy,
+    :global([data-theme='light']) .trend-footer,
+    :global([data-theme='light']) .metric-label,
+    :global([data-theme='light']) .metric-unit {
+        color: rgba(15, 23, 42, 0.68);
+    }
+
+    .showcase-badges,
+    .scenario-switcher,
+    .metrics-grid,
+    .stage-list,
+    .subsystem-tabs,
+    .subsystem-list {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .showcase-badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.65rem;
+    }
+
+    .showcase-badge,
+    .stage-badge {
+        border-radius: 999px;
+        font-size: 0.72rem;
+    }
+
+    .showcase-badge {
+        padding: 0.55rem 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    :global([data-theme='light']) .showcase-badge {
+        border-color: rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .showcase-grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr) minmax(300px, 1fr);
+        gap: 1.25rem;
+        align-items: start;
+    }
+
+    .showcase-panel,
+    .viz-card,
+    .pipeline-card,
+    .subsystem-card,
+    .strategy-card,
+    .metric-card {
+        background: linear-gradient(180deg, rgba(14, 18, 28, 0.92), rgba(9, 12, 20, 0.88));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    :global([data-theme='light']) .showcase-panel,
+    :global([data-theme='light']) .viz-card,
+    :global([data-theme='light']) .pipeline-card,
+    :global([data-theme='light']) .subsystem-card,
+    :global([data-theme='light']) .strategy-card,
+    :global([data-theme='light']) .metric-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(252, 250, 248, 0.92));
+        border-color: rgba(15, 23, 42, 0.08);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .showcase-panel,
+    .viz-card,
+    .pipeline-card,
+    .subsystem-card,
+    .strategy-card,
+    .metric-card,
+    .scenario-chip,
+    .subsystem-tab,
+    .subsystem-panel,
+    .stage-card {
+        border-radius: 1.2rem;
+    }
+
+    .showcase-panel,
+    .viz-card,
+    .pipeline-card,
+    .subsystem-card,
+    .strategy-card {
+        padding: 1.15rem;
+    }
+
+    .showcase-panel--viz {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .scenario-name,
+    .viz-title,
+    .title-row h3,
+    .subsystem-headline {
+        margin: 0.4rem 0;
+    }
+
+    .scenario-tagline {
+        margin: 0;
+        color: var(--sl-color-accent, #f59e0b);
+        font-weight: 600;
+    }
+
+    .scenario-chip,
+    .subsystem-tab {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        color: inherit;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    :global([data-theme='light']) .scenario-chip,
+    :global([data-theme='light']) .subsystem-tab,
+    :global([data-theme='light']) .subsystem-panel,
+    :global([data-theme='light']) .stage-card {
+        border-color: rgba(15, 23, 42, 0.08);
+        background: rgba(15, 23, 42, 0.03);
+    }
+
+    .scenario-chip {
+        padding: 0.9rem 1rem;
+        display: grid;
+        text-align: left;
+    }
+
+    .subsystem-tabs {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        margin: 1rem 0;
+    }
+
+    .subsystem-tab {
+        padding: 0.72rem 0.4rem;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .scenario-chip.is-active,
+    .scenario-chip:hover,
+    .subsystem-tab.is-active,
+    .subsystem-tab:hover {
+        transform: translateY(-2px);
+        border-color: rgba(245, 158, 11, 0.45);
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(251, 113, 133, 0.12));
+    }
+
+    .track-map,
+    .trend-chart {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .track-outline {
+        fill: none;
+        stroke: rgba(148, 163, 184, 0.45);
+        stroke-width: 20;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .track-progress,
+    .trend-line {
+        fill: none;
+        stroke: url(#showcase-track-gradient);
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .trend-line {
+        stroke-width: 5;
+    }
+
+    .track-marker {
+        stroke: rgba(15, 23, 42, 0.75);
+        stroke-width: 2;
+    }
+
+    .track-marker--cone { fill: #f59e0b; }
+    .track-marker--apex { fill: #f97316; }
+    .track-marker--gate { fill: #38bdf8; }
+
+    .track-car {
+        fill: #f8fafc;
+        stroke: #fb7185;
+        stroke-width: 3;
+    }
+
+    .trend-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-bottom: 1rem;
+    }
+
+    .metric-card {
+        padding: 1rem;
+        min-height: 128px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.18;
+    }
+
+    .metric-card--accent::before { background: linear-gradient(135deg, rgba(245, 158, 11, 0.45), transparent 65%); }
+    .metric-card--positive::before { background: linear-gradient(135deg, rgba(16, 185, 129, 0.45), transparent 65%); }
+    .metric-card--warning::before { background: linear-gradient(135deg, rgba(251, 113, 133, 0.45), transparent 65%); }
+
+    .metric-value-row {
+        display: flex;
+        align-items: baseline;
+        gap: 0.4rem;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        line-height: 1;
+    }
+
+    .stage-list,
+    .subsystem-list {
+        margin-top: 1rem;
+    }
+
+    .stage-card,
+    .subsystem-panel {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.95rem;
+    }
+
+    .tone-optimal { border-left: 3px solid #10b981; }
+    .tone-tracking { border-left: 3px solid #f59e0b; }
+    .tone-watch { border-left: 3px solid #fb7185; }
+
+    .stage-badge {
+        padding: 0.2rem 0.55rem;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    :global([data-theme='light']) .stage-badge {
+        background: rgba(15, 23, 42, 0.08);
+    }
+
+    .subsystem-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .subsystem-list li {
+        position: relative;
+        padding-left: 1rem;
+    }
+
+    .subsystem-list li::before {
+        content: '›';
+        position: absolute;
+        left: 0;
+        color: var(--sl-color-accent, #f59e0b);
+        font-weight: 700;
+    }
+
+    @media (max-width: 1180px) {
+        .showcase-grid { grid-template-columns: 1fr; }
+        .subsystem-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+        .showcase-lab { padding: 3.5rem 1.25rem; }
+        .showcase-badges { justify-content: flex-start; }
+        .metrics-grid,
+        .subsystem-tabs { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .scenario-chip,
+        .subsystem-tab { transition: none; }
+    }
+</style>
