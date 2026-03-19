@@ -1,0 +1,1190 @@
+---
+import { showcaseScenarios, showcaseScripts } from '../data/showcase-lab'
+import {
+    SHOWCASE_SELECTION_STORAGE_KEY,
+    buildTrendCursor,
+    buildTrendPolyline,
+    getShowcaseReplaySnapshot,
+} from '../utils/showcase-lab'
+
+const initialReplay = getShowcaseReplaySnapshot()
+const {
+    frame: initialFrame,
+    frameIndex: initialFrameIndex,
+    metrics: initialMetrics,
+    scenario: initialScenario,
+    stages: initialStages,
+    subsystem: initialSubsystem,
+    track: initialTrack,
+    trendCursorIndex: initialTrendCursorIndex,
+} = initialReplay
+const initialTrendCursor = buildTrendCursor(
+    initialScenario.trend.values,
+    initialTrendCursorIndex,
+    320,
+    110,
+    14,
+)
+const toneBadge = {
+    optimal: 'READY',
+    tracking: 'TRACK',
+    watch: 'GUARD',
+}
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能驾驶交互实验室 | FSAC</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-theme="dark">
+    <div class="dashboard" data-showcase-lab data-storage-key={SHOWCASE_SELECTION_STORAGE_KEY}>
+        <header class="dashboard-header">
+            <a href="/" class="back-link">
+                <span class="back-icon">←</span>
+                <span>返回首页</span>
+            </a>
+            <div class="header-title">
+                <h1>智能驾驶交互实验室</h1>
+                <span class="header-badge">Autonomous Showcase</span>
+            </div>
+            <div class="header-scenarios">
+                {showcaseScenarios.map((scenario) => (
+                    <button
+                        class={`scenario-chip ${scenario.id === initialScenario.id ? 'is-active' : ''}`}
+                        type="button"
+                        data-scenario-id={scenario.id}
+                    >
+                        <span class="chip-title">{scenario.name}</span>
+                    </button>
+                ))}
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <aside class="panel panel--left">
+                <section class="panel-section">
+                    <h2 class="section-title">场景信息</h2>
+                    <div class="scenario-info">
+                        <h3 class="scenario-name" data-showcase-scenario-name>{initialScenario.name}</h3>
+                        <p class="scenario-tagline" id="showcase-tagline">{initialScenario.tagline}</p>
+                        <p class="scenario-description" id="showcase-description">{initialScenario.description}</p>
+                    </div>
+                    <div id="showcase-badges" class="badges-container">
+                        {initialScenario.badges.map((badge) => <span class="showcase-badge">{badge}</span>)}
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-label">当前策略</span>
+                        <strong class="strategy-title" id="showcase-strategy-title">{initialScenario.strategy.title}</strong>
+                        <p class="strategy-copy" id="showcase-strategy-copy">{initialScenario.strategy.copy}</p>
+                    </div>
+                </section>
+
+                <section class="panel-section">
+                    <h2 class="section-title">子系统</h2>
+                    <div class="subsystem-tabs" id="showcase-subsystem-tabs">
+                        {initialScenario.subsystems.map((subsystem) => (
+                            <button class={`subsystem-tab ${subsystem.id === initialSubsystem.id ? 'is-active' : ''}`} type="button" data-subsystem-id={subsystem.id}>
+                                {subsystem.label}
+                            </button>
+                        ))}
+                    </div>
+                    <div class="subsystem-panel">
+                        <span class="subsystem-eyebrow" id="showcase-subsystem-eyebrow">{initialSubsystem.eyebrow}</span>
+                        <h4 class="subsystem-headline" id="showcase-subsystem-headline">{initialSubsystem.headline}</h4>
+                        <p class="subsystem-summary" id="showcase-subsystem-summary">{initialSubsystem.summary}</p>
+                        <ul class="subsystem-list" id="showcase-subsystem-list">
+                            {initialSubsystem.bullets.map((bullet) => <li>{bullet}</li>)}
+                        </ul>
+                    </div>
+                </section>
+            </aside>
+
+            <section class="panel panel--center">
+                <div class="viz-main">
+                    <div class="viz-header">
+                        <div>
+                            <span class="panel-eyebrow">Track Preview</span>
+                            <h3 class="viz-title" id="showcase-track-label">{initialTrack.label}</h3>
+                        </div>
+                        <p class="viz-objective" id="showcase-track-objective">{initialTrack.objective}</p>
+                    </div>
+                    <svg class="track-map" viewBox="0 0 480 280" role="img">
+                        <defs>
+                            <linearGradient id="track-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#f59e0b"></stop>
+                                <stop offset="100%" stop-color="#fb7185"></stop>
+                            </linearGradient>
+                        </defs>
+                        <path class="track-outline" id="showcase-track-path" d={initialTrack.path}></path>
+                        <path class="track-progress" id="showcase-track-progress" d={initialTrack.progressPath}></path>
+                        <g id="showcase-track-markers">
+                            {initialTrack.markers.map((marker) => (
+                                <circle class={`marker marker--${marker.type}`} cx={marker.x} cy={marker.y} r="7"></circle>
+                            ))}
+                        </g>
+                        <circle class="track-car" id="showcase-track-car" cx={initialTrack.car.x} cy={initialTrack.car.y} r="10"></circle>
+                    </svg>
+                </div>
+
+                <div class="viz-trend">
+                    <div class="viz-header">
+                        <span class="panel-eyebrow">Trend</span>
+                        <h3 class="viz-title" id="showcase-trend-label">{initialScenario.trend.label}</h3>
+                    </div>
+                    <svg class="trend-chart" viewBox="0 0 480 120" role="img">
+                        <polyline class="trend-line" id="showcase-trend-line" points={buildTrendPolyline(initialScenario.trend.values, 480, 120, 16)}></polyline>
+                        <circle class="trend-cursor" id="showcase-trend-cursor" cx={initialTrendCursor.x} cy={initialTrendCursor.y} r="7"></circle>
+                    </svg>
+                    <div class="trend-footer">
+                        <span id="showcase-trend-start">{initialScenario.trend.startLabel}</span>
+                        <span id="showcase-trend-end">{initialScenario.trend.endLabel}</span>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="panel panel--right">
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-btn is-active" data-tab="metrics">指标</button>
+                        <button class="tab-btn" data-tab="stages">链路</button>
+                        <button class="tab-btn" data-tab="console">控制台</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <div class="tab-panel is-active" data-tab-panel="metrics">
+                            <div id="showcase-metrics-grid" class="metrics-grid">
+                                {initialMetrics.map((metric) => (
+                                    <div class={`metric-card metric-card--${metric.tone ?? 'accent'}`} data-showcase-metric={metric.id}>
+                                        <span class="metric-label">{metric.label}</span>
+                                        <div class="metric-value-row">
+                                            <strong class="metric-value">{metric.value}</strong>
+                                            <span class="metric-unit">{metric.unit}</span>
+                                        </div>
+                                        <p class="metric-note">{metric.note}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" data-tab-panel="stages">
+                            <div id="showcase-stage-list" class="stage-list">
+                                {initialStages.map((stage) => (
+                                    <div class={`stage-card tone-${stage.tone}`}>
+                                        <div class="stage-head">
+                                            <strong>{stage.label}</strong>
+                                            <span class="stage-badge">{toneBadge[stage.tone]}</span>
+                                        </div>
+                                        <p class="stage-state">{stage.state}</p>
+                                        <p class="stage-detail">{stage.detail}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" data-tab-panel="console">
+                            <div class="console-section" data-presentation-console>
+                                <div class="console-card" data-compare-mode>
+                                    <div class="console-card-header">
+                                        <h4>Compare Mode</h4>
+                                        <label class="toggle">
+                                            <input type="checkbox" data-compare-toggle />
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="console-card-body" data-compare-panel style="display: none;">
+                                        <select data-compare-scenario-select>
+                                            {showcaseScenarios.map((scenario) => (
+                                                <option value={scenario.id}>{scenario.name}</option>
+                                            ))}
+                                        </select>
+                                        <div class="compare-delta" data-compare-delta>
+                                            <strong>差异摘要</strong>
+                                            <ul data-compare-highlights></ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="console-card" data-demo-script>
+                                    <div class="console-card-header">
+                                        <h4>Demo Script</h4>
+                                        <span class="script-status" data-script-status>Ready</span>
+                                    </div>
+                                    <div class="console-card-body">
+                                        <select data-script-select>
+                                            <option value="">选择讲解脚本...</option>
+                                            {showcaseScripts.map((script) => (
+                                                <option value={script.id}>{script.name}</option>
+                                            ))}
+                                        </select>
+                                        <div class="script-step-info" data-script-step-info style="display: none;">
+                                            <div class="script-step-header">
+                                                <span class="script-step-counter" data-script-step-counter>Step 1 / 4</span>
+                                                <strong class="script-step-title" data-script-step-title></strong>
+                                            </div>
+                                            <p class="script-step-narration" data-script-step-narration></p>
+                                            <div class="script-controls">
+                                                <button type="button" class="script-btn" data-script-prev>Prev</button>
+                                                <button type="button" class="script-btn script-btn--primary" data-script-auto-narrate>Auto</button>
+                                                <button type="button" class="script-btn" data-script-next>Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="console-card" data-cache-simulator>
+                                    <div class="console-card-header">
+                                        <h4>Cache</h4>
+                                        <span class="cache-status" data-cache-status>缓存冷态</span>
+                                    </div>
+                                    <div class="console-card-body">
+                                        <div class="cache-stats">
+                                            <div class="cache-stat">
+                                                <span class="cache-stat-value" data-cache-packs>0</span>
+                                                <span class="cache-stat-label">Packs</span>
+                                            </div>
+                                            <div class="cache-stat">
+                                                <span class="cache-stat-value" data-cache-hit-rate>0%</span>
+                                                <span class="cache-stat-label">Hit Rate</span>
+                                            </div>
+                                        </div>
+                                        <div class="cache-controls">
+                                            <button type="button" class="cache-btn cache-btn--warm" data-cache-warm>Warm</button>
+                                            <button type="button" class="cache-btn cache-btn--drift" data-cache-drift>Drift</button>
+                                            <button type="button" class="cache-btn cache-btn--reset" data-cache-reset>Reset</button>
+                                        </div>
+                                        <div class="cache-last-sync" data-cache-last-sync style="display: none;">从未同步</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="dashboard-footer">
+            <div class="replay-section">
+                <div class="replay-header">
+                    <h3>Mission Replay</h3>
+                    <span class="panel-eyebrow" id="showcase-replay-status">Paused</span>
+                </div>
+                <div class="replay-content">
+                    <div class="replay-info">
+                        <strong class="replay-title" id="showcase-replay-title">{initialFrame.title}</strong>
+                        <p class="replay-summary" id="showcase-replay-summary">{initialFrame.summary}</p>
+                    </div>
+                    <div class="replay-controls">
+                        <button class="replay-btn" type="button" data-showcase-replay-prev>◀</button>
+                        <button class="replay-btn replay-btn--primary" type="button" data-showcase-replay-play aria-pressed="false">▶</button>
+                        <button class="replay-btn" type="button" data-showcase-replay-next>▶</button>
+                    </div>
+                    <div class="replay-scrubber">
+                        <span class="replay-frame-label" id="showcase-replay-frame-label">Frame {initialFrameIndex + 1} / {initialScenario.replay.frames.length}</span>
+                        <input class="replay-range" id="showcase-replay-range" type="range" min="0" max={initialScenario.replay.frames.length - 1} value={initialFrameIndex} />
+                        <span class="replay-autoplay" id="showcase-replay-autoplay">Manual</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent: #f59e0b;
+            --accent-secondary: #fb7185;
+            --bg-primary: rgba(7, 10, 18, 0.98);
+            --bg-secondary: rgba(14, 18, 28, 0.95);
+            --bg-tertiary: rgba(9, 12, 20, 0.92);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --text-muted: rgba(255, 255, 255, 0.45);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: rgba(255, 248, 240, 0.98);
+            --bg-secondary: rgba(255, 255, 255, 0.96);
+            --bg-tertiary: rgba(252, 250, 248, 0.95);
+            --border: rgba(15, 23, 42, 0.08);
+            --text-primary: #0f172a;
+            --text-secondary: rgba(15, 23, 42, 0.7);
+            --text-muted: rgba(15, 23, 42, 0.5);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .dashboard {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background:
+                radial-gradient(ellipse 80% 30% at 50% 0%, rgba(245, 158, 11, 0.08), transparent 50%),
+                radial-gradient(ellipse 60% 40% at 90% 100%, rgba(251, 113, 133, 0.06), transparent 50%),
+                var(--bg-primary);
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .back-icon {
+            font-size: 1.2rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            padding: 0.25rem 0.6rem;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 999px;
+        }
+
+        .header-scenarios {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .scenario-chip {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .scenario-chip:hover,
+        .scenario-chip.is-active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: var(--accent);
+        }
+
+        .dashboard-main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 260px 1fr 320px;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel--center {
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .panel-section {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .scenario-info {
+            margin-bottom: 1rem;
+        }
+
+        .scenario-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .scenario-tagline {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .strategy-card {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+        }
+
+        .strategy-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .strategy-title {
+            display: block;
+            font-size: 0.9rem;
+            margin: 0.25rem 0;
+        }
+
+        .strategy-copy {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .showcase-badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .subsystem-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .subsystem-tab {
+            padding: 0.4rem 0.7rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subsystem-tab:hover,
+        .subsystem-tab.is-active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: var(--accent);
+        }
+
+        .subsystem-panel {
+            font-size: 0.8rem;
+        }
+
+        .subsystem-eyebrow {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .subsystem-headline {
+            font-size: 0.95rem;
+            margin: 0.25rem 0;
+        }
+
+        .subsystem-summary {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsystem-list {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .subsystem-list li {
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .subsystem-list li::before {
+            content: '›';
+            position: absolute;
+            left: -0.75rem;
+            color: var(--accent);
+        }
+
+        .viz-main {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .viz-trend {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .viz-title {
+            font-size: 1rem;
+        }
+
+        .panel-eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .track-map {
+            width: 100%;
+            height: auto;
+        }
+
+        .track-outline {
+            fill: none;
+            stroke: rgba(148, 163, 184, 0.3);
+            stroke-width: 20;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .track-progress {
+            fill: none;
+            stroke: url(#track-gradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+
+        .marker {
+            stroke: rgba(15, 23, 42, 0.7);
+            stroke-width: 2;
+        }
+
+        .marker--cone { fill: #f59e0b; }
+        .marker--apex { fill: #f97316; }
+        .marker--gate { fill: #38bdf8; }
+
+        .track-car {
+            fill: #f8fafc;
+            stroke: #fb7185;
+            stroke-width: 3;
+        }
+
+        .trend-chart {
+            width: 100%;
+            height: auto;
+        }
+
+        .trend-line {
+            fill: none;
+            stroke: url(#track-gradient);
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+
+        .trend-cursor {
+            fill: #f8fafc;
+            stroke: var(--accent);
+            stroke-width: 3;
+        }
+
+        .trend-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.is-active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .tabs-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-panel {
+            display: none;
+            padding: 1rem;
+        }
+
+        .tab-panel.is-active {
+            display: block;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .metric-card {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            background: linear-gradient(135deg, var(--accent), transparent);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .metric-value-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+            margin: 0.25rem 0;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .metric-unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .metric-note {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stage-card {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            border-left: 3px solid;
+        }
+
+        .tone-optimal { border-color: #10b981; }
+        .tone-tracking { border-color: var(--accent); }
+        .tone-watch { border-color: #fb7185; }
+
+        .stage-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .stage-head strong {
+            font-size: 0.85rem;
+        }
+
+        .stage-badge {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .stage-state {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .console-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .console-card {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .console-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.75rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .console-card-header h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .console-card-body {
+            padding: 0.75rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 36px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: rgba(245, 158, 11, 0.5);
+        }
+
+        .toggle input:checked + .toggle-slider::before {
+            transform: translateX(16px);
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .compare-delta {
+            padding: 0.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--accent);
+            border-radius: 0.5rem;
+        }
+
+        .compare-delta strong {
+            display: block;
+            font-size: 0.7rem;
+            margin-bottom: 0.35rem;
+            color: var(--accent);
+        }
+
+        .compare-delta ul {
+            list-style: none;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .script-status,
+        .cache-status {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .script-step-info {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .script-step-counter {
+            font-size: 0.65rem;
+            color: var(--accent);
+        }
+
+        .script-step-title {
+            display: block;
+            font-size: 0.85rem;
+            margin: 0.25rem 0;
+        }
+
+        .script-step-narration {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .script-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.35rem;
+        }
+
+        .script-btn {
+            padding: 0.4rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 0.35rem;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .script-btn:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .script-btn--primary {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: var(--accent);
+        }
+
+        .cache-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 0.75rem;
+        }
+
+        .cache-stat {
+            text-align: center;
+        }
+
+        .cache-stat-value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .cache-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .cache-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.35rem;
+        }
+
+        .cache-btn {
+            padding: 0.4rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 0.35rem;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cache-btn--warm {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .cache-btn--drift {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .cache-btn--reset {
+            background: rgba(251, 113, 133, 0.15);
+            border-color: rgba(251, 113, 133, 0.3);
+        }
+
+        .dashboard-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .replay-section {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .replay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .replay-header h3 {
+            font-size: 0.85rem;
+        }
+
+        .replay-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .replay-info {
+            flex: 1;
+        }
+
+        .replay-title {
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+
+        .replay-summary {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .replay-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .replay-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .replay-btn:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        .replay-btn--primary {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: var(--accent);
+        }
+
+        .replay-scrubber {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .replay-frame-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .replay-range {
+            flex: 1;
+            height: 4px;
+            accent-color: var(--accent);
+        }
+
+        .replay-autoplay {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-main {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .panel--left {
+                grid-column: span 2;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .panel-section {
+                flex: 1;
+                min-width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-main {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+
+            .panel--left,
+            .panel--right {
+                grid-column: span 1;
+            }
+
+            .dashboard-header {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .header-scenarios {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .replay-content {
+                flex-wrap: wrap;
+            }
+
+            .replay-scrubber {
+                width: 100%;
+                order: 3;
+            }
+        }
+    </style>
+
+    <script>
+        import { initShowcaseLabs, teardownShowcaseLabs } from '../utils/showcase-lab-client'
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initShowcaseLabs()
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const target = e.currentTarget as HTMLElement
+                    const tabId = target.dataset.tab
+
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'))
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('is-active'))
+
+                    target.classList.add('is-active')
+                    document.querySelector(`[data-tab-panel="${tabId}"]`)?.classList.add('is-active')
+                })
+            })
+        })
+    </script>
+</body>
+</html>

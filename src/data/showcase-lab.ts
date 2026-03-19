@@ -57,6 +57,39 @@ export interface ShowcaseStrategy {
     copy: string
 }
 
+export interface ShowcaseReplayMetricOverride {
+    id: string
+    value: string
+    note?: string
+    tone?: ShowcaseMetricTone
+}
+
+export interface ShowcaseReplayStageOverride {
+    id: string
+    state: string
+    detail?: string
+    tone?: ShowcaseStageTone
+}
+
+export interface ShowcaseReplayFrame {
+    id: string
+    title: string
+    summary: string
+    progressPath?: string
+    car?: {
+        x: number
+        y: number
+    }
+    trendIndex: number
+    metricOverrides?: ShowcaseReplayMetricOverride[]
+    stageOverrides?: ShowcaseReplayStageOverride[]
+}
+
+export interface ShowcaseReplay {
+    frameDurationMs: number
+    frames: ShowcaseReplayFrame[]
+}
+
 export interface ShowcaseScenario {
     id: string
     name: string
@@ -69,8 +102,16 @@ export interface ShowcaseScenario {
     trend: ShowcaseTrend
     stages: ShowcaseStage[]
     subsystems: ShowcaseSubsystem[]
+    replay: ShowcaseReplay
     defaultSubsystemId: string
 }
+
+// 赛道设计规范：
+// 1. 发车校准：直线制动区，锥桶均匀分布在赛道两侧，车辆在中间
+// 2. 直线高速：长直道，锥桶均匀分布在两侧
+// 3. 高速循迹：大弯曲S型赛道
+// 4. 八字绕环：∞符号（两个对称圆形），中间有直线通道，车辆从直线进入，绕环后出去
+// 5. 紧急制动：直线赛道，锥桶均匀分布
 
 export const showcaseScenarios: ShowcaseScenario[] = [
     {
@@ -119,18 +160,30 @@ export const showcaseScenarios: ShowcaseScenario[] = [
             },
         ],
         track: {
-            label: '发车区短环',
+            label: '发车区直线制动区',
             objective: '完成起跑前的定位和执行器闭环确认',
-            path: 'M36 146 C52 76 128 42 188 52 C246 62 284 116 264 166 C244 202 162 210 104 192 C62 180 28 162 36 146',
-            progressPath: 'M36 146 C52 76 128 42 188 52 C214 56 236 72 250 94',
-            car: { x: 250, y: 94 },
+            // 直线赛道，锥桶均匀分布在两侧
+            path: 'M40 80 L280 80 L280 140 L40 140 Z',
+            progressPath: 'M60 110 L220 110',
+            car: { x: 220, y: 110 },
             markers: [
-                { x: 54, y: 144, type: 'cone' },
-                { x: 106, y: 84, type: 'apex' },
-                { x: 182, y: 70, type: 'gate' },
-                { x: 236, y: 122, type: 'cone' },
-                { x: 184, y: 182, type: 'gate' },
-                { x: 96, y: 178, type: 'cone' },
+                // 左侧锥桶 - 均匀分布
+                { x: 60, y: 75, type: 'cone' },
+                { x: 100, y: 75, type: 'cone' },
+                { x: 140, y: 75, type: 'cone' },
+                { x: 180, y: 75, type: 'cone' },
+                { x: 220, y: 75, type: 'cone' },
+                { x: 260, y: 75, type: 'cone' },
+                // 右侧锥桶 - 均匀分布
+                { x: 60, y: 145, type: 'cone' },
+                { x: 100, y: 145, type: 'cone' },
+                { x: 140, y: 145, type: 'cone' },
+                { x: 180, y: 145, type: 'cone' },
+                { x: 220, y: 145, type: 'cone' },
+                { x: 260, y: 145, type: 'cone' },
+                // 起点和终点标记
+                { x: 50, y: 110, type: 'gate' },
+                { x: 270, y: 110, type: 'gate' },
             ],
         },
         trend: {
@@ -172,53 +225,294 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 id: 'actuation',
                 label: '执行器',
                 state: '驱动扭矩处于限幅模式',
-                detail: '发车前仅释放 35% 的目标扭矩，确保安全起步。',
-                tone: 'watch',
+                detail: '起步阶段扭矩输出被限制在安全范围内，待自检完成后逐步释放。',
+                tone: 'tracking',
             },
         ],
         subsystems: [
             {
                 id: 'perception',
                 label: '感知',
-                eyebrow: 'Sensor Fusion',
+                eyebrow: 'Cone Detection',
                 headline: '起步前先把赛道边界看清楚',
-                summary: '系统会在起跑线前验证激光雷达点云与摄像头识别框是否一致，避免误把噪点当作有效锥桶。',
-                bullets: ['双传感器时间戳对齐', '锥桶簇与图像框交叉验证', '异常目标自动降权'],
+                summary: '发车校准阶段，感知模块需要优先完成锥桶与边界的识别和对齐。',
+                bullets: ['锥桶目标聚类', '边界线拟合', '双传感器对齐'],
             },
             {
                 id: 'localization',
                 label: '定位',
-                eyebrow: 'State Estimation',
-                headline: '组合导航先收敛，再允许发车',
-                summary: '如果姿态漂移还没有收敛，系统不会进入可发车状态。',
-                bullets: ['IMU 与轮速计闭环修正', 'GNSS 仅作边界约束', '起跑区域采用高可信度状态锁'],
+                eyebrow: 'Pose Initialization',
+                headline: '定位初始化是发车的先决条件',
+                summary: '通过惯导预积分和 GNSS 校验，确保车辆位姿在起跑前已收敛。',
+                bullets: ['惯导预积分稳定', 'GNSS 边界校验', '位姿偏差收敛'],
             },
             {
                 id: 'planning',
                 label: '规划',
-                eyebrow: 'Trajectory Planner',
+                eyebrow: 'Launch Planner',
                 headline: '首段轨迹以安全走廊为主',
-                summary: '首版演示强调产品概念，因此展示的是“先稳定，再加速”的规划策略。',
-                bullets: ['低横向加速度约束', '预留制动缓冲距离', '与控制器共享速度上限'],
+                summary: '起步轨迹规划优先考虑安全性和稳定性，而非速度。',
+                bullets: ['安全走廊约束', '起步速度限制', '横摆率约束'],
             },
             {
                 id: 'control',
                 label: '控制',
-                eyebrow: 'Vehicle Control',
-                headline: '控制器实时监测每个执行环节',
-                summary: '转向角、制动力与电机扭矩都会在本地页面中映射为状态变化。',
-                bullets: ['MPC/PID 混合控制展示', '控制延迟可视化', '超阈值时切换保护逻辑'],
+                eyebrow: 'System Check',
+                headline: '执行器闭环检查通过后才允许起步',
+                summary: '控制模块在发车前需要确认转向和制动系统的冗余状态。',
+                bullets: ['转向冗余检查', '制动冗余检查', '执行器回读校验'],
             },
             {
                 id: 'actuation',
                 label: '执行器',
-                eyebrow: 'Drive by Wire',
-                headline: '执行层是最终的安全闸门',
-                summary: '即使上层全部就绪，执行层也会在校验通过前保持限幅输出。',
-                bullets: ['驱动扭矩软启动', '制动器状态回读', '转向回正校验'],
+                eyebrow: 'Torque Limiter',
+                headline: '扭矩限幅模式确保安全起步',
+                summary: '起步阶段驱动扭矩被限制在安全范围内，防止意外加速。',
+                bullets: ['扭矩限幅', '逐步释放策略', '安全阈值监控'],
             },
         ],
+        replay: {
+            frameDurationMs: 500,
+            frames: [
+                {
+                    id: 'sync-calibration',
+                    title: '同步校准',
+                    summary: '系统正在逐项确认定位和制动状态',
+                    trendIndex: 0,
+                },
+                {
+                    id: 'launch-ready',
+                    title: '校准完成，释放起步窗口',
+                    summary: '允许车辆以低扭矩进入发车区',
+                    progressPath: 'M60 110 L180 110',
+                    car: { x: 180, y: 110 },
+                    trendIndex: 3,
+                    metricOverrides: [
+                        {
+                            id: 'speed',
+                            value: '24',
+                            note: '自检完成，扭矩开始释放',
+                            tone: 'accent',
+                        },
+                    ],
+                    stageOverrides: [
+                        {
+                            id: 'actuation',
+                            state: '扭矩释放提升到 52%',
+                            detail: '执行层保持限幅，但允许更顺畅的起步。',
+                            tone: 'tracking',
+                        },
+                    ],
+                },
+            ],
+        },
         defaultSubsystemId: 'perception',
+    },
+    {
+        id: 'straight-high-speed',
+        name: '直线高速',
+        tagline: '在直线赛道上追求极限速度，考验动力与空气动力学',
+        description:
+            '车辆进入长直道区域，系统专注于动力输出最大化、空气动力学优化和高速稳定性控制。',
+        badges: ['Straight Line', 'Top Speed', 'Aero Dynamics'],
+        strategy: {
+            title: '极速冲刺策略',
+            copy: '在直线赛道上释放全部动力，同时保持车辆稳定性，追求最高尾速。',
+        },
+        metrics: [
+            {
+                id: 'speed',
+                label: '当前车速',
+                value: '156',
+                unit: 'km/h',
+                note: '接近极速',
+                tone: 'accent',
+            },
+            {
+                id: 'acceleration',
+                label: '纵向加速度',
+                value: '4.2',
+                unit: 'm/s²',
+                note: '全力加速中',
+                tone: 'positive',
+            },
+            {
+                id: 'localization',
+                label: '定位置信度',
+                value: '99.5',
+                unit: '%',
+                note: '高速定位稳定',
+                tone: 'positive',
+            },
+            {
+                id: 'aero-load',
+                label: '空气下压力',
+                value: '892',
+                unit: 'N',
+                note: '下压力充足',
+                tone: 'accent',
+            },
+        ],
+        track: {
+            label: '直线高速赛道',
+            objective: '在直线赛道上达到最高速度并保持稳定',
+            // 长直道，锥桶均匀分布在两侧
+            path: 'M30 90 L310 90 L310 130 L30 130 Z',
+            progressPath: 'M50 110 L250 110',
+            car: { x: 250, y: 110 },
+            markers: [
+                // 左侧锥桶 - 均匀分布
+                { x: 50, y: 85, type: 'cone' },
+                { x: 90, y: 85, type: 'cone' },
+                { x: 130, y: 85, type: 'cone' },
+                { x: 170, y: 85, type: 'cone' },
+                { x: 210, y: 85, type: 'cone' },
+                { x: 250, y: 85, type: 'cone' },
+                { x: 290, y: 85, type: 'cone' },
+                // 右侧锥桶 - 均匀分布
+                { x: 50, y: 135, type: 'cone' },
+                { x: 90, y: 135, type: 'cone' },
+                { x: 130, y: 135, type: 'cone' },
+                { x: 170, y: 135, type: 'cone' },
+                { x: 210, y: 135, type: 'cone' },
+                { x: 250, y: 135, type: 'cone' },
+                { x: 290, y: 135, type: 'cone' },
+                // 起点和终点标记
+                { x: 40, y: 110, type: 'gate' },
+                { x: 300, y: 110, type: 'gate' },
+                // 中段测速点
+                { x: 170, y: 110, type: 'apex' },
+            ],
+        },
+        trend: {
+            label: '速度提升',
+            values: [65, 88, 112, 134, 148, 156],
+            startLabel: '入直道',
+            endLabel: '尾速峰值',
+        },
+        stages: [
+            {
+                id: 'perception',
+                label: '感知',
+                state: '远距离目标跟踪稳定',
+                detail: '高速直线段优先保证远距离锥桶的连续识别。',
+                tone: 'optimal',
+            },
+            {
+                id: 'localization',
+                label: '定位',
+                state: '高速纵向定位精度保持',
+                detail: '惯导与轮速融合保证高速下的纵向距离估计准确。',
+                tone: 'optimal',
+            },
+            {
+                id: 'planning',
+                label: '规划',
+                state: '全力加速，保持直线',
+                detail: '规划器释放全部动力请求，同时保持车辆直线行驶。',
+                tone: 'optimal',
+            },
+            {
+                id: 'control',
+                label: '控制',
+                state: '高速稳定性控制',
+                detail: '控制器专注于高速下的横向稳定性，防止车辆偏移。',
+                tone: 'optimal',
+            },
+            {
+                id: 'actuation',
+                label: '执行器',
+                state: '动力输出最大化',
+                detail: '驱动系统全力输出，达到最大加速度。',
+                tone: 'optimal',
+            },
+        ],
+        subsystems: [
+            {
+                id: 'perception',
+                label: '感知',
+                eyebrow: 'Long Range Vision',
+                headline: '高速直线需要看得更远',
+                summary: '在直线高速场景下，远距离目标的识别和跟踪至关重要。',
+                bullets: ['远距离锥桶检测', '高速目标跟踪', '路面状况预判'],
+            },
+            {
+                id: 'localization',
+                label: '定位',
+                eyebrow: 'High Speed Localization',
+                headline: '高速下的纵向精度是关键',
+                summary: '直线高速场景下，纵向距离的精确估计直接影响制动点判断。',
+                bullets: ['惯导轮速融合', '纵向距离估计', '高速漂移补偿'],
+            },
+            {
+                id: 'planning',
+                label: '规划',
+                eyebrow: 'Speed Planner',
+                headline: '全力加速，精准制动',
+                summary: '规划器在直线段释放全部动力，同时预判制动点。',
+                bullets: ['最大加速度规划', '制动点预判', '尾速优化'],
+            },
+            {
+                id: 'control',
+                label: '控制',
+                eyebrow: 'Stability Control',
+                headline: '高速下的横向稳定性',
+                summary: '高速行驶时，微小的横向偏移都会被放大，需要精确控制。',
+                bullets: ['横向稳定性控制', '空气动力学补偿', '高速转向微调'],
+            },
+            {
+                id: 'actuation',
+                label: '执行器',
+                eyebrow: 'Power Delivery',
+                headline: '动力输出的极致追求',
+                summary: '执行器需要在保证安全的前提下，释放最大动力。',
+                bullets: ['最大扭矩输出', '动力响应优化', '热管理监控'],
+            },
+        ],
+        replay: {
+            frameDurationMs: 500,
+            frames: [
+                {
+                    id: 'entry-accel',
+                    title: '入直道，全力加速',
+                    summary: '车辆进入直线赛道，系统开始全力加速',
+                    trendIndex: 0,
+                },
+                {
+                    id: 'mid-speed',
+                    title: '速度持续提升',
+                    summary: '车辆速度快速提升，接近极速',
+                    progressPath: 'M50 110 L170 110',
+                    car: { x: 170, y: 110 },
+                    trendIndex: 3,
+                    metricOverrides: [
+                        {
+                            id: 'speed',
+                            value: '134',
+                            note: '速度持续提升中',
+                            tone: 'accent',
+                        },
+                    ],
+                },
+                {
+                    id: 'top-speed',
+                    title: '达到尾速峰值',
+                    summary: '车辆达到直线赛道最高速度',
+                    progressPath: 'M50 110 L290 110',
+                    car: { x: 290, y: 110 },
+                    trendIndex: 5,
+                    metricOverrides: [
+                        {
+                            id: 'speed',
+                            value: '156',
+                            note: '达到极速',
+                            tone: 'accent',
+                        },
+                    ],
+                },
+            ],
+        },
+        defaultSubsystemId: 'planning',
     },
     {
         id: 'high-speed-lap',
@@ -266,19 +560,31 @@ export const showcaseScenarios: ShowcaseScenario[] = [
             },
         ],
         track: {
-            label: '高速单圈',
+            label: '大弯曲S型高速赛道',
             objective: '在大曲率变化前提前完成速度与姿态调整',
-            path: 'M30 162 C44 86 112 40 174 46 C242 54 286 110 276 154 C262 206 194 196 164 154 C134 114 78 110 70 150 C62 188 120 206 198 182',
-            progressPath: 'M30 162 C44 86 112 40 174 46 C220 52 252 82 266 118',
-            car: { x: 266, y: 118 },
+            // 大弯曲S型赛道
+            path: 'M30 140 C50 60 120 40 160 80 C200 120 240 60 280 80 C320 100 300 160 260 160 C220 160 180 120 140 140 C100 160 60 180 30 140',
+            progressPath: 'M30 140 C50 60 120 40 160 80 C180 100 200 90 220 85',
+            car: { x: 220, y: 85 },
             markers: [
-                { x: 46, y: 160, type: 'cone' },
-                { x: 92, y: 78, type: 'apex' },
-                { x: 170, y: 60, type: 'gate' },
-                { x: 236, y: 88, type: 'cone' },
-                { x: 248, y: 158, type: 'gate' },
-                { x: 146, y: 132, type: 'apex' },
-                { x: 90, y: 170, type: 'cone' },
+                // S型弯道锥桶 - 左侧
+                { x: 50, y: 120, type: 'cone' },
+                { x: 100, y: 60, type: 'cone' },
+                { x: 160, y: 60, type: 'cone' },
+                { x: 220, y: 40, type: 'cone' },
+                { x: 280, y: 60, type: 'cone' },
+                // S型弯道锥桶 - 右侧
+                { x: 50, y: 160, type: 'cone' },
+                { x: 100, y: 140, type: 'cone' },
+                { x: 160, y: 120, type: 'cone' },
+                { x: 220, y: 140, type: 'cone' },
+                { x: 280, y: 120, type: 'cone' },
+                // 弯心标记
+                { x: 130, y: 90, type: 'apex' },
+                { x: 250, y: 100, type: 'apex' },
+                // 起点和终点
+                { x: 40, y: 140, type: 'gate' },
+                { x: 300, y: 130, type: 'gate' },
             ],
         },
         trend: {
@@ -330,7 +636,7 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 label: '感知',
                 eyebrow: 'Cone Tracking',
                 headline: '高速下最怕的是连续识别断层',
-                summary: '页面通过“锥桶连续识别”指标直接映射高速工况里的感知连续性。',
+                summary: '页面通过"锥桶连续识别"指标直接映射高速工况里的感知连续性。',
                 bullets: ['短时遮挡插值', '图像与点云双通道确认', '低置信目标自动降权'],
             },
             {
@@ -354,7 +660,7 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 label: '控制',
                 eyebrow: 'Closed Loop',
                 headline: '控制延迟越低，车辆越敢贴近理想线',
-                summary: '控制面板强调的是“响应速度”和“稳定度”的可视化感受。',
+                summary: '控制面板强调的是"响应速度"和"稳定度"的可视化感受。',
                 bullets: ['高频滚动优化', '横向误差即时补偿', '速度控制前馈补偿'],
             },
             {
@@ -366,6 +672,50 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 bullets: ['扭矩平滑输出', '再生制动融合', '驱动状态回读'],
             },
         ],
+        replay: {
+            frameDurationMs: 500,
+            frames: [
+                {
+                    id: 'entry-balance',
+                    title: '入弯前压姿态',
+                    summary: '系统在大曲率变化前先压住姿态和横向误差。',
+                    trendIndex: 0,
+                },
+                {
+                    id: 'apex-attack',
+                    title: 'MPC 抢出口速度',
+                    summary: '规划与控制开始共享更激进的出弯速度目标。',
+                    progressPath: 'M30 140 C50 60 120 40 160 80 C180 100 190 95 200 90',
+                    car: { x: 200, y: 90 },
+                    trendIndex: 2,
+                    metricOverrides: [
+                        {
+                            id: 'speed',
+                            value: '112',
+                            note: '接近理想出口速度',
+                            tone: 'accent',
+                        },
+                    ],
+                    stageOverrides: [
+                        {
+                            id: 'control',
+                            state: 'MPC 输出开始贴近理想线',
+                            detail: '控制器把更多余量用于争取出口速度。',
+                            tone: 'optimal',
+                        },
+                    ],
+                },
+                {
+                    id: 'finish-straight',
+                    title: '出弯稳定，准备冲线',
+                    summary: '高速循迹进入直线收束阶段，圈速收益逐渐兑现。',
+                    progressPath:
+                        'M30 140 C50 60 120 40 160 80 C200 120 240 60 280 80 C300 90 295 120 280 130',
+                    car: { x: 280, y: 130 },
+                    trendIndex: 5,
+                },
+            ],
+        },
         defaultSubsystemId: 'planning',
     },
     {
@@ -414,18 +764,43 @@ export const showcaseScenarios: ShowcaseScenario[] = [
             },
         ],
         track: {
-            label: '八字绕环',
+            label: '八字绕环赛道（∞符号）',
             objective: '连续反向弯中的姿态收敛与路径跟踪演示',
-            path: 'M92 112 C52 52 44 162 102 162 C160 162 148 52 102 52 C60 52 66 172 122 172 C188 172 198 52 246 52 C292 52 286 162 226 162 C166 162 174 52 122 52',
-            progressPath: 'M92 112 C52 52 44 162 102 162 C138 162 148 120 138 92',
-            car: { x: 138, y: 92 },
+            // ∞符号（两个对称圆形），中间有直线通道
+            path: 'M80 110 L120 110 C120 110 100 50 140 50 C180 50 180 110 140 110 C100 110 100 170 140 170 C180 170 180 110 160 110 L200 110',
+            progressPath: 'M80 110 L120 110 C120 110 110 70 140 70 C160 70 160 110 140 110',
+            car: { x: 140, y: 110 },
             markers: [
-                { x: 72, y: 64, type: 'cone' },
-                { x: 78, y: 158, type: 'apex' },
-                { x: 126, y: 108, type: 'gate' },
-                { x: 214, y: 66, type: 'cone' },
-                { x: 226, y: 158, type: 'apex' },
-                { x: 172, y: 112, type: 'gate' },
+                // 入口直线锥桶
+                { x: 90, y: 105, type: 'cone' },
+                { x: 90, y: 115, type: 'cone' },
+                { x: 110, y: 105, type: 'cone' },
+                { x: 110, y: 115, type: 'cone' },
+                // 左圆环锥桶（上半部分）
+                { x: 120, y: 60, type: 'cone' },
+                { x: 140, y: 45, type: 'cone' },
+                { x: 160, y: 60, type: 'cone' },
+                // 左圆环锥桶（下半部分）
+                { x: 120, y: 160, type: 'cone' },
+                { x: 140, y: 175, type: 'cone' },
+                { x: 160, y: 160, type: 'cone' },
+                // 右圆环锥桶（上半部分）
+                { x: 180, y: 60, type: 'cone' },
+                { x: 200, y: 45, type: 'cone' },
+                { x: 220, y: 60, type: 'cone' },
+                // 右圆环锥桶（下半部分）
+                { x: 180, y: 160, type: 'cone' },
+                { x: 200, y: 175, type: 'cone' },
+                { x: 220, y: 160, type: 'cone' },
+                // 出口直线锥桶
+                { x: 190, y: 105, type: 'cone' },
+                { x: 190, y: 115, type: 'cone' },
+                // 弯心标记
+                { x: 140, y: 110, type: 'apex' },
+                { x: 200, y: 110, type: 'apex' },
+                // 入口和出口
+                { x: 80, y: 110, type: 'gate' },
+                { x: 220, y: 110, type: 'gate' },
             ],
         },
         trend: {
@@ -493,7 +868,7 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 label: '规划',
                 eyebrow: 'Stability Planner',
                 headline: '规划器主动降低目标速度换稳定',
-                summary: '这是一个很适合在展示页里解释“为什么不是越快越好”的场景。',
+                summary: '这是一个很适合在展示页里解释"为什么不是越快越好"的场景。',
                 bullets: ['局部速度限幅', '反向弯平滑切线', '留出控制修正余量'],
             },
             {
@@ -508,11 +883,55 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 id: 'actuation',
                 label: '执行器',
                 eyebrow: 'Brake Steering Blend',
-                headline: '执行层负责把“稳”真正落到车上',
+                headline: '执行层负责把"稳"真正落到车上',
                 summary: '如果执行层动作不一致，再好的规划也会放大摆动。',
                 bullets: ['转向与制动同步', '驱动扭矩及时收敛', '异常回读触发保护'],
             },
         ],
+        replay: {
+            frameDurationMs: 500,
+            frames: [
+                {
+                    id: 'left-entry',
+                    title: '左弯切入，稳定优先',
+                    summary: '系统先降低速度，为第一次反向切换预留姿态空间。',
+                    trendIndex: 0,
+                },
+                {
+                    id: 'mid-transition',
+                    title: '反向切线开始交接',
+                    summary: '控制器重点抑制横摆率，避免切换时车身二次摆动。',
+                    progressPath: 'M80 110 L120 110 C120 110 115 90 140 90 C155 90 155 110 145 110',
+                    car: { x: 145, y: 110 },
+                    trendIndex: 2,
+                    metricOverrides: [
+                        {
+                            id: 'yaw-margin',
+                            value: '16.1',
+                            note: '姿态控制开始收敛',
+                            tone: 'positive',
+                        },
+                    ],
+                    stageOverrides: [
+                        {
+                            id: 'control',
+                            state: '横摆率抑制进入强约束段',
+                            detail: '控制器把更多权重放到姿态稳定上。',
+                            tone: 'optimal',
+                        },
+                    ],
+                },
+                {
+                    id: 'right-exit',
+                    title: '右弯切出，路径重新拉直',
+                    summary: '系统完成反向弯切换，开始回收速度与路径余量。',
+                    progressPath:
+                        'M80 110 L120 110 C120 110 100 50 140 50 C180 50 180 110 160 110 L190 110',
+                    car: { x: 190, y: 110 },
+                    trendIndex: 5,
+                },
+            ],
+        },
         defaultSubsystemId: 'planning',
     },
     {
@@ -524,7 +943,7 @@ export const showcaseScenarios: ShowcaseScenario[] = [
         badges: ['EBS', 'Safety Loop', 'Hard Stop'],
         strategy: {
             title: '安全闭环优先策略',
-            copy: '所有上层模块的目标都会在障碍确认后统一收敛到“最短可控停车”，体现整车安全逻辑。',
+            copy: '所有上层模块的目标都会在障碍确认后统一收敛到"最短可控停车"，体现整车安全逻辑。',
         },
         metrics: [
             {
@@ -563,15 +982,32 @@ export const showcaseScenarios: ShowcaseScenario[] = [
         track: {
             label: '直线制动区',
             objective: '在障碍确认后最短时间内安全停车并给出停稳确认',
-            path: 'M34 112 L284 112',
-            progressPath: 'M34 112 L196 112',
-            car: { x: 196, y: 112 },
+            // 直线赛道，锥桶均匀分布在两侧
+            path: 'M30 90 L310 90 L310 130 L30 130 Z',
+            progressPath: 'M50 110 L200 110',
+            car: { x: 200, y: 110 },
             markers: [
-                { x: 56, y: 96, type: 'cone' },
-                { x: 104, y: 128, type: 'gate' },
-                { x: 164, y: 96, type: 'cone' },
-                { x: 222, y: 112, type: 'apex' },
-                { x: 262, y: 112, type: 'gate' },
+                // 左侧锥桶 - 均匀分布
+                { x: 50, y: 85, type: 'cone' },
+                { x: 90, y: 85, type: 'cone' },
+                { x: 130, y: 85, type: 'cone' },
+                { x: 170, y: 85, type: 'cone' },
+                { x: 210, y: 85, type: 'cone' },
+                { x: 250, y: 85, type: 'cone' },
+                { x: 290, y: 85, type: 'cone' },
+                // 右侧锥桶 - 均匀分布
+                { x: 50, y: 135, type: 'cone' },
+                { x: 90, y: 135, type: 'cone' },
+                { x: 130, y: 135, type: 'cone' },
+                { x: 170, y: 135, type: 'cone' },
+                { x: 210, y: 135, type: 'cone' },
+                { x: 250, y: 135, type: 'cone' },
+                { x: 290, y: 135, type: 'cone' },
+                // 障碍物位置
+                { x: 260, y: 110, type: 'apex' },
+                // 起点和终点
+                { x: 40, y: 110, type: 'gate' },
+                { x: 300, y: 110, type: 'gate' },
             ],
         },
         trend: {
@@ -638,7 +1074,7 @@ export const showcaseScenarios: ShowcaseScenario[] = [
                 id: 'planning',
                 label: '规划',
                 eyebrow: 'Safety Planning',
-                headline: '规划目标在一瞬间从“快”切到“停”',
+                headline: '规划目标在一瞬间从"快"切到"停"',
                 summary: '这个场景最适合展示无人驾驶系统不是单点算法，而是完整决策链。',
                 bullets: ['最短可控停车曲线', '放弃所有速度收益', '把控制与执行器优先级拉满'],
             },
@@ -652,13 +1088,64 @@ export const showcaseScenarios: ShowcaseScenario[] = [
             },
             {
                 id: 'actuation',
-                label: '执行确认',
+                label: '执行器',
                 eyebrow: 'Safety Actuation',
                 headline: '执行层给出最后的停稳确认',
                 summary: '只要执行器没有回读停稳，页面就不会宣告安全闭环完成。',
                 bullets: ['速度归零回读', '制动器状态确认', '停稳信号上报'],
             },
         ],
+        replay: {
+            frameDurationMs: 500,
+            frames: [
+                {
+                    id: 'risk-lock',
+                    title: '障碍确认锁定',
+                    summary: '多模态输入达成一致，系统进入制动优先模式。',
+                    trendIndex: 0,
+                },
+                {
+                    id: 'brake-build',
+                    title: '制动力快速建立',
+                    summary: '控制器把所有目标统一收敛到最短可控停车。',
+                    progressPath: 'M50 110 L230 110',
+                    car: { x: 230, y: 110 },
+                    trendIndex: 3,
+                    metricOverrides: [
+                        {
+                            id: 'latency',
+                            value: '5',
+                            note: '制动指令已进入快速建立阶段',
+                            tone: 'accent',
+                        },
+                    ],
+                    stageOverrides: [
+                        {
+                            id: 'control',
+                            state: '制动压力建立进入峰值段',
+                            detail: '直线稳定与减速度目标保持一致。',
+                            tone: 'optimal',
+                        },
+                    ],
+                },
+                {
+                    id: 'stop-confirm',
+                    title: '停稳确认完成',
+                    summary: '执行层回读速度接近零，发布安全闭环完成信号。',
+                    progressPath: 'M50 110 L280 110',
+                    car: { x: 280, y: 110 },
+                    trendIndex: 5,
+                    metricOverrides: [
+                        {
+                            id: 'ebrake-distance',
+                            value: '11.2',
+                            note: '最终停稳距离继续收敛',
+                            tone: 'positive',
+                        },
+                    ],
+                },
+            ],
+        },
         defaultSubsystemId: 'actuation',
     },
 ]
@@ -668,61 +1155,102 @@ export interface ShowcaseConfigSelection {
     subsystemId: string
 }
 
-export const defaultShowcaseSelection: ShowcaseConfigSelection = {
+export interface CacheResource {
+    id: string
+    status: 'ready' | 'stale' | 'pending'
+    lastSync: number
+}
+
+export type CacheMode = 'cold' | 'syncing' | 'ready'
+
+export interface ShowcaseCacheSimulationState {
+    mode: CacheMode
+    resources: CacheResource[]
+    hitRate: number
+    lastSyncTime: number | null
+}
+
+export const showcaseCacheSimulationConfig = {
+    initialState: {
+        mode: 'cold' as CacheMode,
+        resources: [],
+        hitRate: 0,
+        lastSyncTime: null,
+    },
+    warmCacheState: {
+        mode: 'ready' as CacheMode,
+        resources: [
+            { id: 'scenario-data', status: 'ready' as const, lastSync: Date.now() },
+            { id: 'metrics-cache', status: 'ready' as const, lastSync: Date.now() },
+            { id: 'track-geometry', status: 'ready' as const, lastSync: Date.now() },
+            { id: 'subsystem-config', status: 'ready' as const, lastSync: Date.now() },
+            { id: 'replay-frames', status: 'ready' as const, lastSync: Date.now() },
+        ],
+        hitRate: 94,
+        lastSyncTime: Date.now(),
+    },
+    driftState: {
+        mode: 'syncing' as CacheMode,
+        resources: [
+            { id: 'scenario-data', status: 'stale' as const, lastSync: Date.now() - 5000 },
+            { id: 'metrics-cache', status: 'pending' as const, lastSync: Date.now() },
+            { id: 'track-geometry', status: 'stale' as const, lastSync: Date.now() - 3000 },
+            { id: 'subsystem-config', status: 'ready' as const, lastSync: Date.now() },
+            { id: 'replay-frames', status: 'pending' as const, lastSync: Date.now() },
+        ],
+        hitRate: 67,
+        lastSyncTime: Date.now(),
+    },
+}
+
+export const SHOWCASE_SELECTION_STORAGE_KEY = 'huat-showcase-lab-selection'
+
+export const showcaseScripts = [
+    {
+        id: 'full-pipeline',
+        name: '全链路讲解',
+        description: '从感知到执行器的完整链路演示',
+        steps: [
+            { scenarioId: 'launch-calibration', subsystemId: 'perception', title: '感知层准备' },
+            { scenarioId: 'launch-calibration', subsystemId: 'localization', title: '定位收敛' },
+            { scenarioId: 'straight-high-speed', subsystemId: 'planning', title: '直线高速规划' },
+            { scenarioId: 'high-speed-lap', subsystemId: 'control', title: '高速循迹控制' },
+            { scenarioId: 'figure-eight', subsystemId: 'actuation', title: '八字绕环执行' },
+            { scenarioId: 'emergency-brake', subsystemId: 'perception', title: '安全闭环' },
+        ],
+    },
+    {
+        id: 'high-speed',
+        name: '高速场景',
+        description: '重点展示高速循迹和直线加速',
+        steps: [
+            { scenarioId: 'straight-high-speed', subsystemId: 'planning', title: '直线加速' },
+            { scenarioId: 'high-speed-lap', subsystemId: 'control', title: '高速过弯' },
+            { scenarioId: 'high-speed-lap', subsystemId: 'actuation', title: '出弯加速' },
+        ],
+    },
+    {
+        id: 'safety-demo',
+        name: '安全演示',
+        description: '展示紧急制动和安全闭环',
+        steps: [
+            { scenarioId: 'emergency-brake', subsystemId: 'perception', title: '障碍识别' },
+            { scenarioId: 'emergency-brake', subsystemId: 'planning', title: '制动规划' },
+            { scenarioId: 'emergency-brake', subsystemId: 'control', title: '制动执行' },
+            { scenarioId: 'emergency-brake', subsystemId: 'actuation', title: '停稳确认' },
+        ],
+    },
+]
+
+export const defaultShowcaseSelection = {
     scenarioId: 'launch-calibration',
     subsystemId: 'perception',
 }
 
-export function validateShowcaseConfig(
-    scenarios: ShowcaseScenario[],
-    defaultSelection: ShowcaseConfigSelection,
-): void {
-    if (scenarios.length === 0) {
-        throw new Error('Showcase scenarios must not be empty.')
-    }
-
-    const scenarioIds = new Set<string>()
-
-    for (const scenario of scenarios) {
-        if (scenarioIds.has(scenario.id)) {
-            throw new Error(`Duplicate showcase scenario id: ${scenario.id}`)
-        }
-
-        scenarioIds.add(scenario.id)
-
-        const subsystemIds = new Set<string>()
-
-        for (const subsystem of scenario.subsystems) {
-            if (subsystemIds.has(subsystem.id)) {
-                throw new Error(
-                    `Duplicate showcase subsystem id "${subsystem.id}" in scenario "${scenario.id}"`,
-                )
-            }
-
-            subsystemIds.add(subsystem.id)
-        }
-
-        if (!subsystemIds.has(scenario.defaultSubsystemId)) {
-            throw new Error(
-                `Showcase scenario "${scenario.id}" defaultSubsystemId "${scenario.defaultSubsystemId}" is missing from subsystems`,
-            )
-        }
-    }
-
-    const defaultScenario = scenarios.find((scenario) => scenario.id === defaultSelection.scenarioId)
-
-    if (!defaultScenario) {
-        throw new Error(
-            `Default showcase scenario "${defaultSelection.scenarioId}" is missing from showcaseScenarios`,
-        )
-    }
-
-    if (!defaultScenario.subsystems.some((subsystem) => subsystem.id === defaultSelection.subsystemId)) {
-        throw new Error(
-            `Default showcase subsystem "${defaultSelection.subsystemId}" is missing from scenario "${defaultScenario.id}"`,
-        )
-    }
+export function getScenarioById(id: string): ShowcaseScenario | undefined {
+    return showcaseScenarios.find((s) => s.id === id)
 }
 
-validateShowcaseConfig(showcaseScenarios, defaultShowcaseSelection)
-
+export function getDefaultScenario(): ShowcaseScenario {
+    return showcaseScenarios[0]
+}
