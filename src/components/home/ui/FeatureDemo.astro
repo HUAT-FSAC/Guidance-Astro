@@ -1,0 +1,137 @@
+---
+---
+
+<div class="feature-demo-container">
+    <h3>🎯 新功能演示</h3>
+    <div class="demo-buttons">
+        <button class="demo-btn success" id="toast-success">成功通知</button>
+        <button class="demo-btn warning" id="toast-warning">警告通知</button>
+        <button class="demo-btn error" id="toast-error">错误通知</button>
+        <button class="demo-btn info" id="toast-info">信息通知</button>
+        <button class="demo-btn primary" id="save-progress">保存进度</button>
+        <button class="demo-btn primary" id="add-search">添加搜索</button>
+    </div>
+</div>
+
+<script>
+    import { toast } from '../../../utils/toast'
+    import { formatProgress, getCurrentProgress, saveCurrentProgress } from '../../../utils/reading-progress'
+    import { addSearchHistory, getSearchHistory } from '../../../utils/search-history'
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const toastSuccess = document.getElementById('toast-success')
+        const toastWarning = document.getElementById('toast-warning')
+        const toastError = document.getElementById('toast-error')
+        const toastInfo = document.getElementById('toast-info')
+        const saveProgress = document.getElementById('save-progress')
+        const addSearch = document.getElementById('add-search')
+
+        toastSuccess?.addEventListener('click', () => {
+            toast.success('操作成功！数据已保存', { position: 'bottom-right' })
+        })
+
+        toastWarning?.addEventListener('click', () => {
+            toast.warning('请注意！此操作不可撤销', { position: 'bottom-right' })
+        })
+
+        toastError?.addEventListener('click', () => {
+            toast.error('发生错误！请稍后重试', { position: 'bottom-right' })
+        })
+
+        toastInfo?.addEventListener('click', () => {
+            toast.info('提示：您可以使用键盘快捷键', { position: 'bottom-right' })
+        })
+
+        saveProgress?.addEventListener('click', () => {
+            saveCurrentProgress()
+            const progress = getCurrentProgress()
+            if (progress) {
+                toast.success(`阅读进度已保存：${formatProgress(progress.scrollPercent)}`)
+            }
+        })
+
+        addSearch?.addEventListener('click', () => {
+            const queries = ['ROS 入门', '感知算法', '路径规划', '仿真测试', '无人车']
+            const randomQuery = queries[Math.floor(Math.random() * queries.length)]
+            addSearchHistory(randomQuery)
+            const history = getSearchHistory()
+            toast.success(`搜索历史已添加，共 ${history.length} 条记录`)
+        })
+    })
+</script>
+
+<style>
+    .feature-demo-container {
+        margin: 2rem 0;
+        padding: 2rem;
+        background: var(--fs-bg-surface);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--fs-border-subtle);
+    }
+
+    .feature-demo-container h3 {
+        margin: 0 0 1.5rem 0;
+        font-size: 1.25rem;
+        color: var(--sl-color-text);
+    }
+
+    .demo-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .demo-btn {
+        padding: 0.625rem 1.25rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+    }
+
+    .demo-btn.success {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .demo-btn.warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .demo-btn.error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .demo-btn.info {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .demo-btn.primary {
+        background: var(--sl-color-accent);
+    }
+
+    .demo-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .demo-btn:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+        .feature-demo-container {
+            padding: 1.5rem;
+        }
+
+        .demo-buttons {
+            flex-direction: column;
+        }
+
+        .demo-btn {
+            width: 100%;
+        }
+    }
+</style>

@@ -1,7 +1,7 @@
 ---
 /**
  * 主题切换组件 - 重构版
- * 功能：一键切换亮暗模式 + 长按选择主题色
+ * 功能：一键切换亮暗模式 + 点击打开颜色选择菜单
  * 设计：现代简洁风格，图标动态变化
  */
 
@@ -28,8 +28,9 @@ const themeColors: ThemeColor[] = [
         aria-haspopup="menu"
         aria-expanded="false"
         aria-controls="theme-dropdown"
-        title="点击切换亮暗模式，长按选择主题色"
+        title="点击切换亮暗模式，右键或长按选择主题色"
     >
+        <span class="color-indicator"></span>
         <span class="icon-sun">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"></circle>
@@ -67,6 +68,11 @@ const themeColors: ThemeColor[] = [
                 >
                     <span class="color-dot"></span>
                     <span class="color-name">{theme.name}</span>
+                    <span class="color-check">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </span>
                 </button>
             ))}
         </div>
@@ -98,7 +104,6 @@ const themeColors: ThemeColor[] = [
         try {
             localStorage.setItem(key, value)
         } catch {
-            // ignore
         }
     }
 
@@ -125,6 +130,7 @@ const themeColors: ThemeColor[] = [
         document.documentElement.style.setProperty('--sl-color-accent', color)
         document.documentElement.style.setProperty('--sl-color-accent-high', accent)
         updateColorSelection(color)
+        updateColorIndicator(color)
     }
 
     function updateColorSelection(color: string): void {
@@ -136,6 +142,13 @@ const themeColors: ThemeColor[] = [
                 el.classList.remove('active')
             }
         })
+    }
+
+    function updateColorIndicator(color: string): void {
+        const indicator = document.querySelector('[data-theme-switcher] .color-indicator') as HTMLElement
+        if (indicator) {
+            indicator.style.background = color
+        }
     }
 
     function toggleScheme(): ColorScheme {
@@ -200,6 +213,8 @@ const themeColors: ThemeColor[] = [
         const savedAccent = safeGetItem(STORAGE_KEY_ACCENT)
         if (savedColor && savedAccent) {
             applyThemeColor(savedColor, savedAccent)
+        } else {
+            applyThemeColor(themeColors[0].color, themeColors[0].accent)
         }
 
         setDropdownState(false)
@@ -232,6 +247,16 @@ const themeColors: ThemeColor[] = [
             startLongPress()
         }
 
+        const handleContextMenu = (e: Event) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (isDropdownVisible()) {
+                hideDropdown()
+            } else {
+                showDropdown()
+            }
+        }
+
         if ('PointerEvent' in window) {
             toggle.addEventListener('pointerdown', handlePointerDown)
             toggle.addEventListener('pointerup', stopLongPress)
@@ -245,6 +270,8 @@ const themeColors: ThemeColor[] = [
             toggle.addEventListener('touchend', stopLongPress)
             toggle.addEventListener('touchcancel', stopLongPress)
         }
+
+        toggle.addEventListener('contextmenu', handleContextMenu)
 
         const handleClick = (e: Event) => {
             if (suppressClick) {
@@ -321,6 +348,7 @@ const themeColors: ThemeColor[] = [
                 toggle.removeEventListener('touchcancel', stopLongPress)
             }
             toggle.removeEventListener('click', handleClick)
+            toggle.removeEventListener('contextmenu', handleContextMenu)
             colorHandlers.forEach((handler, option) => {
                 option.removeEventListener('click', handler)
             })
@@ -364,6 +392,23 @@ const themeColors: ThemeColor[] = [
         position: relative;
         overflow: hidden;
         touch-action: manipulation;
+    }
+
+    .color-indicator {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--sl-color-accent, #f39c12);
+        box-shadow: 0 1px 4px color-mix(in srgb, var(--sl-color-accent, #f39c12) 40%, transparent);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        z-index: 10;
+    }
+
+    :global([data-theme='light']) .color-indicator {
+        border-color: rgba(0, 0, 0, 0.2);
     }
 
     .theme-toggle::before {
@@ -567,6 +612,20 @@ const themeColors: ThemeColor[] = [
     .color-name {
         font-size: 0.875rem;
         font-weight: 500;
+        flex: 1;
+    }
+
+    .color-check {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s ease;
+        color: var(--theme-color);
+        flex-shrink: 0;
+    }
+
+    .color-option.active .color-check {
+        opacity: 1;
+        transform: scale(1);
     }
 
     @media (max-width: 768px) {
@@ -604,7 +663,9 @@ const themeColors: ThemeColor[] = [
         .icon-sun,
         .icon-moon,
         .color-dot,
-        .color-option {
+        .color-check,
+        .color-option,
+        .color-indicator {
             transition: none;
         }
     }
