@@ -1135,6 +1135,21 @@ export interface CacheResource {
     lastSync: number
 }
 
+export interface ShowcaseScriptStep {
+    scenarioId: string
+    subsystemId: string
+    title: string
+    frameIndex?: number
+    narration?: string
+}
+
+export interface ShowcaseScript {
+    id: string
+    name: string
+    description: string
+    steps: ShowcaseScriptStep[]
+}
+
 export type CacheMode = 'cold' | 'syncing' | 'ready'
 
 export interface ShowcaseCacheSimulationState {
@@ -1142,6 +1157,7 @@ export interface ShowcaseCacheSimulationState {
     resources: CacheResource[]
     hitRate: number
     lastSyncTime: number | null
+    cachedPacks: number
 }
 
 export const showcaseCacheSimulationConfig = {
@@ -1150,6 +1166,7 @@ export const showcaseCacheSimulationConfig = {
         resources: [],
         hitRate: 0,
         lastSyncTime: null,
+        cachedPacks: 0,
     },
     warmCacheState: {
         mode: 'ready' as CacheMode,
@@ -1162,6 +1179,7 @@ export const showcaseCacheSimulationConfig = {
         ],
         hitRate: 94,
         lastSyncTime: Date.now(),
+        cachedPacks: 5,
     },
     driftState: {
         mode: 'syncing' as CacheMode,
@@ -1174,6 +1192,7 @@ export const showcaseCacheSimulationConfig = {
         ],
         hitRate: 67,
         lastSyncTime: Date.now(),
+        cachedPacks: 3,
     },
 }
 

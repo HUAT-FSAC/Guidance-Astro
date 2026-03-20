@@ -1,0 +1,215 @@
+---
+interface Props {
+    type?: 'card' | 'text' | 'avatar' | 'list' | 'page'
+    count?: number
+}
+
+const { type = 'card', count = 1 } = Astro.props
+---
+
+<div class="skeleton-loader" data-type={type}>
+    {Array.from({ length: count }).map(() => (
+        <div class="skeleton-item">
+            {type === 'card' && (
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                </div>
+            )}
+            {type === 'text' && (
+                <div class="skeleton-text">
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            )}
+            {type === 'avatar' && (
+                <div class="skeleton-avatar">
+                    <div class="skeleton-circle"></div>
+                    <div class="skeleton-text-small">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                </div>
+            )}
+            {type === 'list' && (
+                <div class="skeleton-list">
+                    <div class="skeleton-list-item">
+                        <div class="skeleton-circle small"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                    <div class="skeleton-list-item">
+                        <div class="skeleton-circle small"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                    <div class="skeleton-list-item">
+                        <div class="skeleton-circle small"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                </div>
+            )}
+            {type === 'page' && (
+                <div class="skeleton-page">
+                    <div class="skeleton-hero">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                    <div class="skeleton-content-section">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                </div>
+            )}
+        </div>
+    ))}
+</div>
+
+<style>
+    .skeleton-loader {
+        width: 100%;
+    }
+
+    .skeleton-item {
+        margin-bottom: 16px;
+    }
+
+    .skeleton-card {
+        background: var(--fs-bg-elevated);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .skeleton-image {
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(90deg, var(--fs-bg-surface) 25%, var(--fs-bg-elevated) 50%, var(--fs-bg-surface) 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite;
+    }
+
+    .skeleton-content {
+        padding: 16px;
+    }
+
+    .skeleton-text {
+        padding: 8px 0;
+    }
+
+    .skeleton-text-small {
+        flex: 1;
+    }
+
+    .skeleton-avatar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0;
+    }
+
+    .skeleton-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, var(--fs-bg-surface) 25%, var(--fs-bg-elevated) 50%, var(--fs-bg-surface) 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite;
+        flex-shrink: 0;
+    }
+
+    .skeleton-circle.small {
+        width: 32px;
+        height: 32px;
+    }
+
+    .skeleton-list {
+        width: 100%;
+    }
+
+    .skeleton-list-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--fs-border-subtle);
+    }
+
+    .skeleton-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .skeleton-page {
+        width: 100%;
+    }
+
+    .skeleton-hero {
+        padding: 32px 0;
+        margin-bottom: 24px;
+    }
+
+    .skeleton-content-section {
+        padding: 16px 0;
+    }
+
+    .skeleton-line {
+        height: 16px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, var(--fs-bg-surface) 25%, var(--fs-bg-elevated) 50%, var(--fs-bg-surface) 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite;
+        margin-bottom: 12px;
+    }
+
+    .skeleton-line:last-child {
+        margin-bottom: 0;
+    }
+
+    .skeleton-line.short {
+        width: 40%;
+    }
+
+    .skeleton-line.medium {
+        width: 70%;
+    }
+
+    .skeleton-line.long {
+        width: 100%;
+    }
+
+    @keyframes skeleton-shimmer {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .skeleton-image,
+        .skeleton-circle,
+        .skeleton-line {
+            animation: none;
+            background: var(--fs-bg-surface);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .skeleton-image {
+            height: 140px;
+        }
+
+        .skeleton-hero {
+            padding: 24px 0;
+        }
+    }
+</style>

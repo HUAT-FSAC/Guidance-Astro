@@ -1,0 +1,88 @@
+---
+import VirtualList from './VirtualList.astro'
+
+const generateDemoItems = (count: number) => {
+    return Array.from({ length: count }, (_, i) => ({
+        id: i + 1,
+        title: `项目 ${i + 1}`,
+        description: `这是第 ${i + 1} 个项目的描述信息`,
+        date: new Date(Date.now() - i * 86400000).toLocaleDateString('zh-CN'),
+    }))
+}
+
+const demoItems = generateDemoItems(1000)
+---
+
+<div class="virtual-list-demo">
+    <h3 class="demo-title">虚拟列表演示（1000条数据）</h3>
+    <p class="demo-description">使用虚拟列表技术，仅渲染可见区域的项目，大幅提升长列表性能</p>
+    
+    <div id="virtual-list-demo-wrapper" style="height: 500px;">
+        <VirtualList 
+            items={demoItems} 
+            itemHeight={60} 
+        />
+    </div>
+</div>
+
+<script>
+    declare global {
+        interface Window {
+            __virtualListItems?: unknown[]
+            __virtualListRenderFn?: (item: unknown, index: number) => string
+        }
+    }
+
+    interface DemoItem {
+        id: number
+        title: string
+        description: string
+        date: string
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const generateDemoItems = (count: number): DemoItem[] => {
+            return Array.from({ length: count }, (_, i) => ({
+                id: i + 1,
+                title: `项目 ${i + 1}`,
+                description: `这是第 ${i + 1} 个项目的描述信息`,
+                date: new Date(Date.now() - i * 86400000).toLocaleDateString('zh-CN'),
+            }))
+        }
+
+        window.__virtualListItems = generateDemoItems(1000)
+        window.__virtualListRenderFn = (item: unknown, _index: number) => {
+            const demoItem = item as DemoItem
+            return `
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <strong style="color: var(--sl-color-text);">${demoItem.title}</strong>
+                    <span style="color: var(--sl-color-gray-4); font-size: 0.875rem; margin-left: 8px;">${demoItem.description}</span>
+                </div>
+                <span style="color: var(--sl-color-gray-4); font-size: 0.875rem;">${demoItem.date}</span>
+            </div>
+        `
+        }
+    })
+</script>
+
+<style>
+    .virtual-list-demo {
+        padding: 24px;
+        background: var(--fs-bg-elevated);
+        border-radius: 16px;
+        border: 1px solid var(--fs-border-subtle);
+    }
+
+    .demo-title {
+        margin: 0 0 8px 0;
+        font-size: 1.125rem;
+        color: var(--sl-color-text);
+    }
+
+    .demo-description {
+        margin: 0 0 20px 0;
+        font-size: 0.875rem;
+        color: var(--sl-color-gray-4);
+    }
+</style>

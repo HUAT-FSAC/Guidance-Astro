@@ -85,6 +85,20 @@ const themeColors: ThemeColor[] = [
     const STORAGE_KEY_ACCENT = 'huat-theme-accent'
     const LONG_PRESS_DURATION = 400
 
+    interface ThemeColor {
+        name: string
+        color: string
+        accent: string
+    }
+
+    const themeColors: ThemeColor[] = [
+        { name: '经典橙', color: '#f39c12', accent: '#e67e22' },
+        { name: '电竞蓝', color: '#3498db', accent: '#2980b9' },
+        { name: '赛道红', color: '#e74c3c', accent: '#c0392b' },
+        { name: '科技紫', color: '#9b59b6', accent: '#8e44ad' },
+        { name: '极速绿', color: '#2ecc71', accent: '#27ae60' },
+    ]
+
     type ColorScheme = 'light' | 'dark'
 
     let cleanup: (() => void) | undefined

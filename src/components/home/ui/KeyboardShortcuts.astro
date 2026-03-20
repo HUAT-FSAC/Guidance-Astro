@@ -1,0 +1,369 @@
+---
+---
+
+<div class="keyboard-shortcuts-panel" id="keyboard-shortcuts-panel">
+    <button class="shortcuts-toggle" id="shortcuts-toggle" aria-label="快捷键帮助" title="快捷键帮助">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82.33L17 19.4a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83"></path>
+        </svg>
+    </button>
+
+    <div class="shortcuts-modal-overlay" id="shortcuts-modal-overlay"></div>
+
+    <div class="shortcuts-modal" id="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+        <div class="shortcuts-modal-header">
+            <h2 id="shortcuts-title">⌨️ 键盘快捷键</h2>
+            <button class="shortcuts-modal-close" id="shortcuts-modal-close" aria-label="关闭">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="shortcuts-modal-content" id="shortcuts-modal-content">
+        </div>
+
+        <div class="shortcuts-modal-footer">
+            <span class="shortcuts-hint">按 <kbd>?</kbd> 或 <kbd>Esc</kbd> 关闭</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    import {
+        areShortcutsEnabled,
+        formatShortcut,
+        getShortcutsByCategory,
+        initKeyboardShortcuts,
+        registerShortcut,
+        } from '../../../utils/keyboard-shortcuts'
+    import { toast } from '../../../utils/toast'
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initKeyboardShortcuts()
+        let isOpen = false
+
+        const toggleBtn = document.getElementById('shortcuts-toggle')
+        const modal = document.getElementById('shortcuts-modal')
+        const overlay = document.getElementById('shortcuts-modal-overlay')
+        const closeBtn = document.getElementById('shortcuts-modal-close')
+        const content = document.getElementById('shortcuts-modal-content')
+
+        registerShortcut({
+            key: '?',
+            description: '显示/隐藏快捷键帮助',
+            category: '通用',
+            action: toggleModal,
+        })
+
+        registerShortcut({
+            key: 'Escape',
+            description: '关闭快捷键帮助',
+            category: '通用',
+            action: () => {
+                if (isOpen) closeModal()
+            },
+        })
+
+        registerShortcut({
+            key: '/',
+            description: '聚焦搜索框',
+            category: '导航',
+            action: () => {
+                const searchInput = document.querySelector('input[placeholder*="搜索"]') as HTMLInputElement | null
+                if (searchInput) {
+                    searchInput.focus()
+                }
+            },
+        })
+
+        registerShortcut({
+            key: 'Home',
+            description: '滚动到顶部',
+            category: '导航',
+            action: () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+            },
+        })
+
+        registerShortcut({
+            key: 'End',
+            description: '滚动到底部',
+            category: '导航',
+            action: () => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+            },
+        })
+
+        function renderShortcuts() {
+            const categories = getShortcutsByCategory()
+            let html = ''
+
+            Object.entries(categories).forEach(([category, shortcuts]) => {
+                html += `
+                    <div class="shortcuts-category">
+                        <h3 class="shortcuts-category-title">${category}</h3>
+                        <div class="shortcuts-list">
+                            ${shortcuts
+                                .map(
+                                    (shortcut) => `
+                                <div class="shortcut-item">
+                                    <span class="shortcut-description">${shortcut.description}</span>
+                                    <span class="shortcut-keys">${formatShortcut(shortcut)}</span>
+                                </div>
+                            `
+                                )
+                                .join('')}
+                        </div>
+                    </div>
+                `
+            })
+
+            if (content) {
+                content.innerHTML = html
+            }
+        }
+
+        function toggleModal() {
+            if (isOpen) {
+                closeModal()
+            } else {
+                openModal()
+            }
+        }
+
+        function openModal() {
+            isOpen = true
+            modal?.classList.add('open')
+            overlay?.classList.add('open')
+            document.body.style.overflow = 'hidden'
+            renderShortcuts()
+        }
+
+        function closeModal() {
+            isOpen = false
+            modal?.classList.remove('open')
+            overlay?.classList.remove('open')
+            document.body.style.overflow = ''
+        }
+
+        toggleBtn?.addEventListener('click', toggleModal)
+        closeBtn?.addEventListener('click', closeModal)
+        overlay?.addEventListener('click', closeModal)
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                closeModal()
+            }
+        })
+
+        if (areShortcutsEnabled()) {
+            toast.info('快捷键已启用，按 ? 查看帮助')
+        }
+    })
+</script>
+
+<style>
+    .keyboard-shortcuts-panel {
+        position: relative;
+        display: inline-block;
+    }
+
+    .shortcuts-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .shortcuts-toggle:hover {
+        background: var(--fs-bg-surface);
+        border-color: var(--sl-color-accent);
+        transform: scale(1.05);
+    }
+
+    .shortcuts-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 9998;
+    }
+
+    .shortcuts-modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .shortcuts-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+    }
+
+    :global([data-theme='light']) .shortcuts-modal {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .shortcuts-modal.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .shortcuts-modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--fs-border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .shortcuts-modal-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--sl-color-text);
+    }
+
+    .shortcuts-modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .shortcuts-modal-close:hover {
+        background: var(--fs-bg-surface);
+    }
+
+    .shortcuts-modal-content {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .shortcuts-category {
+        margin-bottom: 24px;
+    }
+
+    .shortcuts-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .shortcuts-category-title {
+        margin: 0 0 12px 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--sl-color-gray-4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .shortcuts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .shortcut-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: var(--fs-bg-surface);
+    }
+
+    .shortcut-description {
+        font-size: 0.875rem;
+        color: var(--sl-color-text);
+    }
+
+    .shortcut-keys {
+        display: flex;
+        gap: 4px;
+    }
+
+    kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        height: 28px;
+        padding: 0 8px;
+        border-radius: 6px;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--sl-color-text);
+        font-family: 'JetBrains Mono', monospace;
+        box-shadow: 0 2px 0 var(--fs-border-subtle);
+    }
+
+    .shortcuts-modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--fs-border-subtle);
+        text-align: center;
+    }
+
+    .shortcuts-hint {
+        font-size: 0.8125rem;
+        color: var(--sl-color-gray-4);
+    }
+
+    @media (max-width: 640px) {
+        .shortcuts-modal {
+            width: calc(100% - 32px);
+            max-height: 90vh;
+        }
+
+        .shortcuts-modal-header,
+        .shortcuts-modal-content,
+        .shortcuts-modal-footer {
+            padding: 16px;
+        }
+
+        .shortcut-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    }
+</style>

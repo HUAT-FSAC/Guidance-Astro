@@ -43,7 +43,7 @@ interface ShowcaseRuntimeState {
 }
 
 function getRequiredElement<T extends Element>(root: ParentNode, selector: string): T {
-    const element = root.querySelector<T>(selector)
+    const element = root.querySelector(selector) as unknown as T | null
 
     if (!element) {
         throw new Error(`Missing showcase element: ${selector}`)

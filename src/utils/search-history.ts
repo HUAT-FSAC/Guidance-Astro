@@ -3,7 +3,7 @@
  * 保存和管理搜索查询历史
  */
 
-import { safeStorage } from './storage'
+import { safeGetItem, safeSetItem } from './storage'
 
 const STORAGE_KEY = 'huat-search-history'
 const MAX_HISTORY = 20
@@ -21,7 +21,7 @@ let historyCache: SearchHistoryItem[] = []
  */
 function loadHistory(): void {
     try {
-        const stored = safeStorage.getItem(STORAGE_KEY)
+        const stored = safeGetItem(STORAGE_KEY)
         if (stored) {
             historyCache = JSON.parse(stored)
         }
@@ -35,7 +35,7 @@ function loadHistory(): void {
  */
 function saveHistory(): void {
     try {
-        safeStorage.setItem(STORAGE_KEY, JSON.stringify(historyCache))
+        safeSetItem(STORAGE_KEY, JSON.stringify(historyCache))
     } catch {}
 }
 

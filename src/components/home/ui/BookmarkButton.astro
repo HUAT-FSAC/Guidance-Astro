@@ -1,0 +1,92 @@
+---
+---
+
+<button class="bookmark-button" id="bookmark-button" aria-label="添加书签" title="添加书签">
+    <svg class="bookmark-icon-empty" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+    </svg>
+    <svg class="bookmark-icon-filled" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+    </svg>
+</button>
+
+<script>
+    import { addBookmark, getBookmarks, isBookmarked, removeBookmark } from '../../../utils/bookmarks'
+    import { toast } from '../../../utils/toast'
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('bookmark-button')
+        if (!btn) return
+
+        const updateUI = () => {
+            const bookmarked = isBookmarked()
+            btn.classList.toggle('bookmarked', bookmarked)
+            btn.setAttribute('aria-label', bookmarked ? '移除书签' : '添加书签')
+            btn.setAttribute('title', bookmarked ? '移除书签' : '添加书签')
+        }
+
+        updateUI()
+
+        btn.addEventListener('click', () => {
+            const bookmarked = isBookmarked()
+            if (bookmarked) {
+                const bookmarks = getBookmarks()
+                const currentPath = window.location.pathname
+                const bookmark = bookmarks.find((b) => b.path === currentPath)
+                if (bookmark) {
+                    removeBookmark(bookmark.id)
+                    toast.info('已从收藏中移除')
+                }
+            } else {
+                addBookmark({})
+                toast.success('已添加到收藏')
+            }
+            updateUI()
+        })
+    })
+</script>
+
+<style>
+    .bookmark-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .bookmark-button:hover {
+        background: var(--fs-bg-surface);
+        border-color: var(--sl-color-accent);
+        transform: scale(1.05);
+    }
+
+    .bookmark-icon-empty,
+    .bookmark-icon-filled {
+        position: absolute;
+        transition: all 0.2s ease;
+    }
+
+    .bookmark-icon-filled {
+        opacity: 0;
+        transform: scale(0.5);
+        color: var(--sl-color-accent);
+    }
+
+    .bookmark-button.bookmarked .bookmark-icon-empty {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    .bookmark-button.bookmarked .bookmark-icon-filled {
+        opacity: 1;
+        transform: scale(1);
+    }
+</style>

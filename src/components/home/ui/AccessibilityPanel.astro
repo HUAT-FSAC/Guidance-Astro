@@ -1,0 +1,431 @@
+---
+---
+
+<div class="accessibility-panel" id="accessibility-panel">
+    <button class="a11y-toggle" id="a11y-toggle" aria-label="无障碍选项" title="无障碍选项">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 8v4"></path>
+            <path d="M12 16h.01"></path>
+        </svg>
+    </button>
+
+    <div class="a11y-modal-overlay" id="a11y-modal-overlay"></div>
+
+    <div class="a11y-modal" id="a11y-modal" role="dialog" aria-modal="true" aria-labelledby="a11y-title">
+        <div class="a11y-modal-header">
+            <h2 id="a11y-title">♿ 无障碍设置</h2>
+            <button class="a11y-modal-close" id="a11y-modal-close" aria-label="关闭">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="a11y-modal-content">
+            <div class="a11y-option">
+                <label class="a11y-option-label">
+                    <input type="checkbox" id="a11y-high-contrast" class="a11y-checkbox">
+                    <span class="a11y-option-text">
+                        <strong>高对比度模式</strong>
+                        <small>增加文字和背景的对比度，便于阅读</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="a11y-option">
+                <label class="a11y-option-label">
+                    <input type="checkbox" id="a11y-large-text" class="a11y-checkbox">
+                    <span class="a11y-option-text">
+                        <strong>大文字模式</strong>
+                        <small>增大所有文字的显示尺寸</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="a11y-option">
+                <label class="a11y-option-label">
+                    <input type="checkbox" id="a11y-reduced-motion" class="a11y-checkbox">
+                    <span class="a11y-option-text">
+                        <strong>减少动画</strong>
+                        <small>禁用或减少页面动画效果</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="a11y-option">
+                <label class="a11y-option-label">
+                    <input type="checkbox" id="a11y-screen-reader" class="a11y-checkbox">
+                    <span class="a11y-option-text">
+                        <strong>屏幕阅读器优化</strong>
+                        <small>优化页面结构以便屏幕阅读器更好地工作</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="a11y-option">
+                <label class="a11y-option-label">
+                    <input type="checkbox" id="a11y-keyboard-only" class="a11y-checkbox">
+                    <span class="a11y-option-text">
+                        <strong>仅键盘导航</strong>
+                        <small>增强键盘焦点可见性</small>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="a11y-modal-footer">
+            <button class="a11y-reset-btn" id="a11y-reset-btn">重置为默认</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    import {
+        announce,
+        getA11yPreferences,
+        initAccessibility,
+        resetA11yPreferences,
+        toggleHighContrast,
+        toggleKeyboardNavigationOnly,
+        toggleLargeText,
+        toggleReducedMotion,
+        toggleScreenReaderOptimized,
+    } from '../../../utils/accessibility'
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initAccessibility()
+        let isOpen = false
+
+        const toggleBtn = document.getElementById('a11y-toggle')
+        const modal = document.getElementById('a11y-modal')
+        const overlay = document.getElementById('a11y-modal-overlay')
+        const closeBtn = document.getElementById('a11y-modal-close')
+        const resetBtn = document.getElementById('a11y-reset-btn')
+
+        const highContrastCheckbox = document.getElementById('a11y-high-contrast') as HTMLInputElement
+        const largeTextCheckbox = document.getElementById('a11y-large-text') as HTMLInputElement
+        const reducedMotionCheckbox = document.getElementById('a11y-reduced-motion') as HTMLInputElement
+        const screenReaderCheckbox = document.getElementById('a11y-screen-reader') as HTMLInputElement
+        const keyboardOnlyCheckbox = document.getElementById('a11y-keyboard-only') as HTMLInputElement
+
+        function updateCheckboxes() {
+            const prefs = getA11yPreferences()
+            if (highContrastCheckbox) highContrastCheckbox.checked = prefs.highContrast
+            if (largeTextCheckbox) largeTextCheckbox.checked = prefs.largeText
+            if (reducedMotionCheckbox) reducedMotionCheckbox.checked = prefs.reducedMotion
+            if (screenReaderCheckbox) screenReaderCheckbox.checked = prefs.screenReaderOptimized
+            if (keyboardOnlyCheckbox) keyboardOnlyCheckbox.checked = prefs.keyboardNavigationOnly
+        }
+
+        function toggleModal() {
+            if (isOpen) {
+                closeModal()
+            } else {
+                openModal()
+            }
+        }
+
+        function openModal() {
+            isOpen = true
+            modal?.classList.add('open')
+            overlay?.classList.add('open')
+            document.body.style.overflow = 'hidden'
+            updateCheckboxes()
+        }
+
+        function closeModal() {
+            isOpen = false
+            modal?.classList.remove('open')
+            overlay?.classList.remove('open')
+            document.body.style.overflow = ''
+        }
+
+        toggleBtn?.addEventListener('click', toggleModal)
+        closeBtn?.addEventListener('click', closeModal)
+        overlay?.addEventListener('click', closeModal)
+
+        highContrastCheckbox?.addEventListener('change', () => {
+            const enabled = toggleHighContrast()
+            announce(enabled ? '高对比度模式已启用' : '高对比度模式已关闭')
+        })
+
+        largeTextCheckbox?.addEventListener('change', () => {
+            const enabled = toggleLargeText()
+            announce(enabled ? '大文字模式已启用' : '大文字模式已关闭')
+        })
+
+        reducedMotionCheckbox?.addEventListener('change', () => {
+            const enabled = toggleReducedMotion()
+            announce(enabled ? '减少动画模式已启用' : '减少动画模式已关闭')
+        })
+
+        screenReaderCheckbox?.addEventListener('change', () => {
+            const enabled = toggleScreenReaderOptimized()
+            announce(enabled ? '屏幕阅读器优化已启用' : '屏幕阅读器优化已关闭')
+        })
+
+        keyboardOnlyCheckbox?.addEventListener('change', () => {
+            const enabled = toggleKeyboardNavigationOnly()
+            announce(enabled ? '仅键盘导航模式已启用' : '仅键盘导航模式已关闭')
+        })
+
+        resetBtn?.addEventListener('click', () => {
+            resetA11yPreferences()
+            updateCheckboxes()
+            announce('无障碍设置已重置为默认')
+        })
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                closeModal()
+            }
+        })
+    })
+</script>
+
+<style>
+    .accessibility-panel {
+        position: relative;
+        display: inline-block;
+    }
+
+    .a11y-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .a11y-toggle:hover {
+        background: var(--fs-bg-surface);
+        border-color: var(--sl-color-accent);
+        transform: scale(1.05);
+    }
+
+    .a11y-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 9998;
+    }
+
+    .a11y-modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .a11y-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+    }
+
+    :global([data-theme='light']) .a11y-modal {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .a11y-modal.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .a11y-modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--fs-border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .a11y-modal-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--sl-color-text);
+    }
+
+    .a11y-modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .a11y-modal-close:hover {
+        background: var(--fs-bg-surface);
+    }
+
+    .a11y-modal-content {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .a11y-option {
+        margin-bottom: 20px;
+    }
+
+    .a11y-option:last-child {
+        margin-bottom: 0;
+    }
+
+    .a11y-option-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+    }
+
+    .a11y-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+
+    .a11y-option-text {
+        flex: 1;
+    }
+
+    .a11y-option-text strong {
+        display: block;
+        color: var(--sl-color-text);
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .a11y-option-text small {
+        display: block;
+        color: var(--sl-color-gray-4);
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    .a11y-modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--fs-border-subtle);
+    }
+
+    .a11y-reset-btn {
+        width: 100%;
+        padding: 12px 24px;
+        background: var(--sl-color-accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .a11y-reset-btn:hover {
+        background: var(--sl-color-accent-hover);
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 640px) {
+        .a11y-modal {
+            width: calc(100% - 32px);
+            max-height: 90vh;
+        }
+
+        .a11y-modal-header,
+        .a11y-modal-content,
+        .a11y-modal-footer {
+            padding: 16px;
+        }
+    }
+
+    .a11y-skip-link {
+        position: absolute;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--sl-color-accent);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 0 0 8px 8px;
+        font-weight: 600;
+        text-decoration: none;
+        z-index: 10000;
+        transition: top 0.2s ease;
+    }
+
+    .a11y-skip-link:focus {
+        top: 0;
+    }
+
+    .a11y-live-region {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    :global(.a11y-high-contrast) {
+        --sl-color-text: #000;
+        --sl-color-bg: #fff;
+    }
+
+    :global([data-theme='dark'].a11y-high-contrast) {
+        --sl-color-text: #fff;
+        --sl-color-bg: #000;
+    }
+
+    :global(.a11y-large-text) {
+        font-size: 120%;
+    }
+
+    :global(.a11y-reduced-motion) * {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    :global(.a11y-keyboard-only) :focus {
+        outline: 3px solid var(--sl-color-accent) !important;
+        outline-offset: 2px !important;
+    }
+</style>

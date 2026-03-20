@@ -3,7 +3,7 @@
  * 提供全局通知功能，支持多种类型和配置
  */
 
-import { safeStorage } from './storage'
+import { safeGetItem, safeSetItem } from './storage'
 
 export type ToastType = 'success' | 'warning' | 'error' | 'info'
 
@@ -275,7 +275,7 @@ function generateId(): string {
  */
 function loadHistory(): void {
     try {
-        const stored = safeStorage.getItem(STORAGE_KEY)
+        const stored = safeGetItem(STORAGE_KEY)
         if (stored) {
             toastHistory = JSON.parse(stored)
         }
@@ -289,7 +289,7 @@ function loadHistory(): void {
  */
 function saveHistory(): void {
     try {
-        safeStorage.setItem(STORAGE_KEY, JSON.stringify(toastHistory.slice(-MAX_HISTORY)))
+        safeSetItem(STORAGE_KEY, JSON.stringify(toastHistory.slice(-MAX_HISTORY)))
     } catch {}
 }
 

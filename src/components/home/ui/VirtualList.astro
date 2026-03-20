@@ -1,0 +1,131 @@
+---
+interface Props {
+    items: unknown[]
+    itemHeight?: number
+}
+
+const {
+    items = [],
+    itemHeight = 60,
+} = Astro.props
+---
+
+<div class="virtual-list-container" id="virtual-list-container" data-item-height={itemHeight} data-total-items={items.length}>
+    <div class="virtual-list-spacer" id="virtual-list-spacer"></div>
+    <div class="virtual-list-content" id="virtual-list-content"></div>
+</div>
+
+<script>
+    declare global {
+        interface Window {
+            __virtualListItems?: unknown[]
+            __virtualListRenderFn?: (item: unknown, index: number) => string
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('virtual-list-container') as HTMLElement | null
+        const spacer = document.getElementById('virtual-list-spacer') as HTMLElement | null
+        const content = document.getElementById('virtual-list-content') as HTMLElement | null
+
+        if (!container || !spacer || !content) return
+
+        const itemHeight = parseInt(container.dataset.itemHeight || '60')
+        const totalItems = parseInt(container.dataset.totalItems || '0')
+
+        let visibleItems: HTMLElement[] = []
+        let startIndex = 0
+
+        function calculateVisibleRange() {
+            const scrollTop = container!.scrollTop
+            const visibleHeight = container!.clientHeight
+
+            startIndex = Math.floor(scrollTop / itemHeight)
+            const endIndex = Math.min(
+                totalItems,
+                Math.ceil((scrollTop + visibleHeight) / itemHeight) + 1
+            )
+
+            return { startIndex, endIndex }
+        }
+
+        function renderVisibleItems() {
+            const { startIndex: newStart, endIndex: newEnd } = calculateVisibleRange()
+
+            visibleItems.forEach(item => item.remove())
+            visibleItems = []
+
+            const itemsData = window.__virtualListItems || []
+            const renderFn = window.__virtualListRenderFn
+
+            if (!renderFn) return
+
+            for (let i = newStart; i < newEnd; i++) {
+                if (i >= itemsData.length) break
+
+                const itemElement = document.createElement('div')
+                itemElement.className = 'virtual-list-item'
+                itemElement.style.height = `${itemHeight}px`
+                itemElement.innerHTML = renderFn(itemsData[i], i)
+                itemElement.style.transform = `translateY(${i * itemHeight}px)`
+                itemElement.style.position = 'absolute'
+                itemElement.style.top = '0'
+                itemElement.style.left = '0'
+                itemElement.style.right = '0'
+
+                content!.appendChild(itemElement)
+                visibleItems.push(itemElement)
+            }
+        }
+
+        function updateSpacerHeight() {
+            spacer!.style.height = `${totalItems * itemHeight}px`
+        }
+
+        function handleScroll() {
+            requestAnimationFrame(renderVisibleItems)
+        }
+
+        container!.addEventListener('scroll', handleScroll)
+
+        updateSpacerHeight()
+        renderVisibleItems()
+    })
+</script>
+
+<style>
+    .virtual-list-container {
+        position: relative;
+        overflow-y: auto;
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 12px;
+        background: var(--fs-bg-elevated);
+    }
+
+    .virtual-list-spacer {
+        width: 100%;
+    }
+
+    .virtual-list-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .virtual-list-item {
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--fs-border-subtle);
+        transition: background-color 0.2s ease;
+    }
+
+    .virtual-list-item:hover {
+        background: var(--fs-bg-surface);
+    }
+
+    .virtual-list-item:last-child {
+        border-bottom: none;
+    }
+</style>

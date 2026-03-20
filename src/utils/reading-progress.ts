@@ -3,7 +3,7 @@
  * 自动保存和恢复文档阅读位置
  */
 
-import { safeStorage } from './storage'
+import { safeGetItem, safeSetItem } from './storage'
 
 const STORAGE_KEY = 'huat-reading-progress'
 const MAX_ENTRIES = 100
@@ -25,7 +25,7 @@ let saveTimeout: number | null = null
  */
 function loadProgress(): void {
     try {
-        const stored = safeStorage.getItem(STORAGE_KEY)
+        const stored = safeGetItem(STORAGE_KEY)
         if (stored) {
             const data: ReadingProgressEntry[] = JSON.parse(stored)
             progressCache = new Map(data.map((entry) => [entry.path, entry]))
@@ -46,7 +46,7 @@ function saveProgress(): void {
         const entries = Array.from(progressCache.values())
             .sort((a, b) => b.timestamp - a.timestamp)
             .slice(0, MAX_ENTRIES)
-        safeStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
+        safeSetItem(STORAGE_KEY, JSON.stringify(entries))
     } catch {
     } finally {
         isSaving = false

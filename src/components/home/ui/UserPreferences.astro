@@ -1,0 +1,357 @@
+---
+---
+
+<div class="user-preferences-panel" id="user-preferences-panel">
+    <button class="preferences-toggle" id="preferences-toggle" aria-label="打开设置">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82.33L17 19.4a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83"></path>
+        </svg>
+    </button>
+
+    <div class="preferences-dropdown" id="preferences-dropdown">
+        <div class="preferences-header">
+            <h3>⚙️ 显示设置</h3>
+        </div>
+
+        <div class="preferences-section">
+            <label class="preferences-label">
+                <span class="preferences-label-text">字体大小</span>
+                <div class="preferences-options">
+                    <button class="preferences-option" data-font-size="small" id="font-small">小</button>
+                    <button class="preferences-option" data-font-size="medium" id="font-medium">中</button>
+                    <button class="preferences-option" data-font-size="large" id="font-large">大</button>
+                    <button class="preferences-option" data-font-size="xlarge" id="font-xlarge">特大</button>
+                </div>
+            </label>
+        </div>
+
+        <div class="preferences-section">
+            <label class="preferences-label">
+                <span class="preferences-label-text">行高</span>
+                <div class="preferences-options">
+                    <button class="preferences-option" data-line-height="compact" id="line-compact">紧凑</button>
+                    <button class="preferences-option" data-line-height="normal" id="line-normal">正常</button>
+                    <button class="preferences-option" data-line-height="relaxed" id="line-relaxed">宽松</button>
+                </div>
+            </label>
+        </div>
+
+        <div class="preferences-section">
+            <label class="preferences-toggle-row">
+                <span class="preferences-label-text">动画效果</span>
+                <div class="toggle-switch" id="toggle-animations">
+                    <div class="toggle-knob"></div>
+                </div>
+            </label>
+        </div>
+
+        <div class="preferences-section">
+            <label class="preferences-toggle-row">
+                <span class="preferences-label-text">减少动效</span>
+                <div class="toggle-switch" id="toggle-reduced-motion">
+                    <div class="toggle-knob"></div>
+                </div>
+            </label>
+        </div>
+
+        <div class="preferences-section">
+            <label class="preferences-toggle-row">
+                <span class="preferences-label-text">阅读模式</span>
+                <div class="toggle-switch" id="toggle-reading-mode">
+                    <div class="toggle-knob"></div>
+                </div>
+            </label>
+        </div>
+
+        <div class="preferences-footer">
+            <button class="preferences-reset" id="preferences-reset">重置为默认</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    import {
+        getPreferences,
+    initUserPreferences,
+    resetPreferences,
+    setFontSize,
+    setLineHeight,
+    toggleAnimations,
+    toggleReadingMode,
+    toggleReducedMotion,
+    } from '../../../utils/user-preferences'
+    import { toast } from '../../../utils/toast'
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initUserPreferences()
+
+        const toggleBtn = document.getElementById('preferences-toggle')
+        const dropdown = document.getElementById('preferences-dropdown')
+        const resetBtn = document.getElementById('preferences-reset')
+
+        let isOpen = false
+
+        const updateUI = () => {
+            const prefs = getPreferences()
+
+            document.querySelectorAll('[data-font-size]').forEach((btn) => {
+                btn.classList.toggle('active', btn.getAttribute('data-font-size') === prefs.fontSize)
+            })
+
+            document.querySelectorAll('[data-line-height]').forEach((btn) => {
+                btn.classList.toggle('active', btn.getAttribute('data-line-height') === prefs.lineHeight)
+            })
+
+            document.getElementById('toggle-animations')?.classList.toggle('on', prefs.animations)
+            document.getElementById('toggle-reduced-motion')?.classList.toggle('on', prefs.reducedMotion)
+            document.getElementById('toggle-reading-mode')?.classList.toggle('on', prefs.readingMode)
+        }
+
+        updateUI()
+
+        toggleBtn?.addEventListener('click', (e) => {
+            e.stopPropagation()
+            isOpen = !isOpen
+            dropdown?.classList.toggle('open', isOpen)
+        })
+
+        document.addEventListener('click', (e) => {
+            if (!dropdown?.contains(e.target as Node) && !toggleBtn?.contains(e.target as Node)) {
+                isOpen = false
+                dropdown?.classList.remove('open')
+            }
+        })
+
+        document.querySelectorAll('[data-font-size]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const size = btn.getAttribute('data-font-size') as 'small' | 'medium' | 'large' | 'xlarge'
+                if (size) {
+                    setFontSize(size)
+                    updateUI()
+                    toast.success(`字体大小已设置为 ${size}`)
+                }
+            })
+        })
+
+        document.querySelectorAll('[data-line-height]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const height = btn.getAttribute('data-line-height') as 'compact' | 'normal' | 'relaxed'
+                if (height) {
+                    setLineHeight(height)
+                    updateUI()
+                    toast.success(`行高已设置为 ${height}`)
+                }
+            })
+        })
+
+        document.getElementById('toggle-animations')?.addEventListener('click', () => {
+            const prefs = getPreferences()
+            toggleAnimations(!prefs.animations)
+            updateUI()
+            toast.info(prefs.animations ? '动画已关闭' : '动画已开启')
+        })
+
+        document.getElementById('toggle-reduced-motion')?.addEventListener('click', () => {
+            const prefs = getPreferences()
+            toggleReducedMotion(!prefs.reducedMotion)
+            updateUI()
+            toast.info(prefs.reducedMotion ? '减少动效已关闭' : '减少动效已开启')
+        })
+
+        document.getElementById('toggle-reading-mode')?.addEventListener('click', () => {
+            const prefs = getPreferences()
+            toggleReadingMode(!prefs.readingMode)
+            updateUI()
+            toast.info(prefs.readingMode ? '阅读模式已关闭' : '阅读模式已开启')
+        })
+
+        resetBtn?.addEventListener('click', () => {
+            resetPreferences()
+            updateUI()
+            toast.success('设置已重置为默认')
+        })
+    })
+</script>
+
+<style>
+    .user-preferences-panel {
+        position: relative;
+        display: inline-block;
+    }
+
+    .preferences-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        color: var(--sl-color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .preferences-toggle:hover {
+        background: var(--fs-bg-surface);
+        border-color: var(--sl-color-accent);
+        transform: scale(1.05);
+    }
+
+    .preferences-dropdown {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 280px;
+        background: var(--fs-bg-elevated);
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.2s ease;
+        z-index: 1000;
+    }
+
+    :global([data-theme='light']) .preferences-dropdown {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .preferences-dropdown.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .preferences-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--fs-border-subtle);
+    }
+
+    .preferences-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--sl-color-text);
+    }
+
+    .preferences-section {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--fs-border-subtle);
+    }
+
+    .preferences-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .preferences-label {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .preferences-label-text {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--sl-color-text);
+        margin-bottom: 10px;
+    }
+
+    .preferences-options {
+        display: flex;
+        gap: 8px;
+    }
+
+    .preferences-option {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 8px;
+        background: var(--fs-bg-surface);
+        color: var(--sl-color-text);
+        font-size: 0.8125rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .preferences-option:hover {
+        border-color: var(--sl-color-accent);
+    }
+
+    .preferences-option.active {
+        background: var(--sl-color-accent);
+        border-color: var(--sl-color-accent);
+        color: white;
+    }
+
+    .preferences-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .toggle-switch {
+        width: 48px;
+        height: 26px;
+        background: var(--fs-bg-surface);
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 13px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .toggle-switch.on {
+        background: var(--sl-color-accent);
+        border-color: var(--sl-color-accent);
+    }
+
+    .toggle-knob {
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.on .toggle-knob {
+        left: 24px;
+    }
+
+    .preferences-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--fs-border-subtle);
+    }
+
+    .preferences-reset {
+        width: 100%;
+        padding: 10px 16px;
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--sl-color-text);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .preferences-reset:hover {
+        background: var(--fs-bg-surface);
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+    @media (max-width: 640px) {
+        .preferences-dropdown {
+            width: calc(100vw - 32px);
+            right: -16px;
+        }
+    }
+</style>
