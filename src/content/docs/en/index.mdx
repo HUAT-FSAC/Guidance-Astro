@@ -1,0 +1,184 @@
+---
+title: HUAT FSAC
+description: Where student engineers build autonomous race cars.
+template: splash
+hero:
+    title: ''
+    tagline: ''
+---
+
+import Hero from '../../../components/home/sections/Hero.astro'
+import Achievement from '../../../components/home/sections/Achievement.astro'
+import NewsSection from '../../../components/home/sections/NewsSection.astro'
+import FormulaStudentInfo from '../../../components/home/sections/FormulaStudentInfo.astro'
+import Stats from '../../../components/home/sections/Stats.astro'
+import Countdown from '../../../components/home/sections/Countdown.astro'
+import ShowcaseLab from '../../../components/home/sections/ShowcaseLab.astro'
+import Features from '../../../components/home/sections/Features.astro'
+import Seasons from '../../../components/home/sections/Seasons.astro'
+import Sponsors from '../../../components/home/sections/Sponsors.astro'
+import Acknowledgement from '../../../components/home/sections/Acknowledgement.astro'
+import Recruitment from '../../../components/home/sections/Recruitment.astro'
+import PageLoader from '../../../components/home/PageLoader.astro'
+import ThemeSwitcher from '../../../components/home/ui/ThemeSwitcher.astro'
+import ScrollProgress from '../../../components/home/ui/ScrollProgress.astro'
+import BackToTop from '../../../components/home/ui/BackToTop.astro'
+import KeyboardNav from '../../../components/home/ui/KeyboardNav.astro'
+import ParticleBackground from '../../../components/home/ui/ParticleBackground.astro'
+import MobileNavigation from '../../../components/home/ui/MobileNavigation.astro'
+import ScrollReveal from '../../../components/home/ui/ScrollReveal.astro'
+import ParallaxScroll from '../../../components/home/ui/ParallaxScroll.astro'
+import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/home'
+
+<style>{`
+  :root {
+    --sl-content-width: 100% !important;
+  }
+  .hero { display: none !important; }
+  main { max-width: 100% !important; padding: 0 !important; }
+  .sl-markdown-content { max-width: 100% !important; }
+  @media (max-width: 768px) { main { padding-top: 60px !important; } }
+  :global([data-theme='dark']) .content-panel {
+    background-color: #000000 !important;
+    background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 85%) !important;
+  }
+  :global([data-theme='light']) .content-panel {
+    background-color: #ffffff !important;
+    background-image: radial-gradient(circle at 50% 0%, #f5f5f7 0%, #ffffff 85%) !important;
+  }
+  .footer-link {
+    color: var(--sl-color-text);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+  }
+  .footer-link:hover { opacity: 1; color: var(--sl-color-accent); }
+  .footer-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--sl-color-accent);
+    transition: width 0.3s ease;
+  }
+  .footer-link:hover::after { width: 100%; }
+  .home-footer {
+    padding: 4rem 2rem;
+    background: var(--sl-color-gray-6);
+    text-align: center;
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+  :global([data-theme='light']) .home-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+  }
+  .home-block { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .home-block-header { text-align: center; margin-bottom: 3rem; }
+  .home-block-label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--sl-color-accent, #f39c12);
+    margin-bottom: 1rem;
+  }
+  .home-block-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0; }
+  .home-block--center { text-align: center; }
+  .contributors-image { display: flex; justify-content: center; margin-top: 2rem; }
+  .contributors-image img { max-width: 100%; height: auto; }
+  .contributors-meta { text-align: center; margin-top: 1rem; opacity: 0.6; }
+  @media (max-width: 768px) {
+    .home-block { padding: 3rem 1.25rem; }
+    .home-block-header { margin-bottom: 2rem; }
+    .home-block-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+    .home-footer { padding: 3rem 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce), (max-width: 768px) {
+    section { animation: none; opacity: 1; }
+  }
+`}</style>
+
+<PageLoader />
+<ScrollProgress />
+<BackToTop />
+<KeyboardNav />
+<ParticleBackground />
+<ThemeSwitcher />
+<MobileNavigation locale="en" />
+<ScrollReveal />
+<ParallaxScroll />
+
+<Hero title={home.hero.title} subtitle={home.hero.subtitle} description={home.hero.description} ctaText={home.hero.ctaText} ctaLink={home.hero.ctaLink} backgroundImage={home.hero.backgroundImage} />
+<Stats stats={home.stats} />
+<Countdown />
+<ShowcaseLab content={home.showcase} />
+
+{home.achievements.map((achievement, index) => (
+  <Achievement badge={achievement.badge} title={achievement.title} description={achievement.description} ctaText={achievement.ctaText} ctaLink={achievement.ctaLink} image={achievement.image} reverse={index % 2 === 1} />
+))}
+
+<section class="home-block">
+    <div class="home-block-header">
+        <span class="home-block-label">{home.sectionHeaders.features.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.features.title}</h2>
+    </div>
+    <Features items={home.featureCards} ariaLabel="Department navigation" />
+</section>
+
+<NewsSection title="Latest News" subtitle="Track the latest progress from the team" news={home.newsItems} />
+
+<section class="home-block">
+    <div class="home-block-header">
+        <span class="home-block-label">{home.sectionHeaders.seasons.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.seasons.title}</h2>
+    </div>
+    <Seasons seasons={seasons} labels={home.seasonsLabels} />
+</section>
+
+<Recruitment content={home.recruitment} href="/en/join/" />
+
+<FormulaStudentInfo title={home.formulaStudentInfo.title} subtitle={home.formulaStudentInfo.subtitle} description={home.formulaStudentInfo.description} ctaText={home.formulaStudentInfo.ctaText} ctaLink={home.formulaStudentInfo.ctaLink} />
+
+<section class="home-block">
+    <div class="home-block-header">
+        <h2 class="home-block-title">{home.sectionHeaders.sponsors.title}</h2>
+    </div>
+    <Sponsors groups={sponsorGroups} />
+</section>
+
+<section class="home-block">
+    <Acknowledgement locale="en" />
+</section>
+
+<section class="home-block home-block--center">
+    <div class="home-block-header">
+        <span class="home-block-label">{home.sectionHeaders.contributors.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.contributors.title}</h2>
+    </div>
+    <div class="contributors-image">
+        <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
+            <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" alt="GitHub contributors" loading="lazy" decoding="async" />
+        </a>
+    </div>
+    <div class="contributors-meta">
+        Made with <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">contrib.rocks</a>
+    </div>
+</section>
+
+<footer class="home-footer">
+    <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">HUAT FSAC - Formula Student Autonomous Team</p>
+    <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+        <a href="https://github.com/HUAT-FSAC" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="Visit our GitHub organization">GitHub</a>
+        <a href="mailto:contact@huat-fsac.eu.org" class="footer-link" rel="noopener noreferrer" aria-label="Contact us by email">Contact</a>
+        <a href="/en/join/" class="footer-link" aria-label="See how to join the team">Join the Team</a>
+    </div>
+    <p style="font-size: 0.85rem; opacity: 0.5;">© 2026 HUAT FSAC. All rights reserved.</p>
+</footer>
+
+
+
+

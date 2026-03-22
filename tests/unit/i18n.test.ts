@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-    t,
-    getLocaleFromPath,
-    localePath,
-    getAlternateLocales,
-    getTranslations,
     defaultLocale,
+    getAlternateLocales,
+    getLocaleFromPath,
+    getTranslations,
+    localePath,
+    t,
 } from '../../src/utils/i18n'
 
 describe('i18n', () => {
@@ -30,9 +30,11 @@ describe('i18n', () => {
 
     describe('t', () => {
         it('should resolve dot-separated key path', () => {
-            const result = t('zh', 'site.title')
-            // Should return a string, not the key itself (unless key doesn't exist)
-            expect(typeof result).toBe('string')
+            expect(t('zh', 'nav.home')).toBe('首页')
+        })
+
+        it('should resolve english key path', () => {
+            expect(t('en', 'nav.home')).toBe('Home')
         })
 
         it('should return fallback for missing key', () => {
@@ -44,15 +46,7 @@ describe('i18n', () => {
         })
 
         it('should return fallback when value is not a string', () => {
-            // If a key resolves to an object (intermediate node), should return fallback
-            const result = t('zh', 'site', 'fallback')
-            // 'site' is likely an object, not a string
-            if (result === 'fallback') {
-                expect(result).toBe('fallback')
-            } else {
-                // If it happens to be a string, that's also valid
-                expect(typeof result).toBe('string')
-            }
+            expect(t('zh', 'nav', 'fallback')).toBe('fallback')
         })
     })
 
@@ -86,6 +80,14 @@ describe('i18n', () => {
         it('should handle paths without leading slash', () => {
             expect(localePath('docs/', 'en')).toBe('/en/docs/')
         })
+
+        it('should return / for default root path', () => {
+            expect(localePath('/', 'zh')).toBe('/')
+        })
+
+        it('should return /en/ for english root path', () => {
+            expect(localePath('/', 'en')).toBe('/en/')
+        })
     })
 
     describe('getAlternateLocales', () => {
@@ -93,17 +95,22 @@ describe('i18n', () => {
             const alternates = getAlternateLocales('/docs/', 'zh')
             expect(alternates).toHaveLength(1)
             expect(alternates[0].locale).toBe('en')
+            expect(alternates[0].path).toBe('/en/docs/')
         })
 
         it('should return other locales for en page', () => {
             const alternates = getAlternateLocales('/en/docs/', 'en')
             expect(alternates).toHaveLength(1)
             expect(alternates[0].locale).toBe('zh')
+            expect(alternates[0].path).toBe('/docs/')
         })
 
-        it('should strip locale prefix from path', () => {
-            const alternates = getAlternateLocales('/en/docs/', 'en')
-            expect(alternates[0].path).toBe('/docs/')
+        it('should map root page alternates correctly', () => {
+            const zhAlternates = getAlternateLocales('/', 'zh')
+            expect(zhAlternates[0].path).toBe('/en/')
+
+            const enAlternates = getAlternateLocales('/en/', 'en')
+            expect(enAlternates[0].path).toBe('/')
         })
     })
 })

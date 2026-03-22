@@ -1,0 +1,158 @@
+---
+title: Install ROS1/2 with Docker
+---
+
+import { Card, CardGrid, Aside, Steps, Badge, LinkCard } from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="Platform" icon="laptop">
+        Linux (Ubuntu)
+    </Card>
+    <Card title="Container Runtime" icon="seti:docker">
+        Docker
+    </Card>
+    <Card title="GUI Support" icon="seti:image">
+        X11 (Xorg)
+    </Card>
+    <Card title="Difficulty" icon="star">
+        <Badge text="Intermediate" variant="note" />
+    </Card>
+</CardGrid>
+
+---
+
+## Overview
+
+Official ROS releases are tightly tied to specific operating-system versions. For example, ROS1 Melodic is meant for Ubuntu 18.04 LTS. Cross-version installs are not officially supported.
+
+<Aside type="tip" title="Why Docker helps">
+    Docker lets you run a chosen ROS version in an isolated environment while still accessing GUI tools such as `rqt`, `gazebo`, and `rviz`.
+</Aside>
+
+---
+
+## Before You Start
+
+<Aside type="caution">
+    - This guide targets **Linux systems** such as Ubuntu.
+    - GUI applications assume an **Xorg / X11** session.
+    - If you use Wayland or another display stack, you will need to configure X11 compatibility yourself.
+</Aside>
+
+---
+
+## Install Docker
+
+<Steps>
+
+1. **Install Docker**
+
+    Follow the official Linux installation guide: [Docker Docs](https://docs.docker.com/desktop/install/linux-install/)
+
+2. **Verify the installation**
+
+    Run `docker -v` in a terminal.
+
+    ![docker-version](@assets/docs/archive/docker-ros-installing/docker-version.png)
+
+3. **Fix user permissions if needed**
+
+    If commands such as `docker ps` fail because of permissions, run:
+
+    ```bash
+    sudo usermod -aG docker $USER
+    ```
+
+    <Aside type="note">The change usually takes effect after logging in again or rebooting.</Aside>
+
+</Steps>
+
+---
+
+## Pull a ROS Image
+
+```bash
+docker pull fishros2/ros:melodic-desktop-full
+```
+
+<CardGrid>
+    <Card title="Official ROS tags" icon="external">
+        [hub.docker.com/_/ros/tags](https://hub.docker.com/_/ros/tags)
+    </Card>
+    <Card title="OSRF images" icon="external">
+        [hub.docker.com/r/osrf/ros/tags](https://hub.docker.com/r/osrf/ros/tags)
+    </Card>
+    <Card title="fishros2 images" icon="external">
+        [hub.docker.com/r/fishros2/ros/tags](https://hub.docker.com/r/fishros2/ros/tags)
+    </Card>
+</CardGrid>
+
+<Aside type="tip">If image pulls are unstable, retry a few times or use a network proxy.</Aside>
+
+---
+
+## Start a Container
+
+```bash
+docker run -it --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v /tmp/.X11-unix:/tmp/.X11-unix:rw --network host fishros2/ros:melodic-desktop-full
+```
+
+After the command finishes, you will be dropped into the Docker environment.
+
+![docker-terminal](@assets/docs/archive/docker-ros-installing/docker-terminal.png)
+
+---
+
+## Allow X11 Access
+
+By default, the X11 window system blocks connections from Docker containers.
+
+![cant_connect](@assets/docs/archive/docker-ros-installing/cant_connect.png)
+
+<Steps>
+
+1. **Run this on the host system**
+
+    ```bash
+    xhost +
+    ```
+
+    This temporarily allows all X11 clients to connect.
+
+2. **Test GUI apps inside the container**
+
+    ```bash
+    rqt
+    # or
+    roscore &
+    rviz
+    ```
+
+</Steps>
+
+<CardGrid>
+    <Card title="rqt launched successfully">
+        ![rqt_start](@assets/docs/archive/docker-ros-installing/rqt_start.png)
+    </Card>
+    <Card title="rviz launched successfully">
+        ![docker-rviz](@assets/docs/archive/docker-ros-installing/docker-rviz.png)
+    </Card>
+</CardGrid>
+
+---
+
+## Related Links
+
+<CardGrid>
+    <LinkCard
+        title="Docker Command Basics"
+        description="A practical Docker command reference."
+        href="https://www.runoob.com/docker/docker-container-usage.html"
+    />
+    <LinkCard
+        title="Docker Docs"
+        description="Official Docker installation and usage guide."
+        href="https://docs.docker.com/"
+    />
+    <LinkCard title="Back to General Resources" description="More environment and tooling guides." href="/en/archive/general/" />
+</CardGrid>

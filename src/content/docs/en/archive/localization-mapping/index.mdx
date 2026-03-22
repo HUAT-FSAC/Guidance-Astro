@@ -1,0 +1,116 @@
+---
+title: Localization & Mapping
+---
+
+import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+  <Card title="Core Responsibility" icon="rocket">
+    Vehicle localization, track mapping, and pose estimation.
+  </Card>
+  <Card title="Localization Methods" icon="star">
+    Integrated INS, visual localization, and LiDAR SLAM.
+  </Card>
+  <Card title="Mapping Topics" icon="document">
+    Online mapping, map optimization, and loop closure.
+  </Card>
+  <Card title="Tech Stack" icon="laptop">
+    ROS, C++, Eigen, and GTSAM.
+  </Card>
+</CardGrid>
+
+---
+
+## Overview
+
+The localization and mapping group uses an integrated inertial navigation unit together with monocular cameras and LiDAR to:
+
+<CardGrid stagger>
+  <Card title="Read the Environment" icon="magnifier">
+    Recognize the structure of the surrounding track and landmarks.
+  </Card>
+  <Card title="Estimate Vehicle Pose" icon="star">
+    Track the car position and heading in real time.
+  </Card>
+  <Card title="Build the Track Map" icon="document">
+    Construct a consistent global map for downstream modules.
+  </Card>
+  <Card title="Support Planning" icon="random">
+    Provide the spatial foundation used by planning and control.
+  </Card>
+</CardGrid>
+
+<Aside type="tip" title="Why It Matters">
+  Precise localization is one of the foundations of autonomous driving. Without a reliable pose estimate, the car cannot plan or drive correctly.
+</Aside>
+
+---
+
+## Technical Architecture
+
+```
+       IMU / GPS
+           |
+           v
+ Integrated Navigation  <- high-rate pose estimate
+           |
+           v
+ Visual / LiDAR SLAM    <- pose correction and mapping
+           |
+           v
+      Global Map        <- consumed by planning
+```
+
+---
+
+## Fundamentals
+
+<Aside type="note" title="Suggested Starting Point">
+  Build a working grasp of linear algebra and probability before going deep into SLAM theory.
+</Aside>
+
+### Recommended Resources
+
+<CardGrid>
+  <LinkCard
+    title="Visual SLAM Course"
+    description="A classic Chinese-language introductory SLAM lecture series by Gao Xiang."
+    href="https://www.bilibili.com/video/BV16t411g7FR"
+  />
+  <LinkCard
+    title="State Estimation Theory"
+    description="Kalman filtering and optimization fundamentals."
+    href="https://www.bilibili.com/video/BV1K4411w7PJ"
+  />
+</CardGrid>
+
+---
+
+## Core Topics
+
+<CardGrid>
+  <Card title="Inertial Navigation" icon="right-arrow">
+    <Badge text="Core" variant="success" />
+    - IMU preprocessing
+    - attitude estimation
+    - integration-error analysis
+  </Card>
+  <Card title="Visual SLAM" icon="magnifier">
+    <Badge text="Important" variant="note" />
+    - feature extraction and matching
+    - visual odometry
+    - backend optimization
+  </Card>
+  <Card title="LiDAR SLAM" icon="seti:json">
+    <Badge text="Important" variant="note" />
+    - point-cloud registration
+    - ICP and NDT
+    - loop closure
+  </Card>
+  <Card title="Sensor Fusion" icon="puzzle">
+    <Badge text="Advanced" variant="caution" />
+    - multi-sensor calibration
+    - Kalman filtering
+    - graph optimization
+  </Card>
+</CardGrid>

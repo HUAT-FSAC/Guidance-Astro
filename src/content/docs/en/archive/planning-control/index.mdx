@@ -1,0 +1,97 @@
+---
+title: Planning & Control
+---
+
+import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/components'
+import showcaseVideo from '@assets/docs/archive/videos/showcase.webm'
+
+<CardGrid>
+    <Card title="Core Responsibility" icon="rocket">
+        Path planning, trajectory tracking, and vehicle control.
+    </Card>
+    <Card title="Planning Methods" icon="random">
+        Delaunay triangulation, splines, and RRT*.
+    </Card>
+    <Card title="Control Methods" icon="setting">
+        Pure Pursuit, Stanley, and MPC.
+    </Card>
+    <Card title="Tech Stack" icon="laptop">
+        ROS, C++, Python, and MATLAB.
+    </Card>
+</CardGrid>
+
+---
+
+## Overview
+
+<video controls style="width: 100%; border-radius: 12px; margin: 1rem 0;">
+    <source src={showcaseVideo} type="video/webm" />
+</video>
+
+Using perception outputs as input, the planning and control group turns track observations into drivable trajectories and executable control commands.
+
+<Aside type="tip" title="Core Role">
+    This group bridges perception and actuation by converting cone detections into paths, speed targets, and steering commands.
+</Aside>
+
+---
+
+## Main Functions
+
+<CardGrid stagger>
+    <Card title="Acceleration" icon="right-arrow">
+        - cone-boundary detection - centerline generation - speed planning - finish recognition
+    </Card>
+    <Card title="Skidpad" icon="approve-check">
+        - arc trajectory planning - curvature smoothing - stable tracking control
+    </Card>
+    <Card title="High-Speed Tracking" icon="rocket">
+        - track-boundary recognition - global path planning - trajectory optimization - high-speed control
+    </Card>
+</CardGrid>
+
+---
+
+## Technical Architecture
+
+```
+Perception -> Boundary Detection -> Path Planning -> Trajectory Optimization -> Tracking Control -> Actuation
+                 |                    |                    |
+              cone clustering      Delaunay             Pure Pursuit
+              boundary fitting     spline fitting       MPC
+```
+
+<Aside type="note">The planning and control stack is modular, so each stage can be debugged and optimized independently.</Aside>
+
+---
+
+## Related Material
+
+<CardGrid>
+    <LinkCard title="PythonRobotics" description="A practical reference collection for planning and control methods." href="https://github.com/AtsushiSakai/PythonRobotics" />
+    <LinkCard title="2025 Planning & Control" description="The 2025 season planning-and-control landing page." href="/en/archive/2025/planning-control/" />
+    <LinkCard title="Simulation" description="See how these methods are validated in simulation." href="/en/archive/simulation/" />
+</CardGrid>
+
+---
+
+## Tooling
+
+<CardGrid>
+    <Card title="ROS" icon="seti:robot">
+        <Badge text="Required" variant="success" />
+        Node communication and runtime orchestration.
+    </Card>
+    <Card title="C++" icon="seti:cpp">
+        <Badge text="Required" variant="success" />
+        High-performance implementation of planning and control algorithms.
+    </Card>
+    <Card title="Python" icon="seti:python">
+        <Badge text="Recommended" variant="note" />
+        Rapid prototyping and data analysis.
+    </Card>
+    <Card title="MATLAB" icon="seti:matlab">
+        <Badge text="Optional" variant="caution" />
+        Simulation and algorithm verification.
+    </Card>
+</CardGrid>

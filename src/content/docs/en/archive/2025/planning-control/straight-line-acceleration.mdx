@@ -1,0 +1,87 @@
+---
+title: Straight-Line Acceleration
+description: Straight-line acceleration algorithms and review preparation for the 2025 season.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+This topic can be split into two parts: the algorithm itself and the review or defense discussion around it.
+
+---
+
+## Algorithm
+
+The current straight-line solution mainly combines **Hough transform** and **Bezier curve fitting**. Hough transform is the main method, while Bezier fitting plays a supporting role.
+
+### Hough transform
+
+Hough transform is mainly used to extract the track centerline. It accumulates votes from the perception output and selects the most credible straight-line structure.
+
+**Core idea**: the two strongest straight lines are treated as the left and right track boundaries, which then define the route we want.
+
+[Hough transform tutorial video](https://www.bilibili.com/video/BV1k44y1G772/)
+
+### Bezier fitting
+
+Bezier fitting helps generate a smoother and straighter target path. When the detected road segment is not perfectly straight, it can still fit a better straight-line approximation quickly.
+
+[Bezier curves as an interpolation method](https://www.bilibili.com/video/BV1YQCvYTEmT/)
+
+---
+
+## Future optimization direction
+
+Besides spending more time on real tuning, one promising improvement path is the following.
+
+### State-prediction-based filtering
+
+Introduce a state-estimation method such as a Kalman filter.
+
+[Kalman filter: from theory to practice](https://www.bilibili.com/video/BV1Rh41117MT/)
+
+**Idea**
+- stop treating the Hough-fit track line as the only decision source
+- use inertial-navigation motion information for internal state prediction
+- fuse the two sources into a more reliable track estimate
+- if the goal is simply to finish the run, the car can drive the full track more robustly even at a lower speed
+
+---
+
+## Review focus
+
+<Aside type="tip">
+Compared with the previous year, judges now appear to care slightly less about algorithm detail alone and more about how the team validated and tuned the system.
+</Aside>
+
+### What matters more now
+
+- your **redundancy measures**
+- your **tuning workflow**
+- whether you kept **detailed records**
+- your **issue-resolution process**
+- whether you can provide **real evidence**
+
+<Aside type="note">
+Judges increasingly want concrete, traceable engineering evidence rather than abstract claims.
+</Aside>
+
+---
+
+## Closing note
+
+The original author hopes future team members can:
+- get the car running reliably
+- have enough time for proper tuning
+- go into review and say: "We completed enough real-car testing and tuning. Here is the data."
+
+---
+
+*If anything in this note is incomplete or inaccurate, future members should revise and improve it.*
+
+**Cai Junxiang / Algorithm Group, 24-25 season**
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/planning-control/" style="color: var(--sl-color-accent);">Back to planning & control</a>
+</div>

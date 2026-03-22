@@ -1,0 +1,137 @@
+---
+title: Development Begins for the Next-Generation Race Car
+description: HUAT FSAC has officially kicked off development of its 2025 season vehicle.
+---
+
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components'
+
+**Published: November 2024**
+
+![Race car development](https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200)
+
+HUAT FSAC has officially started development of the next-generation driverless race car for the 2025 season.
+
+---
+
+## Development Goals
+
+Building on lessons from the 2024 season, the team has set a clearer set of targets for the next car.
+
+<CardGrid>
+  <Card title="Performance" icon="rocket">
+    Target 0-100 km/h acceleration time: under 3.0 seconds.
+  </Card>
+  <Card title="Perception" icon="puzzle">
+    Introduce solid-state LiDAR to improve sensing range and precision.
+  </Card>
+  <Card title="Algorithms" icon="laptop">
+    Explore end-to-end deep-learning approaches alongside the current modular stack.
+  </Card>
+  <Card title="Lightweighting" icon="setting">
+    Target full vehicle mass: under 200 kg.
+  </Card>
+</CardGrid>
+
+---
+
+## Technical Direction
+
+### Perception system
+
+The next-generation perception stack will move toward deeper multi-sensor fusion:
+
+```
+LiDAR ----> point-cloud fusion ----> 3D detection --
+                                                   |
+Camera ---> image fusion -------> semantic cues ---+--> fused perception output
+```
+
+**Key technical points**
+- time synchronization through hardware triggering and precise clock alignment
+- spatial calibration with a more automated extrinsic-calibration workflow
+- fusion algorithms that can better combine geometric and semantic information
+
+### Localization and mapping
+
+<Aside type="tip">
+  The team plans to explore vision-dominant localization strategies for scenarios where GNSS is unreliable or unavailable.
+</Aside>
+
+- graph-based SLAM with factor-graph fusion
+- loop closure that combines visual and geometric cues
+- incremental map maintenance and update strategies
+
+### Planning and control
+
+**Planning layer**
+- global planning from track structure to drivable path
+- local planning for real-time obstacle avoidance and path smoothing
+
+**Control layer**
+- longitudinal control through speed planning and tracking
+- lateral control through Stanley, Pure Pursuit, and MPC-style methods
+
+---
+
+## Development Progress
+
+### Phase 1 (2024.11 - 2024.12)
+
+- [x] concept review complete
+- [x] technical direction selected
+- [ ] sensor trade study complete
+- [ ] initial simulation environment prepared
+
+### Phase 2 (2025.01 - 2025.03)
+
+- [ ] detailed design
+- [ ] core algorithm development
+- [ ] hardware procurement and manufacturing
+
+### Phase 3 (2025.04 - 2025.06)
+
+- [ ] full-vehicle assembly
+- [ ] integration and testing
+- [ ] algorithm optimization
+
+---
+
+## Recruiting
+
+The new season needs more members who want to build real systems and learn fast.
+
+### Open directions
+
+| Group | Focus | Baseline skills |
+|------|----------|----------|
+| Sensing | point-cloud processing, detection | C++/Python, PCL, PyTorch |
+| Localization | SLAM, sensor fusion | C++, ROS, Kalman filtering |
+| Planning & Control | path planning, vehicle control | Python/C++, control theory |
+| Simulation | simulation tooling | ROS, Gazebo, Carla |
+
+### How to join
+
+1. Read the [learning roadmap](/en/archive/2024/2024-learning-roadmap/)
+2. Build the baseline knowledge first
+3. Contact the team for follow-up and interview details
+
+---
+
+## Upcoming Tech Sharing Sessions
+
+To help new members ramp up faster, the team plans to run a short sharing series:
+
+- week 1 of December: ROS2 fundamentals
+- week 2 of December: LiDAR point-cloud processing
+- week 3 of December: Kalman filtering and sensor fusion
+- week 4 of December: MPC controller design
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/news/2024-season-finale/" style="color: var(--sl-color-accent);">Previous</a>
+  {" | "}
+  <a href="/en/" style="color: var(--sl-color-accent);">Home</a>
+  {" | "}
+  <a href="/en/news/path-planning/" style="color: var(--sl-color-accent);">Next</a>
+</div>

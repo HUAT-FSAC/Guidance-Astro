@@ -1,36 +1,25 @@
 ---
-import { Icon } from "@astrojs/starlight/components";
+import { Icon } from '@astrojs/starlight/components'
+import type { FeatureCardItem } from '../../../data/home'
+
+interface Props {
+    items: FeatureCardItem[]
+    ariaLabel?: string
+}
+
+const { items, ariaLabel = 'Feature navigation' } = Astro.props
 ---
 
-<div class="feature-grid reveal-upon-scroll" role="navigation" aria-label="部门导航">
-    <a href="/archive/2025/sensing/" class="feature-card reveal-upon-scroll" style="transition-delay: 0.1s;">
-        <Icon name="rocket" size="2rem" color="var(--sl-color-accent)" />
-        <div>
-            <h3>🤖 算法部</h3>
-            <p>感知 · 定位建图 · 规控 · 仿真</p>
-        </div>
-    </a>
-    <a href="/archive/2025/electrical/" class="feature-card reveal-upon-scroll" style="transition-delay: 0.2s;">
-        <Icon name="seti:bicep" size="2rem" color="var(--sl-color-accent)" />
-        <div>
-            <h3>⚡ 电气部</h3>
-            <p>线束 · 软件 · 硬件 · 电池箱</p>
-        </div>
-    </a>
-    <a href="/archive/2025/mechanical/" class="feature-card reveal-upon-scroll" style="transition-delay: 0.3s;">
-        <Icon name="setting" size="2rem" color="var(--sl-color-accent)" />
-        <div>
-            <h3>🔧 机械部</h3>
-            <p>转向悬架 · 传动 · 车架 · 制动</p>
-        </div>
-    </a>
-    <a href="/archive/2025/management/" class="feature-card reveal-upon-scroll" style="transition-delay: 0.4s;">
-        <Icon name="open-book" size="2rem" color="var(--sl-color-accent)" />
-        <div>
-            <h3>📋 项管部</h3>
-            <p>新媒体 · 营销 · 运营管理</p>
-        </div>
-    </a>
+<div class="feature-grid reveal-upon-scroll" role="navigation" aria-label={ariaLabel}>
+    {items.map((item, index) => (
+        <a href={item.href} class="feature-card reveal-upon-scroll" style={`transition-delay: ${index * 0.1 + 0.1}s;`}>
+            <Icon name={item.icon} size="2rem" color="var(--sl-color-accent)" />
+            <div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+            </div>
+        </a>
+    ))}
 </div>
 
 <style>
@@ -66,7 +55,7 @@ import { Icon } from "@astrojs/starlight/components";
     }
 
     .feature-card::before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
@@ -102,7 +91,7 @@ import { Icon } from "@astrojs/starlight/components";
         letter-spacing: 0.5px;
         color: #fff;
     }
-    
+
     :global([data-theme='light']) .feature-card h3 {
         color: #000;
     }

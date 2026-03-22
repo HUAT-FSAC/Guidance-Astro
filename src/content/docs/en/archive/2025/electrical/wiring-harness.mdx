@@ -1,0 +1,92 @@
+---
+title: Wiring Harness
+description: 2025 season full-vehicle harness design notes.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+
+## Design principles
+
+The vehicle wiring harness is the electrical circulatory system of the car. The design should satisfy:
+
+1. **Safety** - proper high-voltage and low-voltage isolation
+2. **Reliability** - water resistance, vibration resistance, and thermal durability
+3. **Maintainability** - modular design for inspection and service
+
+---
+
+## Harness topology
+
+### High-voltage system
+
+```
+Battery Pack ─→ Main Relay ─→ Motor Controller ─→ Drive Motor
+                  ↓
+             Precharge Circuit
+```
+
+### Low-voltage system
+
+```
+Low-Voltage Battery ─→ PDU ─→ VCU
+                         ↓
+                  Sensors / Actuators
+```
+
+---
+
+## Wire-size selection
+
+| Use Case | Current | Recommended Cross-Section |
+|------|------|----------|
+| HV main loop | 200A | 35mm² |
+| Motor controller | 100A | 16mm² |
+| LV power | 30A | 4mm² |
+| Signal wire | `&lt;1A` | 0.5mm² |
+
+<Aside type="tip">
+When selecting wire gauge, account for temperature rise and keep roughly 30% design margin.
+</Aside>
+
+---
+
+## Connector selection
+
+### High-voltage connectors
+
+- **Amphenol** - HVP series
+- **TE Connectivity** - HVSL series
+- key requirements: IP67 sealing and interlock support
+
+### Low-voltage connectors
+
+- **Deutsch** - DTM series
+- **Molex** - Micro-Fit series
+
+---
+
+## Routing rules
+
+<Steps>
+1. route HV and LV harnesses separately
+2. keep signal wiring away from large-current harnesses
+3. avoid sharp bends; minimum bend radius should exceed five times the wire diameter
+4. support spacing should be no more than 200 mm
+5. add sleeves or grommets when routing through metal holes
+</Steps>
+
+---
+
+## Harness drawings
+
+### Recommended tools
+
+- **E3.series** - professional harness design
+- **CATIA Electrical** - 3D routing
+- **AutoCAD Electrical** - 2D schematics
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/electrical/" style="color: var(--sl-color-accent);">Back to electrical</a>
+</div>

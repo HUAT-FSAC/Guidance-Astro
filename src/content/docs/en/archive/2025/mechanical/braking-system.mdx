@@ -1,0 +1,95 @@
+---
+title: Braking System
+description: 2025 season braking-system design notes.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## System overview
+
+The braking system is the final safety barrier of the race car and must remain reliable under every operating condition.
+
+---
+
+## Brake-force distribution
+
+### Ideal brake-balance target
+
+The front-rear brake balance is estimated from the vehicle parameters:
+
+| Parameter | Value |
+|------|------|
+| Static axle-load split | 48:52 |
+| Load transfer under braking | 15% |
+| Ideal brake-force split | 60:40 |
+
+### Pedal ratio
+
+- pedal ratio: 5:1
+- pedal travel: 100 mm
+- max pedal force: 400 N
+
+---
+
+## Brake-component selection
+
+### Brake calipers
+
+The design uses **Wilwood** four-piston calipers:
+- piston diameter: front 32 mm / rear 28 mm
+- material: 6061-T6 aluminum alloy
+
+### Brake discs
+
+| Parameter | Front Disc | Rear Disc |
+|------|----------|----------|
+| Diameter | 240 mm | 220 mm |
+| Thickness | 5 mm | 4 mm |
+| Material | ductile cast iron | ductile cast iron |
+
+<Aside type="tip">
+Lightweight alloy discs can reduce mass, but you need to reassess heat rejection and wear carefully.
+</Aside>
+
+---
+
+## Thermal management
+
+### Temperature monitoring
+
+- brake-disc operating temperature: 300-500°C
+- required brake-fluid boiling point: above 260°C for DOT 4
+
+### Cooling design
+
+1. **Venting features** - slots or drilled patterns in the disc
+2. **Cooling ducts** - direct airflow to the brakes
+3. **Heat shields** - protect wheel bearings and nearby components
+
+---
+
+## Driverless braking redundancy
+
+<Aside type="danger">
+A driverless race car must include a braking redundancy system.
+</Aside>
+
+### EBS
+
+**Emergency Brake System**:
+
+1. **Primary braking** - motor regenerative braking plus hydraulic braking
+2. **Redundant braking** - an independent pneumatic or electric brake actuator
+3. **Fault detection** - monitoring through brake-pressure sensing
+
+### Trigger conditions
+
+- communication loss
+- sensor failure
+- manual trigger from remote control or mushroom switch
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/mechanical/" style="color: var(--sl-color-accent);">Back to mechanical</a>
+</div>

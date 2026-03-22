@@ -1,0 +1,129 @@
+---
+title: Learning Path
+description: 2025 localization and mapping study path and reference collection.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Reference Collection
+
+### Fundamentals
+
+- [Intro to LiDAR SLAM](https://zhuanlan.zhihu.com/p/379696400)
+- [Coordinate transforms](https://blog.csdn.net/panfei263031/article/details/123367962)
+- [ROS TF2 tutorials](https://wiki.ros.org/tf2/Tutorials)
+- [Git usage reference](https://github.com/LOGIC-XYZ/NoteAboutStudy/tree/main/Git)
+
+### Sensor fusion
+
+- [Time synchronization in multi-sensor fusion](https://blog.csdn.net/scott198510/article/details/131170408)
+- [Time synchronization in autonomous driving](https://blog.csdn.net/m0_49384824/article/details/145343749)
+- [LiDAR point-cloud motion-distortion compensation](https://zhuanlan.zhihu.com/p/351109327)
+- [LiDAR motion compensation methods](https://zhuanlan.zhihu.com/p/470795318)
+
+### Study-roadmap references
+
+- [How to start learning LiDAR SLAM from zero](https://zhuanlan.zhihu.com/p/338433941)
+- [Learning LiDAR SLAM algorithms](https://blog.csdn.net/qq_34675171/article/details/90552793)
+- [Autonomous-driving localization from zero](https://zhuanlan.zhihu.com/p/113616755)
+- [Build 2D LiDAR SLAM from scratch](https://www.zhihu.com/column/c_1314297528322764800)
+- [Learn localization from zero](https://www.zhihu.com/column/c_1530947688660631552)
+
+### Kalman filtering
+
+- [From basic Kalman filtering to complementary Kalman filtering](https://zeal-up.github.io/2023/03/13/kalman_filter/)
+- [Robot mapping, University of Freiburg course](https://www.zhihu.com/column/c_1405202802868662273)
+- [EKF-SLAM explained](https://blog.csdn.net/daocaoren_/article/details/105728716)
+
+### Factor-graph optimization
+
+- [Factor-graph optimization open course](https://www.bilibili.com/video/BV1gk4y1R7Lb/)
+- [Factor-graph optimization study notes](https://blog.csdn.net/qq_44709827/article/details/135089592)
+- [SLAM basics: factor-graph optimization and GTSAM](https://blog.csdn.net/jjjqqq123321/article/details/136747255)
+- [Factor-graph optimization resource collection](https://zhuanlan.zhihu.com/p/128720019)
+- [Principles of factor-graph optimization (iSAM / iSAM2)](https://blog.csdn.net/weixin_45112559/article/details/126146289)
+- [Graph-optimization localization for multi-sensor fusion](https://blog.csdn.net/qq_28087491/article/details/128890899)
+- [Graph SLAM tutorial](https://heyijia.blog.csdn.net/article/details/47686523)
+- [Factor graph GNSS notes](https://www.cnblogs.com/bokeyuan-dlam/articles/16086056.html)
+
+### Open-source projects
+
+- [LeGO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM)
+- [LIO-SAM](https://github.com/TixiaoShan/LIO-SAM)
+
+### Other references
+
+- [Why RTK + GPS improves localization precision](https://blog.csdn.net/LEEANG121/article/details/107179265)
+- [Using the `evo` trajectory evaluation tool](https://blog.csdn.net/hhaowang/article/details/105225595)
+- [SLAM algorithm reading column](https://blog.csdn.net/weixin_42048023/category_9216766.html)
+
+### Advanced columns
+
+- [Autonomous Driving Planet](https://www.zhihu.com/column/c_1215619039407861760) - perception, localization, and path planning
+- [SLAM Learning](https://www.zhihu.com/column/c_1336060120435453952) - practical notes, paper reading, and source-code analysis
+
+---
+
+## Phase 1: Coordinate transforms and spatial synchronization
+
+### Overview
+
+- understand the basic concept and common applications of **SLAM (Simultaneous Localization and Mapping)**
+- understand coordinate frames, pose representation, and kinematic basics
+- understand the difference between global and local localization and when each is used
+- configure a ROS-based development environment and common tools
+- achieve **spatial synchronization** across all sensors so their data aligns in a shared global frame
+
+<Aside type="note">
+In our team's pipeline, this is effectively part of the SLAM backend. That is why the emphasis is placed here.
+</Aside>
+
+### Theory checklist
+
+| Topic | Content |
+|------|------|
+| Coordinate frames | Definitions and use cases of WGS84, ECEF, and ENU |
+| Coordinate transforms | How to convert values across different coordinate frames |
+| ROS communication | Topics, parameters, and RViz basics |
+| TF library | How ROS tf is used for frame transforms |
+| Git | How to push code and collaborate through GitHub |
+| Math | Linear algebra, matrix operations, and basic differential equations |
+
+### Coordinate-transform overview
+
+#### 1. WGS84 to ECEF
+
+Geodetic coordinates such as WGS84 are Earth-centered. ECEF uses the Earth's center as the origin, with the X axis pointing to the Greenwich meridian on the equator and the Z axis pointing to the North Pole.
+
+Conversion formula:
+
+```
+X = (N(φ) + h) * cos(φ) * cos(λ)
+Y = (N(φ) + h) * cos(φ) * sin(λ)
+Z = (N(φ) * (1 - e²) + h) * sin(φ)
+```
+
+Where:
+- `N(φ)` is the prime vertical radius of curvature
+- `h` is altitude
+- `φ` is latitude
+- `λ` is longitude
+- `e` is the first eccentricity of the Earth ellipsoid
+
+#### 2. ECEF to ENU
+
+ENU is a local tangent-plane coordinate system. The origin is typically chosen at a reference point such as the start point, with X east, Y north, and Z upward.
+
+Conversion formula:
+
+```
+X_enu = X - X_origin
+Y_enu = Y - Y_origin
+Z_enu = Z - Z_origin
+```
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/localization-mapping/" style="color: var(--sl-color-accent);">Back to localization & mapping</a>
+</div>

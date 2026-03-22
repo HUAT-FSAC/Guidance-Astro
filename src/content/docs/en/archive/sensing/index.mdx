@@ -1,0 +1,97 @@
+---
+title: Sensing
+---
+
+import { Card, CardGrid, Aside, LinkCard, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="Core Responsibility" icon="rocket">
+        Environment perception, target detection, and sensor fusion.
+    </Card>
+    <Card title="Main Sensors" icon="setting">
+        LiDAR, industrial cameras, and stereo vision systems.
+    </Card>
+    <Card title="Output Data" icon="document">
+        Cone positions, color classes, and obstacle information.
+    </Card>
+    <Card title="Tech Stack" icon="laptop">
+        ROS, OpenCV, PCL, and PyTorch.
+    </Card>
+</CardGrid>
+
+---
+
+## Overview
+
+<div class="image-grid">
+
+![cam-and-camera-fusion](@assets/docs/archive/sensing/sensing-and-fusion/cam-and-camera-fusion.jpg)
+
+![actual-and-virtual](@assets/docs/archive/sensing/sensing-and-fusion/actual-and-virtual.png)
+
+</div>
+
+The sensing group uses cameras, LiDAR, and related perception hardware to estimate the position, type, and color of obstacles around the race car, then feeds the processed results to the rest of the autonomous stack.
+
+<Aside type="tip" title="Why It Matters">
+    Perception is the foundation of the full driverless pipeline. Without stable sensing output, downstream planning and control cannot work reliably.
+</Aside>
+
+---
+
+## Technical Architecture
+
+<CardGrid stagger>
+    <Card title="LiDAR Perception" icon="star">
+        - point-cloud preprocessing - ground removal - cone clustering - position estimation
+    </Card>
+    <Card title="Vision Perception" icon="magnifier">
+        - image preprocessing - object detection - color classification - distance estimation
+    </Card>
+    <Card title="Sensor Fusion" icon="puzzle">
+        - time synchronization - spatial calibration - data association - fused outputs
+    </Card>
+</CardGrid>
+
+---
+
+## Learning Overview
+
+<Aside type="note" title="Study Advice">
+    It helps to build basic machine-learning and deep-learning intuition before diving deeply into computer vision.
+</Aside>
+
+### Recommended Resources
+
+<CardGrid>
+    <LinkCard
+        title="What Is Convolution?"
+        description="A clear introduction to the core concept behind convolutional neural networks."
+        href="https://www.bilibili.com/video/BV1Vd4y1e7pj"
+    />
+    <LinkCard title="LiDAR Notes" description="LiDAR perception and point-cloud processing material." href="/en/archive/2025/sensing/激光雷达/" />
+    <LinkCard title="Camera Vision" description="Industrial-camera workflows and visual perception notes." href="/en/archive/2025/sensing/摄像头/" />
+</CardGrid>
+
+---
+
+## Tooling
+
+<CardGrid>
+    <Card title="ROS" icon="seti:robot">
+        <Badge text="Required" variant="success" />
+        Middleware for node communication and data flow.
+    </Card>
+    <Card title="OpenCV" icon="seti:image">
+        <Badge text="Required" variant="success" />
+        Core image-processing and computer-vision library.
+    </Card>
+    <Card title="PCL" icon="seti:json">
+        <Badge text="Recommended" variant="note" />
+        Point Cloud Library for LiDAR data processing.
+    </Card>
+    <Card title="PyTorch" icon="seti:python">
+        <Badge text="Recommended" variant="note" />
+        Deep-learning framework for model training and experimentation.
+    </Card>
+</CardGrid>

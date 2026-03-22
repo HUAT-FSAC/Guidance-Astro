@@ -1,0 +1,90 @@
+---
+title: Hardware Design
+description: 2025 season electronics hardware design notes.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Main controller board
+
+### MCU selection
+
+| Model | Clock | Flash | RAM | CAN | Price |
+|------|------|-------|-----|-----|------|
+| STM32F407VET6 | 168MHz | 512KB | 192KB | 2 | CNY 30 |
+| STM32H743VIT6 | 480MHz | 2MB | 1MB | 2 | CNY 80 |
+| ESP32-S3 | 240MHz | 8MB | 512KB | 1 | CNY 25 |
+
+<Aside type="tip">
+Selection should balance compute performance, cost, and development complexity.
+</Aside>
+
+---
+
+## Power management
+
+### Power topology
+
+```
+12V Battery ─→ DC-DC ─→ 5V ─→ LDO ─→ 3.3V
+```
+
+### Key parts
+
+| Conversion | Load | Suggested Part |
+|------|------|----------|
+| 12V to 5V | 3A | LM2596 / TPS54331 |
+| 5V to 3.3V | 500mA | AMS1117-3.3 |
+
+---
+
+## Signal acquisition
+
+### Analog signals
+
+- **Pedal position** - 0-5V linear potentiometer
+- **Steering angle** - angular sensor
+- **Temperature** - NTC thermistor / PT100
+
+### Digital signals
+
+- **Wheel speed** - Hall-sensor pulse counting
+- **Switch inputs** - opto-isolated digital input
+
+---
+
+## PCB rules
+
+### Layout principles
+
+1. place the power entry near the connector
+2. keep analog signals away from digital-noise sources
+3. keep high-speed traces short and direct
+4. widen high-current traces or use copper pours
+
+### Design software
+
+- **Altium Designer** - common professional choice
+- **KiCad** - open-source and free
+- **LCSC EDA / JLCEDA** - domestic option with easy manufacturing flow
+
+---
+
+## EMC design
+
+### Anti-interference measures
+
+1. **Filter capacitors** - for example 100μF + 0.1μF at the power input
+2. **TVS diodes** - transient suppression
+3. **Ferrite beads** - high-frequency noise isolation
+4. **Shielding can** - protect sensitive circuits
+
+<Aside type="caution">
+The electromagnetic environment of a race car is harsh. EMC design is not optional.
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/electrical/" style="color: var(--sl-color-accent);">Back to electrical</a>
+</div>

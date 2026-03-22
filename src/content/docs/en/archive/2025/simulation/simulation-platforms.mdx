@@ -1,0 +1,158 @@
+---
+title: Simulation Platforms
+description: 2025 season simulation-platform overview and usage notes.
+---
+
+import { Aside, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components'
+import { Image } from 'astro:assets'
+import imgSimInfo from '@assets/docs/2025/simulation/仿真-修改信息.png'
+import imgSimNode from '@assets/docs/2025/simulation/仿真-启动节点.jpg'
+import imgTeam from '@assets/docs/2025/management/勇敢去做.jpeg'
+
+These notes summarize simulation-related experience from the HUAT driverless side. Treat them as a handoff reference rather than the final answer. Future members should still study each platform in more depth and correct anything that turns out to be incomplete.
+
+---
+
+## Platform comparison
+
+<Tabs>
+  <TabItem label="Fssim">
+    ### Fssim
+
+    **Overview**: The first simulation platform the author encountered, originally developed by AMZ Racing.
+
+    **Tech stack**:
+    - ROS1 on Ubuntu 18.04
+    - Gazebo and RViz for simulation and visualization
+
+    **GitHub**: [AMZ-Racing/fssim](https://github.com/AMZ-Racing/fssim)
+
+    **Usage notes**:
+    - switch track environments by modifying the relevant SDF files
+    - launch the required nodes to start the simulation
+
+    <Image src={imgSimInfo} alt="Modify track information" />
+
+    The figure below shows a high-speed-tracking simulation node setup:
+
+    <Image src={imgSimNode} alt="Launch simulation nodes" />
+
+    **Typical use cases**: skidpad, acceleration, and high-speed tracking style event simulation
+
+  </TabItem>
+
+  <TabItem label="FSDS">
+    ### FSDS (Formula Student Driverless Simulator)
+
+    **Overview**: A platform the team learned about through exchanges with other teams.
+
+    **Tech stack**:
+    - Unreal Engine 4 + AirSim
+    - very high visual fidelity
+
+    **GitHub**: [FS-Driverless/Formula-Student-Driverless-Simulator](https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator)
+
+    <Aside type="caution">
+    Hardware demand is high, especially on the GPU side.
+    </Aside>
+
+    **Recommendation**: currently one of the most practical and reliable options if the hardware budget allows it
+
+  </TabItem>
+
+  <TabItem label="CARLA">
+    ### CARLA
+
+    **Overview**: More commonly used for general autonomous-driving scenarios such as urban traffic.
+
+    **GitHub**: [carla-simulator/carla](https://github.com/carla-simulator/carla)
+
+    <Aside type="note">
+    For Formula Student style tracking work, CARLA is often too large and too complex, and its hardware requirements are also high. Use it only if you have a clear reason.
+    </Aside>
+
+  </TabItem>
+
+  <TabItem label="f1tenth">
+    ### f1tenth_gym_ros
+
+    **Overview**: A lightweight simulation environment mainly designed for F1TENTH miniature race cars.
+
+    **GitHub**: [f1tenth/f1tenth_gym_ros](https://github.com/f1tenth/f1tenth_gym_ros)
+
+    **Install guide**: [f1tenth Simulator on Ubuntu20 with ROS2 Foxy](https://www.youtube.com/watch?v=h-0HjJzuo6Q)
+
+    <Aside type="caution">
+    The match to our competition format is not especially strong. Some data such as PID parameters may be useful only as a reference and may not transfer safely to the real car.
+    </Aside>
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Personal view on simulation
+
+<Aside type="tip">
+    In Formula Student Driverless, simulation may contribute a bit during review and presentation, but for everyday engineering it is only a partial reference for real-car testing.
+</Aside>
+
+Based on the most recent review cycle, judges seem to care less about simulation as an isolated concept and more about **whole-vehicle testing**.
+
+**Core view**:
+
+- simulation is mainly there to give you rough indicators before real-car testing
+- it cannot replace the full physical test process
+- it cannot eliminate the gap between simulation and the real vehicle
+
+**Simple example**:
+
+> In simulation, the mechanical structure is fixed. On the real car, the mechanical behavior is never perfectly predictable and may deviate a lot from your expectation. In that sense, the Fuzhou University line from 2024 is still persuasive: "We skipped simulation and tuned directly on the real car."
+
+**Recommended resource**: [FSAE-TJU Formula Student simulation platform](https://www.yuque.com/baiyunqianzaijin/vggzyn/ogmpsb29e8gbtf5p)
+
+---
+
+## Review summary
+
+The following questions were raised during this year's review.
+
+### Simulation and testing
+
+| No. | Question |
+| :--: | -------------------------------------------------------------------------------------------- |
+| 1 | How is overall testing planned? |
+| 2 | Is there a plan for the full-vehicle design and test process? |
+| 3 | How are hardware-selection decisions made? |
+| 4 | Is testing done step by step from small to large, or directly on the real car? |
+| 5 | How far along is the vehicle overall, what remains weak, and what unresolved issues still exist? |
+| 6 | Is there supporting documentation, including code-management history and issue-resolution records? |
+| 7 | In testing, do you use controlled-variable methods or mixed validation methods, and did you verify the relevant techniques? |
+
+### Driverless-system questions
+
+| No. | Question |
+| :--: | ------------------------------------------------ |
+| 8 | At the highest level, what factors limit the team's progress? |
+| 9 | What exactly counts as the driverless system, and how is the whole architecture arranged? |
+| 10 | Who owns the overall planning, and were records kept? |
+| 11 | Has time synchronization been implemented? |
+| 12 | Are there safety redundancy measures, and how are they implemented? |
+
+---
+
+## Closing note
+
+<Aside type="note">If anything here is incomplete, future members should revise and improve it.</Aside>
+
+**Cai Junxiang / Algorithm Group, 24-25 season**
+
+<Image src={imgTeam} alt="Keep going - algorithm group 24-25" />
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+    <a href="/en/archive/2025/simulation/" style="color: var(--sl-color-accent);">
+        Back to simulation
+    </a>
+</div>

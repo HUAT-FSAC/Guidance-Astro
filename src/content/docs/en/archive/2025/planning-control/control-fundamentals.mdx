@@ -1,0 +1,123 @@
+---
+title: Control Fundamentals
+description: Learning guide for 2025 season control algorithms.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+<Aside type="tip">
+If you get stuck, ask the faculty advisor. He is the team's control specialist. The original notes also mention that crossed-out comments were personal opinions, so treat them as optional interpretation rather than hard requirements.
+</Aside>
+
+---
+
+## Study plan
+
+The original recommendation assumes you already know ROS and C++ before summer training starts.
+
+| Weeks | Focus |
+|------|----------|
+| 1-2 | Learn PID and Pure Pursuit, read `PP_car.cpp`, and understand the algorithms, bicycle model, and control-code structure |
+| 3-4 | Learn Stanley control and build a simulation from the teaching material, then try to recreate a Pure Pursuit simulation on your own |
+| 5-6 | Learn advanced methods such as MPC and fuzzy PID, optimize the algorithms, and form your own opinion on their tradeoffs |
+| After summer | Rewrite launch scripts as needed, maintain VCU communication, tune on the real car, and build a stronger understanding of control theory |
+
+---
+
+## Vehicle model basics
+
+You should understand:
+
+- which vehicle model the team is currently using
+- what degrees of freedom mean
+- [how different vehicle models differ](https://www.bilibili.com/video/BV19X4y1G7BE/)
+- why the team does not use another model instead
+
+<Aside type="note">
+In practice, the current model is used because it is simple enough to implement and useful enough to ship. In review sessions, however, you should be ready to explain the decision in terms of performance, practicality, implementation cost, and schedule.
+</Aside>
+
+---
+
+## Tracking algorithms
+
+Two common methods are used heavily.
+
+### 1. Pure Pursuit
+
+- [Derive Pure Pursuit step by step from this video](https://www.bilibili.com/video/BV1Hk4y1W7NQ)
+
+### 2. Stanley
+
+- [Understand the Stanley formula](https://www.bilibili.com/video/BV19c411M7mf/)
+
+**What you should be able to explain**
+
+- the strengths and weaknesses of both methods
+- what kinds of tracks they suit and why
+- how to tune key parameters such as `ld` (lookahead distance) and `d(t)` (lateral error)
+
+<Aside type="caution">
+When reading the code, make sure you understand the path-point representation and why coordinate transforms are needed. If not, ask another subsystem for help rather than skipping the concept.
+</Aside>
+
+---
+
+## Vehicle control
+
+### Lateral control
+
+The goal is to avoid steering too aggressively and destabilizing the vehicle. A common starting point is a [PID-based controller](https://www.bilibili.com/video/BV1et4y1i7Gm/).
+
+**PID tuning notes**
+- most tuning should happen on the real vehicle
+- understand what each gain actually changes
+- decide whether the integral term needs periodic reset
+- decide whether the derivative term is actually useful on the car
+
+### Longitudinal control
+
+This controls vehicle speed, or more precisely pedal and propulsion behavior that maps to speed response.
+
+- target speed can be coupled to the lateral controller output
+- understand the difference between coordinated lateral-longitudinal control and fully coupled joint control
+
+---
+
+## Control simulation
+
+<Aside type="note">
+Simulation and real-car behavior are never the same thing. The best test is still the real car. But simulation is still required for review and presentation.
+</Aside>
+
+If you need a starting point, try a Stanley simulation first.
+
+**Simulation stack**: Simulink + CarSim
+
+**Preparation**
+- find working software builds through normal team channels
+- learn at least basic MATLAB syntax before diving in
+
+**Questions that often come up in reviews**
+- why run simulation at all?
+- what exactly does simulation help validate?
+- how do you reduce the gap between simulation and the real car?
+
+---
+
+## Future directions
+
+### MPC
+
+- [MPC tutorial video](https://www.bilibili.com/video/BV1cL411n7KV/)
+- [Reference MPC repository](https://github.com/USE-jx/NMPC_CASADI_CPP)
+
+### Fuzzy PID
+
+A practical way to understand this is as a gain-scheduled PID system built around fuzzy inference. Even if the terminology varies, the useful question is what control adaptation it actually provides.
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/planning-control/" style="color: var(--sl-color-accent);">Back to planning & control</a>
+</div>

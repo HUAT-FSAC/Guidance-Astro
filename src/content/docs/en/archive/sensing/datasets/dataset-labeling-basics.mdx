@@ -1,0 +1,128 @@
+---
+title: Dataset Labeling Basics
+---
+
+import { Image } from 'astro:assets'
+import imgPythonDownload from '@assets/docs/archive/dataset-labeling/python_download.png'
+import imgLabelmeReleases from '@assets/docs/archive/dataset-labeling/labelme_releases.png'
+import imgLinuxLabelme from '@assets/docs/archive/dataset-labeling/linux_labelme.png'
+import imgLabelmeOpenDir from '@assets/docs/archive/dataset-labeling/labelme_open_dir.png'
+import imgLabelme1 from '@assets/docs/archive/dataset-labeling/labelme_1.png'
+import imgLabelme2 from '@assets/docs/archive/dataset-labeling/labelme_2.png'
+
+## 1. Why Is Dataset Labeling Necessary?
+
+HUAT FSAC uses an on-board camera system (1900 × 1200 px) to run [semantic segmentation](https://zhuanlan.zhihu.com/p/46200875) for cone-color recognition. Training that model requires a large amount of labeled data, so manual annotation is necessary.
+
+## 2. Environment Setup
+
+- Python 3.x installation  
+  Download: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+    <Image src={imgPythonDownload} alt="Python download page" />
+
+    Click `Download Python 3.XX.X` to begin. A more detailed installation guide is available [here](https://zhuanlan.zhihu.com/p/111168324).
+
+- labelme download and installation  
+  Official releases: [https://github.com/wkentaro/labelme/releases](https://github.com/wkentaro/labelme/releases)  
+  Lanzou mirror: [https://nekorectifier.lanzouw.com/iMe0I0dk0kpe](https://nekorectifier.lanzouw.com/iMe0I0dk0kpe)
+
+    <Image src={imgLabelmeReleases} alt="Labelme releases page" />
+
+    The official release page provides packages for Linux, Windows, and macOS. The Lanzou mirror currently provides a Windows build.
+
+    - GNU/Linux installation
+
+        > As of 2022-12-10, installing from GitHub Releases is not recommended on Linux.
+
+        Run `pip install labelme` in the terminal and wait for the installation to finish.
+
+        After installation, run `labelme` to start the program.
+
+        <Image src={imgLinuxLabelme} alt="Labelme installation on Linux" />
+
+        The left image shows the application window and the right image shows the installation process.
+
+    - Windows installation
+
+        Download `Labelme.exe` from GitHub Releases and launch it directly.
+
+## 3. How To Use labelme
+
+[labelme](https://github.com/wkentaro/labelme) is an image-annotation tool that supports precise polygon, rectangle, circle, and other annotation types. The semantic-segmentation work used by the team relies on **polygon annotations**.
+
+1. Open the folder containing the original images.
+
+    Use `Open Dir` to open the folder.
+
+    <Image src={imgLabelmeOpenDir} alt="Labelme open directory" />
+
+2. Switch to annotation mode and create instance labels.
+
+    Click `Create Polygons` and use the mouse to trace the object contour.
+
+    <Image src={imgLabelme1} alt="Labelme annotation example 1" />
+
+    > **Standard annotation rule**: annotate farther objects first, then nearer objects.  
+    > **The order affects the final annotation result.** Earlier objects are rendered underneath later ones, so the order must not be reversed.
+
+3. After one object is outlined, click the first point again to close the polygon.
+
+4. Enter the label name in the pop-up window.
+
+    <Image src={imgLabelme2} alt="Labelme annotation example 2" />
+
+5. Repeat the process until all objects are labeled.
+
+    [Watch the sample labeling video](https://www.bilibili.com/video/BV18V4y1L7CK)
+
+6. Save the `json` file in the same directory as the source image by clicking Save or pressing `Ctrl + S`.
+
+    > In most cases the `json` filename should remain identical to the image filename.
+
+## 4. Annotation Review
+
+Annotation work inevitably introduces mistakes such as wrong labels, missed labels, or incorrect drawing order. A review pass is therefore required to avoid reducing dataset quality.
+
+1. Prepare the environment  
+   Install the required libraries with:
+
+    ```bash
+    pip install numpy imgviz labelme
+    ```
+
+    Then clone the `wkentaro/labelme` repository:
+
+    ```bash
+    git clone https://github.com/wkentaro/labelme.git
+    ```
+
+    Download the required `labels.txt` file from [here](https://nekorectifier.lanzouw.com/i8uaA0dt3gah).
+
+2. Prepare the dataset  
+   Place the labeled `json` files and their source images in the same directory. Here we use `a/` as an example.
+   Make sure each `json` file and image file share the same base name:
+
+    ```text
+    a/
+    |
+    |--- 0001.json
+    |--- 0001.png
+    |--- ...
+    ```
+
+3. Convert the color visualization  
+   Run `labelme2voc.py` under `labelme/example/semantic-segmentation/` with:
+
+    ```bash
+    python labelme/example/semantic-segmentation/labelme2voc.py --input_dir "a/" --output_dir "output/" --labels labels.txt
+    ```
+
+    The converted result should look like this:
+
+    ![res](https://pan-yz.chaoxing.com/thumbnail/0,0,0/96b705033123c8c05c13b63db9c5777a.png)
+
+4. Review the converted output
+    - Inspect all images under `output/SegmentationClassVisualization/` in sequence.
+    - Check whether their layering order is correct, using the same farther-first, nearer-later rule described above.
+    - Only after **all files have been checked** should the dataset be converted for training.

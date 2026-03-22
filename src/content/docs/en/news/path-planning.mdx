@@ -1,0 +1,184 @@
+---
+title: 'Technical Sharing: Path Planning Methods Explained'
+description: A closer look at the planning algorithms discussed in the HUAT FSAC technical sharing session.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+
+**Published: October 2024**
+
+![Path planning](https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200)
+
+This technical-sharing session focused on the planning algorithms used on the team's driverless race car and the tradeoffs behind them.
+
+---
+
+## What Path Planning Means Here
+
+Path planning is one of the central modules in the autonomous stack. Its job is to find a safe and efficient path from the current state to the next target area on track.
+
+<Aside type="note">
+  In Formula Student Driverless events, the track is marked by cones. Blue cones sit on the left boundary, yellow cones sit on the right boundary, and the car must drive between them.
+</Aside>
+
+### Planning hierarchy
+
+The planning stack can be viewed at three layers:
+
+```
+Global planning -> Local planning -> Trajectory tracking
+```
+
+---
+
+## Global Planning
+
+### Building a centerline
+
+<Steps>
+1. **Match cone pairs**
+
+   Pair detected blue and yellow cones into track boundaries.
+
+2. **Compute midpoints**
+
+   Use each cone pair to estimate centerline samples.
+
+3. **Fit a smooth path**
+
+   Use splines such as cubic B-splines to smooth the centerline.
+
+4. **Optimize curvature**
+
+   Reduce abrupt curvature changes so the path is easier to drive fast and stably.
+</Steps>
+
+### Racing-line optimization
+
+Once the track map is available, the route can be improved further by balancing path length, curvature, and speed potential.
+
+```python
+def optimize_racing_line(centerline, track_width):
+    """Optimize a racing line with curvature and width constraints."""
+    n_points = len(centerline)
+    lateral_offset = cp.Variable(n_points)
+
+    constraints = [cp.abs(lateral_offset) <= track_width / 2]
+
+    objective = cp.Minimize(
+        path_length(lateral_offset) + lambda_curv * curvature_cost(lateral_offset)
+    )
+
+    problem = cp.Problem(objective, constraints)
+    problem.solve()
+
+    return centerline + lateral_offset.value
+```
+
+---
+
+## Local Planning
+
+Local planning generates a feasible short-horizon trajectory in real time while considering:
+
+- the current vehicle state
+- newly detected cones
+- obstacle-avoidance requirements
+
+### Frenet frame
+
+The team often reasons about local planning in the Frenet frame:
+
+- **longitudinal (`s`)** along the reference path
+- **lateral (`d`)** perpendicular to the reference path
+
+<Aside type="tip">
+  The Frenet frame helps decouple a 2D planning problem into simpler longitudinal and lateral subproblems.
+</Aside>
+
+### Polynomial trajectory generation
+
+```python
+class QuinticPolynomial:
+    """Quintic polynomial trajectory."""
+
+    def __init__(self, x0, v0, a0, xf, vf, af, T):
+        A = np.array([
+            [T**3, T**4, T**5],
+            [3*T**2, 4*T**3, 5*T**4],
+            [6*T, 12*T**2, 20*T**3]
+        ])
+        b = np.array([
+            xf - x0 - v0*T - 0.5*a0*T**2,
+            vf - v0 - a0*T,
+            af - a0
+        ])
+
+        x = np.linalg.solve(A, b)
+        self.a0, self.a1, self.a2 = x0, v0, a0 / 2
+        self.a3, self.a4, self.a5 = x
+```
+
+---
+
+## Tracking Control
+
+### Pure Pursuit
+
+Pure Pursuit is a geometric path-tracking method that computes steering by aiming at a lookahead point on the reference path.
+
+Steering equation: `delta = arctan(2L * sin(alpha) / ld)`
+
+Where:
+- `L` is the wheelbase
+- `alpha` is the heading angle to the target point
+- `ld` is the lookahead distance
+
+### MPC
+
+Model predictive control is a more advanced method that optimizes future states and control actions over a short horizon.
+
+```python
+def mpc_control(state, reference_trajectory):
+    """Solve an MPC problem and return the first control command."""
+    N = 10
+    x = cp.Variable((4, N + 1))
+    u = cp.Variable((2, N))
+    cost = 0
+    constraints = []
+
+    for k in range(N):
+        cost += cp.quad_form(x[:, k] - ref[:, k], Q)
+        cost += cp.quad_form(u[:, k], R)
+        constraints += [x[:, k + 1] == A @ x[:, k] + B @ u[:, k]]
+
+    problem = cp.Problem(cp.Minimize(cost), constraints)
+    problem.solve()
+
+    return u[:, 0].value
+```
+
+---
+
+## Practical Optimization Notes
+
+### Compute efficiency
+
+1. downsample cone clouds to reduce unnecessary computation
+2. update only the path segments that changed
+3. parallelize planning and control where practical
+
+### Robustness
+
+1. filter out false cone detections
+2. smooth planning output with low-pass filtering
+3. fall back to a safe mode when planning fails
+
+---
+
+## Further Reading
+
+- Werling, M. et al. "Optimal trajectory generation for dynamic street scenarios in a Frenet frame"
+- PythonRobotics: [https://github.com/AtsushiSakai/PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics)
+- 2025 planning-and-control entry page: [/en/archive/2025/planning-control/](/en/archive/2025/planning-control/)
+

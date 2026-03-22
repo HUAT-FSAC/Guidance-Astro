@@ -1,0 +1,99 @@
+---
+title: LiDAR
+description: LiDAR perception notes for the 2025 season.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Required Background
+
+### 1. LiDAR fundamentals
+
+- understand LiDAR models, vendors, categories, and working principles
+- understand why a specific sensor was selected, including cost and application constraints
+- read the vendor manual, learn to use the vendor tools, and be able to configure the sensor
+
+<Aside type="tip">
+The faculty advisor usually has the vendor contact. If you are stuck on hardware configuration or failure cases, ask for that contact instead of guessing.
+</Aside>
+
+- learn the basics of point-cloud processing
+- become comfortable with sensor installation and removal
+- learn how to record ROS bag files
+- learn RViz configuration and what the major display parameters mean
+
+### 2. C++ foundations
+
+Point-cloud data in the codebase is passed around heavily through smart pointers, so you need to read C++ syntax and pointer usage comfortably.
+
+LiDAR data volume is large, so you also need solid intuition for heap vs. stack behavior and common container usage.
+
+### 3. ROS2 basics
+
+Get to a basic working level with ROS2.
+
+### 4. Environment setup
+
+Install the appropriate versions of Ubuntu, PCL, and ROS2.
+
+### 5. PCL basics
+
+Recommended reference: [Common PCL methods (normal estimation and more)](https://www.yuque.com/huangzhongqing/pcl/cpr4af)
+
+This is a useful technical summary shared for members interested in point clouds. Even if you do not plan to go deep into PCL right away, use it to make sure the basic concepts are clear.
+
+---
+
+## Reading the Code
+
+<Aside type="caution">
+Some parts of the code are commented out. You can skip them at first, but that does not mean they are useless. They may contain ideas that were not chosen at the time and could still inspire future improvements.
+</Aside>
+
+- because the project is large, each generation should leave the next one a hand-drawn or manually written process diagram of the pipeline
+- coordinate with the localization team to understand how shared data is handled in the full stack
+- when optimizing the code, use the vendor tool or command-line logs to inspect what data actually needs improvement
+- understand the effect of every tunable parameter; the project README usually explains the most important ones
+
+---
+
+## Suggested Optimization Directions
+
+### 1. Ground-segmentation algorithm
+
+Every vehicle has different parameters, so the ground-segmentation settings also need to change. Multiple parameters work together to separate ground points from non-ground points.
+
+<Aside type="caution">
+Pay close attention to the cone-to-ground contact region. If too much of that region is classified as ground, downstream cone extraction quality suffers significantly.
+</Aside>
+
+Read more technical discussions on ground-segmentation methods, compare approaches from other driverless teams, and be willing to try newer algorithms.
+
+### 2. Filtering strategy
+
+Choose the filtering order and method based on the specific LiDAR and weather or environment conditions you face.
+
+### 3. Clustering and object recognition
+
+- choose clustering methods and tune their parameters carefully
+- study shape-based recognition ideas, including how cones can be treated as conical geometry and how material or geometric constraints can help classification
+
+---
+
+## Important Reminder
+
+<Aside type="danger">
+Do not validate your algorithm only on recorded bag files. You must run it on the real LiDAR hardware as well.
+</Aside>
+
+---
+
+## Recommended Videos and Blog Posts
+
+- [Install PCL on Ubuntu 22.04](https://blog.csdn.net/u012660296/article/details/132450862)
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/sensing/" style="color: var(--sl-color-accent);">Back to sensing</a>
+</div>

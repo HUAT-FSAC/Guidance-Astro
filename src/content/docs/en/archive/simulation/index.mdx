@@ -1,0 +1,133 @@
+---
+title: Simulation
+---
+
+import { Card, CardGrid, Aside, Steps, LinkCard, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+  <Card title="Core Responsibility" icon="rocket">
+    Build simulation environments, test algorithms, and reproduce issues before track tests.
+  </Card>
+  <Card title="Simulation Platform" icon="laptop">
+    The team currently uses a Gazebo-based FSSim workflow.
+  </Card>
+  <Card title="Main Work" icon="setting">
+    Track modeling, vehicle modeling, and virtual sensor integration.
+  </Card>
+  <Card title="Tech Stack" icon="puzzle">
+    ROS, Gazebo, URDF, and Python.
+  </Card>
+</CardGrid>
+
+---
+
+## Overview
+
+Simulation recreates the vehicle model and competition track in software so algorithms can run and be tested in a controlled environment.
+
+<Aside type="tip" title="Why Simulation Matters?">
+  - test algorithms without needing the real car
+  - improve iteration speed and safety
+  - expose potential issues earlier
+  - use repeatable and controllable scenarios
+</Aside>
+
+---
+
+## Platform
+
+<Card title="FSSim" icon="star">
+  The team uses a modified [FSSim](https://github.com/HUAT-FSAC/fssim) platform derived from work by [BITFSD](http://www.bitfsd.com/).
+
+  <Badge text="Open Source" variant="success" /> <Badge text="ROS Compatible" variant="note" /> <Badge text="Gazebo" variant="caution" />
+</Card>
+
+---
+
+## Simulation Architecture
+
+<CardGrid stagger>
+  <Card title="Vehicle Model" icon="right-arrow">
+    - URDF model description
+    - vehicle dynamics
+    - steering and braking simulation
+  </Card>
+  <Card title="Sensor Simulation" icon="magnifier">
+    - LiDAR simulation
+    - camera simulation
+    - IMU and GPS simulation
+  </Card>
+  <Card title="Track Environment" icon="approve-check">
+    - cone placement
+    - track layout
+    - collision handling
+  </Card>
+  <Card title="Visualization" icon="seti:image">
+    - Gazebo 3D rendering
+    - RViz data visualization
+    - live state monitoring
+  </Card>
+</CardGrid>
+
+---
+
+## Quick Start
+
+<Steps>
+
+1. **Install dependencies**
+
+   Make sure ROS Noetic and Gazebo are installed.
+
+2. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/HUAT-FSAC/fssim.git
+   cd fssim
+   ```
+
+3. **Build the workspace**
+
+   ```bash
+   catkin_make
+   source devel/setup.bash
+   ```
+
+4. **Launch the simulator**
+
+   ```bash
+   roslaunch fssim_gazebo fssim.launch
+   ```
+
+</Steps>
+
+<Aside type="caution" title="Environment Requirement">
+  FSSim currently expects Ubuntu 20.04 with ROS Noetic. A VM or WSL2 setup is usually the most practical starting point.
+</Aside>
+
+---
+
+## Related Links
+
+<CardGrid>
+  <LinkCard
+    title="FSSim Repository"
+    description="The HUAT FSAC simulation repository on GitHub."
+    href="https://github.com/HUAT-FSAC/fssim"
+  />
+  <LinkCard
+    title="BITFSD"
+    description="Source project and background for the simulator lineage."
+    href="http://www.bitfsd.com/"
+  />
+  <LinkCard
+    title="Gazebo Docs"
+    description="Official Gazebo documentation."
+    href="https://gazebosim.org/docs"
+  />
+  <LinkCard
+    title="ROS Wiki"
+    description="ROS documentation and package references."
+    href="http://wiki.ros.org/"
+  />
+</CardGrid>

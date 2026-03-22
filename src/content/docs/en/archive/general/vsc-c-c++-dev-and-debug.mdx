@@ -1,0 +1,260 @@
+---
+title: C/C++ Development and Debugging with VS Code
+author: NekoRectifier
+---
+
+import {
+    Card,
+    CardGrid,
+    Aside,
+    Tabs,
+    TabItem,
+    Steps,
+    Badge,
+    LinkCard,
+} from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="Platform" icon="laptop">
+        Mainly aimed at **Windows**, though Linux users can reuse the core ideas.
+    </Card>
+    <Card title="Compiler" icon="setting">
+        **Clang / GCC**
+    </Card>
+    <Card title="Debugger" icon="magnifier">
+        **LLDB**
+    </Card>
+    <Card title="Difficulty" icon="star">
+        <Badge text="Beginner" variant="success" /> Suitable for newcomers
+    </Card>
+</CardGrid>
+
+## Overview
+
+Compared with CLion or Visual Studio, VS Code is primarily a lightweight editor. It does not ship with full C/C++ build and debug workflows out of the box, so you need to configure them yourself.
+
+<Aside type="tip">
+    VS Code starts quickly and stays lightweight, while extensions let you assemble most of the IDE features you actually need.
+</Aside>
+
+---
+
+## Install a C/C++ toolchain on Windows
+
+<Aside type="note">
+    Most Linux systems already include `gcc` or `clang`. If yours does not, install them separately.
+</Aside>
+
+[Winlibs](https://winlibs.com/) is one of the easiest ways to get a working Windows toolchain quickly. It bundles:
+
+<CardGrid stagger>
+    <Card title="GCC / Clang" icon="approve-check">
+        The two mainstream compiler families
+    </Card>
+    <Card title="MinGW-w64" icon="seti:windows">
+        Windows runtime support
+    </Card>
+    <Card title="GDB & LLDB" icon="magnifier">
+        Complete debugger options
+    </Card>
+    <Card title="LLVM" icon="puzzle">
+        Modern compiler infrastructure
+    </Card>
+</CardGrid>
+
+### Setup steps
+
+<Steps>
+
+1. Download an archive from the [Winlibs website](https://winlibs.com/)
+
+2. Extract it to a directory without spaces or Chinese characters if possible
+
+3. Add the extracted `/bin` path to your system `PATH`
+
+4. Open cmd or PowerShell and verify the installation
+
+</Steps>
+
+### Verify the installation
+
+Run these commands in a terminal:
+
+```shell
+gcc --version
+clang++ --version
+```
+
+![compiler-version](@assets/docs/archive/vsc-c-c++-dev-and-debug/compiler-versions.png)
+
+<Aside type="caution">
+    If both `gcc` and `clang` print version information, the installation is working. If the commands are not found, check your `PATH` setting.
+</Aside>
+
+---
+
+## Configure VS Code for development
+
+In many IDEs, build buttons exist by default. In VS Code, you create that workflow yourself.
+
+### Configure `tasks.json`
+
+<Aside type="note" title="What is a Task?">
+    A task is a VS Code command workflow. With `tasks.json`, you can bind compilation steps to the build command.
+</Aside>
+
+#### Steps
+
+<Steps>
+
+1. Open a prepared working folder in VS Code
+
+2. Create a `.vscode/` directory
+
+3. Inside it, create `tasks.json`
+
+4. Paste the following configuration
+
+</Steps>
+
+<Aside type="caution" title="Platform note">
+    This example is configured for **Windows**. If you use another platform, adjust it accordingly.
+</Aside>
+
+```json title="tasks.json"
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "process",
+            "command": "clang",
+            "args": ["-g", "${file}", "-o", "${fileBasenameNoExtension}.exe"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
+```
+
+<Tabs>
+    <TabItem label="Field reference">
+        | Field | Meaning |
+        |------|------|
+        | `label` | task name |
+        | `type` | task type; use `process` for non-shell commands |
+        | `command` | compiler command |
+        | `args` | list of compiler arguments |
+        | `-g` | enable debug information |
+        | `${file}` | absolute path of the current file |
+        | `group` | assign the task to a VS Code task group |
+    </TabItem>
+    <TabItem label="Common variables">
+        | Variable | Meaning |
+        |------|------|
+        | `${file}` | full path of the current file |
+        | `${fileBasename}` | current file name |
+        | `${fileBasenameNoExtension}` | current file name without extension |
+        | `${workspaceFolder}` | workspace root |
+
+        More variables are listed in the [VS Code variable reference](https://code.visualstudio.com/docs/editor/variables-reference).
+    </TabItem>
+</Tabs>
+
+After saving the file, return to the editor and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> to run the default build task.
+
+![compiling](@assets/docs/archive/vsc-c-c++-dev-and-debug/compiling.gif)
+
+<Aside type="tip">If you are not using Winlibs, you may need to provide the compiler's absolute path manually.</Aside>
+
+---
+
+### Configure one-click debugging
+
+#### Install the matching VS Code extension
+
+<Steps>
+
+1. Open the VS Code extensions sidebar
+
+2. Search for and install **CodeLLDB**
+
+3. Wait for the LLVM support package to install automatically
+
+</Steps>
+
+![ext-install](@assets/docs/archive/vsc-c-c++-dev-and-debug/extension-install.png)
+
+#### Configure `launch.json`
+
+<Steps>
+
+1. Create `launch.json` inside `.vscode/`
+
+2. Paste the following configuration
+
+3. Build the program once first
+
+4. Press <kbd>F5</kbd> in the editor to start debugging
+
+</Steps>
+
+```json title="launch.json"
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
+```
+
+<Aside type="caution" title="Debugger does not stop?">
+    If debugging does not pause as expected, check:
+    - whether `-g` is present in `tasks.json`
+    - whether you actually set breakpoints in the editor
+</Aside>
+
+---
+
+## Recommended Extensions
+
+If you use Winlibs, these extensions are especially useful:
+
+<CardGrid>
+    <Card title="clangd" icon="star">
+        Real-time static analysis and better editor assistance with the installed clang frontend.
+        ![clangd](@assets/docs/archive/vsc-c-c++-dev-and-debug/ext-clangd.png)
+    </Card>
+    <Card title="C/C++" icon="seti:c">
+        Microsoft's official C/C++ extension with IntelliSense support.
+    </Card>
+</CardGrid>
+
+---
+
+## Related Links
+
+<CardGrid>
+    <LinkCard
+        title="VS Code Docs"
+        description="Official Visual Studio Code documentation."
+        href="https://code.visualstudio.com/docs"
+    />
+    <LinkCard
+        title="Winlibs"
+        description="Download GCC / Clang toolchains for Windows."
+        href="https://winlibs.com/"
+    />
+    <LinkCard title="LLDB" description="LLVM debugger documentation." href="https://lldb.llvm.org/" />
+    <LinkCard title="Back to General Resources" description="More environment and tooling guides." href="/en/archive/general/" />
+</CardGrid>

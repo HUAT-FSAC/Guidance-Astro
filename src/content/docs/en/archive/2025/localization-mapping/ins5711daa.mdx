@@ -1,0 +1,232 @@
+---
+title: INS5711DAA INS Setup
+description: Installation, configuration, and calibration guide for the 2025 integrated INS workflow.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import { Image } from 'astro:assets'
+import BilibiliVideo from '../../../../../../components/docs/BilibiliVideo.astro'
+import imgPartsOverview from '@assets/docs/videos/imu-parts-overview.jpg'
+import imgRule1 from '@assets/docs/2025/Pasted image 20251125195158.png'
+import imgRule2 from '@assets/docs/2025/Pasted image 20251125195204.png'
+import imgRule3 from '@assets/docs/2025/Pasted image 20251125195210.png'
+import imgRule4 from '@assets/docs/2025/Pasted image 20251125195218.png'
+import imgWiring from '@assets/docs/2025/Pasted image 20251006120720.png'
+import imgSerial from '@assets/docs/2025/Pasted image 20251006120833.png'
+import imgNtrip from '@assets/docs/2025/Pasted image 20251006121234.png'
+import imgRtk from '@assets/docs/2025/Pasted image 20251006121733.png'
+import imgLed from '@assets/docs/2025/Pasted image 20251006125223.png'
+
+## Basic information
+
+**Purchased:** 2024
+
+### Included components
+
+| Item | Qty |
+| --- | :--: |
+| Integrated navigation unit | 1 |
+| Main data cable bundle (power, RS-232, RS-232 & PPS, vehicle Ethernet, CAN1, CAN2) | 1 |
+| 4G antenna | 1 |
+| RS-232 to USB adapter | 1 |
+| Antenna cables | 2 |
+| GNSS antennas | 2 |
+
+### Component overview
+
+<Image src={imgPartsOverview} alt="INS parts overview" />
+
+**Video overview:**
+
+<BilibiliVideo bvid="BV1ZwPCzyEpt" title="INS component overview" />
+
+### Documentation bundle
+
+1. **USB driver folder** - install the USB driver by following the included instructions
+2. **CAD models** - includes the main unit, the two GNSS antennas, and the 4G antenna
+3. **User manual folder** - includes the integrated INS manual and RTK configuration notes
+4. **Host software folder** - includes the host-side software package and usage notes
+5. **Driver folder** - includes the `pbox_node_drive` package and ROS driver notes
+
+---
+
+## Installation
+
+<Aside type="tip">
+    The video below demonstrates installation and usage. Follow it together with this written guide.
+</Aside>
+
+<BilibiliVideo bvid="BV1cRPkznExV" title="INS installation and usage" />
+
+### Main unit installation requirements
+
+<Steps>
+1. Mount it rigidly to the car body or a rigid bracket
+2. Avoid locations exposed to direct water spray
+3. Keep it away from strong vibration sources such as the engine; keep more than 30 cm away when possible
+4. Avoid areas with large temperature swings
+5. Leave at least 15 cm of clearance around the main cable connector
+6. Leave more than 1 cm of clearance from nearby structure and enough room for installation tools
+7. Keep it away from EMC interference sources and at least 20 cm away from large-current harnesses above 3 A
+8. Do not remove or move it after calibration unless you plan to recalibrate
+9. Keep the mounting surface parallel to the vehicle horizontal plane
+10. Keep the device axis close to vertical alignment requirements
+11. Ground the localization-module housing properly
+</Steps>
+
+### Antenna installation requirements
+
+**Placement**
+
+- keep the two antennas more than 1 m apart
+- keep antenna pitch angle under 20 degrees
+- keep them at least 30 cm away from strong electromagnetic interference sources
+- mount them on a stable and reasonably flat plane
+
+**Cable routing**
+
+- keep feeder cables away from other harnesses and noise sources
+- avoid tightly bundling the antenna cables with unrelated wiring
+
+**Common layouts**
+
+1. slave antenna in front, main antenna in back, aligned roughly north-south
+2. main antenna on the left, slave antenna on the right, aligned east-west
+3. slave antenna about 30 degrees north-east of the main antenna
+4. slave antenna about 40 degrees north-west of the main antenna
+
+### Rule requirements
+
+<Aside type="note">
+    The figures below reflect the 2025 season rules. Always confirm against the latest season rulebook before finalizing installation or inspection planning.
+</Aside>
+
+<Image src={imgRule1} alt="Rule requirement 1" />
+<Image src={imgRule2} alt="Rule requirement 2" />
+<Image src={imgRule3} alt="Rule requirement 3" />
+<Image src={imgRule4} alt="Rule requirement 4" />
+
+---
+
+## Calibration
+
+### Wiring
+
+<Image src={imgWiring} alt="INS wiring" />
+
+<Aside type="note">According to vendor support, the USB port is only for receiving data and cannot be used for host-side configuration.</Aside>
+
+### Host-side serial configuration
+
+<Image src={imgSerial} alt="Host serial configuration" />
+
+<Steps>
+1. refresh the serial-port list
+2. select the USB serial port connected to the INS
+3. open the port with the configured baud rate; if you change it here, update the matching launch configuration in the ROS driver as well
+</Steps>
+
+### RTK service configuration
+
+Configure the differential-account credentials from the Qianxun controller app.
+
+<Aside type="tip" title="Qianxun account">
+Qianxun usually sponsors this event and provides a one-year service account to teams each season. Ask the team lead for the current season's account details.
+</Aside>
+
+**Method 1: Connection page**
+
+<Image src={imgNtrip} alt="Connection-page RTK configuration" />
+
+Configure the fields and click `connect ntrip`.
+
+**Method 2: Settings page**
+
+<Image src={imgRtk} alt="Settings-page RTK configuration" />
+
+Open the `5711` settings, fill in the RTK parameters, and apply them.
+
+When the RTK indicator below turns blue, the configuration succeeded.
+
+### Device calibration
+
+<Steps>
+1. **Restore factory settings**
+
+   In the settings page, click restore factory settings, save and reboot, wait about 10 seconds, then read the factory parameters and confirm the displayed offsets are all zero.
+
+2. **Enter installation offsets**
+
+   Park the vehicle level outdoors and observe the view page. Then write the corresponding offsets in the settings page:
+   - use the negative of the roll and pitch values from the INS protocol in the parameter settings
+   - set antenna-installation roll to zero and write pitch and heading from the GNSS protocol directly
+   - measure the x, y, z distance from the INS center to the rear-axle center, with vehicle front as positive x, vehicle right as positive y, and downward as positive z
+
+3. **Run calibration**
+
+   Enter calibration mode. When the status changes to automatic calibration in progress, begin logging in the tools page and drive a pattern that includes left turns, right turns, and straight segments. When the status changes to calibration succeeded, stop logging and then save and reboot from the settings page.
+
+</Steps>
+
+---
+
+## Common fault analysis
+
+### Status LEDs
+
+<Image src={imgLed} alt="INS status LEDs" />
+
+**Power LED abnormal**
+
+1. check the power wiring
+2. confirm supply voltage is within 9 to 32 VDC
+3. confirm current draw is normal, around 0.5 A
+
+**Work-status LED abnormal**
+
+1. check the GNSS LED state
+2. open the host software and verify the PPS light blinks normally
+3. check whether GNSS-protocol pitch exceeds 20 degrees
+
+**GNSS LED abnormal**
+
+- off: check sky visibility and antenna cabling
+- slow blink: check differential configuration, 4G connectivity, and whether the differential account expired
+- fast blink: usually means no fixed RTK solution yet
+
+**4G LED abnormal**
+
+- blinking: check differential-account configuration and expiration
+- off: check whether the SIM is installed and still active
+
+---
+
+## ROS driver
+
+Update the launch file according to the configured baud rate and actual device connection on the onboard computer:
+
+```xml
+<!-- connection type: serial port = 0, UDP = 1 -->
+<param name="ConnectionType" type="int" value="1" />
+
+<!-- serial device path; default: /dev/ttyUSB0 -->
+<param name="UART_Port" type="string" value="/dev/ttyUSB0" />
+
+<!-- baud rate; default: 115200 -->
+<param name="UART_Baudrate" type="int" value="230400" />
+```
+
+Before launching, grant the device permission:
+
+```bash
+sudo chmod 777 /dev/ttyUSB0
+```
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+    <a href="/en/archive/2025/localization-mapping/" style="color: var(--sl-color-accent);">
+        Back to localization & mapping
+    </a>
+</div>
+

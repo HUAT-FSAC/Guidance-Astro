@@ -1,0 +1,123 @@
+---
+title: 2025 Season Documentation Center
+description: Technical documentation and team operations notes for the HUAT FSAC 2025 season.
+template: splash
+hero:
+    title: 2025 Season Documentation Center
+    tagline: Shared knowledge, technical handoff, and season memory in one place.
+    image:
+        file: '@assets/logo-canvas.png'
+    actions:
+        - text: Start Exploring
+          link: /en/archive/2025/sensing/
+          icon: right-arrow
+          variant: primary
+        - text: Back to Home
+          link: /en/
+          icon: external
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+## Department Guide
+
+<CardGrid>
+    <Card title="Autonomous Systems" icon="rocket">
+        The core intelligence of the race car, covering sensing, localization, planning, and simulation.
+        <div class="link-list">
+            <a href="/en/archive/2025/sensing/">Sensing</a>
+            <a href="/en/archive/2025/localization-mapping/">Localization</a>
+            <a href="/en/archive/2025/planning-control/">Planning & Control</a>
+            <a href="/en/archive/2025/simulation/">Simulation</a>
+        </div>
+    </Card>
+
+    <Card title="Electrical" icon="seti:bicep">
+        Vehicle wiring, embedded software, power management, and battery-system engineering.
+        <div class="link-list">
+            <a href="/en/archive/2025/electrical/硬件/">Hardware</a>
+            <a href="/en/archive/2025/electrical/软件/">Software</a>
+            <a href="/en/archive/2025/electrical/线束/">Wiring Harness</a>
+            <a href="/en/archive/2025/electrical/电池箱/">Battery Pack</a>
+        </div>
+    </Card>
+
+    <Card title="Mechanical" icon="setting">
+        Chassis, suspension, steering, drivetrain, and braking-system design for the vehicle.
+        <div class="link-list">
+            <a href="/en/archive/2025/mechanical/车架车身/">Frame & Body</a>
+            <a href="/en/archive/2025/mechanical/转向悬架/">Steering & Suspension</a>
+            <a href="/en/archive/2025/mechanical/传动/">Drivetrain</a>
+            <a href="/en/archive/2025/mechanical/制动/">Brakes</a>
+        </div>
+    </Card>
+
+    <Card title="Operations" icon="open-book">
+        Team management, sponsorship, media, and day-to-day competition coordination.
+        <div class="link-list">
+            <a href="/en/archive/2025/management/运营/">Operations</a>
+            <a href="/en/archive/2025/management/营销/">Business</a>
+            <a href="/en/archive/2025/management/新媒体/">Media</a>
+        </div>
+    </Card>
+</CardGrid>
+
+---
+
+## Quick Access
+
+<CardGrid stagger>
+    <LinkCard
+        title="2024 Learning Roadmap"
+        description="A practical onboarding route for new members joining the autonomous side."
+        href="/en/archive/2024/2024-learning-roadmap/"
+        icon="open-book"
+    />
+    <LinkCard
+        title="Open Source Projects"
+        description="Tools, repositories, and experimental code released by HUAT FSAC."
+        href="/en/open-source-projects/"
+        icon="github"
+    />
+    <LinkCard
+        title="Join the Team"
+        description="Learn how recruitment works and where new members can contribute."
+        href="/en/join/"
+        icon="star"
+    />
+    <LinkCard
+        title="General Resources"
+        description="ROS, tooling, and shared engineering references across disciplines."
+        href="/en/archive/general/"
+        icon="puzzle"
+    />
+</CardGrid>
+
+<style>{`
+  .link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .link-list a {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: var(--sl-color-gray-5);
+    color: var(--sl-color-white);
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+
+  .link-list a:hover {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-text-invert);
+  }
+
+  h2 {
+    border: none !important;
+  }
+`}</style>

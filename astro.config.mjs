@@ -3,7 +3,6 @@ import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 
-// https://astro.build/config
 export default defineConfig({
     adapter: cloudflare({ imageService: 'compile' }),
     site: 'https://huat-fsac.eu.org',
@@ -44,54 +43,46 @@ export default defineConfig({
         '/仿真测试/': '/archive/simulation/',
         '/综合/': '/archive/general/',
         '/文档中心/': '/docs-center/',
+        '/en/docs-center/入门/': '/en/docs-center/onboarding/',
+        '/en/docs-center/流程与模板/': '/en/docs-center/processes-and-templates/',
+        '/en/docs-center/资源中心/': '/en/docs-center/resource-hub/',
+        '/en/docs-center/体验与反馈/': '/en/docs-center/feedback-and-experience/',
+        '/en/docs-center/运营与协作/': '/en/docs-center/operations-and-collaboration/',
+        '/en/docs-center/运营与协作/项目进度看板/':
+            '/en/docs-center/operations-and-collaboration/project-progress-board/',
     },
     integrations: [
         starlight({
-            title: 'FSAC AST Docs',
+            title: { zh: 'HUAT FSAC', en: 'HUAT FSAC' },
+            description:
+                'HUAT FSAC documentation site for autonomous Formula Student engineering, race-car development, and team knowledge sharing.',
             favicon: '/favicon.png',
-            customCss: [
-                // 全局文档样式
-                './src/styles/docs-global.css',
-                // 代码块样式增强
-                './src/styles/code-blocks.css',
-            ],
+            defaultLocale: 'root',
+            locales: {
+                root: { label: '中文', lang: 'zh' },
+                en: { label: 'English', lang: 'en' },
+            },
+            customCss: ['./src/styles/docs-global.css', './src/styles/code-blocks.css'],
             head: [
-                // 安全头部
                 {
                     tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-Content-Type-Options',
-                        content: 'nosniff',
-                    },
+                    attrs: { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
+                },
+                { tag: 'meta', attrs: { 'http-equiv': 'X-Frame-Options', content: 'SAMEORIGIN' } },
+                {
+                    tag: 'meta',
+                    attrs: { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
                 },
                 {
                     tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-Frame-Options',
-                        content: 'SAMEORIGIN',
-                    },
+                    attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' },
                 },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-XSS-Protection',
-                        content: '1; mode=block',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'referrer',
-                        content: 'strict-origin-when-cross-origin',
-                    },
-                },
-                // SEO 元数据
                 {
                     tag: 'meta',
                     attrs: {
                         name: 'description',
                         content:
-                            'HUAT FSAC - 湖北汽车工业学院方程式赛车队。我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。',
+                            'HUAT FSAC documentation hub for Formula Student, autonomous racing systems, engineering guides, and team knowledge.',
                     },
                 },
                 {
@@ -99,38 +90,20 @@ export default defineConfig({
                     attrs: {
                         name: 'keywords',
                         content:
-                            'HUAT, FSAC, Formula Student, 方程式赛车, 无人驾驶, 赛车, 湖北汽车工业学院',
+                            'HUAT, FSAC, Formula Student, autonomous racing, student engineering, 湖北汽车工业学院',
                     },
                 },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        property: 'og:title',
-                        content: 'HUAT FSAC - 方程式赛车队',
-                    },
-                },
+                { tag: 'meta', attrs: { property: 'og:title', content: 'HUAT FSAC' } },
                 {
                     tag: 'meta',
                     attrs: {
                         property: 'og:description',
                         content:
-                            '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。',
+                            'Student-built autonomous Formula Student race cars, technical documentation, and team knowledge from HUAT FSAC.',
                     },
                 },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        property: 'og:type',
-                        content: 'website',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        property: 'og:url',
-                        content: 'https://huat-fsac.eu.org',
-                    },
-                },
+                { tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
+                { tag: 'meta', attrs: { property: 'og:url', content: 'https://huat-fsac.eu.org' } },
                 {
                     tag: 'meta',
                     attrs: {
@@ -138,26 +111,14 @@ export default defineConfig({
                         content: 'https://huat-fsac.eu.org/og-image.png',
                     },
                 },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'twitter:card',
-                        content: 'summary_large_image',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'twitter:title',
-                        content: 'HUAT FSAC - 方程式赛车队',
-                    },
-                },
+                { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+                { tag: 'meta', attrs: { name: 'twitter:title', content: 'HUAT FSAC' } },
                 {
                     tag: 'meta',
                     attrs: {
                         name: 'twitter:description',
                         content:
-                            '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。',
+                            'Student-built autonomous Formula Student race cars, technical documentation, and team knowledge from HUAT FSAC.',
                     },
                 },
                 {
@@ -167,47 +128,17 @@ export default defineConfig({
                         content: 'https://huat-fsac.eu.org/og-image.png',
                     },
                 },
-                // 性能优化：DNS 预解析
                 {
                     tag: 'link',
-                    attrs: {
-                        rel: 'dns-prefetch',
-                        href: 'https://images.unsplash.com',
-                    },
+                    attrs: { rel: 'dns-prefetch', href: 'https://images.unsplash.com' },
                 },
+                { tag: 'link', attrs: { rel: 'dns-prefetch', href: 'https://cloud.umami.is' } },
+                { tag: 'link', attrs: { rel: 'preconnect', href: 'https://images.unsplash.com' } },
+                { tag: 'link', attrs: { rel: 'preconnect', href: 'https://cloud.umami.is' } },
                 {
                     tag: 'link',
-                    attrs: {
-                        rel: 'dns-prefetch',
-                        href: 'https://cloud.umami.is',
-                    },
+                    attrs: { rel: 'preload', href: '/favicon.png', as: 'image', type: 'image/png' },
                 },
-                // 性能优化：预连接
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preconnect',
-                        href: 'https://images.unsplash.com',
-                    },
-                },
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preconnect',
-                        href: 'https://cloud.umami.is',
-                    },
-                },
-                // 性能优化：预加载关键资源
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preload',
-                        href: '/favicon.png',
-                        as: 'image',
-                        type: 'image/png',
-                    },
-                },
-                // 性能优化：预加载首屏字体（如果使用）
                 {
                     tag: 'link',
                     attrs: {
@@ -217,7 +148,6 @@ export default defineConfig({
                         crossorigin: 'anonymous',
                     },
                 },
-                // 分析脚本
                 {
                     tag: 'script',
                     attrs: {
@@ -226,80 +156,49 @@ export default defineConfig({
                         defer: true,
                     },
                 },
-                // PWA Manifest
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'manifest',
-                        href: '/manifest.json',
-                    },
-                },
-                // PWA 主题色
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'theme-color',
-                        content: '#f39c12',
-                    },
-                },
-                // Apple Touch Icon
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'apple-touch-icon',
-                        href: '/favicon.png',
-                    },
-                },
-                // 主题初始化脚本 - 防止闪烁
+                { tag: 'link', attrs: { rel: 'manifest', href: '/manifest.json' } },
+                { tag: 'meta', attrs: { name: 'theme-color', content: '#f39c12' } },
+                { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/favicon.png' } },
                 {
                     tag: 'script',
-                    content: `
-                        (function() {
-                            try {
-                                var scheme = localStorage.getItem('huat-color-scheme');
-                                var color = localStorage.getItem('huat-theme-color');
-                                var accent = localStorage.getItem('huat-theme-accent');
-                                if (scheme) {
-                                    document.documentElement.setAttribute('data-theme', scheme);
-                                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                                    document.documentElement.setAttribute('data-theme', 'light');
-                                }
-                                if (color && accent) {
-                                    document.documentElement.style.setProperty('--sl-color-accent', color);
-                                    document.documentElement.style.setProperty('--sl-color-accent-high', accent);
-                                }
-                            } catch (e) {}
-                        })();
-                    `,
+                    content: `(function() {
+                        try {
+                            var scheme = localStorage.getItem('huat-color-scheme');
+                            var color = localStorage.getItem('huat-theme-color');
+                            var accent = localStorage.getItem('huat-theme-accent');
+                            if (scheme) {
+                                document.documentElement.setAttribute('data-theme', scheme);
+                            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                                document.documentElement.setAttribute('data-theme', 'light');
+                            }
+                            if (color && accent) {
+                                document.documentElement.style.setProperty('--sl-color-accent', color);
+                                document.documentElement.style.setProperty('--sl-color-accent-high', accent);
+                            }
+                        } catch (e) {}
+                    })();`,
                 },
-                // Service Worker 注册
                 {
                     tag: 'script',
-                    content: `
-						if ('serviceWorker' in navigator) {
-							window.addEventListener('load', function() {
-								navigator.serviceWorker.register('/sw.js')
-									.then(function(registration) {
-										console.log('[SW] Registration successful:', registration.scope);
-									})
-									.catch(function(error) {
-										console.log('[SW] Registration failed:', error);
-									});
-							});
-						}
-					`,
+                    content: `if ('serviceWorker' in navigator) {
+                        window.addEventListener('load', function() {
+                            navigator.serviceWorker.register('/sw.js')
+                                .then(function(registration) {
+                                    console.log('[SW] Registration successful:', registration.scope);
+                                })
+                                .catch(function(error) {
+                                    console.log('[SW] Registration failed:', error);
+                                });
+                        });
+                    }`,
                 },
             ],
             logo: { src: './src/assets/logo-canvas.png' },
             social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/HUAT-FSAC' }],
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
-            // 自定义组件覆盖
             components: {
-                // 添加图片灯箱等全局功能
                 PageFrame: './src/components/overrides/PageFrame.astro',
-                // 自定义内容区域，添加阅读进度和编辑链接
                 MarkdownContent: './src/components/overrides/MarkdownContent.astro',
-                // 自定义页面标题，添加面包屑导航
                 PageTitle: './src/components/overrides/PageTitle.astro',
             },
             sidebar,

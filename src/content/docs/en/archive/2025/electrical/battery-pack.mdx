@@ -1,0 +1,113 @@
+---
+title: Battery Pack
+description: 2025 season traction-battery system design.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+
+## System overview
+
+The traction battery is the energy source of the electric race car, so the design has to balance performance, safety, and cost.
+
+<Aside type="danger">
+High-voltage systems are a personal-safety risk. Follow safety procedures strictly.
+</Aside>
+
+---
+
+## Cell selection
+
+### Common cell options
+
+| Model | Chemistry | Capacity | Discharge Rate | Unit Price |
+|------|------|------|----------|------|
+| 21700 | NCM | 5Ah | 3C | CNY 25 |
+| 18650 | NCM | 3.5Ah | 2C | CNY 15 |
+| Prismatic LFP | LFP | 50Ah | 2C | CNY 200 |
+
+### Selection criteria
+
+1. **Energy density** - affects endurance and usable energy
+2. **Power density** - affects acceleration performance
+3. **Cycle life** - affects long-term operating cost
+4. **Safety** - especially thermal-runaway characteristics
+
+---
+
+## PACK design
+
+### Battery-pack targets
+
+| Parameter | Value |
+|------|------|
+| Nominal voltage | 400V |
+| Capacity | 6kWh |
+| Series / parallel | 108S2P |
+| Max discharge current | 200A |
+
+### Structural design
+
+<Steps>
+1. cell grouping and welding
+2. module assembly
+3. enclosure design, including IP67 waterproofing
+4. mounting and vibration resistance
+5. high-voltage connector layout
+</Steps>
+
+---
+
+## BMS system
+
+### Functional modules
+
+1. **Voltage acquisition** - per-cell voltage monitoring
+2. **Temperature monitoring** - multi-point temperature sensing
+3. **Balancing** - active or passive balancing
+4. **SOC estimation** - coulomb counting plus open-circuit voltage
+5. **Fault protection** - over-voltage, under-voltage, over-current, and over-temperature
+
+### Recommended directions
+
+- **In-house BMS** - typically based on STM32 plus an AFE chip
+- **Commercial BMS** - off-the-shelf brands such as Lvdun or Gotech
+
+---
+
+## Thermal management
+
+### Cooling approaches
+
+| Method | Advantage | Drawback |
+|------|------|------|
+| Natural air cooling | simple | limited effect |
+| Forced-air cooling | low cost | noisy |
+| Liquid cooling | strong performance | heavier and more complex |
+
+### Temperature targets
+
+- normal operation: 25-45°C
+- maximum allowed: 55°C
+- low-temperature warm-up: above 0°C
+
+---
+
+## Safety design
+
+### Required protection items
+
+1. **Fuse** - short-circuit protection for the main loop
+2. **Main relay** - high-voltage isolation
+3. **Precharge circuit** - limits inrush current when closing the pack
+4. **Insulation monitoring** - detects leakage paths
+5. **Manual service disconnect (MSD)** - emergency isolation point
+
+<Aside type="caution">
+Battery-pack design must pass FSAC electrical inspection. Study the rules early rather than fixing issues late.
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/electrical/" style="color: var(--sl-color-accent);">Back to electrical</a>
+</div>

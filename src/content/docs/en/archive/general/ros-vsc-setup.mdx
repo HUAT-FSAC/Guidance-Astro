@@ -1,0 +1,255 @@
+---
+title: VS Code ROS Development Guide (Clang)
+---
+
+import {
+    Card,
+    CardGrid,
+    Aside,
+    Steps,
+    Badge,
+    LinkCard,
+    Tabs,
+    TabItem,
+} from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="Editor" icon="laptop">
+        Visual Studio Code
+    </Card>
+    <Card title="Language Server" icon="setting">
+        clangd (LLVM)
+    </Card>
+    <Card title="Platform" icon="seti:ubuntu">
+        Ubuntu 18.04+
+    </Card>
+    <Card title="Difficulty" icon="star">
+        <Badge text="Intermediate" variant="note" />
+    </Card>
+</CardGrid>
+
+---
+
+## Why choose clangd?
+
+The default VS Code `C/C++` extension often feels weak for ROS C++ development.
+
+<CardGrid stagger>
+    <Card title="Weak include indexing" icon="warning">
+        Even if your `CMakeLists.txt` already declares the right libraries, you may still need to add paths manually in configuration.
+    </Card>
+    <Card title="Poor static analysis" icon="warning">
+        Without accurate indexing, diagnostics and code understanding become unreliable.
+    </Card>
+    <Card title="Limited quick fixes" icon="warning">
+        Error hints are often shallow and not very helpful in larger ROS workspaces.
+    </Card>
+</CardGrid>
+
+<Aside type="tip">
+    Using **clang + clangd** with VS Code gives a much better editing experience for ROS C++ projects.
+</Aside>
+
+---
+
+## Install the Clang / clangd backend
+
+The example below uses Ubuntu 18.04.
+
+<Steps>
+
+1. **Install clang**
+
+    ```bash
+    sudo apt install clang
+    # depending on the Ubuntu repository state, this may be clang-10 instead
+    ```
+
+2. **Install clangd**
+
+    ```bash
+    sudo apt install clangd-10
+    ```
+
+    Create a symlink so the VS Code extension can find it:
+
+    ```bash
+    sudo ln -s /usr/bin/clangd-10 /usr/bin/clangd
+    ```
+
+3. **Install clang-format (optional)**
+
+    ```bash
+    sudo apt install clang-format
+    ```
+
+</Steps>
+
+---
+
+## Configure clang-format (optional)
+
+Add a `.clang-format` file at the project root:
+
+<details>
+<summary>Show full example config</summary>
+
+```yaml
+Language: Cpp
+AccessModifierOffset: -1
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: Left
+AlignOperands: true
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BreakBeforeInheritanceComma: false
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializers: BeforeColon
+BreakAfterJavaFieldAnnotations: false
+BreakStringLiterals: true
+ColumnLimit: 80
+CompactNamespaces: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: true
+DerivePointerAlignment: true
+DisableFormat: false
+FixNamespaceComments: true
+IndentCaseLabels: true
+IndentPPDirectives: None
+IndentWidth: 4
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+PointerAlignment: Right
+ReflowComments: true
+SortIncludes: true
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+Standard: Auto
+TabWidth: 4
+UseTab: Never
+```
+
+</details>
+
+<Aside type="note">
+    This example is based on a Google-style formatting baseline. See the [Clang-Format options docs](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) for more detail.
+</Aside>
+
+---
+
+## Install VS Code extensions
+
+<CardGrid>
+    <Card title="clangd" icon="star">
+        <Badge text="Required" variant="success" />
+        Author: LLVM
+    </Card>
+    <Card title="CMake" icon="puzzle">
+        <Badge text="Required" variant="success" />
+        Author: twxs
+    </Card>
+    <Card title="Clang-Format" icon="setting">
+        <Badge text="Optional" variant="note" />
+        Author: Xaver Hellauer
+    </Card>
+</CardGrid>
+
+![ext](@assets/docs/archive/ros-vsc-setup/exts.png)
+
+---
+
+## Configure clangd
+
+<Steps>
+
+1. **Set the compile commands location**
+
+    In the VS Code clangd extension settings, add this under `Clangd: Arguments`:
+
+    ```
+    --compile-commands-dir=${workspaceFolder}/build
+    ```
+
+    ![clangd-setting](@assets/docs/archive/ros-vsc-setup/clangd-setting.png)
+
+2. **Export compile commands when building**
+
+    <Tabs>
+        <TabItem label="catkin build">
+            ```bash
+            catkin config --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+            catkin build
+            ```
+        </TabItem>
+        <TabItem label="catkin_make">
+            ```bash
+            catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+            ```
+        </TabItem>
+    </Tabs>
+
+3. **Verify the result**
+
+    Check whether `build/compile_commands.json` exists.
+
+    <Aside type="tip">
+        If the file is generated separately inside package build directories, you can merge them with the approach discussed in this [catkin_tools issue](https://github.com/catkin/catkin_tools/issues/551#issuecomment-553521463).
+    </Aside>
+
+</Steps>
+
+---
+
+## Wrap-up
+
+![finish](@assets/docs/archive/ros-vsc-setup/finish.png)
+
+Once this is set up, clangd becomes a much better foundation for everyday ROS C++ development in VS Code.
+
+---
+
+## References
+
+<CardGrid>
+    <LinkCard
+        title="Clang-Format Options"
+        description="LLVM official documentation."
+        href="https://clang.llvm.org/docs/ClangFormatStyleOptions.html"
+    />
+    <LinkCard
+        title="catkin_tools Issue"
+        description="Discussion of `compile_commands.json` merge workflows."
+        href="https://github.com/catkin/catkin_tools/issues/551"
+    />
+    <LinkCard title="Back to General Resources" description="More environment and tooling guides." href="/en/archive/general/" />
+</CardGrid>

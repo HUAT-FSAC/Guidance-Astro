@@ -1,0 +1,47 @@
+---
+title: Team
+description: Meet the students behind HUAT FSAC.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+import MemberCard from '../../../components/docs/MemberCard.astro'
+
+HUAT FSAC brings together students from multiple engineering backgrounds to ship one complete autonomous race-car program each season.
+
+## Team Structure
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+  <MemberCard name="Captain / Program Lead" role="Operations and vehicle delivery" group="FSAC" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=captain&backgroundColor=transparent" />
+  <MemberCard name="Perception Lead" role="LiDAR & Vision" group="Vision" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=perception&backgroundColor=transparent" />
+  <MemberCard name="Localization Lead" role="SLAM & Odometry" group="Mapping" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=mapping&backgroundColor=transparent" />
+  <MemberCard name="Planning & Control Lead" role="MPC & Path Planning" group="Controls" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=planning&backgroundColor=transparent" />
+  <MemberCard name="Electrical Lead" role="BMS & Motor Control" group="Electrical" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=electronic&backgroundColor=transparent" />
+  <MemberCard name="Mechanical Lead" role="Chassis & Aero" group="Mechanical" avatar="https://api.dicebear.com/7.x/bottts/svg?seed=mechanical&backgroundColor=transparent" />
+</div>
+
+## How We Work
+
+- Weekly status reviews
+- Technical sharing sessions
+- Code reviews and design reviews
+- On-vehicle testing and iteration
+- Cross-discipline collaboration between software, electronics, and mechanical teams
+
+## Skills We Value
+
+<CardGrid>
+  <Card title="Programming" icon="seti:python">Python, C++, MATLAB</Card>
+  <Card title="Tools" icon="seti:folder">ROS/ROS2, OpenCV, PCL, PyTorch</Card>
+  <Card title="Environment" icon="linux">Linux, Git, Docker</Card>
+  <Card title="Core Knowledge" icon="open-book">Controls, perception, system integration</Card>
+</CardGrid>
+
+## Contributors
+
+We appreciate every member and contributor who has helped move HUAT FSAC forward.
+
+<div style="display: flex; justify-content: center; margin-top: 2rem;">
+    <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
+        <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" alt="Contributors" />
+    </a>
+</div>

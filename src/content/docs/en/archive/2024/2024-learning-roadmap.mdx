@@ -1,0 +1,181 @@
+---
+title: 2024 Autonomous Learning Roadmap
+id: roadmap-2024
+description: Learning path and environment setup for new autonomous-team members in 2024.
+---
+
+import {
+    Card,
+    CardGrid,
+    Aside,
+    Tabs,
+    TabItem,
+    Steps,
+    LinkCard,
+} from '@astrojs/starlight/components'
+
+Welcome to the HUAT FSAC autonomous team. This guide is the recommended first stop for new members starting their technical onboarding.
+
+<Aside type="caution" title="Note">
+    This guide is still evolving. Details may change as the team updates tools and training material.
+</Aside>
+
+## Before You Start
+
+This section introduces the software and development platforms most new members will touch first.
+
+<CardGrid>
+    <Card title="ROS" icon="rocket">
+        Robot Operating System is the main middleware used by the team. It is the toolbox that connects sensing, planning, control, and debugging workflows.
+    </Card>
+    <Card title="Linux" icon="linux">
+        ROS development is most natural on Linux. Ubuntu remains the standard starting point for new members.
+    </Card>
+    <Card title="VS Code" icon="seti:code">
+        The team commonly uses VS Code, though any editor or IDE you can use efficiently is acceptable.
+    </Card>
+    <Card title="C++ / Python" icon="seti:python">
+        These are the two main languages used in our ROS-based work. Learn enough of both to read and experiment confidently.
+    </Card>
+</CardGrid>
+
+### Learning Expectations
+
+During onboarding, the team expects you to build three habits:
+
+- search first and stay curious when you hit something unfamiliar
+- think independently instead of copying tutorials mechanically
+- ask good questions after you have made a serious attempt to investigate the answer yourself
+
+<Aside type="tip" title="Training Philosophy">
+Training is not about ticking boxes. What matters is that you actually learn how to think, search, test, and iterate as an engineer.
+</Aside>
+
+---
+
+## 1. Base Environment Setup
+
+<Steps>
+
+1. **Choose an Ubuntu setup path**
+
+    ROS works best on Ubuntu, so start by choosing how you want to run a Linux environment.
+
+2. **Install Ubuntu**
+
+    Pick the setup method that matches your machine and experience level.
+
+3. **Learn the command line**
+
+    Basic terminal literacy is mandatory for ROS, Git, and build workflows.
+
+4. **Install and configure VS Code**
+
+    Set up an editor you can actually use for debugging and development.
+
+</Steps>
+
+![Ubuntu logo](@assets/docs/archive/2024/2024-learning-roadmap/ubuntu-logo.webp)
+
+### Ubuntu Setup Options
+
+<Tabs>
+    <TabItem label="VMware" icon="seti:config">
+        **Best for beginners.** Running Ubuntu in VMware is simple, isolated, and forgiving when you are still learning. A practical starting point is 4 GB or more of RAM and 40 GB or more of disk space.
+    </TabItem>
+
+    <TabItem label="WSL2" icon="seti:windows">
+        **Good for modern Windows users.** WSL2 starts quickly and integrates well with Windows, though some Linux GUI tools can still be awkward.
+    </TabItem>
+
+    <TabItem label="Dual Boot" icon="linux">
+        **Best performance.** Installing Ubuntu directly gives you the cleanest Linux experience, but it is riskier and better suited to students who are already comfortable managing disks and bootloaders.
+    </TabItem>
+
+    <TabItem label="Docker" icon="seti:docker">
+        **Fast environment replication.** Good if you already understand containers and want reproducible setups.
+    </TabItem>
+
+</Tabs>
+
+![WSL screenshot](@assets/docs/archive/2024/2024-learning-roadmap/wsl.png)
+
+### Linux Command Line Basics
+
+Assume Ubuntu is installed and running. The next step is learning how to work in a terminal.
+
+<Card title="Recommended Tutorial" icon="open-book">
+    [Linux Hitchhiker's Guide](https://libhitchhiker.eu.org/) is a strong beginner-friendly reference.
+</Card>
+
+#### Where to enter commands
+
+On an Ubuntu desktop:
+
+- press `Ctrl` + `Alt` + `T` to open a terminal
+- or open the application menu and search for `terminal`
+
+<Aside type="tip">If you use WSL, the terminal window you open is already your Ubuntu shell.</Aside>
+
+#### How to learn commands
+
+<LinkCard
+    title="Command Line for Beginners"
+    description="A practical beginner tutorial from freeCodeCamp Chinese."
+    href="https://www.freecodecamp.org/chinese/news/command-line-for-beginners/"
+/>
+
+A useful search format is: `what does linux command ls do`
+
+### VS Code Setup
+
+![VS Code UI](@assets/docs/archive/2024/2024-learning-roadmap/vsc-ui.png)
+
+<CardGrid>
+    <LinkCard
+        title="VS Code for Linux"
+        description="Download the Linux package."
+        href="https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/code_1.84.2-1699528352_amd64.deb"
+    />
+    <LinkCard
+        title="VS Code for Windows"
+        description="Download the Windows installer."
+        href="https://vscode.cdn.azure.cn/stable/1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/VSCodeUserSetup-x64-1.84.2.exe"
+    />
+</CardGrid>
+
+<CardGrid>
+    <LinkCard
+        title="ROS Dev Setup"
+        description="Configure VS Code for ROS work."
+        href="/en/archive/general/ros-vsc-setup/"
+    />
+    <LinkCard
+        title="C/C++ Dev Setup"
+        description="Configure VS Code for C/C++ development."
+        href="/en/archive/general/vsc-c-c++-dev-and-debug/"
+    />
+</CardGrid>
+
+---
+
+## 2. Programming Basics
+
+If you are just starting university-level programming, keep following your coursework while building practical familiarity with C++ and Python.
+
+<Tabs>
+    <TabItem label="Following class" icon="approve-check">
+        Stay consistent with your coursework and use team tasks to reinforce what you are learning.
+    </TabItem>
+    <TabItem label="Need more depth" icon="open-book">
+        A few solid starting books are **Essential C++** and **C++ Primer Plus**.
+    </TabItem>
+</Tabs>
+
+---
+
+## 3. Git Basics
+
+<Card title="What is Git?" icon="github">
+    Git is a distributed version-control system. It lets you track changes, work in branches, and collaborate without overwriting each other's work.
+</Card>

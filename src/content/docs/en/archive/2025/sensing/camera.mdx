@@ -1,0 +1,123 @@
+---
+title: Camera
+description: Camera perception notes for the 2025 season.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+
+## Basler camera setup
+
+### Official resources
+
+- [Basler ROS Driver](https://www.baslerweb.cn/zh-cn/software/pylon/camera-driver-ros/)
+- [Download Pylon](https://www.baslerweb.cn/zh-cn/downloads/software/?downloadCategory.values.label.data=pylon)
+
+### Setup steps
+
+<Steps>
+1. **Download the Pylon SDK**
+
+   Choose the latest available SDK version, fill in the download form, and get the package link.
+
+   Example:
+   ```
+   https://downloadbsl.blob.core.windows.net/software/pylon%2025.11.0/pylon-25.11.0_linux-x86_64_debs.tar.gz
+   ```
+
+2. **Install the SDK**
+
+   Extract the archive and install the `.deb` packages:
+
+   ```bash
+   sudo apt install ./pylon*.deb
+   ```
+
+3. **Connect the camera**
+
+   - connect camera power
+   - use Cat5e, Cat6, or better Ethernet cabling between the camera and the computer
+
+4. **Configure the network**
+
+   - set IP address, gateway, and subnet mask for the new Ethernet interface
+   - assign the camera to the same subnet, for example `192.168.2.1 / 255.255.255.0`
+   - configure the same address in the Pylon IP Configurator
+
+5. **Test the connection**
+
+   Open Pylon Viewer, double-click the GigE device, and use continuous acquisition to verify that images stream correctly.
+</Steps>
+
+---
+
+## Model training
+
+### Annotation tool
+
+**X-AnyLabeling**: [GitHub repository](https://github.com/CVHub520/X-AnyLabeling)
+
+### YOLO training
+
+**Official docs**: [Ultralytics training guide](https://docs.ultralytics.com/zh/modes/train/#resuming-interrupted-trainings)
+
+### Training workflow
+
+<Steps>
+1. **Annotate the dataset**
+
+   Import an image folder into X-AnyLabeling and create labels such as:
+   - `Red`
+   - `Blue`
+   - `Yellow`
+
+   Draw boxes around cones and assign the matching label.
+
+2. **Export the dataset**
+
+   After roughly 100 labeled images, export the dataset in COCO format.
+
+3. **Write the dataset config**
+
+   ```yaml
+   path: /path_name
+   train: images/train
+   val: images/val
+   ```
+
+   <Aside type="caution">
+   Do not place training data inside the validation split.
+   </Aside>
+
+4. **Start training**
+
+   ```bash
+   yolo detect train data=config.yaml model=yolo11n.pt epochs=100 imgsz=640 device=mps
+   ```
+
+   After 20 to 30 epochs with a YOLO-n baseline, export a model and inspect results.
+
+5. **Use auto-labeling**
+
+   - click the AI icon in the lower-left corner of X-AnyLabeling
+   - load your trained model
+   - auto-label the remaining images
+   - review and correct them manually
+
+6. **Deploy the model**
+
+   Once the dataset is large enough and training quality is acceptable, load the exported model in C++ through ONNX Runtime or TensorRT.
+</Steps>
+
+---
+
+## Training tips
+
+<Aside type="tip">
+When training YOLO models, tune parameters related to training schedule, data augmentation, preprocessing, and resolution scaling. Those often matter as much as architecture choice.
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/sensing/" style="color: var(--sl-color-accent);">Back to sensing</a>
+</div>

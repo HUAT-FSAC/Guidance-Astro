@@ -1,137 +1,92 @@
 ---
-import type { SeasonItem } from "../../../data/home";
-import { optimizeExternalImage } from "../../../utils/image-optimization";
-import ChevronLeft from "../../icons/ChevronLeft.astro";
-import ChevronRight from "../../icons/ChevronRight.astro";
+import type { SeasonItem, SeasonsLabels } from '../../../data/home'
+import { optimizeExternalImage } from '../../../utils/image-optimization'
+import ChevronLeft from '../../icons/ChevronLeft.astro'
+import ChevronRight from '../../icons/ChevronRight.astro'
 
 interface Props {
-    seasons: SeasonItem[];
+    seasons: SeasonItem[]
+    labels: SeasonsLabels
 }
 
-const { seasons } = Astro.props;
+const { seasons, labels } = Astro.props
 ---
 
-<div class="seasons-carousel-container" role="region" aria-roledescription="carousel" aria-label="赛季回顾">
+<div class="seasons-carousel-container" role="region" aria-roledescription="carousel" aria-label={labels.regionLabel}>
     <div class="carousel-viewport" id="seasonsViewport">
         <div class="carousel-track" id="seasonsTrack" aria-live="polite">
             {
                 seasons.map((season, index) => {
-                    const teamImg = optimizeExternalImage(season.teamImg, 900);
-                    const carImg = optimizeExternalImage(season.carImg, 900);
+                    const teamImg = optimizeExternalImage(season.teamImg, 900)
+                    const carImg = optimizeExternalImage(season.carImg, 900)
                     return (
                         <div class="carousel-slide" data-index={index}>
-                        <div class="season-card">
-                            <div class="season-header">
-                                <div class="season-year">{season.year}</div>
-                                <div class="season-badge">Season Team</div>
-                            </div>
-
-                            <div class="season-content">
-                                {/* 图片展示区 */}
-                                <div class="season-gallery">
-                                    <div class="gallery-item">
-                                        <img
-                                            src={teamImg}
-                                            alt={`${season.year} 赛季团队合影`}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                        <div class="gallery-caption">
-                                            The Team
-                                        </div>
-                                    </div>
-                                    <div class="gallery-item">
-                                        <img
-                                            src={carImg}
-                                            alt={`${season.year} 赛季赛车`}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                        <div class="gallery-caption">
-                                            The Machine
-                                        </div>
-                                    </div>
+                            <div class="season-card">
+                                <div class="season-header">
+                                    <div class="season-year">{season.year}</div>
+                                    <div class="season-badge">{labels.badge}</div>
                                 </div>
 
-                                {/* 团队信息区 */}
-                                <div class="team-info">
-                                    {/* 指导老师和队长 */}
-                                    <div class="leadership">
-                                        {season.advisor && (
-                                            <div class="leader-card">
-                                                <div class="leader-icon">
-                                                    👨‍🏫
+                                <div class="season-content">
+                                    <div class="season-gallery">
+                                        <div class="gallery-item">
+                                            <img src={teamImg} alt={`${season.year} ${labels.teamCaption}`} loading="lazy" decoding="async" />
+                                            <div class="gallery-caption">{labels.teamCaption}</div>
+                                        </div>
+                                        <div class="gallery-item">
+                                            <img src={carImg} alt={`${season.year} ${labels.machineCaption}`} loading="lazy" decoding="async" />
+                                            <div class="gallery-caption">{labels.machineCaption}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="team-info">
+                                        <div class="leadership">
+                                            {season.advisor && (
+                                                <div class="leader-card">
+                                                    <div class="leader-icon">👨‍🏫</div>
+                                                    <div class="leader-details">
+                                                        <span class="leader-role">{labels.advisor}</span>
+                                                        <span class="leader-name">{season.advisor}</span>
+                                                    </div>
                                                 </div>
-                                                <div class="leader-details">
-                                                    <span class="leader-role">
-                                                        指导老师
-                                                    </span>
-                                                    <span class="leader-name">
-                                                        {season.advisor}
-                                                    </span>
+                                            )}
+                                            {season.captain && (
+                                                <div class="leader-card">
+                                                    <div class="leader-icon">🎖️</div>
+                                                    <div class="leader-details">
+                                                        <span class="leader-role">{labels.captain}</span>
+                                                        <span class="leader-name">{season.captain}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                        {season.captain && (
-                                            <div class="leader-card">
-                                                <div class="leader-icon">
-                                                    🎖️
-                                                </div>
-                                                <div class="leader-details">
-                                                    <span class="leader-role">
-                                                        队长
-                                                    </span>
-                                                    <span class="leader-name">
-                                                        {season.captain}
-                                                    </span>
+                                            )}
+                                        </div>
+
+                                        {season.members && season.members.length > 0 && (
+                                            <div class="members-section">
+                                                <div class="members-grid">
+                                                    {season.members.map((group: { group: string; names: string[] }) => (
+                                                        <div class="member-group">
+                                                            <div class="group-name">{group.group}</div>
+                                                            <div class="group-members">
+                                                                {group.names.map((name: string) => (
+                                                                    <span class="member-name">{name}</span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* 成员列表 */}
-                                    {season.members &&
-                                        season.members.length > 0 && (
-                                            <div class="members-section">
-                                                <div class="members-grid">
-                                                    {season.members.map(
-                                                        (group: { group: string; names: string[] }) => (
-                                                            <div class="member-group">
-                                                                <div class="group-name">
-                                                                    {
-                                                                        group.group
-                                                                    }
-                                                                </div>
-                                                                <div class="group-members">
-                                                                    {group.names.map(
-                                                                        (
-                                                                            name: string,
-                                                                        ) => (
-                                                                            <span class="member-name">
-                                                                                {
-                                                                                    name
-                                                                                }
-                                                                            </span>
-                                                                        ),
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    );
+                    )
                 })
             }
         </div>
     </div>
 
-    {/* 导航按钮 */}
     <button class="carousel-nav prev" id="prevBtn" aria-label="Previous Season">
         <ChevronLeft size={24} />
     </button>
@@ -139,15 +94,10 @@ const { seasons } = Astro.props;
         <ChevronRight size={24} />
     </button>
 
-    {/* 指示器 */}
     <div class="carousel-indicators">
         {
             seasons.map((_, index) => (
-                <button
-                    class={`indicator ${index === 0 ? "active" : ""}`}
-                    data-index={index}
-                    aria-label={`Go to slide ${index + 1}`}
-                />
+                <button class={`indicator ${index === 0 ? 'active' : ''}`} data-index={index} aria-label={`Go to slide ${index + 1}`} />
             ))
         }
     </div>
@@ -157,39 +107,31 @@ const { seasons } = Astro.props;
     let _resizeInitBound = false;
 
     function initCarousel() {
-        const viewport = document.getElementById("seasonsViewport");
-        const track = document.getElementById("seasonsTrack");
-        const slides = document.querySelectorAll(".carousel-slide");
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
-        const indicators = document.querySelectorAll(".indicator");
+        const viewport = document.getElementById('seasonsViewport');
+        const track = document.getElementById('seasonsTrack');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicators = document.querySelectorAll('.indicator');
 
-        const prefersReducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
 
         if (!track || slides.length === 0) return;
-        if ((track as HTMLElement).dataset.initialized === "true") return;
-        if (isSmallScreen) {
-            return;
-        }
+        if ((track as HTMLElement).dataset.initialized === 'true') return;
+        if (isSmallScreen) return;
 
-        (track as HTMLElement).dataset.initialized = "true";
+        (track as HTMLElement).dataset.initialized = 'true';
 
         const enableAutoPlay = !prefersReducedMotion;
-
         let currentIndex = 0;
         const totalSlides = slides.length;
 
         function updateCarousel() {
-            // 移动轨道
-            track!.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-            // 更新指示器
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
             indicators.forEach((ind, i) => {
-                if (i === currentIndex) ind.classList.add("active");
-                else ind.classList.remove("active");
+                if (i === currentIndex) ind.classList.add('active');
+                else ind.classList.remove('active');
             });
         }
 
@@ -203,33 +145,31 @@ const { seasons } = Astro.props;
             updateCarousel();
         }
 
-        // 事件监听
-        nextBtn?.addEventListener("click", () => {
+        nextBtn?.addEventListener('click', () => {
             nextSlide();
             resetAutoPlay();
         });
 
-        prevBtn?.addEventListener("click", () => {
+        prevBtn?.addEventListener('click', () => {
             prevSlide();
             resetAutoPlay();
         });
 
         indicators.forEach((ind) => {
-            ind.addEventListener("click", (e) => {
+            ind.addEventListener('click', (e) => {
                 const target = e.target as HTMLElement;
-                const index = parseInt(target.dataset.index || "0");
+                const index = parseInt(target.dataset.index || '0');
                 currentIndex = index;
                 updateCarousel();
                 resetAutoPlay();
             });
         });
 
-        // 自动播放
         let autoPlayInterval: ReturnType<typeof setInterval> | null = null;
 
         function startAutoPlay() {
             if (!enableAutoPlay || autoPlayInterval) return;
-            autoPlayInterval = setInterval(nextSlide, 5000); // 5秒切换一次
+            autoPlayInterval = setInterval(nextSlide, 5000);
         }
 
         function stopAutoPlay() {
@@ -244,106 +184,82 @@ const { seasons } = Astro.props;
             startAutoPlay();
         }
 
-        // 触摸滑动支持
         let touchStartX = 0;
         let touchEndX = 0;
 
-        track.addEventListener(
-            "touchstart",
-            (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                if (enableAutoPlay) stopAutoPlay();
-            },
-            { passive: true },
-        );
+        track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            if (enableAutoPlay) stopAutoPlay();
+        }, { passive: true });
 
-        track.addEventListener(
-            "touchend",
-            (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-                if (enableAutoPlay) startAutoPlay();
-            },
-            { passive: true },
-        );
+        track.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            if (enableAutoPlay) startAutoPlay();
+        }, { passive: true });
 
         function handleSwipe() {
             if (touchEndX < touchStartX - 50) nextSlide();
             if (touchEndX > touchStartX + 50) prevSlide();
         }
 
-        // 启动：仅在可见时自动播放
         if (enableAutoPlay) {
             if (viewport) {
-                const observer = new IntersectionObserver(
-                    (entries) => {
-                        entries.forEach((entry) => {
-                            if (entry.isIntersecting) startAutoPlay();
-                            else stopAutoPlay();
-                        });
-                    },
-                    { threshold: 0.2 },
-                );
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) startAutoPlay();
+                        else stopAutoPlay();
+                    });
+                }, { threshold: 0.2 });
                 observer.observe(viewport);
             } else {
                 startAutoPlay();
             }
 
-            track.addEventListener("mouseenter", stopAutoPlay);
-            track.addEventListener("mouseleave", startAutoPlay);
+            track.addEventListener('mouseenter', stopAutoPlay);
+            track.addEventListener('mouseleave', startAutoPlay);
         }
     }
 
     function handleViewportResize() {
-        const track = document.getElementById("seasonsTrack");
+        const track = document.getElementById('seasonsTrack');
         if (!track) return;
-        if (window.matchMedia("(max-width: 768px)").matches) return;
-        if ((track as HTMLElement).dataset.initialized === "true") return;
+        if (window.matchMedia('(max-width: 768px)').matches) return;
+        if ((track as HTMLElement).dataset.initialized === 'true') return;
         scheduleInit();
     }
 
-    // 初始化
     function scheduleInit() {
-        const viewport = document.getElementById("seasonsViewport");
+        const viewport = document.getElementById('seasonsViewport');
         if (!viewport) return;
 
-        if ("IntersectionObserver" in window) {
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            observer.disconnect();
-                            initCarousel();
-                        }
-                    });
-                },
-                { rootMargin: "200px" },
-            );
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        observer.disconnect();
+                        initCarousel();
+                    }
+                });
+            }, { rootMargin: '200px' });
             observer.observe(viewport);
         } else {
             initCarousel();
         }
     }
 
-    if (
-        document.readyState === "complete" ||
-        document.readyState === "interactive"
-    ) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
         scheduleInit();
     } else {
-        document.addEventListener("DOMContentLoaded", scheduleInit, {
-            once: true,
-        });
+        document.addEventListener('DOMContentLoaded', scheduleInit, { once: true });
     }
 
     if (!_resizeInitBound) {
-        window.addEventListener("resize", handleViewportResize, {
-            passive: true,
-        });
+        window.addEventListener('resize', handleViewportResize, { passive: true });
         _resizeInitBound = true;
     }
 
-    document.addEventListener("astro:page-load", scheduleInit);
+    document.addEventListener('astro:page-load', scheduleInit);
 </script>
 
 <style>
@@ -364,7 +280,7 @@ const { seasons } = Astro.props;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    :global([data-theme="light"]) .carousel-viewport {
+    :global([data-theme='light']) .carousel-viewport {
         background: #fff;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         border: 1px solid rgba(0, 0, 0, 0.05);
@@ -396,7 +312,7 @@ const { seasons } = Astro.props;
         padding-bottom: 1rem;
     }
 
-    :global([data-theme="light"]) .season-header {
+    :global([data-theme='light']) .season-header {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
@@ -417,7 +333,7 @@ const { seasons } = Astro.props;
         text-transform: uppercase;
     }
 
-    :global([data-theme="light"]) .season-badge {
+    :global([data-theme='light']) .season-badge {
         color: #000;
     }
 
@@ -427,7 +343,6 @@ const { seasons } = Astro.props;
         gap: 2.5rem;
     }
 
-    /* 图片区域 */
     .season-gallery {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -470,7 +385,6 @@ const { seasons } = Astro.props;
         font-weight: 600;
     }
 
-    /* 团队信息区域 */
     .team-info {
         display: flex;
         flex-direction: column;
@@ -493,7 +407,7 @@ const { seasons } = Astro.props;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    :global([data-theme="light"]) .leader-card {
+    :global([data-theme='light']) .leader-card {
         background: rgba(0, 0, 0, 0.03);
         border: 1px solid rgba(0, 0, 0, 0.05);
     }
@@ -520,7 +434,6 @@ const { seasons } = Astro.props;
         color: var(--sl-color-text);
     }
 
-    /* 成员列表 */
     .members-section {
         background: rgba(255, 255, 255, 0.03);
         border-radius: 1rem;
@@ -528,7 +441,7 @@ const { seasons } = Astro.props;
         border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    :global([data-theme="light"]) .members-section {
+    :global([data-theme='light']) .members-section {
         background: rgba(0, 0, 0, 0.02);
         border: 1px solid rgba(0, 0, 0, 0.05);
     }
@@ -554,7 +467,7 @@ const { seasons } = Astro.props;
         margin-bottom: 0.25rem;
     }
 
-    :global([data-theme="light"]) .group-name {
+    :global([data-theme='light']) .group-name {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
@@ -572,11 +485,10 @@ const { seasons } = Astro.props;
         border-radius: 4px;
     }
 
-    :global([data-theme="light"]) .member-name {
+    :global([data-theme='light']) .member-name {
         background: rgba(0, 0, 0, 0.05);
     }
 
-    /* 导航按钮 */
     .carousel-nav {
         position: absolute;
         top: 50%;
@@ -600,14 +512,9 @@ const { seasons } = Astro.props;
         transform: translateY(-50%) scale(1.1);
     }
 
-    .carousel-nav.prev {
-        left: 10px;
-    }
-    .carousel-nav.next {
-        right: 10px;
-    }
+    .carousel-nav.prev { left: 10px; }
+    .carousel-nav.next { right: 10px; }
 
-    /* 指示器 */
     .carousel-indicators {
         display: flex;
         justify-content: center;
@@ -631,7 +538,7 @@ const { seasons } = Astro.props;
         display: block;
     }
 
-    :global([data-theme="light"]) .indicator {
+    :global([data-theme='light']) .indicator {
         background: rgba(0, 0, 0, 0.2);
     }
 
@@ -641,17 +548,9 @@ const { seasons } = Astro.props;
     }
 
     @media (max-width: 640px) {
-        .carousel-slide {
-            padding: 1rem;
-        }
-
-        .season-year {
-            font-size: 2rem;
-        }
-
-        .members-grid {
-            grid-template-columns: 1fr;
-        }
+        .carousel-slide { padding: 1rem; }
+        .season-year { font-size: 2rem; }
+        .members-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 768px) {
@@ -668,17 +567,9 @@ const { seasons } = Astro.props;
             transform: none !important;
         }
 
-        .carousel-slide {
-            padding: 0;
-        }
-
-        .season-card {
-            gap: 1.5rem;
-        }
-
+        .carousel-slide { padding: 0; }
+        .season-card { gap: 1.5rem; }
         .carousel-nav,
-        .carousel-indicators {
-            display: none;
-        }
+        .carousel-indicators { display: none; }
     }
 </style>

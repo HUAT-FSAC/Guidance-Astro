@@ -1,0 +1,100 @@
+---
+title: High-Speed Tracking
+description: Path-planning notes for the 2025 high-speed tracking event.
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components'
+
+High-speed tracking is mainly built from three parts working together:
+
+<CardGrid>
+  <Card title="Delaunay Triangulation" icon="puzzle">
+    Generate a triangle mesh from cone positions.
+  </Card>
+  <Card title="Heuristic Search" icon="magnifier">
+    Search for a path through the mesh, usually with significant compute cost.
+  </Card>
+  <Card title="Curve Fitting" icon="pencil">
+    Smooth the plan using Bezier curves, B-splines, or adaptive polynomials.
+  </Card>
+</CardGrid>
+
+---
+
+## General path-planning introduction
+
+<Aside type="danger">
+Important: pay attention to the extended reading linked below.
+</Aside>
+
+[7. Path Planning (traditional techniques)](https://zhuanlan.zhihu.com/p/788631063)
+
+---
+
+## 1. Delaunay triangulation
+
+[Delaunay-triangulation path planning for Formula Student Driverless (MATLAB implementation)](https://zhuanlan.zhihu.com/p/601589326)
+
+---
+
+## 2. Heuristic search
+
+<Aside type="note">
+This part only becomes meaningful when you compare the concepts with the actual team implementation on the car.
+</Aside>
+
+### Study material
+
+- [Improved A* path planning](https://zhuanlan.zhihu.com/p/682830759)
+- [Search methods overview: heuristic search, adversarial search, Monte Carlo tree search, AlphaGo](https://zhuanlan.zhihu.com/p/48740530)
+
+---
+
+## 3. Curve fitting
+
+### Study material
+
+- [Bezier and Catmull-Rom summary](https://zhuanlan.zhihu.com/p/141977882)
+- [Bezier curves and B-splines](https://www.bilibili.com/video/BV1uK4y1M7M1/)
+- [Bezier curve generation algorithm](https://www.bilibili.com/video/BV1Dt411f7Qj?p=14)
+
+---
+
+## Practical guidance
+
+The planning stack runs inside ROS, and the quality of the generated path can be inspected directly by running the package.
+
+**Suggestions**
+- make sure the code runs end to end before trying to optimize it
+- change the YAML parameters and compare the effect
+- use MATLAB plotting if you need a clearer view of the path points
+- once you understand the code, the origin of the planned points becomes much clearer
+
+---
+
+## Review preparation
+
+| Question | Direction for answering |
+|------|----------|
+| What are the strengths of Delaunay triangulation? | explain the characteristics and why the team chose it |
+| How do you analyze fitting error? | explain how you detect and reduce the error |
+| What is the rough structure of the code? | explain algorithm structure, runtime flow, and logic |
+| What can be improved next year? | describe limitations and future direction |
+| What part of tuning is the hardest? | show your own problem-solving process |
+
+---
+
+## Notes
+
+<Aside type="tip">
+It is normal for detected cone positions to be imperfect.
+- severely incorrect cone positions are often filtered earlier in the Delaunay stage
+- losing a very small number of cones does not necessarily break the plan
+- as long as the road-cone structure is still recognizable, the system can often keep working
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/planning-control/" style="color: var(--sl-color-accent);">Back to planning & control</a>
+</div>

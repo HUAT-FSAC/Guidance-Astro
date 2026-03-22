@@ -1,35 +1,28 @@
 ---
-// 招新入口组件
+import type { RecruitmentContent } from '../../../data/home'
+
+interface Props {
+    content: RecruitmentContent
+    href?: string
+}
+
+const { content, href = '/join/' } = Astro.props
 ---
 
 <section class="recruitment-section reveal-upon-scroll">
     <div class="recruitment-container">
         <div class="recruitment-content reveal-upon-scroll" style="transition-delay: 0.1s;">
-            <span class="badge">🎯 2025 招新</span>
-            <h2>加入我们的车队</h2>
-            <p>
-                我们正在寻找充满热情的工程学子！无论你是算法爱好者、硬件极客、机械迷还是创意达人，
-                这里都有属于你的舞台。与我们一起设计、制造并驾驶无人驾驶方程式赛车！
-            </p>
+            <span class="badge">{content.badge}</span>
+            <h2>{content.title}</h2>
+            <p>{content.description}</p>
             <div class="departments">
-                <span class="dept">🤖 算法部</span>
-                <span class="dept">⚡ 电气部</span>
-                <span class="dept">🔧 机械部</span>
-                <span class="dept">📋 项管部</span>
+                {content.departments.map((department) => (
+                    <span class="dept">{department}</span>
+                ))}
             </div>
-            <a href="/join/" class="cta-button">
-                立即报名
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
+            <a href={href} class="cta-button">
+                {content.ctaText}
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7"></path>
                 </svg>
             </a>
@@ -133,7 +126,7 @@
         box-sizing: border-box;
         transition: background 0.3s ease;
     }
-    
+
     .dept:hover {
         background: rgba(255, 255, 255, 0.1);
         border-color: var(--sl-color-accent);
@@ -168,7 +161,7 @@
     :global([data-theme='light']) .cta-button {
         color: var(--sl-color-accent) !important;
     }
-    
+
     .cta-button::before {
         content: '';
         position: absolute;
@@ -185,7 +178,7 @@
         border-color: transparent !important;
         box-shadow: 0 0 20px var(--fs-accent-glow) !important;
     }
-    
+
     .cta-button:hover::before {
         transform: scaleX(1);
         transform-origin: left;
@@ -232,15 +225,9 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
-    .icon-item:nth-child(2) {
-        animation-delay: 1.5s;
-    }
-    .icon-item:nth-child(3) {
-        animation-delay: 3s;
-    }
-    .icon-item:nth-child(4) {
-        animation-delay: 4.5s;
-    }
+    .icon-item:nth-child(2) { animation-delay: 1.5s; }
+    .icon-item:nth-child(3) { animation-delay: 3s; }
+    .icon-item:nth-child(4) { animation-delay: 4.5s; }
 
     .icon-item:hover {
         transform: scale(1.1);
@@ -280,7 +267,7 @@
             flex-direction: column;
             align-items: center;
         }
-        
+
         .departments {
             justify-content: center;
         }
@@ -299,7 +286,7 @@
             width: 100%;
             justify-content: center;
         }
-        
+
         .icon-grid {
             gap: 1rem;
         }

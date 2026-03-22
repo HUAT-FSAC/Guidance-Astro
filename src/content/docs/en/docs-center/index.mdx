@@ -1,0 +1,26 @@
+---
+title: Docs Center
+description: Entry point for team documentation, processes, and learning resources.
+---
+
+import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components'
+
+<Aside type="tip" title="English coverage is in progress">
+Core docs-center pages are translated and use English slugs. The rest of the documentation tree still falls back to the default locale with an untranslated notice until each page is migrated.
+</Aside>
+
+## Quick Links
+
+<CardGrid>
+  <LinkCard title="Onboarding" description="Role paths, quick-start guides, and baseline standards" href="/en/docs-center/onboarding/" icon="open-book" />
+  <LinkCard title="Processes & Templates" description="Task flow, review checkpoints, acceptance, and templates" href="/en/docs-center/processes-and-templates/" icon="document" />
+  <LinkCard title="Resource Hub" description="Downloads, datasets, CAD, electrical references, and code index" href="/en/docs-center/resource-hub/" icon="puzzle" />
+  <LinkCard title="Operations & Collaboration" description="Contribution rules, ownership, and maintenance guidance" href="/en/docs-center/operations-and-collaboration/" icon="setting" />
+  <LinkCard title="Feedback & Experience" description="Search tags, learning routes, and improvement channels" href="/en/docs-center/feedback-and-experience/" icon="approve-check" />
+</CardGrid>
+
+## Notes
+
+- English docs-center pages now use English-native slugs.
+- Legacy English routes with Chinese slugs should redirect to the new English URLs.
+- Other untranslated pages outside docs-center still rely on locale fallback for now.

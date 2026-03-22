@@ -1,0 +1,74 @@
+---
+title: Drivetrain
+description: 2025 season drivetrain design notes.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## System overview
+
+The drivetrain transfers motor power to the driven wheels and is one of the key systems behind the car's acceleration performance.
+
+---
+
+## Motor selection
+
+### Drive-motor parameters
+
+| Parameter | Value |
+|------|------|
+| Rated power | 35kW |
+| Peak power | 80kW |
+| Peak torque | 230Nm |
+| Max speed | 6000rpm |
+
+<Aside type="note">
+Driverless race cars place a high premium on response speed, so motor-controller behavior matters as much as the motor itself.
+</Aside>
+
+---
+
+## Reduction stage
+
+### Gearbox design
+
+The current concept uses a **single-stage planetary reducer**:
+- reduction ratio: 1:4.5
+- transmission efficiency: 96%
+- compact and lightweight layout
+
+### Design considerations
+
+1. **Gear-strength analysis** - verify contact and bending stress
+2. **Lubrication strategy** - splash lubrication versus forced lubrication
+3. **Thermal design** - manage heat under sustained load
+
+---
+
+## Half-shaft design
+
+### Material choice
+
+- **4340 alloy steel** - high strength and fatigue resistance
+- **Constant-velocity joints** - maintain smooth torque transfer while steering
+
+### Failure analysis
+
+Common failure modes:
+- torsional-fatigue fracture
+- spline wear
+- CV-joint seizure
+
+---
+
+## Differential
+
+The design uses a **limited-slip differential (LSD)**:
+- improves corner-exit acceleration
+- reduces single-wheel spin in low-grip conditions
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/mechanical/" style="color: var(--sl-color-accent);">Back to mechanical</a>
+</div>

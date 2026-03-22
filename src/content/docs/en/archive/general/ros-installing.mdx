@@ -1,0 +1,191 @@
+---
+title: ROS1 (Melodic) Installation Guide
+---
+
+import { Card, CardGrid, Aside, Tabs, TabItem, Steps, Badge, LinkCard } from '@astrojs/starlight/components'
+
+<CardGrid>
+  <Card title="System Requirement" icon="laptop">
+    Ubuntu 18.04 LTS
+  </Card>
+  <Card title="ROS Version" icon="seti:robot">
+    ROS Melodic
+  </Card>
+  <Card title="Difficulty" icon="star">
+    <Badge text="Beginner" variant="success" />
+  </Card>
+  <Card title="Estimated Time" icon="clock">
+    About 30 minutes
+  </Card>
+</CardGrid>
+
+<Aside type="caution" title="Version Mapping">
+  ROS releases are **strictly tied** to Ubuntu versions. For example, `ROS Melodic` is paired with Ubuntu 18.04 LTS.
+</Aside>
+
+---
+
+## Quick Install
+
+<Steps>
+
+1. Open a terminal
+
+2. Run the one-click install script
+
+   ```bash
+   wget http://fishros.com/install -O fishros && . fishros
+   ```
+
+3. Follow the prompts and choose ROS Melodic
+
+</Steps>
+
+<Aside type="tip">
+  The one-click script comes from [fishros](http://fishros.com/) and already configures domestic mirrors for faster installation.
+</Aside>
+
+---
+
+## Recommended Introductory Resources
+
+<Aside type="note" title="Study Advice">
+  Treat the following as references, not mandatory material. Read what you need when you need it.
+</Aside>
+
+<CardGrid>
+  <LinkCard
+    title="CZXY ROS Tutorial"
+    description="A beginner-friendly ROS documentation course."
+    href="https://robot.czxy.com/docs/ros/arch/file/"
+  />
+  <LinkCard
+    title="Autolabor Video Series"
+    description="A high-quality ROS introduction on Bilibili."
+    href="https://www.bilibili.com/video/BV1Ci4y1L7ZZ/"
+  />
+  <LinkCard
+    title="Autolabor Text Guide"
+    description="Companion written tutorial."
+    href="http://www.autolabor.com.cn/book/ROSTutorials/"
+  />
+  <LinkCard
+    title="Guyueju ROS Series"
+    description="A classic ROS beginner video series."
+    href="https://www.bilibili.com/video/BV1zt411G7Vn/"
+  />
+</CardGrid>
+
+---
+
+## Manual Install
+
+<Aside type="note">
+  The steps below are provided for reference. The one-click method above is still the recommended path.
+</Aside>
+
+Before you start, make sure the Ubuntu basics are already configured: language, timezone, and `apt` sources.
+
+<Steps>
+
+1. **Configure the ROS repository**
+
+   ```bash
+   sudo sh -c '. /etc/lsb-release && echo "deb http://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu/ `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
+   ```
+
+2. **Add the PGP key**
+
+   ```bash
+   sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+   ```
+
+   <Aside type="tip">
+     If that fails, try:
+     ```bash
+     curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -
+     ```
+   </Aside>
+
+3. **Update package indexes**
+
+   ```bash
+   sudo apt update
+   ```
+
+4. **Install ROS Melodic**
+
+   <Tabs>
+     <TabItem label="Desktop Full (Recommended)">
+       ```bash
+       sudo apt install ros-melodic-desktop-full
+       ```
+       Includes ROS, rqt, rviz, common robotics libraries, 2D and 3D simulators, navigation, and perception packages.
+     </TabItem>
+     <TabItem label="Desktop">
+       ```bash
+       sudo apt install ros-melodic-desktop
+       ```
+       Includes ROS, rqt, rviz, and the common robotics libraries.
+     </TabItem>
+   </Tabs>
+
+5. **Initialize rosdep**
+
+   ```bash
+   pip install rosdepc
+   rosdepc init
+   ```
+
+6. **Set environment variables**
+
+   ```bash
+   echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+7. **Test the environment**
+
+   Start the ROS core:
+
+   ```bash
+   roscore
+   ```
+
+   Open a new terminal and run:
+
+   ```bash
+   rosrun turtlesim turtlesim_node
+   ```
+
+   If a turtlesim window appears, open another terminal and run:
+
+   ```bash
+   rosrun turtlesim turtle_teleop_key
+   ```
+
+   If you can control the turtle with the arrow keys, the installation is working.
+
+</Steps>
+
+---
+
+## Related Links
+
+<CardGrid>
+  <LinkCard
+    title="ROS Official Site"
+    description="Official ROS documentation and resources."
+    href="https://www.ros.org/"
+  />
+  <LinkCard
+    title="Tsinghua Mirror"
+    description="Mirror configuration guide for ROS packages."
+    href="https://mirrors.tuna.tsinghua.edu.cn/help/ros/"
+  />
+  <LinkCard
+    title="Back to General Resources"
+    description="More environment and tooling guides."
+    href="/en/archive/general/"
+  />
+</CardGrid>

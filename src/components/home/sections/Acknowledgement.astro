@@ -1,51 +1,54 @@
 ---
-// 致谢组件
+import type { Locale } from '../../../utils/i18n'
+
+interface Props {
+    locale?: Locale
+}
+
+const { locale = 'zh' } = Astro.props
+
+const content =
+    locale === 'en'
+        ? {
+              title: '🙏 Acknowledgement',
+              paragraphs: [
+                  'We appreciate the organizers, mentors, sponsors, and every supporter who helps make Formula Student possible for student teams each year.',
+                  'With the support of the School of Automotive Engineering, our faculty advisors, and the full team, HUAT FSAC is able to turn concepts into a complete autonomous race-car program.',
+                  'Thank you to every team member who commits time, energy, and care to the project. The work is demanding, but it is also what makes the team stronger every season.',
+              ],
+              quote1: 'Aim Higher, Drive the Future',
+              quote2: 'Build People, Build Work, Build Cars',
+              signature: 'Thank you for backing HUAT FSAC.',
+              closing: 'Thank you',
+          }
+        : {
+              title: '🙏 致谢',
+              paragraphs: [
+                  '衷心感谢中国汽车工程协会和社会各界人士每年动用大量的人力物力去举办这个赛事，让很多热爱赛车的大学生拥有这个展示才能、相互学习、开拓眼界的平台。同时，感谢中国大学生方程式汽车大赛规则委员会悉心制定完善赛事规则，让整体比赛的过程中有规则可依，有条目可参考。感谢东风商用车等赞助商的支持。',
+                  '在湖北汽车工业学院汽车工程师学院的大力支持、相关老师的悉心指导和车队全体队员的共同努力下，FSAC 赛车的设计、加工、制造和调试顺利完成。在这个过程中，我们仔细推敲每一个设计思路，严谨处理每一个数据，用心完成每一个细节。这数百个日日夜夜，是赛车最有力的证明，也是我们心底的那份感恩。',
+                  '感谢每一位车队队员积极配合，认真工作，使得东风 HUAT 无人驾驶方程式赛车队的设计报告能够顺利完成。感谢每一位车队队员，放弃假期毅然选择留在车队，他们互相帮助，互相鼓励使得车队更加团结。最后感谢每一个为中国大学生方程式汽车大赛默默付出的人，感谢湖北汽车工业学院各级领导对于车队的关注和支持。',
+              ],
+              quote1: '力争上游，擎动未来',
+              quote2: '做人、做事、做车',
+              signature: '谨此，我代表湖北汽车工业学院 HUAT 无人驾驶方程式赛车队所有队员致上最诚挚的谢意。',
+              closing: '谢谢你们 ❤️',
+          }
 ---
 
 <section class="acknowledgement">
     <div class="ack-container">
-        <h2 class="ack-title">🙏 致谢</h2>
+        <h2 class="ack-title">{content.title}</h2>
 
         <div class="ack-content">
-            <p>
-                衷心感谢<strong>中国汽车工程协会</strong
-                >和社会各界人士每年动用大量的人力物力去举办这个赛事，让很多热爱赛车的大学生拥有这个展示才能、相互学习、开拓眼界的平台。同时，感谢<strong
-                    >中国大学生方程式汽车大赛规则委员会</strong
-                >悉心制定完善赛事规则，让整体比赛的过程中有规则可依，有条目可参考。感谢<strong
-                    >东风商用车</strong
-                >等赞助商的支持。
-            </p>
-
-            <blockquote class="ack-quote">"力争上游，擎动未来"</blockquote>
-
-            <p>
-                在<strong>湖北汽车工业学院汽车工程师学院</strong
-                >的大力支持、<strong>相关老师</strong
-                >的悉心指导和车队全体队员的共同努力下，FSAC
-                赛车的设计、加工、制造和调试顺利完成。在这个过程中，我们仔细推敲每一个设计思路，严谨处理每一个数据，用心完成每一个细节。这数百个日日夜夜，是赛车最有力的证明，也是我们心底的那份感恩。
-            </p>
-
-            <blockquote class="ack-quote">"做人、做事、做车"</blockquote>
-
-            <p>
-                感谢每一位车队队员积极配合，认真工作，使得<strong
-                    >东风 HUAT 无人驾驶方程式赛车队</strong
-                >的设计报告能够顺利完成。感谢每一位车队队员，放弃假期毅然选择留在车队，他们互相帮助，互相鼓励使得车队更加团结。
-            </p>
-
-            <p>
-                最后感谢每一个为中国大学生方程式汽车大赛默默付出的人，感谢<strong
-                    >湖北汽车工业学院</strong
-                >各级领导对于车队的关注和支持。湖北汽车工程学院东风 HUAT
-                无人驾驶方程式赛车队一定会更加严格要求自己，用骄人的成绩回馈各界的付出！做最好的团队！
-            </p>
+            <p>{content.paragraphs[0]}</p>
+            <blockquote class="ack-quote">"{content.quote1}"</blockquote>
+            <p>{content.paragraphs[1]}</p>
+            <blockquote class="ack-quote">"{content.quote2}"</blockquote>
+            <p>{content.paragraphs[2]}</p>
 
             <div class="ack-signature">
-                <p>
-                    谨此，我代表湖北汽车工业学院 HUAT
-                    无人驾驶方程式赛车队所有队员致上最诚挚的谢意。
-                </p>
-                <p class="signature-text">谢谢你们 ❤️</p>
+                <p>{content.signature}</p>
+                <p class="signature-text">{content.closing}</p>
             </div>
         </div>
     </div>
@@ -94,11 +97,6 @@
     .ack-content p {
         margin-bottom: 1.5rem;
         text-align: justify;
-    }
-
-    .ack-content strong {
-        color: var(--sl-color-accent);
-        font-weight: 600;
     }
 
     .ack-quote {

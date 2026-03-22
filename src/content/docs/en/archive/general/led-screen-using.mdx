@@ -1,0 +1,80 @@
+---
+title: LED Screen Usage Guide
+---
+
+import { Card, CardGrid, Aside, Steps, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+    <Card title="Device" icon="seti:image">
+        LED display screen
+    </Card>
+    <Card title="Location" icon="star">
+        First-floor lobby
+    </Card>
+    <Card title="Difficulty" icon="approve-check">
+        <Badge text="Easy" variant="success" />
+    </Card>
+</CardGrid>
+
+---
+
+## Power Setup
+
+<Steps>
+
+1. **Turn on the lobby breaker**
+
+    Make sure the unlabeled breaker on the right side of the first-floor lobby is switched on.
+
+    ![switch_box](@assets/docs/archive/led-screen-using/switch_box.jpg)
+
+    <Aside type="tip">If it trips immediately, try switching it on again before assuming something is wrong.</Aside>
+
+2. **Turn on the LED power switch**
+
+    Find the wall-mounted breaker next to the LED control box. It is usually better to wait until the LED controller finishes booting before powering the screen itself.
+
+    ![switch](@assets/docs/archive/led-screen-using/switch.jpg)
+
+    This switch provides direct power to the LED screen.
+
+</Steps>
+
+---
+
+## Start the LED Controller
+
+<Steps>
+
+1. **Power on the controller**
+
+    ![controller](@assets/docs/archive/led-screen-using/controller.jpg)
+
+2. **Wait for startup to finish**
+
+    If startup fails, power it off and try again.
+
+    When the controller display looks like the screen below, startup is complete:
+
+    ![controll_screen](@assets/docs/archive/led-screen-using/controll_screen.jpg)
+
+</Steps>
+
+<Aside type="caution" title="Important Check">
+    All **six ports at the bottom must be lit**. That indicates the screen is properly powered.
+</Aside>
+
+---
+
+## Connect an External Video Source
+
+<CardGrid>
+    <Card title="5G Wireless Cast Adapter" icon="external">
+        Plug the casting adapter into the computer by USB and install the driver from the newly mounted disk.
+    </Card>
+    <Card title="Direct HDMI" icon="right-arrow">
+        Unplug the HDMI cable currently connected to the casting router and connect it directly to your device.
+    </Card>
+</CardGrid>
+
+<Aside type="note">If the controller screen shows a valid **HDMI1** signal, the connection is working.</Aside>

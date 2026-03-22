@@ -1,0 +1,117 @@
+---
+title: Software Development
+description: 2025 season embedded software development notes.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components'
+
+## VCU software architecture
+
+The **vehicle control unit (VCU)** is the car's central coordinator and software hub.
+
+### Software layers
+
+```
+┌─────────────────────────┐
+│     Application Layer   │
+├─────────────────────────┤
+│      Service Layer      │
+├─────────────────────────┤
+│       Driver Layer      │
+├─────────────────────────┤
+│ Hardware Abstraction    │
+└─────────────────────────┘
+```
+
+---
+
+## Development environment
+
+<Tabs>
+  <TabItem label="STM32">
+    ### STM32 environment
+
+    - **IDE**: STM32CubeIDE / Keil MDK
+    - **Debugger**: ST-Link V2
+    - **Libraries**: HAL / LL
+
+    ```c
+    // Example: CAN transmit
+    HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
+    ```
+  </TabItem>
+
+  <TabItem label="ESP32">
+    ### ESP32 environment
+
+    - **IDE**: VS Code + PlatformIO
+    - **Framework**: ESP-IDF / Arduino
+    - **Advantage**: built-in Wi-Fi and BLE for easier debugging and integration
+  </TabItem>
+</Tabs>
+
+---
+
+## CAN communication
+
+### Protocol layout
+
+| CAN ID | Function | Period |
+|--------|------|------|
+| 0x100 | VCU heartbeat | 10ms |
+| 0x200 | Motor status | 20ms |
+| 0x300 | BMS data | 100ms |
+| 0x400 | Sensor data | 50ms |
+
+### DBC files
+
+It is a good idea to manage the CAN database with **Vector CANdb++** or **Kvaser Database Editor**.
+
+---
+
+## State-machine design
+
+### Vehicle states
+
+```
+┌─────────┐    startup   ┌─────────┐
+│  Standby│ ───────────→ │  Ready  │
+└─────────┘              └─────────┘
+                              │
+                              ↓ enable
+                         ┌─────────┐
+                         │ Running │
+                         └─────────┘
+                              │
+                              ↓ fault
+                         ┌─────────┐
+                         │ Fault   │
+                         └─────────┘
+```
+
+<Aside type="caution">
+State transitions need strict condition checks to avoid false triggers and unsafe mode changes.
+</Aside>
+
+---
+
+## Host-side software
+
+### Common stacks
+
+- **Python + PyQt5** - fast to build and iterate
+- **C# + WPF** - native Windows stack
+- **Electron + Vue** - cross-platform option
+
+### Typical modules
+
+1. live data display
+2. parameter calibration
+3. fault diagnostics
+4. data logging and replay
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/electrical/" style="color: var(--sl-color-accent);">Back to electrical</a>
+</div>

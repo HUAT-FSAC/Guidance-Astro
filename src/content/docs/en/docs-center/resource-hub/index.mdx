@@ -1,0 +1,96 @@
+---
+title: Resource Hub
+description: Central index for downloads, datasets, CAD, electrical assets, and reusable code.
+---
+
+## Resource Scope
+
+- Downloads: installers, drivers, toolchains, images
+- Datasets: collection, labeling, and evaluation assets
+- CAD and mechanical drawings: STEP, drawings, and BOMs
+- Electrical documents and harness assets: schematics, harness diagrams, BOMs
+- Code snippets: reusable scripts and functions
+- Version index: asset versions and compatibility notes
+
+## Unified Media Location
+
+- Documentation images and videos live under `src/assets/docs/`
+- Create subdirectories by topic or season and follow the naming rules below
+
+## Suggested Directory Structure
+
+- Downloads
+- Datasets
+- Models and weights
+- Design and drawings
+- Electrical assets
+- Code snippets
+- Version index
+- Meetings and planning
+- Procurement and suppliers
+- Media and public assets
+- Archive
+
+## Suggested Resource Index Table
+
+| Category | Path | Owner | Update frequency | Notes |
+| --- | --- | --- | --- | --- |
+| Downloads | `/en/docs-center/resource-hub/downloads/` | Documentation admin | As needed |  |
+| Datasets | `/en/docs-center/resource-hub/datasets/` | Algorithms owner | As needed |  |
+| Design and drawings | `/en/docs-center/resource-hub/design-and-drawings/` | Mechanical owner | Season milestones |  |
+| Electrical assets | `/en/docs-center/resource-hub/electrical-assets/` | Electrical owner | Season milestones |  |
+| Code snippets | `/en/docs-center/resource-hub/code-snippets/` | Module owners | As needed |  |
+| Version index | `/en/docs-center/resource-hub/version-index/` | Documentation admin | As needed |  |
+
+## Suggested Version Index
+
+| Asset | Latest version | Compatibility | Path | Change log |
+| --- | --- | --- | --- | --- |
+| Sensor dataset | v1.0 | 2025 season only | `/en/docs-center/resource-hub/datasets/` | `/en/docs-center/resource-hub/version-index/` |
+| CAD assembly | v2.1 | 2025 season | `/en/docs-center/resource-hub/design-and-drawings/` | `/en/docs-center/resource-hub/version-index/` |
+| Electrical schematic | v1.3 | 2025 season | `/en/docs-center/resource-hub/electrical-assets/` | `/en/docs-center/resource-hub/version-index/` |
+
+## Code Snippet Rules
+
+- State the purpose clearly
+- Document inputs, outputs, and the intended use case
+- Organize snippets by module and purpose
+- Add one minimal example and one caution note per snippet
+
+**Recommended snippet header**
+
+```text
+Purpose:
+Input:
+Output:
+Dependencies:
+Use case:
+```
+
+## Naming Rules
+
+- Prefer lowercase English or pinyin with numbers
+- Use `-` for spaces and `_` for segment grouping
+- Date format: `YYYYMMDD`
+- Version format: `v1.0`, `v1.1`, and bump the major version for large changes
+
+## Naming Templates
+
+- Documents / meeting notes: `YYYYMMDD_topic_owner.md`
+- Reviews / proposals: `YYYYMMDD_topic_review_vX.md`
+- Datasets: `project_sensor_date_scene_vX`
+- Model weights: `project_task_data_epochN_vX`
+- CAD / STEP: `car_system_part_vX.step`
+- Schematics / harness: `module_schematic_vX.pdf`
+- BOM: `BOM_car_YYYYMMDD_vX.xlsx`
+- Code snippets: `module_purpose_snippet_vX.py`
+- Tools / scripts: `module_purpose_YYYYMMDD.py`
+
+## Index Fields
+
+- Name, path, owner, version, updated date, tags, and status (`active`, `deprecated`, `archived`)
+
+## Archive and Deprecation
+
+- Move outdated material into `/archive/` and mark it as `deprecated` in the index
+- Keep a short README with the reason and the important version differences

@@ -1,6 +1,6 @@
 ---
 title: HUAT FSAC
-description: Where Student Engineers Build Champions.
+description: 学生工程师的冠军梦工厂。
 template: splash
 hero:
     title: ''
@@ -28,57 +28,24 @@ import ParticleBackground from '../../components/home/ui/ParticleBackground.astr
 import MobileNavigation from '../../components/home/ui/MobileNavigation.astro'
 import ScrollReveal from '../../components/home/ui/ScrollReveal.astro'
 import ParallaxScroll from '../../components/home/ui/ParallaxScroll.astro'
-import {
-    heroConfig,
-    stats,
-    achievements,
-    newsItems,
-    formulaStudentInfo,
-    seasons,
-    sponsorGroups,
-} from '../../data/home'
+import { zhHomeContent as home, seasons, sponsorGroups } from '../../data/home'
 
 <style>{`
   :root {
     --sl-content-width: 100% !important;
   }
-  
-  /* 隐藏默认的 hero 区域 */
-  .hero {
-    display: none !important;
-  }
-  
-  /* 全宽内容 */
-  main {
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
-  
-  .sl-markdown-content {
-    max-width: 100% !important;
-  }
-  
-  /* 移动端为固定导航栏留出空间 */
-  @media (max-width: 768px) {
-    main {
-      padding-top: 60px !important;
-    }
-  }
-  
-  /* Apple 风格极简深色背景 - 仅在暗色模式下生效 */
+  .hero { display: none !important; }
+  main { max-width: 100% !important; padding: 0 !important; }
+  .sl-markdown-content { max-width: 100% !important; }
+  @media (max-width: 768px) { main { padding-top: 60px !important; } }
   :global([data-theme='dark']) .content-panel {
     background-color: #000000 !important;
-    /* 顶部微弱的光源效果，模拟高级质感 */
     background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 85%) !important;
   }
-  
-  /* 亮色模式适配 */
   :global([data-theme='light']) .content-panel {
     background-color: #ffffff !important;
     background-image: radial-gradient(circle at 50% 0%, #f5f5f7 0%, #ffffff 85%) !important;
   }
-  
-  /* Footer 链接样式 */
   .footer-link {
     color: var(--sl-color-text);
     opacity: 0.7;
@@ -86,12 +53,7 @@ import {
     text-decoration: none;
     position: relative;
   }
-  
-  .footer-link:hover {
-    opacity: 1;
-    color: var(--sl-color-accent);
-  }
-  
+  .footer-link:hover { opacity: 1; color: var(--sl-color-accent); }
   .footer-link::after {
     content: '';
     position: absolute;
@@ -102,35 +64,19 @@ import {
     background-color: var(--sl-color-accent);
     transition: width 0.3s ease;
   }
-  
-  .footer-link:hover::after {
-    width: 100%;
-  }
-
-  /* Footer 容器样式 */
+  .footer-link:hover::after { width: 100%; }
   .home-footer {
     padding: 4rem 2rem;
     background: var(--sl-color-gray-6);
     text-align: center;
     border-top: 1px solid var(--sl-color-gray-5);
   }
-  
   :global([data-theme='light']) .home-footer {
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;
   }
-
-  .home-block {
-    padding: 4rem 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .home-block-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
+  .home-block { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .home-block-header { text-align: center; margin-bottom: 3rem; }
   .home-block-label {
     display: inline-block;
     font-size: 0.85rem;
@@ -140,63 +86,21 @@ import {
     color: var(--sl-color-accent, #f39c12);
     margin-bottom: 1rem;
   }
-
-  .home-block-title {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    margin: 0;
-  }
-
-  .home-block--center {
-    text-align: center;
-  }
-
-  .contributors-image {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  .contributors-image img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .contributors-meta {
-    text-align: center;
-    margin-top: 1rem;
-    opacity: 0.6;
-  }
-
-  /* 全局淡入动画 - 移除，由 ScrollReveal 替代 */
-
+  .home-block-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0; }
+  .home-block--center { text-align: center; }
+  .contributors-image { display: flex; justify-content: center; margin-top: 2rem; }
+  .contributors-image img { max-width: 100%; height: auto; }
+  .contributors-meta { text-align: center; margin-top: 1rem; opacity: 0.6; }
   @media (max-width: 768px) {
-    .home-block {
-      padding: 3rem 1.25rem;
-    }
-
-    .home-block-header {
-      margin-bottom: 2rem;
-    }
-
-    .home-block-title {
-      font-size: clamp(1.6rem, 6vw, 2.2rem);
-    }
-
-    .home-footer {
-      padding: 3rem 1.5rem;
-    }
+    .home-block { padding: 3rem 1.25rem; }
+    .home-block-header { margin-bottom: 2rem; }
+    .home-block-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+    .home-footer { padding: 3rem 1.5rem; }
   }
-
   @media (prefers-reduced-motion: reduce), (max-width: 768px) {
-    section {
-      animation: none;
-      opacity: 1;
-    }
+    section { animation: none; opacity: 1; }
   }
 `}</style>
-
-{/* ==================== 全局增强组件 ==================== */}
 
 <PageLoader />
 <ScrollProgress />
@@ -204,150 +108,77 @@ import {
 <KeyboardNav />
 <ParticleBackground />
 <ThemeSwitcher />
-<MobileNavigation />
+<MobileNavigation locale="zh" />
 <ScrollReveal />
 <ParallaxScroll />
 
-{/* ==================== Hero 区域 ==================== */}
-
-<Hero
-    title={heroConfig.title}
-    subtitle={heroConfig.subtitle}
-    description={heroConfig.description}
-    ctaText={heroConfig.ctaText}
-    ctaLink={heroConfig.ctaLink}
-    backgroundImage={heroConfig.backgroundImage}
-/>
-
-{/* ==================== 统计数据 ==================== */}
-
-<Stats stats={stats} />
-
-{/* ==================== 比赛倒计时 ==================== */}
-
+<Hero title={home.hero.title} subtitle={home.hero.subtitle} description={home.hero.description} ctaText={home.hero.ctaText} ctaLink={home.hero.ctaLink} backgroundImage={home.hero.backgroundImage} />
+<Stats stats={home.stats} />
 <Countdown />
+<ShowcaseLab content={home.showcase} />
 
-{/* ==================== 智能驾驶交互实验室 ==================== */}
-
-<ShowcaseLab />
-
-{/* ==================== 成就展示区域 ==================== */}
-{achievements.map((achievement, index) => (
-
-  <Achievement 
-    badge={achievement.badge}
-    title={achievement.title}
-    description={achievement.description}
-    ctaText={achievement.ctaText}
-    ctaLink={achievement.ctaLink}
-    image={achievement.image}
-    reverse={index % 2 === 1}
-  />
+{home.achievements.map((achievement, index) => (
+  <Achievement badge={achievement.badge} title={achievement.title} description={achievement.description} ctaText={achievement.ctaText} ctaLink={achievement.ctaLink} image={achievement.image} reverse={index % 2 === 1} />
 ))}
 
-{/* ==================== 核心模块 ==================== */}
-
 <section class="home-block">
     <div class="home-block-header">
-        <span class="home-block-label">学习资源</span>
-        <h2 class="home-block-title">📚 核心模块</h2>
+        <span class="home-block-label">{home.sectionHeaders.features.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.features.title}</h2>
     </div>
-    <Features />
+    <Features items={home.featureCards} ariaLabel="部门导航" />
 </section>
 
-{/* ==================== 新闻动态 ==================== */}
-
-<NewsSection title="新闻动态" subtitle="保持更新，了解最新进展" news={newsItems} />
-
-{/* ==================== 赛季回顾 ==================== */}
+<NewsSection title="新闻动态" subtitle="保持更新，了解最新进展" news={home.newsItems} />
 
 <section class="home-block">
     <div class="home-block-header">
-        <span class="home-block-label">我们的足迹</span>
-        <h2 class="home-block-title">🏎️ 赛季回顾</h2>
+        <span class="home-block-label">{home.sectionHeaders.seasons.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.seasons.title}</h2>
     </div>
-    <Seasons seasons={seasons} />
+    <Seasons seasons={seasons} labels={home.seasonsLabels} />
 </section>
 
-{/* ==================== 招新入口 ==================== */}
+<Recruitment content={home.recruitment} href="/join/" />
 
-<Recruitment />
-
-{/* ==================== Formula Student 介绍 ==================== */}
-
-<FormulaStudentInfo
-    title={formulaStudentInfo.title}
-    subtitle={formulaStudentInfo.subtitle}
-    description={formulaStudentInfo.description}
-    ctaText={formulaStudentInfo.ctaText}
-    ctaLink={formulaStudentInfo.ctaLink}
-/>
-
-{/* ==================== 赞助商 ==================== */}
+<FormulaStudentInfo title={home.formulaStudentInfo.title} subtitle={home.formulaStudentInfo.subtitle} description={home.formulaStudentInfo.description} ctaText={home.formulaStudentInfo.ctaText} ctaLink={home.formulaStudentInfo.ctaLink} />
 
 <section class="home-block">
     <div class="home-block-header">
-        <h2 class="home-block-title">❤️ 合作伙伴</h2>
+        <h2 class="home-block-title">{home.sectionHeaders.sponsors.title}</h2>
     </div>
     <Sponsors groups={sponsorGroups} />
 </section>
 
-{/* ==================== 致谢 ==================== */}
-
 <section class="home-block">
-    <Acknowledgement />
+    <Acknowledgement locale="zh" />
 </section>
-
-{/* ==================== 贡献者 ==================== */}
 
 <section class="home-block home-block--center">
     <div class="home-block-header">
-        <span class="home-block-label">开源贡献</span>
-        <h2 class="home-block-title">🤝 贡献者</h2>
+        <span class="home-block-label">{home.sectionHeaders.contributors.label}</span>
+        <h2 class="home-block-title">{home.sectionHeaders.contributors.title}</h2>
     </div>
     <div class="contributors-image">
         <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
-            <img
-                src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro"
-                alt="GitHub contributors"
-                loading="lazy"
-                decoding="async"
-            />
+            <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" alt="GitHub contributors" loading="lazy" decoding="async" />
         </a>
     </div>
     <div class="contributors-meta">
-        Made with{' '}
-        <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">
-            contrib.rocks
-        </a>
+        Made with <a href="https://contrib.rocks" style="color: var(--sl-color-accent);">contrib.rocks</a>
     </div>
 </section>
-
-{/* ==================== 页脚联系信息 ==================== */}
 
 <footer class="home-footer">
     <p style="font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.8;">HUAT FSAC - 方程式赛车队</p>
     <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
-        <a
-            href="https://github.com/HUAT-FSAC"
-            class="footer-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="访问我们的 GitHub 页面"
-        >
-            GitHub
-        </a>
-        <a
-            href="mailto:contact@huat-fsac.eu.org"
-            class="footer-link"
-            rel="noopener noreferrer"
-            aria-label="通过邮件联系我们"
-        >
-            联系我们
-        </a>
-        <a href="/join/" class="footer-link" aria-label="了解如何加入车队">
-            加入车队
-        </a>
+        <a href="https://github.com/HUAT-FSAC" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 GitHub 页面">GitHub</a>
+        <a href="mailto:contact@huat-fsac.eu.org" class="footer-link" rel="noopener noreferrer" aria-label="通过邮件联系我们">联系我们</a>
+        <a href="/join/" class="footer-link" aria-label="了解如何加入车队">加入车队</a>
     </div>
     <p style="font-size: 0.85rem; opacity: 0.5;">© 2026 HUAT FSAC. All rights reserved.</p>
 </footer>
+
+
+
+

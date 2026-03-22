@@ -1,0 +1,73 @@
+---
+title: Interesting Shares
+---
+
+import { Card, CardGrid, LinkCard, Badge } from '@astrojs/starlight/components'
+
+<CardGrid>
+  <Card title="Content Type" icon="star">
+    Learning resources and tool recommendations
+  </Card>
+  <Card title="Audience" icon="approve-check">
+    All team members
+  </Card>
+</CardGrid>
+
+---
+
+## Recommended Resources
+
+<CardGrid>
+  <LinkCard
+    title="CS Self-Learning Guide (CSDIY)"
+    description="A thorough self-learning roadmap for computer science and software engineering."
+    href="https://csdiy.wiki/"
+  />
+  <LinkCard
+    title="How To Ask Questions The Smart Way"
+    description="Required reading before asking technical questions."
+    href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md"
+  />
+  <LinkCard
+    title="Linux 101 @ USTC"
+    description="A practical Linux introduction with a strong open-source-community perspective."
+    href="https://101.lug.ustc.edu.cn/"
+  />
+</CardGrid>
+
+---
+
+## Why They Are Worth Reading
+
+<CardGrid stagger>
+  <Card title="CSDIY" icon="open-book">
+    <Badge text="Strongly Recommended" variant="success" />
+
+    A student-built guide that covers:
+    - programming fundamentals
+    - data structures and algorithms
+    - operating systems
+    - computer networks
+    - machine learning
+    - and a broader course map beyond that
+  </Card>
+
+  <Card title="Smart Questions" icon="information">
+    <Badge text="Must Read" variant="caution" />
+
+    Useful habits for asking better questions:
+    - explain the background clearly
+    - state what you already tried
+    - include actual errors or evidence
+    - respect other people's time
+  </Card>
+
+  <Card title="Linux 101" icon="seti:linux">
+    <Badge text="Recommended" variant="note" />
+
+    Produced by the USTC Linux User Group:
+    - beginner-friendly
+    - practical and skill-oriented
+    - a good introduction to open-source culture
+  </Card>
+</CardGrid>

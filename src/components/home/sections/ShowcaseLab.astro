@@ -1,34 +1,32 @@
 ---
 import { showcaseScenarios } from '../../../data/showcase-lab'
+import type { ShowcaseLabels } from '../../../data/home'
 
 const defaultScenario = showcaseScenarios[0]
+
+interface Props {
+    content: ShowcaseLabels
+}
+
+const { content } = Astro.props
 ---
 
 <section class="showcase-entry home-block">
     <div class="showcase-entry-shell">
         <div class="showcase-entry-content">
-            <span class="showcase-entry-kicker">Autonomous Showcase</span>
-            <h2 class="showcase-entry-heading">智能驾驶交互实验室</h2>
-            <p class="showcase-entry-description">
-                用完全本地的数据、SVG 可视化和浏览器状态管理，<br/>
-                直观展示无人驾驶赛车从感知到执行器的整条闭环。
-            </p>
+            <span class="showcase-entry-kicker">{content.kicker}</span>
+            <h2 class="showcase-entry-heading">{content.heading}</h2>
+            <p class="showcase-entry-description">{content.description}</p>
             <div class="showcase-entry-features">
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>多场景预设</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>实时可视化</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>离线演示</span>
-                </div>
+                {content.features.map((feature) => (
+                    <div class="feature-item">
+                        <span class="feature-icon">◉</span>
+                        <span>{feature}</span>
+                    </div>
+                ))}
             </div>
             <a href="/showcase-dashboard/" class="showcase-entry-cta">
-                <span>进入实验室</span>
+                <span>{content.ctaText}</span>
                 <span class="cta-arrow">→</span>
             </a>
         </div>

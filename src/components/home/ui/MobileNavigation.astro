@@ -1,45 +1,69 @@
 ---
-/**
- * 移动端导航组件
- * 仅在移动端显示，提供汉堡菜单和侧滑抽屉导航
- */
+import type { Locale } from '../../../utils/i18n'
+
 interface NavItem {
-    label: string;
-    link: string;
+    label: string
+    link: string
 }
 
-const navItems: NavItem[] = [
-    { label: "🏠 首页", link: "/" },
-    { label: "🤝 加入我们", link: "/join/" },
-    { label: "👥 团队", link: "/team/" },
-    { label: "🚗 赛车", link: "/cars/" },
-    { label: "ℹ️ 关于 Formula Student", link: "/about-fs/" },
-    { label: "📚 2024 学习指南", link: "/2024-learning-roadmap/" },
-];
+interface Props {
+    locale?: Locale
+}
+
+const { locale = 'zh' } = Astro.props
+const base = locale === 'en' ? '/en' : ''
+const navItems: NavItem[] =
+    locale === 'en'
+        ? [
+              { label: '🏠 Home', link: `${base}/` },
+              { label: '🤝 Join Us', link: `${base}/join/` },
+              { label: '👥 Team', link: `${base}/team/` },
+              { label: '🚗 Cars', link: `${base}/cars/` },
+              { label: 'ℹ️ About Formula Student', link: `${base}/about-fs/` },
+              { label: '📚 2024 Learning Roadmap', link: `${base}/archive/2024/2024-learning-roadmap/` },
+          ]
+        : [
+              { label: '🏠 首页', link: '/' },
+              { label: '🤝 加入我们', link: '/join/' },
+              { label: '👥 团队', link: '/team/' },
+              { label: '🚗 赛车', link: '/cars/' },
+              { label: 'ℹ️ 关于 Formula Student', link: '/about-fs/' },
+              { label: '📚 2024 学习指南', link: '/archive/2024/2024-learning-roadmap/' },
+          ]
+
+const labels =
+    locale === 'en'
+        ? {
+              openMenu: 'Open menu',
+              closeMenu: 'Close menu',
+              menuTitle: 'Navigation',
+          }
+        : {
+              openMenu: '打开菜单',
+              closeMenu: '关闭菜单',
+              menuTitle: '导航菜单',
+          }
 ---
 
 <div class="mobile-nav" id="mobileNav">
-    <!-- 导航栏 -->
     <nav class="mobile-nav-bar">
-        <a href="/" class="mobile-nav-logo">
+        <a href={base || '/'} class="mobile-nav-logo">
             <span class="logo-text">HUAT</span>
             <span class="logo-accent">FSAC</span>
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label={labels.openMenu}>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
         </button>
     </nav>
 
-    <!-- 遮罩层 -->
     <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
 
-    <!-- 抽屉菜单 -->
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
         <div class="drawer-header">
-            <span class="drawer-title">导航菜单</span>
-            <button class="drawer-close" id="drawerClose" aria-label="关闭菜单">
+            <span class="drawer-title">{labels.menuTitle}</span>
+            <button class="drawer-close" id="drawerClose" aria-label={labels.closeMenu}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"></path>
                 </svg>
@@ -80,29 +104,27 @@ const navItems: NavItem[] = [
         const overlay = root.querySelector('#mobileNavOverlay') as HTMLElement | null;
         const closeBtn = root.querySelector('#drawerClose') as HTMLButtonElement | null;
         const navLinks = root.querySelectorAll('.drawer-nav-link');
-        
+
         function openDrawer() {
             drawer?.classList.add('active');
             overlay?.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeDrawer() {
             drawer?.classList.remove('active');
             overlay?.classList.remove('active');
             document.body.style.overflow = '';
         }
-        
+
         menuBtn?.addEventListener('click', openDrawer);
         closeBtn?.addEventListener('click', closeDrawer);
         overlay?.addEventListener('click', closeDrawer);
-        
-        // 点击导航链接后关闭菜单
-        navLinks.forEach(link => {
+
+        navLinks.forEach((link) => {
             link.addEventListener('click', closeDrawer);
         });
-        
-        // ESC 键关闭
+
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && drawer?.classList.contains('active')) {
                 closeDrawer();
@@ -114,14 +136,14 @@ const navItems: NavItem[] = [
             menuBtn?.removeEventListener('click', openDrawer);
             closeBtn?.removeEventListener('click', closeDrawer);
             overlay?.removeEventListener('click', closeDrawer);
-            navLinks.forEach(link => {
+            navLinks.forEach((link) => {
                 link.removeEventListener('click', closeDrawer);
             });
             document.removeEventListener('keydown', handleEsc);
             document.body.style.overflow = '';
         };
     }
-    
+
     document.addEventListener('DOMContentLoaded', initMobileNav);
     document.addEventListener('astro:page-load', initMobileNav);
 </script>
@@ -129,17 +151,16 @@ const navItems: NavItem[] = [
 <style>
     .mobile-nav {
         display: none;
-        /* 防止被全局 fadeIn 动画注入 transform，影响 fixed 子元素定位参考系 */
         animation: none !important;
         transform: none !important;
     }
-    
+
     @media (max-width: 768px) {
         .mobile-nav {
             display: block;
         }
     }
-    
+
     .mobile-nav-bar {
         position: fixed;
         top: 0;
@@ -161,7 +182,7 @@ const navItems: NavItem[] = [
         background: rgba(255, 255, 255, 0.9);
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
-    
+
     .mobile-nav-logo {
         font-size: 1.25rem;
         font-weight: 800;
@@ -169,19 +190,11 @@ const navItems: NavItem[] = [
         display: flex;
         gap: 0.25rem;
     }
-    
-    .logo-text {
-        color: #fff;
-    }
-    
-    :global([data-theme='light']) .logo-text {
-        color: #000;
-    }
-    
-    .logo-accent {
-        color: var(--sl-color-accent, #f39c12);
-    }
-    
+
+    .logo-text { color: #fff; }
+    :global([data-theme='light']) .logo-text { color: #000; }
+    .logo-accent { color: var(--sl-color-accent, #f39c12); }
+
     .mobile-menu-btn {
         width: 44px;
         height: 44px;
@@ -195,7 +208,7 @@ const navItems: NavItem[] = [
         gap: 5px;
         padding: 10px;
     }
-    
+
     .hamburger-line {
         width: 22px;
         height: 2px;
@@ -203,11 +216,9 @@ const navItems: NavItem[] = [
         border-radius: 2px;
         transition: all 0.3s ease;
     }
-    
-    :global([data-theme='light']) .hamburger-line {
-        background: #000;
-    }
-    
+
+    :global([data-theme='light']) .hamburger-line { background: #000; }
+
     .mobile-nav-overlay {
         position: fixed;
         inset: 0;
@@ -218,13 +229,13 @@ const navItems: NavItem[] = [
         transition: all 0.3s ease;
         z-index: var(--z-navigation, 100);
     }
-    
+
     .mobile-nav-overlay.active {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
     }
-    
+
     .mobile-nav-drawer {
         position: fixed;
         top: 0;
@@ -241,16 +252,10 @@ const navItems: NavItem[] = [
         flex-direction: column;
         overflow-y: auto;
     }
-    
-    :global([data-theme='light']) .mobile-nav-drawer {
-        background: #fff;
-    }
-    
-    .mobile-nav-drawer.active {
-        transform: translateX(0);
-        pointer-events: auto;
-    }
-    
+
+    :global([data-theme='light']) .mobile-nav-drawer { background: #fff; }
+    .mobile-nav-drawer.active { transform: translateX(0); pointer-events: auto; }
+
     .drawer-header {
         display: flex;
         align-items: center;
@@ -258,16 +263,10 @@ const navItems: NavItem[] = [
         padding: 1rem 1.25rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    :global([data-theme='light']) .drawer-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .drawer-title {
-        font-weight: 600;
-        color: var(--sl-color-text, #fff);
-    }
-    
+
+    :global([data-theme='light']) .drawer-header { border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+    .drawer-title { font-weight: 600; color: var(--sl-color-text, #fff); }
+
     .drawer-close {
         width: 40px;
         height: 40px;
@@ -281,22 +280,17 @@ const navItems: NavItem[] = [
         border-radius: 8px;
         transition: background 0.2s ease;
     }
-    
-    .drawer-close:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    :global([data-theme='light']) .drawer-close:hover {
-        background: rgba(0, 0, 0, 0.05);
-    }
-    
+
+    .drawer-close:hover { background: rgba(255, 255, 255, 0.1); }
+    :global([data-theme='light']) .drawer-close:hover { background: rgba(0, 0, 0, 0.05); }
+
     .drawer-nav-list {
         list-style: none;
         padding: 1rem 0;
         margin: 0;
         flex: 1;
     }
-    
+
     .drawer-nav-link {
         display: block;
         padding: 1rem 1.25rem;
@@ -306,26 +300,22 @@ const navItems: NavItem[] = [
         transition: all 0.2s ease;
         border-left: 3px solid transparent;
     }
-    
+
     .drawer-nav-link:hover {
         background: rgba(255, 255, 255, 0.05);
         border-left-color: var(--sl-color-accent, #f39c12);
         color: var(--sl-color-accent, #f39c12);
     }
-    
-    :global([data-theme='light']) .drawer-nav-link:hover {
-        background: rgba(0, 0, 0, 0.03);
-    }
-    
+
+    :global([data-theme='light']) .drawer-nav-link:hover { background: rgba(0, 0, 0, 0.03); }
+
     .drawer-footer {
         padding: 1rem 1.25rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    :global([data-theme='light']) .drawer-footer {
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
+
+    :global([data-theme='light']) .drawer-footer { border-top: 1px solid rgba(0, 0, 0, 0.1); }
+
     .drawer-footer-link {
         display: inline-flex;
         align-items: center;
@@ -336,7 +326,7 @@ const navItems: NavItem[] = [
         font-size: 0.9rem;
         transition: all 0.2s ease;
     }
-    
+
     .drawer-footer-link:hover {
         opacity: 1;
         color: var(--sl-color-accent, #f39c12);

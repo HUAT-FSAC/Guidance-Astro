@@ -1,0 +1,87 @@
+---
+title: Frame and Body
+description: 2025 season frame and body design notes.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+
+## Frame design
+
+### Structural concept
+
+The car uses a **steel tubular space frame**:
+- material: 4130 chromoly steel tube
+- main tubes: Φ25.4 × 2.0 mm
+- secondary tubes: Φ19.0 × 1.5 mm
+
+### Design goals
+
+1. **Meet rule requirements** - pass static safety inspection
+2. **Optimize stiffness** - torsional stiffness above 2000 Nm/°
+3. **Lightweighting** - frame mass below 35 kg
+
+<Aside type="caution">
+Frame design must comply strictly with the FSAC rulebook, especially the safety-structure requirements.
+</Aside>
+
+---
+
+## Finite-element analysis
+
+### Load cases
+
+| Case | Description |
+|------|----------|
+| Torsion | diagonal-wheel lift with 1000 N |
+| Bending | driver-compartment load |
+| Frontal impact | 20G front impact |
+| Side impact | 10G lateral impact |
+
+### Software tools
+
+- **ANSYS** - structural analysis
+- **HyperMesh** - preprocessing
+- **SolidWorks Simulation** - quick validation
+
+---
+
+## Carbon-fiber parts
+
+### Typical applications
+
+- sidepod shell
+- seat back
+- aerodynamic package
+- steering wheel
+
+### Manufacturing flow
+
+<Steps>
+1. CAD modeling and laminate planning
+2. mold fabrication
+3. layup and curing
+4. demolding and post-processing
+5. inspection and assembly
+</Steps>
+
+---
+
+## Aerodynamics
+
+### Package configuration
+
+- **Front wing** - generates downforce and improves front-tire grip
+- **Rear wing** - primary downforce source
+- **Diffuser** - uses underbody airflow for additional load
+
+### Design priorities
+
+- optimize airfoil shapes with CFD
+- validate with wind-tunnel testing where possible
+- balance downforce against drag
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/mechanical/" style="color: var(--sl-color-accent);">Back to mechanical</a>
+</div>

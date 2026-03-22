@@ -1,0 +1,69 @@
+---
+title: Steering and Suspension
+description: 2025 season steering and suspension design notes.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Suspension overview
+
+The suspension connects the wheels to the chassis and directly affects handling performance and vehicle stability.
+
+### Suspension concept
+
+The car uses a **double-wishbone independent suspension**. Main advantages:
+
+- large range for geometry adjustment
+- strong tire contact behavior
+- well suited to high-speed cornering
+
+### Key parameters
+
+| Parameter | Front | Rear |
+|------|------|------|
+| Track width | 1200 mm | 1180 mm |
+| Kingpin inclination | 8° | - |
+| Caster | 4° | - |
+| Camber | -2° | -1.5° |
+| Toe | 0.5° | 0° |
+
+---
+
+## Steering system
+
+### Steering-ratio design
+
+Steering-ratio selection is a balance between:
+- steering sensitivity
+- driver effort
+- high-speed stability
+
+<Aside type="tip">
+Use previous vehicle data and driver feedback as the starting point for tuning.
+</Aside>
+
+### Ackermann geometry
+
+The design targets **100% Ackermann** geometry so that the inner and outer wheels follow a more appropriate steering-angle relationship at low speed.
+
+---
+
+## Damper selection
+
+### Candidate brands
+
+- **Ohlins TTX** - high-performance adjustable dampers
+- **Bilstein** - a strong cost-performance option
+- **Domestic alternatives** - worth considering when cost pressure is high
+
+### Tuning points
+
+1. compression damping - controls roll response in corners
+2. rebound damping - affects how quickly tire grip recovers
+3. preload - adjusts ride attitude and setup window
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/mechanical/" style="color: var(--sl-color-accent);">Back to mechanical</a>
+</div>
