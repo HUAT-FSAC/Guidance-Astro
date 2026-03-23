@@ -19,14 +19,13 @@ interface Props {
 const { position = 'bottom-right', showLabel = false } = Astro.props;
 ---
 
-<div class={`share-container ${position}`} data-share-container>
+<div class={`share-container ${position}`} data-share-container data-share-button>
     <!-- 主分享按钮 -->
     <button 
         class="share-button" 
-        id="share-toggle-btn"
+        data-share-toggle
         aria-label="分享此页面"
         aria-expanded="false"
-        aria-controls="share-menu"
     >
         <span class="share-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -41,7 +40,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
     </button>
 
     <!-- 分享菜单 -->
-    <div class="share-menu" id="share-menu" role="menu" aria-label="分享选项">
+    <div class="share-menu" data-share-menu role="menu" aria-label="分享选项">
         <!-- 复制链接 -->
         <button class="share-option" data-share-action="copy" role="menuitem">
             <span class="option-icon">📋</span>
@@ -88,182 +87,32 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
     </div>
 
     <!-- 微信二维码弹窗 -->
-    <div class="qrcode-modal" id="qrcode-modal" role="dialog" aria-modal="true" aria-labelledby="qrcode-title">
+    <div class="qrcode-modal" data-share-modal role="dialog" aria-modal="true" aria-label="微信扫码分享">
         <div class="qrcode-content">
-            <h3 id="qrcode-title">微信扫码分享</h3>
+            <h3>微信扫码分享</h3>
             <div class="qrcode-image">
-                <img id="qrcode-img" src="" alt="微信分享二维码" />
+                <img data-share-image src="" alt="微信分享二维码" />
             </div>
             <p class="qrcode-hint">打开微信扫一扫，分享给朋友</p>
-            <button class="qrcode-close" id="qrcode-close">关闭</button>
+            <button class="qrcode-close" type="button" data-share-close>关闭</button>
         </div>
     </div>
 
     <!-- Toast 提示 -->
-    <div class="share-toast" id="share-toast" role="alert" aria-live="polite"></div>
+    <div class="share-toast" data-share-toast role="alert" aria-live="polite"></div>
 </div>
 
 <script>
-    import {
-        canUseNativeShare,
-        copyToClipboard,
-        generateQRCodeDataUrl,
-        getPageShareData,
-        nativeShare,
-        openShareWindow,
-        type SharePlatform
-    } from '../../utils/share';
+    import { setupShareMenuLifecycle } from '../../utils/share-controller'
 
-    let _escCleanup: (() => void) | undefined;
-
-    function initShareButton() {
-        const container = document.querySelector('[data-share-container]');
-        if (!container) return;
-        if ((container as HTMLElement).dataset.initialized === 'true') return;
-        (container as HTMLElement).dataset.initialized = 'true';
-
-        // 清理上一次的 ESC 监听器
-        if (_escCleanup) {
-            _escCleanup();
-            _escCleanup = undefined;
-        }
-
-        const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement;
-        const menu = container.querySelector('#share-menu') as HTMLElement;
-        const toast = container.querySelector('#share-toast') as HTMLElement;
-        const qrcodeModal = container.querySelector('#qrcode-modal') as HTMLElement;
-        const qrcodeImg = container.querySelector('#qrcode-img') as HTMLImageElement;
-        const qrcodeClose = container.querySelector('#qrcode-close') as HTMLButtonElement;
-        const nativeShareBtn = container.querySelector('.native-share') as HTMLButtonElement;
-
-        // 显示原生分享按钮（如果支持）
-        if (canUseNativeShare() && nativeShareBtn) {
-            nativeShareBtn.style.display = 'flex';
-        }
-
-        // 显示 Toast 提示
-        function showToast(message: string, type: 'success' | 'error' = 'success') {
-            toast.textContent = message;
-            toast.className = `share-toast ${type} show`;
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // 切换菜单
-        function toggleMenu() {
-            const isOpen = menu.classList.toggle('open');
-            toggleBtn.setAttribute('aria-expanded', String(isOpen));
-
-            if (isOpen) {
-                // 点击外部关闭
-                setTimeout(() => {
-                    document.addEventListener('click', closeOnClickOutside);
-                }, 0);
-            }
-        }
-
-        function closeMenu() {
-            menu.classList.remove('open');
-            toggleBtn.setAttribute('aria-expanded', 'false');
-            document.removeEventListener('click', closeOnClickOutside);
-        }
-
-        function closeOnClickOutside(e: MouseEvent) {
-            if (!container?.contains(e.target as Node)) {
-                closeMenu();
-            }
-        }
-
-        // 处理分享操作
-        async function handleShare(action: string) {
-            const shareData = getPageShareData();
-
-            switch (action) {
-                case 'copy':
-                    const copyResult = await copyToClipboard(shareData.url);
-                    showToast(copyResult.message, copyResult.success ? 'success' : 'error');
-                    break;
-
-                case 'native':
-                    const nativeResult = await nativeShare(shareData);
-                    if (!nativeResult.success && nativeResult.message !== '分享已取消') {
-                        showToast(nativeResult.message, 'error');
-                    }
-                    break;
-
-                case 'wechat':
-                    // 本地生成二维码
-                    qrcodeImg.src = await generateQRCodeDataUrl(shareData.url, 200);
-                    qrcodeModal.classList.add('show');
-                    break;
-
-                case 'twitter':
-                case 'weibo':
-                case 'telegram':
-                case 'email':
-                    const result = openShareWindow(action as SharePlatform, shareData);
-                    if (!result.success) {
-                        showToast(result.message, 'error');
-                    }
-                    break;
-            }
-
-            closeMenu();
-        }
-
-        // 事件绑定
-        toggleBtn?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu();
-        });
-
-        // 分享选项点击
-        container.querySelectorAll('[data-share-action]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const action = (btn as HTMLElement).dataset.shareAction;
-                if (action) handleShare(action);
-            });
-        });
-
-        // 关闭二维码弹窗
-        qrcodeClose?.addEventListener('click', () => {
-            qrcodeModal.classList.remove('show');
-        });
-
-        qrcodeModal?.addEventListener('click', (e) => {
-            if (e.target === qrcodeModal) {
-                qrcodeModal.classList.remove('show');
-            }
-        });
-
-        // 键盘支持
-        toggleBtn?.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleMenu();
-            }
-        });
-
-        // ESC 关闭（使用命名函数以便清理）
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                closeMenu();
-                qrcodeModal.classList.remove('show');
-            }
-        };
-        document.addEventListener('keydown', handleEsc);
-        _escCleanup = () => document.removeEventListener('keydown', handleEsc);
-    }
-
-    // 初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initShareButton);
-    } else {
-        initShareButton();
-    }
-
-    document.addEventListener('astro:page-load', initShareButton);
+    setupShareMenuLifecycle('[data-share-button]', {
+        toggleSelector: '[data-share-toggle]',
+        menuSelector: '[data-share-menu]',
+        toastSelector: '[data-share-toast]',
+        modalSelector: '[data-share-modal]',
+        modalImageSelector: '[data-share-image]',
+        modalCloseSelector: '[data-share-close]',
+    })
 </script>
 
 <style>
@@ -274,7 +123,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
 
     .share-container.bottom-right {
         bottom: 2rem;
-        left: 2rem;
+        right: 2rem;
     }
 
     .share-container.bottom-left {
@@ -510,7 +359,7 @@ const { position = 'bottom-right', showLabel = false } = Astro.props;
         }
 
         .share-container.bottom-right {
-            left: 1rem;
+            right: 1rem;
         }
 
         .share-container.bottom-left {

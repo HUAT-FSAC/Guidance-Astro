@@ -3,12 +3,33 @@
  * 文档页面浮动操作按钮组
  * 将主题切换和分享按钮统一管理在右下角，避免位置冲突
  */
+import type { Locale } from '../../utils/i18n'
+import { getTranslations, getLocaleFromPath } from '../../utils/i18n'
+import { THEME_COLORS } from '../../utils/theme-controller'
+
+interface Props {
+    locale?: Locale
+}
+
+const { locale: propLocale } = Astro.props
+const locale = propLocale || getLocaleFromPath(Astro.url.pathname)
+const t = getTranslations(locale)
+const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof t.theme] || theme.key)
 ---
 
 <div class="doc-fab-group" id="doc-fab-group">
     <!-- 主题切换按钮 -->
-    <div class="fab-item" id="fab-theme-toggle-wrap">
-        <button class="fab-btn" id="doc-theme-toggle" aria-label="切换主题" title="切换亮/暗模式">
+    <div class="fab-item" id="fab-theme-toggle-wrap" data-current-scheme="dark">
+        <button 
+            class="fab-btn" 
+            id="doc-theme-toggle" 
+            aria-label={t.theme.switchTheme} 
+            title={t.theme.themeHint}
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="doc-theme-dropdown"
+        >
+            <span class="color-indicator"></span>
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"></circle>
                 <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -24,6 +45,33 @@
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
         </button>
+        
+        <div class="theme-dropdown" id="doc-theme-dropdown" aria-hidden="true">
+            <div class="dropdown-header">
+                <span class="header-icon">🎨</span>
+                <span class="header-text">{t.theme.themeColors}</span>
+            </div>
+            <div class="color-grid">
+                {THEME_COLORS.map((theme, index) => (
+                    <button
+                        class="color-option"
+                        type="button"
+                        data-color={theme.color}
+                        data-accent={theme.accent}
+                        title={themeNames[index]}
+                        style={`--theme-color: ${theme.color}`}
+                    >
+                        <span class="color-dot"></span>
+                        <span class="color-name">{themeNames[index]}</span>
+                        <span class="color-check">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                ))}
+            </div>
+        </div>
     </div>
 
     <!-- 分享按钮 -->
@@ -45,54 +93,54 @@
         </button>
 
         <!-- 分享菜单 - 向左展开 -->
-        <div class="share-menu" id="share-menu" role="menu" aria-label="分享选项">
+        <div class="share-menu" id="share-menu" role="menu" aria-label={t.common.share}>
             <button class="share-option" data-share-action="copy" role="menuitem">
                 <span class="option-icon">📋</span>
-                <span class="option-label">复制链接</span>
+                <span class="option-label">{t.docs.social.copy}</span>
             </button>
 
             <button class="share-option native-share" data-share-action="native" role="menuitem" style="display: none;">
                 <span class="option-icon">📤</span>
-                <span class="option-label">更多分享</span>
+                <span class="option-label">{t.docs.social.more}</span>
             </button>
 
             <div class="share-divider"></div>
 
             <button class="share-option" data-share-action="twitter" role="menuitem">
                 <span class="option-icon twitter">𝕏</span>
-                <span class="option-label">Twitter</span>
+                <span class="option-label">{t.docs.social.twitter}</span>
             </button>
 
             <button class="share-option" data-share-action="weibo" role="menuitem">
                 <span class="option-icon weibo">🔴</span>
-                <span class="option-label">微博</span>
+                <span class="option-label">{t.docs.social.weibo}</span>
             </button>
 
             <button class="share-option" data-share-action="wechat" role="menuitem">
                 <span class="option-icon wechat">💬</span>
-                <span class="option-label">微信</span>
+                <span class="option-label">{t.docs.social.wechat}</span>
             </button>
 
             <button class="share-option" data-share-action="telegram" role="menuitem">
                 <span class="option-icon telegram">✈️</span>
-                <span class="option-label">Telegram</span>
+                <span class="option-label">{t.docs.social.telegram}</span>
             </button>
 
             <button class="share-option" data-share-action="email" role="menuitem">
                 <span class="option-icon email">📧</span>
-                <span class="option-label">邮件</span>
+                <span class="option-label">{t.docs.social.email}</span>
             </button>
         </div>
 
         <!-- 微信二维码弹窗 -->
         <div class="qrcode-modal" id="qrcode-modal" role="dialog" aria-modal="true" aria-labelledby="qrcode-title">
             <div class="qrcode-content">
-                <h3 id="qrcode-title">微信扫码分享</h3>
+                <h3 id="qrcode-title">{t.docs.social.qrcodeTitle}</h3>
                 <div class="qrcode-image">
-                    <img id="qrcode-img" src="" alt="微信分享二维码" />
+                    <img id="qrcode-img" src="" alt={t.docs.social.qrcodeTitle} />
                 </div>
-                <p class="qrcode-hint">打开微信扫一扫，分享给朋友</p>
-                <button class="qrcode-close" id="qrcode-close">关闭</button>
+                <p class="qrcode-hint">{t.docs.social.qrcodeHint}</p>
+                <button class="qrcode-close" id="qrcode-close">{t.common.close}</button>
             </div>
         </div>
 
@@ -102,161 +150,15 @@
 </div>
 
 <script>
-    let _themeToggleCleanup: (() => void) | undefined;
+    import { setupShareMenuLifecycle } from '../../utils/share-controller'
+    import { setupThemeControllerLifecycle } from '../../utils/theme-controller'
 
-    // ── 主题切换逻辑 ──────────────────────────────────────────────
-    function safeSetItem(key: string, value: string): void {
-        try { localStorage.setItem(key, value); }
-        catch { console.warn(`Failed to save ${key} to localStorage`); }
-    }
-
-    function initThemeToggle() {
-        const toggleBtn = document.getElementById('doc-theme-toggle');
-        if (!toggleBtn) return;
-
-        if (_themeToggleCleanup) {
-            _themeToggleCleanup();
-            _themeToggleCleanup = undefined;
-        }
-
-        const html = document.documentElement;
-
-        function updateIcon() {
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            toggleBtn.querySelector('.icon-sun')?.classList.toggle('hidden', isDark);
-            toggleBtn.querySelector('.icon-moon')?.classList.toggle('hidden', !isDark);
-        }
-
-        const handleToggleClick = () => {
-            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            safeSetItem('huat-color-scheme', newTheme);
-            updateIcon();
-        };
-        toggleBtn.addEventListener('click', handleToggleClick);
-        _themeToggleCleanup = () => toggleBtn.removeEventListener('click', handleToggleClick);
-
-        updateIcon();
-    }
-
-    // ── 分享逻辑 ─────────────────────────────────────────────────
-    import {
-        canUseNativeShare,
-        copyToClipboard,
-        generateQRCodeDataUrl,
-        getPageShareData,
-        nativeShare,
-        openShareWindow,
-        type SharePlatform
-    } from '../../utils/share';
-
-    let _escCleanup: (() => void) | undefined;
-
-    function initShareButton() {
-        const container = document.querySelector('[data-share-container]');
-        if (!container) return;
-        if ((container as HTMLElement).dataset.initialized === 'true') return;
-        (container as HTMLElement).dataset.initialized = 'true';
-
-        if (_escCleanup) { _escCleanup(); _escCleanup = undefined; }
-
-        const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement;
-        const menu      = container.querySelector('#share-menu') as HTMLElement;
-        const toast     = container.querySelector('#share-toast') as HTMLElement;
-        const qrcodeModal = container.querySelector('#qrcode-modal') as HTMLElement;
-        const qrcodeImg   = container.querySelector('#qrcode-img') as HTMLImageElement;
-        const qrcodeClose = container.querySelector('#qrcode-close') as HTMLButtonElement;
-        const nativeShareBtn = container.querySelector('.native-share') as HTMLButtonElement;
-
-        if (canUseNativeShare() && nativeShareBtn) {
-            nativeShareBtn.style.display = 'flex';
-        }
-
-        function showToast(message: string, type: 'success' | 'error' = 'success') {
-            toast.textContent = message;
-            toast.className = `share-toast ${type} show`;
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        function toggleMenu() {
-            const isOpen = menu.classList.toggle('open');
-            toggleBtn.setAttribute('aria-expanded', String(isOpen));
-            if (isOpen) {
-                setTimeout(() => document.addEventListener('click', closeOnClickOutside), 0);
-            }
-        }
-
-        function closeMenu() {
-            menu.classList.remove('open');
-            toggleBtn.setAttribute('aria-expanded', 'false');
-            document.removeEventListener('click', closeOnClickOutside);
-        }
-
-        function closeOnClickOutside(e: MouseEvent) {
-            if (!container?.contains(e.target as Node)) closeMenu();
-        }
-
-        async function handleShare(action: string) {
-            const shareData = getPageShareData();
-            switch (action) {
-                case 'copy': {
-                    const r = await copyToClipboard(shareData.url);
-                    showToast(r.message, r.success ? 'success' : 'error');
-                    break;
-                }
-                case 'native': {
-                    const r = await nativeShare(shareData);
-                    if (!r.success && r.message !== '分享已取消') showToast(r.message, 'error');
-                    break;
-                }
-                case 'wechat':
-                    qrcodeImg.src = await generateQRCodeDataUrl(shareData.url, 200);
-                    qrcodeModal.classList.add('show');
-                    break;
-                default: {
-                    const r = openShareWindow(action as SharePlatform, shareData);
-                    if (!r.success) showToast(r.message, 'error');
-                }
-            }
-            closeMenu();
-        }
-
-        toggleBtn?.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
-        toggleBtn?.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); }
-        });
-
-        container.querySelectorAll('[data-share-action]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const action = (btn as HTMLElement).dataset.shareAction;
-                if (action) handleShare(action);
-            });
-        });
-
-        qrcodeClose?.addEventListener('click', () => qrcodeModal.classList.remove('show'));
-        qrcodeModal?.addEventListener('click', (e) => {
-            if (e.target === qrcodeModal) qrcodeModal.classList.remove('show');
-        });
-
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') { closeMenu(); qrcodeModal.classList.remove('show'); }
-        };
-        document.addEventListener('keydown', handleEsc);
-        _escCleanup = () => document.removeEventListener('keydown', handleEsc);
-    }
-
-    // ── 统一初始化 ────────────────────────────────────────────────
-    function init() {
-        initThemeToggle();
-        initShareButton();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-    document.addEventListener('astro:page-load', init);
+    setupThemeControllerLifecycle('#fab-theme-toggle-wrap', {
+        toggleSelector: '#doc-theme-toggle',
+        dropdownSelector: '#doc-theme-dropdown',
+        currentSchemeTargetSelector: '#fab-theme-toggle-wrap',
+    })
+    setupShareMenuLifecycle('[data-share-container]')
 </script>
 
 <style>
@@ -293,6 +195,170 @@
         box-shadow: var(--card-shadow);
         position: relative;
         overflow: hidden;
+    }
+
+    .color-indicator {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--sl-color-accent, #f39c12);
+        box-shadow: 0 1px 4px color-mix(in srgb, var(--sl-color-accent, #f39c12) 40%, transparent);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        z-index: 10;
+    }
+
+    :global([data-theme='light']) .color-indicator {
+        border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-dropdown {
+        position: absolute;
+        bottom: 56px;
+        right: 0;
+        background: linear-gradient(180deg, rgba(25, 25, 30, 0.98), rgba(15, 15, 20, 0.98));
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 12px;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(8px) scale(0.95);
+        transform-origin: bottom right;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.5),
+            0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .theme-dropdown.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+    }
+
+    :global([data-theme='light']) .theme-dropdown {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 250, 252, 0.98));
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.15),
+            0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 8px;
+    }
+
+    :global([data-theme='light']) .dropdown-header {
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .header-icon {
+        font-size: 1rem;
+    }
+
+    .header-text {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    :global([data-theme='light']) .header-text {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .color-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .color-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 10px;
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+    }
+
+    :global([data-theme='light']) .color-option {
+        color: rgba(0, 0, 0, 0.85);
+    }
+
+    .color-option:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    :global([data-theme='light']) .color-option:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .color-option.active {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    :global([data-theme='light']) .color-option.active {
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .color-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--theme-color);
+        box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-color) 40%, transparent);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .color-option:hover .color-dot {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-color) 50%, transparent);
+    }
+
+    .color-option.active .color-dot {
+        box-shadow: 
+            0 2px 8px color-mix(in srgb, var(--theme-color) 40%, transparent),
+            0 0 0 3px color-mix(in srgb, var(--theme-color) 30%, transparent);
+    }
+
+    .color-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .color-check {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s ease;
+        color: var(--theme-color);
+        flex-shrink: 0;
+    }
+
+    .color-option.active .color-check {
+        opacity: 1;
+        transform: scale(1);
     }
 
     :global([data-theme='light']) .fab-btn {
@@ -341,11 +407,24 @@
     /* ── 图标显隐 ── */
     .icon-sun,
     .icon-moon {
+        position: absolute;
         transition: opacity 0.2s ease;
     }
 
-    .hidden {
+    .icon-sun {
+        opacity: 1;
+    }
+
+    .icon-moon {
         display: none;
+    }
+
+    #fab-theme-toggle-wrap[data-current-scheme='light'] .icon-sun {
+        display: none;
+    }
+
+    #fab-theme-toggle-wrap[data-current-scheme='light'] .icon-moon {
+        display: block;
     }
 
     /* ── 分享菜单（向左展开） ── */

@@ -3,7 +3,12 @@
  * 定义 Content Security Policy 和安全头部
  */
 
-export const securityHeaders = [
+export interface SecurityHeader {
+    name: string
+    value: string
+}
+
+export const securityHeaders: SecurityHeader[] = [
     {
         name: 'Content-Security-Policy',
         value: [
@@ -105,4 +110,20 @@ export function isCSPValid(csp: string): boolean {
     }
 
     return true
+}
+
+export function applySecurityHeaders(response: Response): Response {
+    const headers = new Headers(response.headers)
+
+    for (const header of securityHeaders) {
+        if (!headers.has(header.name)) {
+            headers.set(header.name, header.value)
+        }
+    }
+
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    })
 }

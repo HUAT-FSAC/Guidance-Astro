@@ -1,8 +1,10 @@
 import { defineMiddleware } from 'astro:middleware'
 import { getSession, getTokenFromCookie } from '@lib/session'
 import { hasRole } from '@lib/auth'
+import { applySecurityHeaders } from './config/security'
 
 export const onRequest = defineMiddleware(async (context, next) => {
+    const secureResponse = (response: Response) => applySecurityHeaders(response)
     const { url, request, locals } = context
     const pathname = url.pathname
     const isAdminRoute = pathname.startsWith('/admin/')
@@ -46,24 +48,28 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if ((isAdminRoute || isAdminApiRoute) && !locals.user) {
         const redirectTo = encodeURIComponent(`${pathname}${url.search}`)
         if (isAdminApiRoute) {
-            return new Response(JSON.stringify({ error: '未登录' }), {
-                status: 401,
-                headers: { 'Content-Type': 'application/json' },
-            })
+            return secureResponse(
+                new Response(JSON.stringify({ error: '未登录' }), {
+                    status: 401,
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            )
         }
-        return context.redirect(`/login/?redirect=${redirectTo}`)
+        return secureResponse(context.redirect(`/login/?redirect=${redirectTo}`))
     }
 
     // 管理后台需要 admin 及以上
     if ((isAdminRoute || isAdminApiRoute) && locals.user && !hasRole(locals.user.role, 'admin')) {
         if (isAdminApiRoute) {
-            return new Response(JSON.stringify({ error: '权限不足' }), {
-                status: 403,
-                headers: { 'Content-Type': 'application/json' },
-            })
+            return secureResponse(
+                new Response(JSON.stringify({ error: '权限不足' }), {
+                    status: 403,
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            )
         }
-        return context.redirect('/')
+        return secureResponse(context.redirect('/'))
     }
 
-    return next()
+    return secureResponse(await next())
 })

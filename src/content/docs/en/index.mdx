@@ -105,16 +105,16 @@ import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/hom
 <PageLoader />
 <ScrollProgress />
 <BackToTop />
-<KeyboardNav />
+<KeyboardNav locale="en" />
 <ParticleBackground />
-<ThemeSwitcher />
+<ThemeSwitcher locale="en" />
 <MobileNavigation locale="en" />
 <ScrollReveal />
 <ParallaxScroll />
 
 <Hero title={home.hero.title} subtitle={home.hero.subtitle} description={home.hero.description} ctaText={home.hero.ctaText} ctaLink={home.hero.ctaLink} backgroundImage={home.hero.backgroundImage} />
 <Stats stats={home.stats} />
-<Countdown />
+<Countdown locale="en" />
 <ShowcaseLab content={home.showcase} />
 
 {home.achievements.map((achievement, index) => (
@@ -178,7 +178,4 @@ import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/hom
     </div>
     <p style="font-size: 0.85rem; opacity: 0.5;">© 2026 HUAT FSAC. All rights reserved.</p>
 </footer>
-
-
-
 

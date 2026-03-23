@@ -2,13 +2,14 @@ import { defineConfig } from 'astro/config'
 import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
+import cloudflareStaticHeaders from './src/integrations/cloudflare-static-headers'
+import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
 
 export default defineConfig({
-    adapter: cloudflare({ imageService: 'compile' }),
+    adapter: cloudflare({ imageService: 'compile', sessionKVBindingName: 'SESSION_KV' }),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
     redirects: {
-        '/docs/': '/',
         '/2024-learning-roadmap/': '/archive/2024/2024-learning-roadmap/',
         '/2025/感知/': '/archive/2025/sensing/',
         '/2025/感知/激光雷达/': '/archive/2025/sensing/激光雷达/',
@@ -50,8 +51,25 @@ export default defineConfig({
         '/en/docs-center/运营与协作/': '/en/docs-center/operations-and-collaboration/',
         '/en/docs-center/运营与协作/项目进度看板/':
             '/en/docs-center/operations-and-collaboration/project-progress-board/',
+        '/en/archive/general/ROS%20入门/ros-toturial-creating-ws-and-package/':
+            '/en/archive/general/ros-basics/create-workspace-and-package/',
+        '/en/archive/planning-control/资料汇总/': '/en/archive/planning-control/resource-roundup/',
+        '/en/archive/sensing/资料汇总/': '/en/archive/sensing/resource-roundup/',
+        '/en/archive/sensing/数据集相关/dataset-generating/':
+            '/en/archive/sensing/datasets/dataset-generation/',
+        '/en/archive/sensing/数据集相关/dataset-labeling/':
+            '/en/archive/sensing/datasets/dataset-labeling-basics/',
+        '/en/archive/sensing/数据集相关/dataset-standard/':
+            '/en/archive/sensing/datasets/dataset-labeling-and-generation-standard/',
+    },
+    vite: {
+        ssr: {
+            external: ['crypto'],
+        },
     },
     integrations: [
+        cloudflareStaticHeaders(),
+        filterKnownBuildWarnings(),
         starlight({
             title: { zh: 'HUAT FSAC', en: 'HUAT FSAC' },
             description:
@@ -64,15 +82,6 @@ export default defineConfig({
             },
             customCss: ['./src/styles/docs-global.css', './src/styles/code-blocks.css'],
             head: [
-                {
-                    tag: 'meta',
-                    attrs: { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
-                },
-                { tag: 'meta', attrs: { 'http-equiv': 'X-Frame-Options', content: 'SAMEORIGIN' } },
-                {
-                    tag: 'meta',
-                    attrs: { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
-                },
                 {
                     tag: 'meta',
                     attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' },
@@ -164,10 +173,13 @@ export default defineConfig({
                     content: `(function() {
                         try {
                             var scheme = localStorage.getItem('huat-color-scheme');
+                            var starlightScheme = localStorage.getItem('starlight-theme');
                             var color = localStorage.getItem('huat-theme-color');
                             var accent = localStorage.getItem('huat-theme-accent');
-                            if (scheme) {
+                            if (scheme === 'light' || scheme === 'dark') {
                                 document.documentElement.setAttribute('data-theme', scheme);
+                            } else if (starlightScheme === 'light' || starlightScheme === 'dark') {
+                                document.documentElement.setAttribute('data-theme', starlightScheme);
                             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
                                 document.documentElement.setAttribute('data-theme', 'light');
                             }

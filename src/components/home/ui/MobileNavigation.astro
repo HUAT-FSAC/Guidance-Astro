@@ -45,25 +45,36 @@ const labels =
           }
 ---
 
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav" data-mobile-nav>
     <nav class="mobile-nav-bar">
         <a href={base || '/'} class="mobile-nav-logo">
             <span class="logo-text">HUAT</span>
             <span class="logo-accent">FSAC</span>
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label={labels.openMenu}>
+        <button
+            class="mobile-menu-btn"
+            data-mobile-menu-button
+            type="button"
+            aria-label={labels.openMenu}
+            aria-expanded="false"
+        >
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
         </button>
     </nav>
 
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
 
-    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div class="mobile-nav-drawer" data-mobile-nav-drawer>
         <div class="drawer-header">
             <span class="drawer-title">{labels.menuTitle}</span>
-            <button class="drawer-close" id="drawerClose" aria-label={labels.closeMenu}>
+            <button
+                class="drawer-close"
+                data-mobile-nav-close
+                type="button"
+                aria-label={labels.closeMenu}
+            >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"></path>
                 </svg>
@@ -72,7 +83,7 @@ const labels =
         <ul class="drawer-nav-list">
             {navItems.map((item) => (
                 <li>
-                    <a href={item.link} class="drawer-nav-link">{item.label}</a>
+                    <a href={item.link} class="drawer-nav-link" data-mobile-nav-link>{item.label}</a>
                 </li>
             ))}
         </ul>
@@ -88,64 +99,9 @@ const labels =
 </div>
 
 <script>
-    let _mobileNavCleanup: (() => void) | undefined;
+    import { setupMobileNavigationLifecycle } from '../../../utils/mobile-nav-controller'
 
-    function initMobileNav() {
-        if (_mobileNavCleanup) {
-            _mobileNavCleanup();
-            _mobileNavCleanup = undefined;
-        }
-
-        const root = document.getElementById('mobileNav');
-        if (!root) return;
-
-        const menuBtn = root.querySelector('#mobileMenuBtn') as HTMLButtonElement | null;
-        const drawer = root.querySelector('#mobileNavDrawer') as HTMLElement | null;
-        const overlay = root.querySelector('#mobileNavOverlay') as HTMLElement | null;
-        const closeBtn = root.querySelector('#drawerClose') as HTMLButtonElement | null;
-        const navLinks = root.querySelectorAll('.drawer-nav-link');
-
-        function openDrawer() {
-            drawer?.classList.add('active');
-            overlay?.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeDrawer() {
-            drawer?.classList.remove('active');
-            overlay?.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        menuBtn?.addEventListener('click', openDrawer);
-        closeBtn?.addEventListener('click', closeDrawer);
-        overlay?.addEventListener('click', closeDrawer);
-
-        navLinks.forEach((link) => {
-            link.addEventListener('click', closeDrawer);
-        });
-
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && drawer?.classList.contains('active')) {
-                closeDrawer();
-            }
-        };
-        document.addEventListener('keydown', handleEsc);
-
-        _mobileNavCleanup = () => {
-            menuBtn?.removeEventListener('click', openDrawer);
-            closeBtn?.removeEventListener('click', closeDrawer);
-            overlay?.removeEventListener('click', closeDrawer);
-            navLinks.forEach((link) => {
-                link.removeEventListener('click', closeDrawer);
-            });
-            document.removeEventListener('keydown', handleEsc);
-            document.body.style.overflow = '';
-        };
-    }
-
-    document.addEventListener('DOMContentLoaded', initMobileNav);
-    document.addEventListener('astro:page-load', initMobileNav);
+    setupMobileNavigationLifecycle('[data-mobile-nav]')
 </script>
 
 <style>

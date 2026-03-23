@@ -2,14 +2,13 @@
 /**
  * 语言切换器组件
  * 提供中英文切换功能
- * 注意：目前项目未配置 Starlight 多语言支持，英文内容建设中
  */
 
 type Locale = 'en' | 'zh';
 
 const defaultLocale: Locale = 'zh';
 
-const locales: Locale[] = ['zh'];
+const locales: Locale[] = ['zh', 'en'];
 
 const localeNames: Record<Locale, string> = {
     zh: '中文',
@@ -23,9 +22,16 @@ interface Props {
 const { currentLocale = defaultLocale } = Astro.props;
 ---
 
-<div class="language-switcher" role="navigation" aria-label="Language selection">
+<div
+    class="language-switcher"
+    data-language-switcher
+    role="navigation"
+    aria-label="Language selection"
+>
     <button 
         class="language-toggle" 
+        data-language-toggle
+        type="button"
         aria-expanded="false" 
         aria-haspopup="listbox"
         aria-label="Select language"
@@ -41,124 +47,26 @@ const { currentLocale = defaultLocale } = Astro.props;
         </svg>
     </button>
     
-    <ul class="language-menu" role="listbox" aria-label="Available languages">
+    <ul class="language-menu" data-language-menu role="listbox" aria-label="Available languages">
         {locales.map((locale: Locale) => (
             <li role="option" aria-selected={locale === currentLocale}>
                 <button 
                     class={`language-option ${locale === currentLocale ? 'active' : ''}`}
+                    data-language-option
                     data-locale={locale}
+                    type="button"
                 >
                     {localeNames[locale]}
                 </button>
             </li>
         ))}
-        <li class="language-option-disabled" role="option" aria-disabled="true">
-            <span class="disabled-text">English (建设中)</span>
-        </li>
     </ul>
 </div>
 
 <script>
-    let _languageSwitcherCleanup: (() => void) | undefined;
+    import { setupLanguageSwitcherLifecycle } from '../../../utils/language-switcher-controller'
 
-    function safeSetPreferredLocale(locale: string) {
-        try {
-            localStorage.setItem('preferred-locale', locale);
-        } catch {
-            // ignore storage errors
-        }
-    }
-
-    function initLanguageSwitcher() {
-        if (_languageSwitcherCleanup) {
-            _languageSwitcherCleanup();
-            _languageSwitcherCleanup = undefined;
-        }
-
-        const switcher = document.querySelector('.language-switcher') as HTMLElement | null;
-        const toggle = switcher?.querySelector('.language-toggle') as HTMLButtonElement | null;
-        const menu = switcher?.querySelector('.language-menu') as HTMLElement | null;
-        const options = switcher?.querySelectorAll('.language-option');
-        
-        if (!toggle || !menu) return;
-        
-        // Toggle menu
-        const handleToggleClick = () => {
-            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', (!isExpanded).toString());
-            menu.classList.toggle('open');
-        };
-        toggle.addEventListener('click', handleToggleClick);
-        
-        // Handle language selection
-        const optionHandlers = new Map<Element, EventListener>();
-        options?.forEach(option => {
-            const handleOptionClick = () => {
-                const locale = (option as HTMLElement).dataset.locale;
-                if (!locale) return;
-                
-                // Store preference
-                safeSetPreferredLocale(locale);
-                
-                // Redirect to new locale path
-                const currentPath = window.location.pathname;
-                let newPath: string;
-                
-                // Remove existing locale prefix if any
-                const localePattern = /^\/(en|zh)\//;
-                const cleanPath = currentPath.replace(localePattern, '/');
-                
-                // Add new locale prefix (except for default locale 'zh')
-                if (locale === 'zh') {
-                    newPath = cleanPath;
-                } else {
-                    newPath = `/${locale}${cleanPath}`;
-                }
-                
-                // Navigate
-                window.location.href = newPath;
-            };
-            optionHandlers.set(option, handleOptionClick);
-            option.addEventListener('click', handleOptionClick);
-        });
-        
-        // Close on outside click
-        const handleDocumentClick = (e: Event) => {
-            if (!switcher?.contains(e.target as Node)) {
-                toggle.setAttribute('aria-expanded', 'false');
-                menu.classList.remove('open');
-            }
-        };
-        document.addEventListener('click', handleDocumentClick);
-        
-        // Keyboard navigation
-        const handleToggleKeydown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                toggle.setAttribute('aria-expanded', 'false');
-                menu.classList.remove('open');
-            }
-        };
-        toggle.addEventListener('keydown', handleToggleKeydown);
-
-        _languageSwitcherCleanup = () => {
-            toggle.removeEventListener('click', handleToggleClick);
-            toggle.removeEventListener('keydown', handleToggleKeydown);
-            document.removeEventListener('click', handleDocumentClick);
-            optionHandlers.forEach((handler, option) => {
-                option.removeEventListener('click', handler);
-            });
-        };
-    }
-    
-    // Initialize
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initLanguageSwitcher);
-    } else {
-        initLanguageSwitcher();
-    }
-    
-    // Re-init on Astro navigation
-    document.addEventListener('astro:page-load', initLanguageSwitcher);
+    setupLanguageSwitcherLifecycle('[data-language-switcher]')
 </script>
 
 <style>
