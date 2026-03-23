@@ -24,7 +24,42 @@ export default [
         label: '📚 文档中心',
         translations: { en: '📚 Docs Center' },
         collapsed: false,
-        autogenerate: { directory: 'docs-center' },
+        items: [
+            { label: '文档中心', translations: { en: 'Docs Center' }, link: '/docs-center/' },
+            { label: '入门', translations: { en: 'Onboarding' }, link: '/docs-center/入门/' },
+            {
+                label: '流程与模板',
+                translations: { en: 'Processes & Templates' },
+                link: '/docs-center/流程与模板/',
+            },
+            {
+                label: '资源中心',
+                translations: { en: 'Resource Hub' },
+                link: '/docs-center/资源中心/',
+            },
+            {
+                label: '运营与协作',
+                translations: { en: 'Operations & Collaboration' },
+                collapsed: false,
+                items: [
+                    {
+                        label: '运营与协作',
+                        translations: { en: 'Operations & Collaboration' },
+                        link: '/docs-center/运营与协作/',
+                    },
+                    {
+                        label: '项目进度看板',
+                        translations: { en: 'Project Progress Board' },
+                        link: '/docs-center/运营与协作/项目进度看板/',
+                    },
+                ],
+            },
+            {
+                label: '体验与反馈',
+                translations: { en: 'Feedback & Experience' },
+                link: '/docs-center/体验与反馈/',
+            },
+        ],
     },
     {
         label: '📰 新闻动态',

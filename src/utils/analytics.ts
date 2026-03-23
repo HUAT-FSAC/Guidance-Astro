@@ -66,6 +66,40 @@ export function trackEvent(
 }
 
 /**
+ * 节流函数 - 限制函数调用频率
+ * @param fn - 要节流的函数
+ * @param delay - 延迟毫秒数
+ * @returns 节流后的函数
+ */
+function throttle<T extends (...args: unknown[]) => unknown>(
+    fn: T,
+    delay: number
+): (...args: Parameters<T>) => void {
+    let lastCall = 0
+    let timeoutId: number | null = null
+
+    return (...args: Parameters<T>) => {
+        const now = Date.now()
+        const remaining = delay - (now - lastCall)
+
+        if (remaining <= 0) {
+            if (timeoutId) {
+                clearTimeout(timeoutId)
+                timeoutId = null
+            }
+            lastCall = now
+            fn(...args)
+        } else if (!timeoutId) {
+            timeoutId = window.setTimeout(() => {
+                lastCall = Date.now()
+                timeoutId = null
+                fn(...args)
+            }, remaining)
+        }
+    }
+}
+
+/**
  * 跟踪页面滚动深度
  * @returns 清理函数，用于移除事件监听器
  */
@@ -99,10 +133,11 @@ export function trackScrollDepth(): (() => void) | undefined {
         }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    const throttledHandleScroll = throttle(handleScroll, 100)
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true })
 
     // 返回清理函数
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', throttledHandleScroll)
 }
 
 /**

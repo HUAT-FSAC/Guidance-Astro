@@ -3,6 +3,7 @@
  * "编辑此页"链接组件
  * 生成指向 GitHub 编辑页面的链接
  */
+import { getTranslations, getLocaleFromPath } from '../../utils/i18n'
 
 const docsModuleMap = import.meta.glob('/src/content/docs/**/*.{md,mdx}');
 const existingDocs = new Set(
@@ -25,6 +26,9 @@ const {
     repoUrl = 'https://github.com/HUAT-FSAC/Guidance-Astro',
     branch = 'main'
 } = Astro.props;
+
+const locale = getLocaleFromPath(Astro.url.pathname);
+const t = getTranslations(locale);
 
 // 从 URL 推断并解析真实文档文件路径
 function getFilePath(pathname: string): string {
@@ -56,7 +60,7 @@ const historyUrl = `${repoUrl}/commits/${branch}/${editFilePath}`;
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
-            <span>编辑此页</span>
+            <span>{t.docs.editThisPage}</span>
         </a>
         
         <a href={viewUrl} class="edit-page-link secondary" target="_blank" rel="noopener noreferrer">
@@ -67,7 +71,7 @@ const historyUrl = `${repoUrl}/commits/${branch}/${editFilePath}`;
                 <line x1="16" y1="17" x2="8" y2="17"></line>
                 <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-            <span>查看源码</span>
+            <span>{t.docs.viewSource}</span>
         </a>
         
         <a href={historyUrl} class="edit-page-link secondary" target="_blank" rel="noopener noreferrer">
@@ -75,12 +79,12 @@ const historyUrl = `${repoUrl}/commits/${branch}/${editFilePath}`;
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span>修改历史</span>
+            <span>{t.docs.editHistory}</span>
         </a>
     </div>
     
     <p class="edit-page-hint">
-        发现问题？欢迎在 GitHub 上直接编辑此文档。
+        {t.docs.editHint}
     </p>
 </div>
 

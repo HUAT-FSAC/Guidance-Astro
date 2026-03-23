@@ -11,6 +11,8 @@ export enum ErrorType {
     IMAGE_ERROR = 'IMAGE_ERROR',
     SCRIPT_ERROR = 'SCRIPT_ERROR',
     NETWORK_ERROR = 'NETWORK_ERROR',
+    STORAGE_ERROR = 'STORAGE_ERROR',
+    VALIDATION_ERROR = 'VALIDATION_ERROR',
 }
 
 /**
@@ -253,4 +255,69 @@ export function createSafeImageLoader(
     img.src = src
 
     return img
+}
+
+/**
+ * 处理存储错误
+ * @param key - 存储键
+ * @param operation - 操作类型
+ * @param error - 原始错误
+ */
+export function handleStorageError(
+    key: string,
+    operation: 'get' | 'set' | 'remove',
+    error?: unknown
+): void {
+    const errorInfo = createErrorInfo(
+        ErrorType.STORAGE_ERROR,
+        `Storage ${operation} failed for key: ${key}`,
+        'Storage',
+        error instanceof Error ? error : undefined
+    )
+    triggerError(errorInfo)
+}
+
+/**
+ * 处理验证错误
+ * @param field - 字段名
+ * @param message - 验证错误消息
+ * @param _value - 验证的值
+ */
+export function handleValidationError(field: string, message: string, _value?: unknown): void {
+    const errorInfo = createErrorInfo(
+        ErrorType.VALIDATION_ERROR,
+        `Validation failed for ${field}: ${message}`,
+        'Validation'
+    )
+    triggerError(errorInfo)
+}
+
+/**
+ * 安全的 JSON 解析函数
+ * @param jsonString - JSON 字符串
+ * @param defaultValue - 默认值
+ * @returns 解析结果或默认值
+ */
+export function safeJsonParse<T>(jsonString: string, defaultValue: T): T {
+    try {
+        return JSON.parse(jsonString) as T
+    } catch (error) {
+        handleValidationError('JSON', 'Invalid JSON format', jsonString)
+        return defaultValue
+    }
+}
+
+/**
+ * 安全的 JSON 字符串化函数
+ * @param value - 要字符串化的值
+ * @param defaultValue - 默认值
+ * @returns 字符串化结果或默认值
+ */
+export function safeJsonStringify(value: unknown, defaultValue = ''): string {
+    try {
+        return JSON.stringify(value)
+    } catch (error) {
+        handleValidationError('JSON', 'Failed to stringify', value)
+        return defaultValue
+    }
 }

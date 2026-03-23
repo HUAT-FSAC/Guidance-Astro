@@ -4,6 +4,8 @@
  */
 
 import { safeGetItem, safeSetItem } from './storage'
+import type { Locale } from './i18n'
+import { getTranslations } from './i18n'
 
 export type ToastType = 'success' | 'warning' | 'error' | 'info'
 
@@ -24,14 +26,17 @@ export interface ToastOptions {
     closable?: boolean
     /** 动画 */
     animation?: 'fade' | 'slide' | 'bounce'
+    /** 语言 */
+    locale?: Locale
 }
 
-const DEFAULT_OPTIONS: Required<ToastOptions> = {
+const DEFAULT_OPTIONS: Required<Omit<ToastOptions, 'locale'>> & { locale: Locale } = {
     type: 'info',
     duration: 4000,
     position: 'bottom-right',
     closable: true,
     animation: 'slide',
+    locale: 'zh',
 }
 
 const STORAGE_KEY = 'huat-toast-history'
@@ -312,6 +317,7 @@ function addToHistory(message: string, type: ToastType): void {
  */
 export function showToast(message: string, options: ToastOptions = {}): string {
     const opts = { ...DEFAULT_OPTIONS, ...options }
+    const t = getTranslations(opts.locale)
     const container = initToastContainer()
     container.className = `huat-toast-container ${opts.position}`
 
@@ -341,7 +347,7 @@ export function showToast(message: string, options: ToastOptions = {}): string {
         ${
             opts.closable
                 ? `
-            <button class="huat-toast-close" aria-label="关闭">
+            <button class="huat-toast-close" aria-label="${t.common.close}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         `
@@ -403,16 +409,20 @@ export function showToast(message: string, options: ToastOptions = {}): string {
 /**
  * 快捷方法
  */
-export const toast = {
-    success: (message: string, options?: ToastOptions) =>
-        showToast(message, { ...options, type: 'success' }),
-    warning: (message: string, options?: ToastOptions) =>
-        showToast(message, { ...options, type: 'warning' }),
-    error: (message: string, options?: ToastOptions) =>
-        showToast(message, { ...options, type: 'error' }),
-    info: (message: string, options?: ToastOptions) =>
-        showToast(message, { ...options, type: 'info' }),
+export function createToast(locale: Locale = 'zh') {
+    return {
+        success: (message: string, options?: Omit<ToastOptions, 'locale'>) =>
+            showToast(message, { ...options, type: 'success', locale }),
+        warning: (message: string, options?: Omit<ToastOptions, 'locale'>) =>
+            showToast(message, { ...options, type: 'warning', locale }),
+        error: (message: string, options?: Omit<ToastOptions, 'locale'>) =>
+            showToast(message, { ...options, type: 'error', locale }),
+        info: (message: string, options?: Omit<ToastOptions, 'locale'>) =>
+            showToast(message, { ...options, type: 'info', locale }),
+    }
 }
+
+export const toast = createToast('zh')
 
 /**
  * 获取历史记录

@@ -1,8 +1,17 @@
 ---
+import type { Locale } from '../../../utils/i18n'
+import { getTranslations } from '../../../utils/i18n'
+
+interface Props {
+    locale?: Locale
+}
+
+const { locale = 'zh' } = Astro.props
+const t = getTranslations(locale)
 ---
 
 <div class="user-preferences-panel" id="user-preferences-panel">
-    <button class="preferences-toggle" id="preferences-toggle" aria-label="打开设置">
+    <button class="preferences-toggle" id="preferences-toggle" aria-label={t.preferences.openSettings}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82.33L17 19.4a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83"></path>
@@ -11,35 +20,35 @@
 
     <div class="preferences-dropdown" id="preferences-dropdown">
         <div class="preferences-header">
-            <h3>⚙️ 显示设置</h3>
+            <h3>{t.preferences.title}</h3>
         </div>
 
         <div class="preferences-section">
             <label class="preferences-label">
-                <span class="preferences-label-text">字体大小</span>
+                <span class="preferences-label-text">{t.preferences.fontSize}</span>
                 <div class="preferences-options">
-                    <button class="preferences-option" data-font-size="small" id="font-small">小</button>
-                    <button class="preferences-option" data-font-size="medium" id="font-medium">中</button>
-                    <button class="preferences-option" data-font-size="large" id="font-large">大</button>
-                    <button class="preferences-option" data-font-size="xlarge" id="font-xlarge">特大</button>
+                    <button class="preferences-option" data-font-size="small" id="font-small">{t.preferences.small}</button>
+                    <button class="preferences-option" data-font-size="medium" id="font-medium">{t.preferences.medium}</button>
+                    <button class="preferences-option" data-font-size="large" id="font-large">{t.preferences.large}</button>
+                    <button class="preferences-option" data-font-size="xlarge" id="font-xlarge">{t.preferences.xlarge}</button>
                 </div>
             </label>
         </div>
 
         <div class="preferences-section">
             <label class="preferences-label">
-                <span class="preferences-label-text">行高</span>
+                <span class="preferences-label-text">{t.preferences.lineHeight}</span>
                 <div class="preferences-options">
-                    <button class="preferences-option" data-line-height="compact" id="line-compact">紧凑</button>
-                    <button class="preferences-option" data-line-height="normal" id="line-normal">正常</button>
-                    <button class="preferences-option" data-line-height="relaxed" id="line-relaxed">宽松</button>
+                    <button class="preferences-option" data-line-height="compact" id="line-compact">{t.preferences.compact}</button>
+                    <button class="preferences-option" data-line-height="normal" id="line-normal">{t.preferences.normal}</button>
+                    <button class="preferences-option" data-line-height="relaxed" id="line-relaxed">{t.preferences.relaxed}</button>
                 </div>
             </label>
         </div>
 
         <div class="preferences-section">
             <label class="preferences-toggle-row">
-                <span class="preferences-label-text">动画效果</span>
+                <span class="preferences-label-text">{t.preferences.animations}</span>
                 <div class="toggle-switch" id="toggle-animations">
                     <div class="toggle-knob"></div>
                 </div>
@@ -48,7 +57,7 @@
 
         <div class="preferences-section">
             <label class="preferences-toggle-row">
-                <span class="preferences-label-text">减少动效</span>
+                <span class="preferences-label-text">{t.preferences.reducedMotion}</span>
                 <div class="toggle-switch" id="toggle-reduced-motion">
                     <div class="toggle-knob"></div>
                 </div>
@@ -57,7 +66,7 @@
 
         <div class="preferences-section">
             <label class="preferences-toggle-row">
-                <span class="preferences-label-text">阅读模式</span>
+                <span class="preferences-label-text">{t.preferences.readingMode}</span>
                 <div class="toggle-switch" id="toggle-reading-mode">
                     <div class="toggle-knob"></div>
                 </div>
@@ -65,12 +74,12 @@
         </div>
 
         <div class="preferences-footer">
-            <button class="preferences-reset" id="preferences-reset">重置为默认</button>
+            <button class="preferences-reset" id="preferences-reset">{t.preferences.resetToDefault}</button>
         </div>
     </div>
 </div>
 
-<script>
+<script define:vars={{ tProps: t.preferences, localeProps: locale }}>
     import {
         getPreferences,
     initUserPreferences,
@@ -81,10 +90,11 @@
     toggleReadingMode,
     toggleReducedMotion,
     } from '../../../utils/user-preferences'
-    import { toast } from '../../../utils/toast'
+    import { createToast } from '../../../utils/toast'
 
     document.addEventListener('DOMContentLoaded', () => {
         initUserPreferences()
+        const toast = createToast(localeProps)
 
         const toggleBtn = document.getElementById('preferences-toggle')
         const dropdown = document.getElementById('preferences-dropdown')
@@ -129,7 +139,7 @@
                 if (size) {
                     setFontSize(size)
                     updateUI()
-                    toast.success(`字体大小已设置为 ${size}`)
+                    toast.success(`${tProps.fontSizeSet} ${size}`)
                 }
             })
         })
@@ -140,7 +150,7 @@
                 if (height) {
                     setLineHeight(height)
                     updateUI()
-                    toast.success(`行高已设置为 ${height}`)
+                    toast.success(`${tProps.lineHeightSet} ${height}`)
                 }
             })
         })
@@ -149,27 +159,27 @@
             const prefs = getPreferences()
             toggleAnimations(!prefs.animations)
             updateUI()
-            toast.info(prefs.animations ? '动画已关闭' : '动画已开启')
+            toast.info(prefs.animations ? tProps.animationsOff : tProps.animationsOn)
         })
 
         document.getElementById('toggle-reduced-motion')?.addEventListener('click', () => {
             const prefs = getPreferences()
             toggleReducedMotion(!prefs.reducedMotion)
             updateUI()
-            toast.info(prefs.reducedMotion ? '减少动效已关闭' : '减少动效已开启')
+            toast.info(prefs.reducedMotion ? tProps.reducedMotionOff : tProps.reducedMotionOn)
         })
 
         document.getElementById('toggle-reading-mode')?.addEventListener('click', () => {
             const prefs = getPreferences()
             toggleReadingMode(!prefs.readingMode)
             updateUI()
-            toast.info(prefs.readingMode ? '阅读模式已关闭' : '阅读模式已开启')
+            toast.info(prefs.readingMode ? tProps.readingModeOff : tProps.readingModeOn)
         })
 
         resetBtn?.addEventListener('click', () => {
             resetPreferences()
             updateUI()
-            toast.success('设置已重置为默认')
+            toast.success(tProps.settingsReset)
         })
     })
 </script>

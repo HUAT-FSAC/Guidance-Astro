@@ -2,6 +2,7 @@
  * 安全的 localStorage 工具模块
  * 处理隐私模式、存储配额超限等异常情况
  */
+import { handleStorageError, safeJsonParse, safeJsonStringify } from './error-handler'
 
 /**
  * 安全地获取 localStorage 项
@@ -15,9 +16,8 @@ export function safeGetItem(key: string, defaultValue: string | null = null): st
             return defaultValue
         }
         return localStorage.getItem(key) ?? defaultValue
-    } catch {
-        // 隐私模式或禁用 localStorage 时会抛出异常
-        console.warn(`Failed to get localStorage item: ${key}`)
+    } catch (error) {
+        handleStorageError(key, 'get', error)
         return defaultValue
     }
 }
@@ -35,9 +35,8 @@ export function safeSetItem(key: string, value: string): boolean {
         }
         localStorage.setItem(key, value)
         return true
-    } catch {
-        // 存储配额超限或禁用 localStorage 时会抛出异常
-        console.warn(`Failed to set localStorage item: ${key}`)
+    } catch (error) {
+        handleStorageError(key, 'set', error)
         return false
     }
 }
@@ -54,8 +53,8 @@ export function safeRemoveItem(key: string): boolean {
         }
         localStorage.removeItem(key)
         return true
-    } catch {
-        console.warn(`Failed to remove localStorage item: ${key}`)
+    } catch (error) {
+        handleStorageError(key, 'remove', error)
         return false
     }
 }
@@ -71,12 +70,7 @@ export function safeGetJSON<T>(key: string, defaultValue: T): T {
     if (item === null) {
         return defaultValue
     }
-    try {
-        return JSON.parse(item) as T
-    } catch {
-        console.warn(`Failed to parse localStorage JSON: ${key}`)
-        return defaultValue
-    }
+    return safeJsonParse(item, defaultValue)
 }
 
 /**
@@ -86,10 +80,9 @@ export function safeGetJSON<T>(key: string, defaultValue: T): T {
  * @returns 是否成功存储
  */
 export function safeSetJSON<T>(key: string, value: T): boolean {
-    try {
-        return safeSetItem(key, JSON.stringify(value))
-    } catch {
-        console.warn(`Failed to stringify value for localStorage: ${key}`)
+    const jsonString = safeJsonStringify(value, '')
+    if (!jsonString) {
         return false
     }
+    return safeSetItem(key, jsonString)
 }

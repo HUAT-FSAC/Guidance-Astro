@@ -3,17 +3,38 @@
  * 比赛倒计时组件
  * 展示下一场比赛距今的倒计时，已过期则显示回顾状态
  */
+import type { Locale } from '../../../utils/i18n'
+import { getTranslations } from '../../../utils/i18n'
+
+interface Props {
+    locale?: Locale
+}
+
+const { locale = 'zh' } = Astro.props
+const t = getTranslations(locale)
+
 import { raceEvents } from '../../../data/home';
 const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
+
+const eventInfo = {
+    zh: {
+        name: '中国大学生方程式系列赛 2025',
+        location: '上海国际赛车场'
+    },
+    en: {
+        name: 'China Formula Student Series 2025',
+        location: 'Shanghai International Circuit'
+    }
+}
 ---
 
 <section class="countdown-section">
     <div class="countdown-inner">
         <div class="countdown-header">
-            <span class="countdown-label">赛前冲刺</span>
-            <h2 class="countdown-event">{primary.name}</h2>
+            <span class="countdown-label">{t.countdown.label}</span>
+            <h2 class="countdown-event">{eventInfo[locale].name}</h2>
             <p class="countdown-meta">
-                <span class="meta-icon">📍</span>{primary.location}
+                <span class="meta-icon">📍</span>{eventInfo[locale].location}
                 &nbsp;·&nbsp;
                 <span class="meta-icon">📅</span>{primary.startDate} — {primary.endDate}
             </p>
@@ -23,30 +44,30 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         <div class="countdown-display" id="countdown-display">
             <div class="cd-unit">
                 <span class="cd-num" id="cd-days">--</span>
-                <span class="cd-label">天</span>
+                <span class="cd-label">{t.countdown.days}</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-hours">--</span>
-                <span class="cd-label">时</span>
+                <span class="cd-label">{t.countdown.hours}</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-minutes">--</span>
-                <span class="cd-label">分</span>
+                <span class="cd-label">{t.countdown.minutes}</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-seconds">--</span>
-                <span class="cd-label">秒</span>
+                <span class="cd-label">{t.countdown.seconds}</span>
             </div>
         </div>
 
         <p class="countdown-ended hidden" id="countdown-ended">
-            🏁 赛事已圆满结束，感谢所有人的付出！
+            {t.countdown.ended}
         </p>
 
-        <a href="/about-fs/" class="countdown-cta">了解更多赛事信息 →</a>
+        <a href={locale === 'en' ? '/en/about-fs/' : '/about-fs/'} class="countdown-cta">{t.countdown.cta}</a>
     </div>
 </section>
 

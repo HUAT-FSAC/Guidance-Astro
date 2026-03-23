@@ -13,16 +13,25 @@ import {
     type ShowcaseSubsystem,
 } from '../data/showcase-lab'
 
+/**
+ * 展示实验室选择状态接口
+ */
 export interface ShowcaseSelection {
     scenarioId: string
     subsystemId: string
 }
 
+/**
+ * 展示实验室回放状态接口
+ */
 export interface ShowcaseReplayState {
     selection: ShowcaseSelection
     frameIndex: number
 }
 
+/**
+ * 展示实验室回放快照接口，包含完整的场景数据
+ */
 export interface ShowcaseReplaySnapshot {
     selection: ShowcaseSelection
     scenario: ShowcaseScenario
@@ -35,8 +44,15 @@ export interface ShowcaseReplaySnapshot {
     trendCursorIndex: number
 }
 
+/**
+ * 展示实验室选择状态存储键
+ */
 export const SHOWCASE_SELECTION_STORAGE_KEY = 'huat-showcase-lab-selection'
 
+/**
+ * 获取默认场景
+ * @returns 默认的展示场景
+ */
 function getDefaultScenario(): ShowcaseScenario {
     return (
         showcaseScenarios.find((scenario) => scenario.id === defaultShowcaseSelection.scenarioId) ??
@@ -44,14 +60,29 @@ function getDefaultScenario(): ShowcaseScenario {
     )
 }
 
+/**
+ * 获取默认的展示选择
+ * @returns 默认的场景和子系统选择
+ */
 export function getDefaultShowcaseSelection(): ShowcaseSelection {
     return { ...defaultShowcaseSelection }
 }
 
+/**
+ * 根据场景 ID 解析场景
+ * @param scenarioId - 场景 ID，可选
+ * @returns 匹配的场景或默认场景
+ */
 export function resolveScenario(scenarioId?: string | null): ShowcaseScenario {
     return showcaseScenarios.find((scenario) => scenario.id === scenarioId) ?? getDefaultScenario()
 }
 
+/**
+ * 解析子系统
+ * @param scenario - 所属场景
+ * @param subsystemId - 子系统 ID，可选
+ * @returns 匹配的子系统或默认子系统
+ */
 export function resolveSubsystem(
     scenario: ShowcaseScenario,
     subsystemId?: string | null
@@ -63,6 +94,11 @@ export function resolveSubsystem(
     )
 }
 
+/**
+ * 解析完整的展示选择
+ * @param selection - 部分选择数据，可选
+ * @returns 完整有效的选择
+ */
 export function resolveShowcaseSelection(
     selection?: Partial<ShowcaseSelection> | null
 ): ShowcaseSelection {
@@ -75,6 +111,11 @@ export function resolveShowcaseSelection(
     }
 }
 
+/**
+ * 获取展示快照（基础数据）
+ * @param selection - 部分选择数据，可选
+ * @returns 包含选择、场景和子系统的快照
+ */
 export function getShowcaseSnapshot(selection?: Partial<ShowcaseSelection> | null): {
     selection: ShowcaseSelection
     scenario: ShowcaseScenario
@@ -91,6 +132,12 @@ export function getShowcaseSnapshot(selection?: Partial<ShowcaseSelection> | nul
     }
 }
 
+/**
+ * 解析回放帧索引
+ * @param scenario - 场景对象
+ * @param frameIndex - 帧索引，可选
+ * @returns 有效的帧索引（在边界内）
+ */
 export function resolveReplayFrameIndex(
     scenario: ShowcaseScenario,
     frameIndex?: number | null
@@ -108,6 +155,12 @@ export function resolveReplayFrameIndex(
     return Math.min(Math.max(Math.floor(frameIndex), 0), maxIndex)
 }
 
+/**
+ * 应用度量数据的覆盖值
+ * @param metrics - 原始度量数据
+ * @param frame - 当前帧数据
+ * @returns 应用覆盖值后的度量数据
+ */
 function applyMetricOverrides(
     metrics: ShowcaseMetric[],
     frame: ShowcaseReplayFrame
@@ -128,6 +181,12 @@ function applyMetricOverrides(
     })
 }
 
+/**
+ * 应用阶段数据的覆盖值
+ * @param stages - 原始阶段数据
+ * @param frame - 当前帧数据
+ * @returns 应用覆盖值后的阶段数据
+ */
 function applyStageOverrides(stages: ShowcaseStage[], frame: ShowcaseReplayFrame): ShowcaseStage[] {
     return stages.map((stage) => {
         const override = frame.stageOverrides?.find((entry) => entry.id === stage.id)
@@ -145,6 +204,12 @@ function applyStageOverrides(stages: ShowcaseStage[], frame: ShowcaseReplayFrame
     })
 }
 
+/**
+ * 获取完整的回放快照
+ * @param selection - 部分选择数据，可选
+ * @param frameIndex - 帧索引，可选
+ * @returns 完整的回放快照数据
+ */
 export function getShowcaseReplaySnapshot(
     selection?: Partial<ShowcaseSelection> | null,
     frameIndex?: number | null
@@ -170,6 +235,11 @@ export function getShowcaseReplaySnapshot(
     }
 }
 
+/**
+ * 解析下一个场景
+ * @param selection - 当前选择
+ * @returns 下一个场景的选择
+ */
 function resolveNextScenario(selection: ShowcaseSelection): ShowcaseSelection {
     const scenario = resolveScenario(selection.scenarioId)
     const scenarioIndex = showcaseScenarios.findIndex((entry) => entry.id === scenario.id)
@@ -177,6 +247,12 @@ function resolveNextScenario(selection: ShowcaseSelection): ShowcaseSelection {
     return resolveShowcaseSelection({ scenarioId: nextScenario.id })
 }
 
+/**
+ * 前进回放，自动切换到下一帧或下一个场景
+ * @param selection - 当前选择
+ * @param frameIndex - 当前帧索引
+ * @returns 新的选择和帧索引
+ */
 export function advanceShowcaseReplay(
     selection: ShowcaseSelection,
     frameIndex: number
@@ -203,6 +279,14 @@ export function advanceShowcaseReplay(
     }
 }
 
+/**
+ * 构建趋势图的折线点字符串
+ * @param values - 数据值数组
+ * @param width - SVG 宽度，默认 320
+ * @param height - SVG 高度，默认 96
+ * @param padding - 内边距，默认 12
+ * @returns SVG 折线点字符串
+ */
 export function buildTrendPolyline(
     values: number[],
     width = 320,
@@ -234,6 +318,15 @@ export function buildTrendPolyline(
         .join(' ')
 }
 
+/**
+ * 构建趋势图游标位置
+ * @param values - 数据值数组
+ * @param index - 游标索引
+ * @param width - SVG 宽度，默认 320
+ * @param height - SVG 高度，默认 96
+ * @param padding - 内边距，默认 12
+ * @returns 游标坐标
+ */
 export function buildTrendCursor(
     values: number[],
     index: number,
@@ -264,6 +357,9 @@ export function buildTrendCursor(
 
 // ==================== Presentation Console Utilities ====================
 
+/**
+ * 展示对比快照接口
+ */
 export interface ShowcaseComparisonSnapshot {
     primaryScenario: ShowcaseScenario
     compareScenario: ShowcaseScenario
@@ -280,17 +376,35 @@ export interface ShowcaseComparisonSnapshot {
     deltaHighlights: string[]
 }
 
+/**
+ * 解析对比场景 ID
+ * @param currentScenarioId - 当前场景 ID
+ * @returns 下一个场景的 ID
+ */
 export function resolveCompareScenarioId(currentScenarioId: string): string {
     const currentIndex = showcaseScenarios.findIndex((s) => s.id === currentScenarioId)
     const nextIndex = (currentIndex + 1) % showcaseScenarios.length
     return showcaseScenarios[nextIndex].id
 }
 
+/**
+ * 解析度量值（从字符串转为数字）
+ * @param value - 字符串形式的度量值
+ * @returns 数字形式的度量值
+ */
 function parseMetricValue(value: string): number {
     const parsed = parseFloat(value)
     return Number.isNaN(parsed) ? 0 : parsed
 }
 
+/**
+ * 获取展示对比快照
+ * @param primaryScenarioId - 主场景 ID
+ * @param compareScenarioId - 对比场景 ID
+ * @param primaryFrameIndex - 主场景帧索引，默认 0
+ * @param compareFrameIndex - 对比场景帧索引，默认 0
+ * @returns 完整的对比快照数据
+ */
 export function getShowcaseComparisonSnapshot(
     primaryScenarioId: string,
     compareScenarioId: string,
@@ -355,6 +469,9 @@ export function getShowcaseComparisonSnapshot(
     }
 }
 
+/**
+ * 展示脚本快照接口
+ */
 export interface ShowcaseScriptSnapshot {
     script: ShowcaseScript | null
     currentStep: ShowcaseScriptStep | null
@@ -363,16 +480,30 @@ export interface ShowcaseScriptSnapshot {
     isValid: boolean
 }
 
+/**
+ * 展示脚本状态接口
+ */
 export interface ShowcaseScriptState {
     scriptId: string | null
     stepIndex: number
 }
 
+/**
+ * 解析展示脚本
+ * @param scriptId - 脚本 ID，可选
+ * @returns 匹配的脚本或 null
+ */
 export function resolveShowcaseScript(scriptId?: string | null): ShowcaseScript | null {
     if (!scriptId) return null
     return showcaseScripts.find((script) => script.id === scriptId) ?? null
 }
 
+/**
+ * 获取展示脚本快照
+ * @param scriptId - 脚本 ID，可选
+ * @param stepIndex - 步骤索引，可选
+ * @returns 脚本快照数据
+ */
 export function getShowcaseScriptSnapshot(
     scriptId?: string | null,
     stepIndex?: number | null
@@ -403,6 +534,12 @@ export function getShowcaseScriptSnapshot(
     }
 }
 
+/**
+ * 前进展示脚本到下一步
+ * @param scriptId - 脚本 ID
+ * @param currentStepIndex - 当前步骤索引
+ * @returns 新的脚本状态
+ */
 export function advanceShowcaseScript(
     scriptId: string | null,
     currentStepIndex: number
@@ -422,22 +559,43 @@ export function advanceShowcaseScript(
     return { scriptId, stepIndex: 0 }
 }
 
+/**
+ * 获取默认缓存模拟状态
+ * @returns 默认的缓存状态
+ */
 export function getDefaultCacheSimulationState(): ShowcaseCacheSimulationState {
     return { ...showcaseCacheSimulationConfig.initialState }
 }
 
+/**
+ * 预热缓存
+ * @returns 预热后的缓存状态
+ */
 export function warmShowcaseCache(): ShowcaseCacheSimulationState {
     return { ...showcaseCacheSimulationConfig.warmCacheState }
 }
 
+/**
+ * 漂移缓存
+ * @returns 漂移后的缓存状态
+ */
 export function driftShowcaseCache(): ShowcaseCacheSimulationState {
     return { ...showcaseCacheSimulationConfig.driftState }
 }
 
+/**
+ * 重置缓存
+ * @returns 重置后的缓存状态
+ */
 export function resetShowcaseCache(): ShowcaseCacheSimulationState {
     return getDefaultCacheSimulationState()
 }
 
+/**
+ * 获取缓存模拟摘要
+ * @param state - 当前缓存状态
+ * @returns 缓存摘要数据
+ */
 export function getCacheSimulationSummary(state: ShowcaseCacheSimulationState): {
     statusLabel: string
     statusTone: 'positive' | 'warning' | 'neutral'

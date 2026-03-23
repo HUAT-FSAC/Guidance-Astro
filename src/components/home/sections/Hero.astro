@@ -164,7 +164,6 @@ const bgStyle = backgroundImage
         padding: 1rem 3rem;
         color: #fff !important;
         background: transparent !important;
-        border: 1px solid var(--sl-color-accent) !important;
         border-radius: 0 !important;
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-weight: 700;
@@ -175,29 +174,44 @@ const bgStyle = backgroundImage
         transition: all 0.3s var(--fs-ease-out);
         /* 经典电竞/机械切角 */
         clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: hidden;
+        overflow: visible;
     }
 
     :global([data-theme='light']) .hero-cta {
         color: var(--sl-color-accent) !important;
     }
 
+    /* 边框伪元素 - 不被 clip-path 裁剪 */
+    .hero-cta::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 1px solid var(--sl-color-accent);
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        pointer-events: none;
+        transition: all 0.3s var(--fs-ease-out);
+    }
+
     /* 内部填充动效 */
     .hero-cta::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
+        inset: 1px;
         background: var(--sl-color-accent);
         z-index: -1;
         transform: scaleX(0);
         transform-origin: right;
         transition: transform 0.4s var(--fs-ease-out);
+        clip-path: polygon(calc(15px - 1px) 0, 100% 0, 100% calc(100% - calc(15px - 1px)), calc(100% - calc(15px - 1px)) 100%, 0 100%, 0 calc(15px - 1px));
     }
 
     .hero-cta:hover {
         color: #000 !important;
-        border-color: transparent !important;
         box-shadow: 0 0 20px var(--fs-accent-glow) !important;
+    }
+
+    .hero-cta:hover::after {
+        border-color: transparent;
     }
 
     .hero-cta:hover::before {
