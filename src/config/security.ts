@@ -83,6 +83,22 @@ export const cspDirectives = {
     manifest: ["'self'"],
 }
 
+const CACHE_CONTROL_DEFAULT = 'public, max-age=0, must-revalidate'
+const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable'
+const CACHE_CONTROL_SERVICE_WORKER = 'no-cache, no-store, must-revalidate'
+const CACHE_CONTROL_PRIVATE = 'private, no-store'
+
+function withHeaders(response: Response, apply: (headers: Headers) => void): Response {
+    const headers = new Headers(response.headers)
+    apply(headers)
+
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    })
+}
+
 export function generateCSP(directives = cspDirectives) {
     const parts: string[] = []
 
@@ -113,17 +129,47 @@ export function isCSPValid(csp: string): boolean {
 }
 
 export function applySecurityHeaders(response: Response): Response {
-    const headers = new Headers(response.headers)
-
-    for (const header of securityHeaders) {
-        if (!headers.has(header.name)) {
-            headers.set(header.name, header.value)
+    return withHeaders(response, (headers) => {
+        for (const header of securityHeaders) {
+            if (!headers.has(header.name)) {
+                headers.set(header.name, header.value)
+            }
         }
+    })
+}
+
+export function getCacheControlHeader(pathname: string): string {
+    if (pathname === '/sw.js') {
+        return CACHE_CONTROL_SERVICE_WORKER
     }
 
-    return new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers,
+    if (
+        pathname.startsWith('/admin/') ||
+        pathname.startsWith('/api/') ||
+        pathname === '/login/' ||
+        pathname === '/register/' ||
+        pathname === '/profile/'
+    ) {
+        return CACHE_CONTROL_PRIVATE
+    }
+
+    if (pathname.startsWith('/_astro/') || pathname.startsWith('/pagefind/')) {
+        return CACHE_CONTROL_IMMUTABLE
+    }
+
+    return CACHE_CONTROL_DEFAULT
+}
+
+export function applyStandardHeaders(response: Response, pathname: string): Response {
+    return withHeaders(response, (headers) => {
+        for (const header of securityHeaders) {
+            if (!headers.has(header.name)) {
+                headers.set(header.name, header.value)
+            }
+        }
+
+        if (!headers.has('Cache-Control')) {
+            headers.set('Cache-Control', getCacheControlHeader(pathname))
+        }
     })
 }

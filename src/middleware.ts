@@ -1,10 +1,11 @@
 import { defineMiddleware } from 'astro:middleware'
 import { getSession, getTokenFromCookie } from '@lib/session'
 import { hasRole } from '@lib/auth'
-import { applySecurityHeaders } from './config/security'
+import { applyStandardHeaders } from './config/security'
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    const secureResponse = (response: Response) => applySecurityHeaders(response)
+    const secureResponse = (response: Response) =>
+        applyStandardHeaders(response, context.url.pathname)
     const { url, request, locals } = context
     const pathname = url.pathname
     const isAdminRoute = pathname.startsWith('/admin/')

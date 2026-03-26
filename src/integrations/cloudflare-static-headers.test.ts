@@ -10,5 +10,17 @@ describe('renderCloudflareStaticHeaders', () => {
         expect(output).toContain('  Content-Security-Policy: ')
         expect(output).toContain('  X-Frame-Options: SAMEORIGIN')
         expect(output).toContain('  Permissions-Policy: ')
+        expect(output).toContain('  Cache-Control: public, max-age=0, must-revalidate')
+    })
+
+    it('adds explicit cache rules for fingerprinted assets and the service worker', () => {
+        const output = renderCloudflareStaticHeaders()
+
+        expect(output).toContain('/_astro/*')
+        expect(output).toContain('/pagefind/*')
+        expect(output).toContain('/sw.js')
+        expect(output).toContain('  ! Cache-Control')
+        expect(output).toContain('  Cache-Control: public, max-age=31536000, immutable')
+        expect(output).toContain('  Cache-Control: no-cache, no-store, must-revalidate')
     })
 })

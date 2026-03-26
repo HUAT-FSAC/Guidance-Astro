@@ -3,7 +3,7 @@
  * 提供离线访问和资源缓存支持
  */
 
-const CACHE_NAME = 'huat-fsac-v1';
+const CACHE_NAME = 'huat-fsac-v2';
 const OFFLINE_URL = '/offline.html';
 
 // 需要预缓存的资源
@@ -28,6 +28,23 @@ const CACHEABLE_EXTENSIONS = [
     '.woff',
     '.woff2'
 ];
+
+/**
+ * 响应是否适合写入运行时缓存
+ */
+function shouldCacheResponse(request, response) {
+    if (!response.ok) {
+        return false;
+    }
+
+    const pathname = new URL(request.url).pathname;
+    if (pathname === '/sw.js') {
+        return false;
+    }
+
+    const cacheControl = response.headers.get('Cache-Control') || '';
+    return !cacheControl.includes('no-store');
+}
 
 /**
  * 安装事件 - 预缓存关键资源
@@ -89,7 +106,7 @@ async function networkFirst(request) {
         const networkResponse = await fetch(request);
 
         // 缓存成功的响应
-        if (networkResponse.ok) {
+        if (shouldCacheResponse(request, networkResponse)) {
             const cache = await caches.open(CACHE_NAME);
             cache.put(request, networkResponse.clone());
         }
@@ -126,7 +143,7 @@ async function cacheFirst(request) {
         const networkResponse = await fetch(request);
 
         // 缓存成功的响应
-        if (networkResponse.ok && isCacheable(request.url)) {
+        if (isCacheable(request.url) && shouldCacheResponse(request, networkResponse)) {
             const cache = await caches.open(CACHE_NAME);
             cache.put(request, networkResponse.clone());
         }
