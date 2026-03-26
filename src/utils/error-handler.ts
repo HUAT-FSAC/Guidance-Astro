@@ -177,11 +177,14 @@ export function clearErrorHistory(): void {
     errorHistory.length = 0
 }
 
+let globalErrorHandlersSetup = false
+
 /**
  * 设置全局错误处理器
  */
 export function setupGlobalErrorHandlers(): void {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || globalErrorHandlersSetup) return
+    globalErrorHandlersSetup = true
 
     // 全局错误处理
     window.addEventListener('error', (event) => {
@@ -212,6 +215,11 @@ export function setupGlobalErrorHandlers(): void {
  * @param fallbackSrc - 备用图片 URL
  */
 export function handleImageError(img: HTMLImageElement, fallbackSrc?: string): void {
+    if (img.dataset.errorHandled) {
+        return
+    }
+    img.dataset.errorHandled = 'true'
+
     const errorInfo = createErrorInfo(
         ErrorType.IMAGE_ERROR,
         `Failed to load image: ${img.src}`,
