@@ -3,7 +3,6 @@
  * 自定义 PageTitle 组件
  * 添加面包屑导航
  */
-import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/PageTitle.astro";
 import Breadcrumbs from "../docs/Breadcrumbs.astro";
 
@@ -15,4 +14,4 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 {!isHomePage && <Breadcrumbs />}
 
 {/* 默认页面标题 */}
-<Default {...Astro.props} />
+<Default />

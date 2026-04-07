@@ -1,13 +1,3 @@
-import { defineConfig } from 'vitest/config'
+import config from './.config/vitest.config.ts'
 
-export default defineConfig({
-    test: {
-        environment: 'node',
-        include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
-        coverage: {
-            provider: 'v8',
-            reporter: ['text', 'html', 'lcov'],
-            reportsDirectory: 'coverage',
-        },
-    },
-})
+export default config

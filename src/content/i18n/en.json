@@ -69,7 +69,14 @@
         "copy": "Copy",
         "copied": "Copied",
         "share": "Share",
-        "print": "Print"
+        "print": "Print",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "confirm": "Confirm"
     },
     "nav": {
         "home": "Home",
@@ -78,7 +85,12 @@
         "join": "Join Us",
         "news": "News",
         "team": "Team",
-        "contact": "Contact"
+        "contact": "Contact",
+        "login": "Login",
+        "register": "Register",
+        "profile": "Profile",
+        "logout": "Logout",
+        "admin": "Admin"
     },
     "hero": {
         "title": "HUAT FSAC",
@@ -132,22 +144,6 @@
         "privacy": "Privacy Policy",
         "terms": "Terms of Use"
     },
-    "common": {
-        "learnMore": "Learn More",
-        "readMore": "Read More",
-        "viewAll": "View All",
-        "back": "Back",
-        "next": "Next",
-        "previous": "Previous",
-        "search": "Search",
-        "loading": "Loading...",
-        "error": "Error",
-        "retry": "Retry",
-        "copy": "Copy",
-        "copied": "Copied",
-        "share": "Share",
-        "print": "Print"
-    },
     "accessibility": {
         "skipToContent": "Skip to content",
         "openMenu": "Open menu",
@@ -187,11 +183,40 @@
         "notFoundMessage": "Sorry, the page you're looking for doesn't exist or has been moved.",
         "backHome": "Go to homepage",
         "serverError": "Server Error",
-        "serverErrorMessage": "Sorry, something went wrong on our end. Please try again later."
+        "serverErrorMessage": "Sorry, something went wrong on our end. Please try again later.",
+        "rateLimit": "Too many requests. Please try again later.",
+        "unauthorized": "Not logged in or session expired",
+        "forbidden": "No permission to perform this action"
     },
     "pwa": {
         "offline": "You are currently offline",
         "refresh": "Refresh page",
         "install": "Install app"
+    },
+    "auth": {
+        "loginTitle": "Login",
+        "registerTitle": "Register",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "loginBtn": "Login",
+        "registerBtn": "Register",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "loginWithGithub": "Login with GitHub",
+        "loginWithQQ": "Login with QQ",
+        "loginSuccess": "Login successful",
+        "registerSuccess": "Registration successful",
+        "logoutSuccess": "Logout successful",
+        "validation": {
+            "usernameRequired": "Please enter username",
+            "usernameInvalid": "Username must be 2-32 characters, supports letters, numbers, underscores and Chinese",
+            "emailRequired": "Please enter email",
+            "emailInvalid": "Invalid email format",
+            "passwordRequired": "Please enter password",
+            "passwordLength": "Password must be at least 8 characters",
+            "passwordMismatch": "Passwords do not match"
+        }
     }
 }

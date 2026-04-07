@@ -52,8 +52,9 @@ import '../styles/auth.css'
             const password = (form.querySelector('#password') as HTMLInputElement).value;
             const confirmPassword = (form.querySelector('#confirmPassword') as HTMLInputElement).value;
 
-            if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-                errorEl.textContent = '用户名需 3-20 位，仅支持字母、数字和下划线';
+            // 验证用户名：2-32位，支持字母、数字、下划线和中文
+            if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]{2,32}$/.test(username)) {
+                errorEl.textContent = '用户名需 2-32 位，支持字母、数字、下划线和中文';
                 errorEl.style.display = 'block';
                 return;
             }

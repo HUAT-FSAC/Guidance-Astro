@@ -1,9 +1,9 @@
 ---
 export const prerender = false
 import '../../styles/admin.css'
+import { env } from 'cloudflare:workers'
 
 const user = Astro.locals.user
-const env = Astro.locals.runtime.env
 
 const roleStats = await env.DB.prepare('SELECT role, COUNT(*) as count FROM users GROUP BY role').all<{ role: string; count: number }>()
 const totalUsers = roleStats.results.reduce((sum, r) => sum + r.count, 0)
@@ -31,6 +31,7 @@ const recentUsers = await env.DB.prepare(
                 <a href="/admin/" class="active">仪表盘</a>
                 <a href="/admin/users/">用户管理</a>
                 <a href="/admin/members/">成员管理</a>
+                <a href="/admin/notifications/">推送通知</a>
             </nav>
             <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
                 {user?.username} ({user?.role})

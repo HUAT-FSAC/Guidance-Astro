@@ -4,7 +4,6 @@
  * 添加阅读进度条、编辑链接、分享按钮和主题切换
  * 【临时禁用】登录功能 - 复试后再启用
  */
-import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/MarkdownContent.astro";
 import ReadingProgress from "../docs/ReadingProgress.astro";
 import EditPageLink from "../docs/EditPageLink.astro";
@@ -18,7 +17,7 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 {/* 内容直接显示（登录功能临时禁用） */}
 <div id="doc-content-wrapper">
-    <Default {...Astro.props}>
+    <Default>
         <slot />
     </Default>
 

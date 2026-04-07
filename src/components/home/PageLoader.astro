@@ -1,5 +1,8 @@
 ---
-// 页面加载动画组件
+/**
+ * PageLoader - 页面加载动画组件
+ * 优雅的加载体验，支持首次访问动画和快速加载
+ */
 ---
 
 <div class="page-loader" id="pageLoader">
@@ -14,18 +17,21 @@
     </div>
 </div>
 
-<script is:inline>
-    // 使用立即执行函数 (IIFE) 避免污染全局作用域
-    // 使用 is:inline 确保脚本在 HTML 解析时立即执行，防止页面闪烁
+<script>
+    // 页面加载器 - 避免 FOUC (Flash of Unstyled Content)
     (function () {
         const loader = document.getElementById("pageLoader");
         if (!loader) return;
 
-        // 防止重复初始化
+        // 防重复初始化
         try {
             if (loader.dataset && loader.dataset.huatInit === "1") return;
             loader.dataset.huatInit = "1";
-        } catch (e) {}
+        } catch (e) {
+            // 如果 dataset 访问失败（如旧版浏览器），继续执行
+            if ((loader as any).__huatInit) return;
+            (loader as any).__huatInit = true;
+        }
 
         const STORAGE_KEY = "huat_fsac_visited";
         const hasVisited = sessionStorage.getItem(STORAGE_KEY);
@@ -51,10 +57,16 @@
                 revealTimeoutId = window.setTimeout(function () {
                     try {
                         loader.style.display = "none";
-                    } catch (e) {}
+                    } catch (e) {
+                        // DOM 操作失败时静默处理
+                    }
                     dispatchHidden();
                 }, 250);
-            } catch (e) {}
+            } catch (e) {
+                // classList 操作失败时，直接隐藏
+                loader.style.display = "none";
+                dispatchHidden();
+            }
         }
 
         function hideLoader() {
@@ -63,23 +75,33 @@
                 const elapsed = Date.now() - startTime;
                 const delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
                 revealTimeoutId = window.setTimeout(revealContent, delay);
-            } catch (e) {}
+            } catch (e) {
+                // 出错时直接显示内容
+                loader.style.display = "none";
+                dispatchHidden();
+            }
         }
 
         if (hasVisited) {
             // 立即隐藏，防止闪烁
             try {
                 loader.style.display = "none";
-            } catch (e) {}
+            } catch (e) {
+                // 静默处理 DOM 操作失败
+            }
             try {
                 loader.classList.add("loaded");
-            } catch (e) {}
+            } catch (e) {
+                // classList 失败已通过 display:none 隐藏
+            }
             dispatchHidden();
         } else {
             // 标记本次会话已访问
             try {
                 sessionStorage.setItem(STORAGE_KEY, "true");
-            } catch (e) {}
+            } catch (e) {
+                // sessionStorage 可能不可用（隐私模式），忽略错误
+            }
 
             // 首次访问时，等待 DOM 就绪即可隐藏，避免阻塞图片加载
             if (
@@ -100,24 +122,36 @@
         function cleanup() {
             try {
                 if (revealTimeoutId) clearTimeout(revealTimeoutId);
-            } catch (e) {}
+            } catch (e) {
+                // 清理超时 ID 失败时忽略
+            }
             try {
                 if (maxWaitId) clearTimeout(maxWaitId);
-            } catch (e) {}
+            } catch (e) {
+                // 清理超时 ID 失败时忽略
+            }
             try {
                 delete loader.dataset.huatInit;
-            } catch (e) {}
+            } catch (e) {
+                // dataset 删除失败时忽略
+            }
             try {
-                delete loader.__huatCleanup;
-            } catch (e) {}
+                delete (loader as any).__huatCleanup;
+            } catch (e) {
+                // 属性删除失败时忽略
+            }
         }
 
         try {
-            loader.__huatCleanup = cleanup;
-        } catch (e) {}
+            (loader as any).__huatCleanup = cleanup;
+        } catch (e) {
+            // 属性设置失败时忽略
+        }
         try {
             window.addEventListener("beforeunload", cleanup);
-        } catch (e) {}
+        } catch (e) {
+            // 事件监听失败时忽略
+        }
     })();
 </script>
 

@@ -4,7 +4,7 @@ import '../styles/auth.css'
 
 const user = Astro.locals.user
 if (!user) {
-    return Astro.redirect('/login/')
+    return Astro.redirect('/login/?redirect=/profile/')
 }
 ---
 
@@ -30,29 +30,252 @@ if (!user) {
             border-bottom: 1px solid var(--sl-color-hairline); font-size: 0.9rem;
         }
         .profile-label { color: var(--sl-color-gray-3); }
+        .profile-section { margin-bottom: 2rem; }
+        .profile-section h3 {
+            font-size: 1rem; margin-bottom: 1rem;
+            padding-bottom: 0.5rem; border-bottom: 1px solid var(--sl-color-hairline);
+        }
+        .edit-form { display: none; }
+        .edit-form.active { display: block; }
+        .profile-view.active { display: block; }
+        .profile-view { display: none; }
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--sl-color-accent);
+            color: var(--sl-color-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+        .btn-secondary:hover {
+            background: var(--sl-color-accent);
+            color: var(--sl-color-bg);
+        }
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--sl-color-red);
+            color: var(--sl-color-red);
+        }
+        .btn-danger:hover {
+            background: var(--sl-color-red);
+            color: white;
+        }
+        .form-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .success-msg {
+            color: var(--sl-color-green);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .error-msg {
+            color: var(--sl-color-red);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .info-text {
+            font-size: 0.8rem;
+            color: var(--sl-color-gray-3);
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <h1>个人资料</h1>
-            <div class="profile-avatar">
-                {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.username} width="80" height="80" />
-                ) : (
-                    <div class="avatar-placeholder">{user.username.charAt(0).toUpperCase()}</div>
-                )}
+            
+            <!-- 查看模式 -->
+            <div class="profile-view active" id="profile-view">
+                <div class="profile-avatar">
+                    {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt={user.username} width="80" height="80" />
+                    ) : (
+                        <div class="avatar-placeholder">{user.username.charAt(0).toUpperCase()}</div>
+                    )}
+                </div>
+                <div class="profile-info">
+                    <div class="profile-row"><span class="profile-label">用户名</span><span>{user.username}</span></div>
+                    <div class="profile-row"><span class="profile-label">邮箱</span><span>{user.email}</span></div>
+                    <div class="profile-row"><span class="profile-label">角色</span><span>{user.role}</span></div>
+                    <div class="profile-row"><span class="profile-label">显示名称</span><span>{user.displayName || user.username}</span></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="edit-btn">编辑资料</button>
+                    <button id="logout-btn" class="auth-btn auth-btn-primary">退出登录</button>
+                </div>
             </div>
-            <div class="profile-info">
-                <div class="profile-row"><span class="profile-label">用户名</span><span>{user.username}</span></div>
-                <div class="profile-row"><span class="profile-label">邮箱</span><span>{user.email}</span></div>
-                <div class="profile-row"><span class="profile-label">角色</span><span>{user.role}</span></div>
+
+            <!-- 编辑模式 -->
+            <div class="edit-form" id="edit-form">
+                <div class="profile-section">
+                    <h3>基本信息</h3>
+                    <div class="auth-field">
+                        <label for="display-name">显示名称</label>
+                        <input id="display-name" type="text" value={user.displayName || user.username} />
+                        <p class="info-text">2-32 位，支持字母、数字、下划线和中文</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="auth-btn auth-btn-primary" id="save-profile-btn">保存</button>
+                        <button type="button" class="btn-secondary" id="cancel-btn">取消</button>
+                    </div>
+                    <div id="profile-message"></div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>修改密码</h3>
+                    <div class="auth-field">
+                        <label for="current-password">当前密码</label>
+                        <input id="current-password" type="password" />
+                    </div>
+                    <div class="auth-field">
+                        <label for="new-password">新密码</label>
+                        <input id="new-password" type="password" />
+                        <p class="info-text">至少 8 位字符</p>
+                    </div>
+                    <div class="auth-field">
+                        <label for="confirm-new-password">确认新密码</label>
+                        <input id="confirm-new-password" type="password" />
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="auth-btn auth-btn-primary" id="change-password-btn">修改密码</button>
+                    </div>
+                    <div id="password-message"></div>
+                </div>
             </div>
-            <button id="logout-btn" class="auth-btn auth-btn-primary">退出登录</button>
-            <div class="auth-link"><a href="/">返回首页</a></div>
+
+            <div class="profile-section" id="push-section">
+                    <h3>推送通知设置</h3>
+                    <div id="push-status">
+                        <p>正在检查推送通知支持...</p>
+                    </div>
+                    <div class="form-actions" id="push-actions" style="display: none;">
+                        <button type="button" class="auth-btn auth-btn-primary" id="subscribe-push-btn">开启推送通知</button>
+                    </div>
+                    <div id="push-message"></div>
+                </div>
+
+                <div class="auth-link"><a href="/">返回首页</a></div>
         </div>
     </div>
+
     <script>
+        // 切换编辑模式
+        const viewSection = document.getElementById('profile-view') as HTMLDivElement;
+        const editSection = document.getElementById('edit-form') as HTMLDivElement;
+        const editBtn = document.getElementById('edit-btn') as HTMLButtonElement;
+        const cancelBtn = document.getElementById('cancel-btn') as HTMLButtonElement;
+
+        editBtn.addEventListener('click', () => {
+            viewSection.classList.remove('active');
+            editSection.classList.add('active');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            editSection.classList.remove('active');
+            viewSection.classList.add('active');
+        });
+
+        // 保存基本信息
+        const saveProfileBtn = document.getElementById('save-profile-btn') as HTMLButtonElement;
+        const displayNameInput = document.getElementById('display-name') as HTMLInputElement;
+        const profileMessage = document.getElementById('profile-message') as HTMLDivElement;
+
+        saveProfileBtn.addEventListener('click', async () => {
+            profileMessage.textContent = '';
+            profileMessage.className = '';
+
+            const displayName = displayNameInput.value.trim();
+            if (!displayName) {
+                profileMessage.textContent = '请输入显示名称';
+                profileMessage.className = 'error-msg';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/profile/', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ displayName }),
+                });
+
+                if (res.ok) {
+                    profileMessage.textContent = '保存成功！';
+                    profileMessage.className = 'success-msg';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    const data = await res.json().catch(() => ({ error: '保存失败' })) as { error?: string };
+                    profileMessage.textContent = data.error || '保存失败';
+                    profileMessage.className = 'error-msg';
+                }
+            } catch {
+                profileMessage.textContent = '网络错误';
+                profileMessage.className = 'error-msg';
+            }
+        });
+
+        // 修改密码
+        const changePasswordBtn = document.getElementById('change-password-btn') as HTMLButtonElement;
+        const currentPasswordInput = document.getElementById('current-password') as HTMLInputElement;
+        const newPasswordInput = document.getElementById('new-password') as HTMLInputElement;
+        const confirmNewPasswordInput = document.getElementById('confirm-new-password') as HTMLInputElement;
+        const passwordMessage = document.getElementById('password-message') as HTMLDivElement;
+
+        changePasswordBtn.addEventListener('click', async () => {
+            passwordMessage.textContent = '';
+            passwordMessage.className = '';
+
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            const confirmNewPassword = confirmNewPasswordInput.value;
+
+            if (!currentPassword || !newPassword) {
+                passwordMessage.textContent = '请填写所有密码字段';
+                passwordMessage.className = 'error-msg';
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                passwordMessage.textContent = '新密码至少 8 位';
+                passwordMessage.className = 'error-msg';
+                return;
+            }
+
+            if (newPassword !== confirmNewPassword) {
+                passwordMessage.textContent = '两次输入的新密码不一致';
+                passwordMessage.className = 'error-msg';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/profile/', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword }),
+                });
+
+                if (res.ok) {
+                    passwordMessage.textContent = '密码修改成功！';
+                    passwordMessage.className = 'success-msg';
+                    currentPasswordInput.value = '';
+                    newPasswordInput.value = '';
+                    confirmNewPasswordInput.value = '';
+                } else {
+                    const data = await res.json().catch(() => ({ error: '修改失败' })) as { error?: string };
+                    passwordMessage.textContent = data.error || '修改失败';
+                    passwordMessage.className = 'error-msg';
+                }
+            } catch {
+                passwordMessage.textContent = '网络错误';
+                passwordMessage.className = 'error-msg';
+            }
+        });
+
+        // 退出登录
         document.getElementById('logout-btn')!.addEventListener('click', async () => {
             try {
                 const res = await fetch('/api/auth/logout/', { method: 'POST' });
@@ -63,6 +286,168 @@ if (!user) {
                 alert('退出失败，请重试');
             }
         });
+
+        // 推送通知设置
+        const pushStatusDiv = document.getElementById('push-status') as HTMLDivElement;
+        const pushActionsDiv = document.getElementById('push-actions') as HTMLDivElement;
+        const subscribePushBtn = document.getElementById('subscribe-push-btn') as HTMLButtonElement;
+        const pushMessage = document.getElementById('push-message') as HTMLDivElement;
+        const pushSection = document.getElementById('push-section') as HTMLDivElement;
+
+        // 检查推送通知支持
+        async function checkPushSupport() {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                pushStatusDiv.innerHTML = '<p class="info-text">您的浏览器不支持推送通知</p>';
+                pushSection.style.display = 'none';
+                return;
+            }
+
+            const permission = Notification.permission;
+            
+            if (permission === 'denied') {
+                pushStatusDiv.innerHTML = '<p class="info-text">您已禁用通知权限。请在浏览器设置中启用通知以使用此功能。</p>';
+                pushActionsDiv.style.display = 'none';
+                return;
+            }
+
+            // 检查订阅状态
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                
+                if (subscription) {
+                    pushStatusDiv.innerHTML = `
+                        <p class="success-msg">✓ 已开启推送通知</p>
+                        <p class="info-text">您将收到重要更新和通知</p>
+                    `;
+                    subscribePushBtn.textContent = '关闭推送通知';
+                    subscribePushBtn.classList.remove('auth-btn-primary');
+                    subscribePushBtn.classList.add('btn-danger');
+                } else {
+                    pushStatusDiv.innerHTML = `
+                        <p class="info-text">开启推送通知以接收重要更新</p>
+                    `;
+                    subscribePushBtn.textContent = '开启推送通知';
+                    subscribePushBtn.classList.add('auth-btn-primary');
+                    subscribePushBtn.classList.remove('btn-danger');
+                }
+                
+                pushActionsDiv.style.display = 'flex';
+            } catch (error) {
+                pushStatusDiv.innerHTML = '<p class="error-msg">检查推送状态失败</p>';
+            }
+        }
+
+        // 订阅/取消订阅推送
+        subscribePushBtn.addEventListener('click', async () => {
+            pushMessage.textContent = '';
+            pushMessage.className = '';
+            subscribePushBtn.disabled = true;
+
+            const isSubscribed = subscribePushBtn.textContent === '关闭推送通知';
+
+            try {
+                if (isSubscribed) {
+                    // 取消订阅
+                    const registration = await navigator.serviceWorker.ready;
+                    const subscription = await registration.pushManager.getSubscription();
+                    
+                    if (subscription) {
+                        // 发送到服务器删除
+                        await fetch('/api/notifications/subscribe', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ endpoint: subscription.endpoint }),
+                        });
+                        
+                        await subscription.unsubscribe();
+                    }
+                    
+                    pushMessage.textContent = '已关闭推送通知';
+                    pushMessage.className = 'success-msg';
+                } else {
+                    // 请求权限并订阅
+                    const permission = await Notification.requestPermission();
+                    
+                    if (permission !== 'granted') {
+                        pushMessage.textContent = '需要通知权限才能订阅';
+                        pushMessage.className = 'error-msg';
+                        subscribePushBtn.disabled = false;
+                        return;
+                    }
+
+                    // 获取 VAPID 公钥并订阅
+                    const registration = await navigator.serviceWorker.ready;
+                    
+                    // 从服务器获取 VAPID 公钥
+                    const vapidRes = await fetch('/api/notifications/vapid-key');
+                    if (!vapidRes.ok) {
+                        throw new Error('无法获取推送配置，请稍后重试');
+                    }
+                    const { publicKey } = await vapidRes.json() as { publicKey: string };
+                    
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicKey)
+                    });
+
+                    // 发送到服务器保存
+                    const pushSubscription = {
+                        endpoint: subscription.endpoint,
+                        keys: {
+                            p256dh: arrayBufferToBase64(subscription.getKey('p256dh')!),
+                            auth: arrayBufferToBase64(subscription.getKey('auth')!),
+                        },
+                    };
+
+                    const res = await fetch('/api/notifications/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(pushSubscription),
+                    });
+
+                    if (!res.ok) {
+                        throw new Error('订阅失败');
+                    }
+
+                    pushMessage.textContent = '已成功开启推送通知！';
+                    pushMessage.className = 'success-msg';
+                }
+
+                // 刷新状态
+                setTimeout(() => checkPushSupport(), 500);
+            } catch (error) {
+                pushMessage.textContent = error instanceof Error ? error.message : '操作失败';
+                pushMessage.className = 'error-msg';
+            } finally {
+                subscribePushBtn.disabled = false;
+            }
+        });
+
+        // Base64 转 Uint8Array
+        function urlBase64ToUint8Array(base64String: string): Uint8Array {
+            const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        // ArrayBuffer 转 Base64
+        function arrayBufferToBase64(buffer: ArrayBuffer): string {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        // 初始化推送设置
+        checkPushSupport();
     </script>
 </body>
 </html>

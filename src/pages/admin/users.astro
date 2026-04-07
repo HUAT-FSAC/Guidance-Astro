@@ -1,9 +1,9 @@
 ---
 export const prerender = false
 import '../../styles/admin.css'
+import { env } from 'cloudflare:workers'
 
 const user = Astro.locals.user
-const env = Astro.locals.runtime.env
 
 const page = parseInt(Astro.url.searchParams.get('page') || '1')
 const limit = 20
@@ -36,6 +36,7 @@ const users = await env.DB.prepare(
                 <a href="/admin/">仪表盘</a>
                 <a href="/admin/users/" class="active">用户管理</a>
                 <a href="/admin/members/">成员管理</a>
+                <a href="/admin/notifications/">推送通知</a>
             </nav>
             <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
                 {user?.username} ({user?.role})

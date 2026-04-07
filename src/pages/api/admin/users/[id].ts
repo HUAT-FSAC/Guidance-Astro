@@ -2,9 +2,9 @@ export const prerender = false
 
 import type { APIRoute } from 'astro'
 import { hasRole } from '@lib/auth'
+import { env } from 'cloudflare:workers'
 
 export const PATCH: APIRoute = async ({ params, request, locals }) => {
-    const env = locals.runtime.env
     const userId = params.id
 
     let body: { role?: string }

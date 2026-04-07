@@ -1,88 +1,74 @@
 ---
 /**
  * 图片灯箱组件
- * 点击图片放大查看，支持键盘导航
+ * 为文档中的图片提供点击放大查看功能
  */
 ---
 
-<div class="lightbox" id="imageLightbox">
-    <button class="lightbox-close" aria-label="关闭">&times;</button>
+<div class="lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="图片预览">
+    <button class="lightbox-close" aria-label="关闭" type="button">&times;</button>
+    <button class="lightbox-nav lightbox-prev" aria-label="上一张" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6"/>
+        </svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" aria-label="下一张" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+        </svg>
+    </button>
     <div class="lightbox-content">
-        <img src="" alt="" class="lightbox-image" />
+        <img class="lightbox-image" src="" alt="" />
         <p class="lightbox-caption"></p>
     </div>
-    <button class="lightbox-nav lightbox-prev" aria-label="上一张">
-        <svg
-            viewBox="0 0 24 24"
-            width="32"
-            height="32"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-        >
-            <path d="M15 18l-6-6 6-6"></path>
-        </svg>
-    </button>
-    <button class="lightbox-nav lightbox-next" aria-label="下一张">
-        <svg
-            viewBox="0 0 24 24"
-            width="32"
-            height="32"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-        >
-            <path d="M9 18l6-6-6-6"></path>
-        </svg>
-    </button>
 </div>
 
 <script>
-    import { setupComponentLifecycle } from "../../utils/component-init";
+    import { setupComponentLifecycle } from '../../utils/component-init';
 
     function initLightbox() {
-        const lightbox = document.getElementById("imageLightbox");
-        const lightboxImg = lightbox?.querySelector<HTMLImageElement>(".lightbox-image");
-        const lightboxCaption = lightbox?.querySelector<HTMLElement>(".lightbox-caption");
-        const closeBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-close");
-        const prevBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-prev");
-        const nextBtn = lightbox?.querySelector<HTMLButtonElement>(".lightbox-next");
-
-        if (!lightbox || !lightboxImg) return;
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImg = lightbox?.querySelector('.lightbox-image') as HTMLImageElement | null;
+        const lightboxCaption = lightbox?.querySelector('.lightbox-caption');
+        const closeBtn = lightbox?.querySelector('.lightbox-close');
+        const prevBtn = lightbox?.querySelector('.lightbox-prev');
+        const nextBtn = lightbox?.querySelector('.lightbox-next');
 
         let images: HTMLImageElement[] = [];
         let currentIndex = 0;
-        const imgHandlers = new WeakMap<HTMLImageElement, () => void>();
+        const imgHandlers = new Map<HTMLImageElement, () => void>();
 
         function onKeydown(e: KeyboardEvent) {
-            if (!lightbox?.classList.contains("active")) return;
-            switch (e.key) {
-                case "Escape":
-                    closeLightbox();
-                    break;
-                case "ArrowLeft":
-                    showPrev();
-                    break;
-                case "ArrowRight":
-                    showNext();
-                    break;
-            }
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
         }
 
         function openLightbox(index: number) {
+            if (!lightbox || index < 0 || index >= images.length) return;
+            
             currentIndex = index;
             updateLightboxImage();
             lightbox?.classList.add("active");
+            
+            // 阻止页面滚动
             try {
                 document.body.style.overflow = "hidden";
-            } catch (err) {}
+            } catch (err) {
+                // 在严格 CSP 或不支持 style 操作的环境中静默处理
+                console.warn('[ImageLightbox] 无法禁用页面滚动:', err);
+            }
         }
 
         function closeLightbox() {
             lightbox?.classList.remove("active");
+            
+            // 恢复页面滚动
             try {
                 document.body.style.overflow = "";
-            } catch (err) {}
+            } catch (err) {
+                console.warn('[ImageLightbox] 无法恢复页面滚动:', err);
+            }
         }
 
         function updateLightboxImage() {
@@ -95,11 +81,13 @@
                 lightboxCaption.textContent = img.alt || "";
             }
 
-            if (prevBtn)
+            // 更新导航按钮显示状态
+            if (prevBtn) {
                 prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
-            if (nextBtn)
-                nextBtn.style.display =
-                    currentIndex < images.length - 1 ? "flex" : "none";
+            }
+            if (nextBtn) {
+                nextBtn.style.display = currentIndex < images.length - 1 ? "flex" : "none";
+            }
         }
 
         function showPrev() {
@@ -148,6 +136,7 @@
             }
         }
 
+        // 绑定事件
         closeBtn?.addEventListener("click", closeLightbox);
         prevBtn?.addEventListener("click", showPrev);
         nextBtn?.addEventListener("click", showNext);
@@ -160,6 +149,7 @@
 
         collectImages();
 
+        // 返回清理函数
         return function cleanup() {
             images.forEach((img) => {
                 const h = imgHandlers.get(img);
@@ -175,9 +165,12 @@
             lightbox?.removeEventListener("touchstart", onTouchStart);
             lightbox?.removeEventListener("touchend", onTouchEnd);
 
+            // 确保恢复页面滚动
             try {
                 document.body.style.overflow = "";
-            } catch (err) {}
+            } catch (err) {
+                console.warn('[ImageLightbox] 清理时无法恢复页面滚动:', err);
+            }
         };
     }
 

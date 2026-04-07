@@ -4,9 +4,21 @@ import type { APIRoute } from 'astro'
 import { verifyPassword } from '@lib/auth'
 import { getUserByEmail, getUserByUsername } from '@lib/db'
 import { createSession, getSessionCookie } from '@lib/session'
+import {
+    checkRateLimit,
+    createRateLimitResponse,
+    getClientIdentifier,
+    rateLimitConfigs,
+} from '@utils/rate-limiter'
+import { env } from 'cloudflare:workers'
 
-export const POST: APIRoute = async ({ request, locals }) => {
-    const env = locals.runtime.env
+export const POST: APIRoute = async ({ request }) => {
+    // 限流检查
+    const clientId = getClientIdentifier(request, 'login')
+    const rateLimit = checkRateLimit(clientId, rateLimitConfigs.login)
+    if (!rateLimit.allowed) {
+        return createRateLimitResponse(rateLimit.resetTime)
+    }
 
     let body: { account?: string; password?: string }
     try {

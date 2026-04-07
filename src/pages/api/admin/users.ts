@@ -1,9 +1,9 @@
 export const prerender = false
 
 import type { APIRoute } from 'astro'
+import { env } from 'cloudflare:workers'
 
-export const GET: APIRoute = async ({ locals, url }) => {
-    const env = locals.runtime.env
+export const GET: APIRoute = async ({ url }) => {
     const page = parseInt(url.searchParams.get('page') || '1')
     const limit = 20
     const offset = (page - 1) * limit

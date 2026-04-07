@@ -4,17 +4,28 @@ description: 基于 GitHub Issues/PR/CI 的自动化项目指标面板
 ---
 
 import { Aside } from '@astrojs/starlight/components'
+import ProjectMetricsDashboard from '../../../../components/docs/ProjectMetricsDashboard.astro'
 
 <Aside type="tip" title="数据刷新频率">
-指标数据由 `collect-metrics` 工作流每日自动更新。若需立即刷新，请手动触发对应 workflow。
+指标数据每日自动更新。若需立即刷新，请联系管理员手动触发数据同步。
 </Aside>
 
 ## 项目运营核心指标
 
-{/* 【临时禁用】ProjectMetricsDashboard 组件 - 数据格式待完善 */}
+<ProjectMetricsDashboard />
 
 ## 使用建议
 
 - 周会优先关注：`燃尽/关闭率`、`WIP 分布`、`CI 成功率`
 - 里程碑评审优先关注：`Issue Lead Time`、`PR Cycle Time`
 - 当 `CI 成功率` 连续下降时，优先排查最近 3 次失败构建链接
+
+## 数据说明
+
+| 指标 | 说明 | 数据来源 |
+|------|------|----------|
+| 总任务数 | 当前项目的所有 Issues 数量 | GitHub API |
+| CI 通过率 | 最近 30 天内成功构建的比例 | GitHub Actions |
+| 测试覆盖率 | 单元测试的代码覆盖比例 | Vitest |
+| Bundle 体积 | 构建产物的总大小 | Astro 构建 |
+| 里程碑进度 | 各里程碑的完成百分比 | 手动维护 |

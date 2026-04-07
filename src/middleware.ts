@@ -1,22 +1,51 @@
 import { defineMiddleware } from 'astro:middleware'
 import { getSession, getTokenFromCookie } from '@lib/session'
 import { hasRole } from '@lib/auth'
-import { applyStandardHeaders } from './config/security'
+import { applyStandardHeaders, generateNonce } from './config/security'
+import {
+    checkRateLimit,
+    createRateLimitResponse,
+    getClientIdentifier,
+    rateLimitConfigs,
+} from './utils/rate-limiter'
+import { env } from 'cloudflare:workers'
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    const secureResponse = (response: Response) =>
-        applyStandardHeaders(response, context.url.pathname)
     const { url, request, locals } = context
     const pathname = url.pathname
+
+    // 生成 CSP nonce（每个请求唯一）
+    const nonce = generateNonce()
+
+    // 将 nonce 存储在 locals 中，供页面内联脚本使用
+    locals.cspNonce = nonce
+
+    const secureResponse = (response: Response) => applyStandardHeaders(response, pathname, nonce)
+
     const isAdminRoute = pathname.startsWith('/admin/')
     const isAdminApiRoute = pathname.startsWith('/api/admin/')
+
+    // API 限流保护
+    if (pathname.startsWith('/api/') && request.method !== 'GET') {
+        const endpoint = pathname.includes('/login')
+            ? 'login'
+            : pathname.includes('/register')
+              ? 'register'
+              : 'default'
+        const identifier = getClientIdentifier(request, endpoint)
+        const config = rateLimitConfigs[endpoint]
+        const result = checkRateLimit(identifier, config)
+
+        if (!result.allowed) {
+            return createRateLimitResponse(result.resetTime)
+        }
+    }
 
     // 尝试恢复会话并注入用户上下文
     const cookieHeader = context.isPrerendered ? null : request.headers.get('cookie')
     const token = getTokenFromCookie(cookieHeader)
-    const env = locals.runtime?.env
 
-    if (token && env?.SESSION_KV && env?.DB) {
+    if (token && env.SESSION_KV && env.DB) {
         const session = await getSession(env.SESSION_KV, token)
         if (session) {
             const user = await env.DB.prepare(

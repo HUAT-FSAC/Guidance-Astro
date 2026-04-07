@@ -4,14 +4,16 @@ description: Automated project metrics driven by GitHub Issues, PRs, and CI.
 ---
 
 import { Aside } from '@astrojs/starlight/components'
+import ProjectMetricsDashboard from '../../../../../components/docs/ProjectMetricsDashboard.astro'
 
 <Aside type="tip" title="Refresh cadence">
-Metrics are updated daily by the `collect-metrics` workflow. If you need fresh data immediately, trigger the workflow manually.
+    Metrics are updated daily by the `collect-metrics` workflow. If you need fresh data immediately,
+    trigger the workflow manually.
 </Aside>
 
 ## Core Project Metrics
 
-{/* Temporarily disabled: ProjectMetricsDashboard awaits finalized data shape. */}
+<ProjectMetricsDashboard />
 
 ## How to Use It
 

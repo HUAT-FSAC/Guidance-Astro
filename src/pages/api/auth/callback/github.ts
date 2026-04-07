@@ -3,6 +3,7 @@ export const prerender = false
 import type { APIRoute } from 'astro'
 import { createOAuthAccount, createUser, getOAuthAccount, getUserById } from '@lib/db'
 import { createSession, getSessionCookie } from '@lib/session'
+import { env } from 'cloudflare:workers'
 
 interface GitHubUser {
     id: number
@@ -18,8 +19,7 @@ interface GitHubEmail {
     verified: boolean
 }
 
-export const GET: APIRoute = async ({ url, locals }) => {
-    const env = locals.runtime.env
+export const GET: APIRoute = async ({ url }) => {
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
 

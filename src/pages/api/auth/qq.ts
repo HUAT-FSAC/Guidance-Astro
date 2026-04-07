@@ -1,9 +1,9 @@
 export const prerender = false
 
 import type { APIRoute } from 'astro'
+import { env } from 'cloudflare:workers'
 
-export const GET: APIRoute = async ({ locals, url }) => {
-    const env = locals.runtime.env
+export const GET: APIRoute = async ({ url }) => {
     const redirect = url.searchParams.get('redirect') || '/'
     const state = btoa(JSON.stringify({ redirect }))
 

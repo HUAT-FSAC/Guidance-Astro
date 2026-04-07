@@ -6,20 +6,25 @@
 
 import type { D1Database, KVNamespace } from '@cloudflare/workers-types'
 
+declare module 'cloudflare:workers' {
+    export interface Env {
+        DB: D1Database
+        SESSION_KV: KVNamespace
+        SESSION_SECRET: string
+        GITHUB_CLIENT_ID: string
+        GITHUB_CLIENT_SECRET: string
+        QQ_APP_ID: string
+        QQ_APP_KEY: string
+        UMAMI_WEBSITE_ID?: string
+        VAPID_PUBLIC_KEY?: string
+        VAPID_PRIVATE_KEY?: string
+    }
+    export const env: Env
+}
+
 declare global {
     namespace App {
         interface Locals {
-            runtime: {
-                env: {
-                    DB: D1Database
-                    SESSION_KV: KVNamespace
-                    SESSION_SECRET: string
-                    GITHUB_CLIENT_ID: string
-                    GITHUB_CLIENT_SECRET: string
-                    QQ_APP_ID: string
-                    QQ_APP_KEY: string
-                }
-            }
             user?: {
                 id: string
                 username: string
@@ -28,6 +33,10 @@ declare global {
                 displayName?: string
                 avatarUrl?: string
             }
+            // CSP nonce，用于允许特定的内联脚本
+            cspNonce?: string
+            // Cloudflare Execution Context
+            cfContext?: ExecutionContext
         }
     }
 }

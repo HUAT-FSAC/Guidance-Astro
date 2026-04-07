@@ -78,6 +78,76 @@ starlight-theme-select {
     --fs-accent-glow: rgba(255, 61, 0, 0.15);
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+
+    /* 提高文本对比度 */
+    --sl-color-text: #1a1a2e;
+    --sl-color-text-invert: #ffffff;
+}
+
+/* 亮色主题下的标题颜色修复 */
+:root[data-theme='light'] .sl-markdown-content h4 {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+/* 亮色主题下的引用块颜色修复 */
+:root[data-theme='light'] .sl-markdown-content blockquote {
+    color: rgba(0, 0, 0, 0.75);
+    background: linear-gradient(90deg, rgba(255, 61, 0, 0.03), transparent);
+}
+
+/* 亮色主题下的图片说明文字 */
+:root[data-theme='light'] .sl-markdown-content p:has(img) + p {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* 亮色主题下的表格样式优化 */
+:root[data-theme='light'] .sl-markdown-content th {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme='light'] .sl-markdown-content td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme='light'] .sl-markdown-content tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* 亮色主题下的代码样式 */
+:root[data-theme='light'] .sl-markdown-content code:not(pre code) {
+    background: rgba(243, 156, 18, 0.12);
+    color: #8a4b00;
+}
+
+/* 亮色主题下的 TOC 样式 */
+:root[data-theme='light'] starlight-toc {
+    --sl-color-gray-6: rgba(0, 0, 0, 0.03);
+}
+
+:root[data-theme='light'] starlight-toc a:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* 亮色主题下的卡片样式 */
+:root[data-theme='light'] .sl-link-card:hover,
+:root[data-theme='light'] .card:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%) !important;
+}
+
+/* 亮色主题下的 aside 样式 */
+:root[data-theme='light'] .starlight-aside {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* 亮色主题下的 tabs 样式 */
+:root[data-theme='light'] starlight-tabs [role='tablist'] {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* 亮色主题下的分隔线 */
+:root[data-theme='light'] .sl-markdown-content hr {
+    background: linear-gradient(90deg, transparent, var(--sl-color-accent), transparent);
+    opacity: 0.6;
 }
 
 /* ==================== 主题切换平滑过渡 ==================== */
@@ -202,7 +272,7 @@ nav.sidebar h2::before {
 .sl-markdown-content h3 {
     font-size: 1.35rem;
     font-weight: 600;
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
     margin-top: 2rem;
     border-left: 3px solid var(--sl-color-accent);
     padding-left: 0.75rem;

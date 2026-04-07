@@ -17,16 +17,13 @@
             "purpose": "any maskable"
         }
     ],
-    "categories": [
-        "education",
-        "documentation"
-    ],
+    "categories": ["education", "documentation"],
     "shortcuts": [
         {
             "name": "文档中心",
             "short_name": "文档",
             "description": "查看技术文档",
-            "url": "/2024-learning-roadmap/",
+            "url": "/archive/2024/2024-learning-roadmap/",
             "icons": [
                 {
                     "src": "/favicon.png",

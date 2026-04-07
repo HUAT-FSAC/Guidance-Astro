@@ -1,13 +1,16 @@
 ---
 export const prerender = false
 import '../../styles/admin.css'
+import { env } from 'cloudflare:workers'
 
 const user = Astro.locals.user
-const env = Astro.locals.runtime.env
 
 const members = await env.DB.prepare(
     "SELECT id, username, email, display_name, avatar_url, role, created_at FROM users WHERE role IN ('member', 'admin', 'super_admin') ORDER BY created_at DESC"
 ).all<{ id: string; username: string; email: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>()
+
+const canManage = user && (user.role === 'admin' || user.role === 'super_admin')
+const isSuperAdmin = user?.role === 'super_admin'
 ---
 
 <html lang="zh-CN">
@@ -18,6 +21,186 @@ const members = await env.DB.prepare(
     <link rel="icon" type="image/png" href="/favicon.png" />
     <style>
         body { margin: 0; font-family: system-ui, sans-serif; background: var(--sl-color-bg); color: var(--sl-color-text); }
+        
+        /* 编辑弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--sl-color-bg);
+            border: 1px solid var(--sl-color-hairline);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal h3 {
+            margin: 0 0 1rem;
+            font-size: 1.125rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.375rem;
+            color: var(--sl-color-gray-3);
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--sl-color-hairline);
+            border-radius: 6px;
+            background: var(--sl-color-bg-nav);
+            color: var(--sl-color-text);
+            font-size: 0.875rem;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--sl-color-accent);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .btn {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-primary {
+            background: var(--sl-color-accent);
+            color: white;
+        }
+        .btn-secondary {
+            background: var(--sl-color-bg-nav);
+            color: var(--sl-color-text);
+            border: 1px solid var(--sl-color-hairline);
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 操作按钮 */
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+        .action-btn-edit {
+            background: var(--sl-color-accent);
+            color: white;
+        }
+        .action-btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success {
+            background: #28a745;
+            color: white;
+        }
+        .toast.error {
+            background: #dc3545;
+            color: white;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 角色标签 */
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .role-super_admin {
+            background: #dc3545;
+            color: white;
+        }
+        .role-admin {
+            background: var(--sl-color-accent);
+            color: white;
+        }
+        .role-member {
+            background: var(--sl-color-bg-nav);
+            color: var(--sl-color-text);
+            border: 1px solid var(--sl-color-hairline);
+        }
+        
+        /* 删除确认弹窗 */
+        .delete-confirm {
+            text-align: center;
+        }
+        .delete-confirm p {
+            color: var(--sl-color-gray-3);
+            margin: 1rem 0;
+        }
+        .delete-confirm .warning {
+            color: #dc3545;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -28,6 +211,7 @@ const members = await env.DB.prepare(
                 <a href="/admin/">仪表盘</a>
                 <a href="/admin/users/">用户管理</a>
                 <a href="/admin/members/" class="active">成员管理</a>
+                <a href="/admin/notifications/">推送通知</a>
             </nav>
             <div style="margin-top:2rem;font-size:0.8rem;color:var(--sl-color-gray-3)">
                 {user?.username} ({user?.role})
@@ -37,21 +221,223 @@ const members = await env.DB.prepare(
             <h1>成员管理</h1>
             <table class="admin-table">
                 <thead>
-                    <tr><th>用户名</th><th>邮箱</th><th>角色</th><th>注册时间</th></tr>
+                    <tr>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>显示名称</th>
+                        <th>角色</th>
+                        <th>注册时间</th>
+                        {canManage && <th>操作</th>}
+                    </tr>
                 </thead>
                 <tbody>
                     {members.results.map((m) => (
-                        <tr>
+                        <tr data-id={m.id}>
                             <td>{m.username}</td>
                             <td>{m.email}</td>
-                            <td>{m.role}</td>
+                            <td>{m.display_name || '-'}</td>
+                            <td>
+                                <span class={`role-badge role-${m.role}`}>
+                                    {m.role === 'super_admin' ? '超级管理员' : m.role === 'admin' ? '管理员' : '成员'}
+                                </span>
+                            </td>
                             <td>{new Date(m.created_at).toLocaleDateString('zh-CN')}</td>
+                            {canManage && (
+                                <td>
+                                    <div class="action-btns">
+                                        <button 
+                                            class="action-btn action-btn-edit" 
+                                            onclick={`openEditModal('${m.id}', '${m.username}', '${m.email}', '${m.display_name || ''}', '${m.role}')`}
+                                        >
+                                            编辑
+                                        </button>
+                                        {!isSuperAdmin && m.role !== 'super_admin' && (
+                                            <button 
+                                                class="action-btn action-btn-delete" 
+                                                onclick={`openDeleteModal('${m.id}', '${m.username}')`}
+                                            >
+                                                删除
+                                            </button>
+                                        )}
+                                    </div>
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <p class="admin-placeholder">未来扩展：编辑赛季数据</p>
         </main>
     </div>
+
+    <!-- 编辑弹窗 -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <h3>编辑成员</h3>
+            <form id="editForm">
+                <input type="hidden" id="editUserId" />
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="editUsername" disabled />
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="editEmail" required />
+                </div>
+                <div class="form-group">
+                    <label>显示名称</label>
+                    <input type="text" id="editDisplayName" maxlength="32" placeholder="可选" />
+                </div>
+                <div class="form-group">
+                    <label>角色</label>
+                    <select id="editRole" required>
+                        <option value="member">成员</option>
+                        <option value="admin">管理员</option>
+                        {isSuperAdmin && <option value="super_admin">超级管理员</option>}
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal delete-confirm">
+            <h3>确认删除</h3>
+            <p>您确定要删除成员 <strong id="deleteUsername"></strong> 吗？</p>
+            <p class="warning">此操作不可撤销！</p>
+            <input type="hidden" id="deleteUserId" />
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script define:vars={{ isSuperAdmin: isSuperAdmin }}>
+        let currentEditingId = null;
+        let currentDeletingId = null;
+
+        // 打开编辑弹窗
+        function openEditModal(id, username, email, displayName, role) {
+            currentEditingId = id;
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editDisplayName').value = displayName;
+            document.getElementById('editRole').value = role;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // 关闭编辑弹窗
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            currentEditingId = null;
+        }
+
+        // 打开删除弹窗
+        function openDeleteModal(id, username) {
+            currentDeletingId = id;
+            document.getElementById('deleteUserId').value = id;
+            document.getElementById('deleteUsername').textContent = username;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        // 关闭删除弹窗
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            currentDeletingId = null;
+        }
+
+        // 显示提示
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 处理编辑表单提交
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            const data = {
+                email: document.getElementById('editEmail').value,
+                display_name: document.getElementById('editDisplayName').value,
+                role: document.getElementById('editRole').value,
+            };
+
+            try {
+                const response = await fetch(`/api/admin/members/${currentEditingId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast('成员信息已更新');
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    showToast(result.error || '更新失败', 'error');
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                showToast('网络错误，请重试', 'error');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // 处理删除确认
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/admin/members/${currentDeletingId}`, {
+                    method: 'DELETE',
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast('成员已删除');
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    showToast(result.error || '删除失败', 'error');
+                    closeDeleteModal();
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                showToast('网络错误，请重试', 'error');
+                closeDeleteModal();
+                btn.disabled = false;
+            }
+        });
+
+        // 点击弹窗外部关闭
+        document.getElementById('editModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editModal') closeEditModal();
+        });
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') closeDeleteModal();
+        });
+
+        // ESC 键关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeEditModal();
+                closeDeleteModal();
+            }
+        });
+    </script>
 </body>
 </html>

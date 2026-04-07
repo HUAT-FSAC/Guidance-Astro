@@ -197,16 +197,20 @@ self.addEventListener('sync', (event) => {
 });
 
 /**
- * 推送通知（可选）
+ * 推送通知
  */
 self.addEventListener('push', (event) => {
     const data = event.data?.json() ?? {};
 
     const options = {
         body: data.body || '有新内容可用',
-        icon: '/favicon.png',
-        badge: '/favicon.png',
-        data: data.url || '/'
+        icon: data.icon || '/favicon.png',
+        badge: data.badge || '/favicon.png',
+        tag: data.tag || 'default',
+        requireInteraction: data.requireInteraction || false,
+        data: data.data || { url: data.url || '/' },
+        timestamp: data.timestamp || Date.now(),
+        actions: data.actions || []
     };
 
     event.waitUntil(
@@ -220,7 +224,27 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
+    const notificationData = event.notification.data || {};
+    const url = notificationData.url || '/';
+
     event.waitUntil(
-        clients.openWindow(event.notification.data)
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // 如果已有窗口打开，聚焦它并导航
+                for (const client of clientList) {
+                    if (client.url && new URL(client.url).pathname === new URL(url, self.location.origin).pathname) {
+                        return client.focus();
+                    }
+                }
+                // 否则打开新窗口
+                return clients.openWindow(url);
+            })
     );
+});
+
+/**
+ * 通知关闭处理（可选）
+ */
+self.addEventListener('notificationclose', (event) => {
+    console.log('[SW] Notification closed:', event.notification);
 });

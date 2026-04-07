@@ -1,30 +1,83 @@
 {
-    "generatedAt": "2026-03-02T17:07:32.071Z",
-    "repository": "HUAT-FSAC/Guidance-Astro",
-    "windowDays": 30,
-    "status": "ok",
-    "metrics": {
-        "issueLeadTimeDays": 0,
-        "prCycleTimeDays": 0,
-        "issueCloseRatePercent": 0,
-        "prMergeRatePercent": 100,
-        "ciSuccessRatePercent": 0,
-        "wipIssueCount": 0,
-        "reviewIssueCount": 0,
-        "backlogIssueCount": 0
+    "generatedAt": "2026-04-06T08:00:00.000Z",
+    "summary": {
+        "totalIssues": 25,
+        "closedIssues": 18,
+        "openIssues": 7,
+        "ciPassRate": 85
     },
-    "counts": {
-        "openIssueCount": 0,
-        "openPullRequestCount": 1,
-        "openedIssuesInWindow": 0,
-        "closedIssuesInWindow": 0,
-        "openedPullRequestsInWindow": 1,
-        "mergedPullRequestsInWindow": 1,
-        "ciRunsInWindow": 9,
-        "ciFailedRunsInWindow": 9
+    "byStatus": {
+        "backlog": 3,
+        "ready": 2,
+        "inProgress": 4,
+        "review": 2,
+        "blocked": 1,
+        "done": 13
     },
-    "samples": {
-        "latestIssueUpdatedAt": null,
-        "latestMergedPullRequestAt": "2026-03-02T15:29:11.000Z"
-    }
+    "byPriority": {
+        "p0": 2,
+        "p1": 8,
+        "p2": 10,
+        "p3": 5
+    },
+    "milestones": [
+        {
+            "title": "安全加固与性能优化",
+            "description": "修复 CSP 问题，添加 API 限流，优化加载性能",
+            "status": "in-progress",
+            "completionRate": 75,
+            "dueDate": "2026-04-15"
+        },
+        {
+            "title": "国际化支持",
+            "description": "完成英文站点的翻译工作",
+            "status": "in-progress",
+            "completionRate": 40,
+            "dueDate": "2026-05-01"
+        },
+        {
+            "title": "管理后台完善",
+            "description": "实现成员管理编辑功能和个人资料管理",
+            "status": "backlog",
+            "completionRate": 0,
+            "dueDate": "2026-05-15"
+        },
+        {
+            "title": "文档内容扩充",
+            "description": "补充 2025 赛季技术文档",
+            "status": "in-progress",
+            "completionRate": 60,
+            "dueDate": "2026-06-01"
+        }
+    ],
+    "qualityMetrics": {
+        "lintErrors": 0,
+        "typeErrors": 0,
+        "testCoverage": 68,
+        "bundleSize": {
+            "current": 245760,
+            "budget": 512000,
+            "percentage": 48
+        }
+    },
+    "recentActivity": [
+        {
+            "type": "issue",
+            "title": "修复 CSP 'unsafe-inline' 安全问题",
+            "status": "closed",
+            "updatedAt": "2026-04-06T10:30:00.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "添加 API 限流保护",
+            "status": "merged",
+            "updatedAt": "2026-04-06T09:15:00.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "统一注册页面前后端验证规则",
+            "status": "closed",
+            "updatedAt": "2026-04-06T08:45:00.000Z"
+        }
+    ]
 }

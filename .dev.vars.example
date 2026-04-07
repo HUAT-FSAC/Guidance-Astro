@@ -3,3 +3,11 @@ GITHUB_CLIENT_ID=your-github-client-id
 GITHUB_CLIENT_SECRET=your-github-client-secret
 QQ_APP_ID=your-qq-app-id
 QQ_APP_KEY=your-qq-app-key
+
+# 推送通知 VAPID 密钥（可选，用于推送通知功能）
+# 生成命令: npx web-push generate-vapid-keys
+# VAPID_PUBLIC_KEY=your-vapid-public-key
+# VAPID_PRIVATE_KEY=your-vapid-private-key
+
+# Umami 分析（可选）
+# UMAMI_WEBSITE_ID=your-umami-website-id
