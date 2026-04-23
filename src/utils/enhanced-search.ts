@@ -9,6 +9,7 @@ import {
     getSearchHistory,
     removeSearchHistory,
 } from './search-history'
+import { initSearchResultHighlight } from './search-highlight'
 
 let isSearchOpen = false
 
@@ -52,7 +53,7 @@ export function openSearch(): void {
 }
 
 /**
- * 设置搜索跟踪
+ * 设置搜索跟踪和建议
  */
 function setupSearchTracking(): void {
     const pagefindInput = document.querySelector(
@@ -86,6 +87,56 @@ function setupSearchTracking(): void {
                     addSearchHistory(query)
                 }
             }
+        })
+
+        // 初始化搜索建议
+        import('./search-suggestions').then(({ initSearchSuggestions }) => {
+            // 创建建议容器
+            const container = document.createElement('div')
+            container.className = 'search-suggestions-container'
+            container.style.position = 'absolute'
+            container.style.top = '100%'
+            container.style.left = '0'
+            container.style.right = '0'
+            container.style.backgroundColor = 'var(--sl-color-bg-base)'
+            container.style.border = '1px solid var(--sl-color-border)'
+            container.style.borderRadius = '0 0 var(--sl-radius-medium) var(--sl-radius-medium)'
+            container.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)'
+            container.style.zIndex = '1000'
+            container.style.maxHeight = '300px'
+            container.style.overflowY = 'auto'
+
+            // 插入到输入框的父元素中
+            const parent = pagefindInput.parentElement
+            if (parent) {
+                parent.style.position = 'relative'
+                parent.appendChild(container)
+
+                // 初始化搜索建议
+                initSearchSuggestions(pagefindInput, container, (query) => {
+                    pagefindInput.value = query
+                    pagefindInput.dispatchEvent(new Event('input', { bubbles: true }))
+                    pagefindInput.focus()
+                })
+            }
+        })
+
+        // 监听搜索结果加载完成事件
+        const observer = new MutationObserver(() => {
+            const searchResults = document.querySelector('[data-pagefind-ui]') || document.querySelector('.pagefind-ui')
+            if (searchResults) {
+                const query = pagefindInput.value.trim()
+                if (query) {
+                    initSearchResultHighlight(searchResults, query)
+                }
+            }
+        })
+
+        observer.observe(document.body, { childList: true, subtree: true })
+
+        // 清理 observer
+        pagefindInput.addEventListener('blur', () => {
+            observer.disconnect()
         })
     }
 }

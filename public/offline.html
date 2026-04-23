@@ -135,7 +135,7 @@
             const cachedListEl = document.getElementById('cachedList');
             
             try {
-                const cache = await caches.open('huat-fsac-v1');
+                const cache = await caches.open('huat-fsac-v3');
                 const keys = await cache.keys();
                 
                 const htmlPages = keys.filter(req => {

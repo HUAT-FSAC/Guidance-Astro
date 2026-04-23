@@ -126,10 +126,13 @@ export const cspDirectives = {
     manifest: ["'self'"],
 }
 
-const CACHE_CONTROL_DEFAULT = 'public, max-age=0, must-revalidate'
-const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable'
+const CACHE_CONTROL_DEFAULT = 'public, max-age=3600, must-revalidate' // 1小时
+const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable' // 1年
 const CACHE_CONTROL_SERVICE_WORKER = 'no-cache, no-store, must-revalidate'
 const CACHE_CONTROL_PRIVATE = 'private, no-store'
+const CACHE_CONTROL_STATIC = 'public, max-age=604800, must-revalidate' // 7天
+const CACHE_CONTROL_IMAGES = 'public, max-age=2592000, must-revalidate' // 30天
+const CACHE_CONTROL_FONTS = 'public, max-age=31536000, immutable' // 1年
 
 function withHeaders(response: Response, apply: (headers: Headers) => void): Response {
     const headers = new Headers(response.headers)
@@ -169,7 +172,11 @@ export function applySecurityHeaders(response: Response): Response {
     })
 }
 
-export function getCacheControlHeader(pathname: string): string {
+export function getCacheControlHeader(pathname: string | undefined): string {
+    if (!pathname) {
+        return CACHE_CONTROL_DEFAULT
+    }
+
     if (pathname === '/sw.js') {
         return CACHE_CONTROL_SERVICE_WORKER
     }
@@ -186,6 +193,21 @@ export function getCacheControlHeader(pathname: string): string {
 
     if (pathname.startsWith('/_astro/') || pathname.startsWith('/pagefind/')) {
         return CACHE_CONTROL_IMMUTABLE
+    }
+
+    // 图片资源
+    if (pathname.match(/\.(png|jpg|jpeg|gif|webp|avif|svg)$/i)) {
+        return CACHE_CONTROL_IMAGES
+    }
+
+    // 字体资源
+    if (pathname.match(/\.(woff|woff2|ttf|otf|eot)$/i)) {
+        return CACHE_CONTROL_FONTS
+    }
+
+    // 其他静态资源
+    if (pathname.match(/\.(css|js|json)$/i)) {
+        return CACHE_CONTROL_STATIC
     }
 
     return CACHE_CONTROL_DEFAULT

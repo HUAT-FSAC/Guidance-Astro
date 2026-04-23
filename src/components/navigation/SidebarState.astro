@@ -1,0 +1,158 @@
+---
+/**
+ * 侧边栏状态记忆组件
+ * 记住用户的侧边栏折叠/展开状态
+ */
+
+interface Props {
+    /** 侧边栏选择器（默认 nav.sidebar） */
+    sidebarSelector?: string;
+    /** 本地存储键名（默认 huat-sidebar-state） */
+    storageKey?: string;
+}
+
+const {
+    sidebarSelector = 'nav.sidebar',
+    storageKey = 'huat-sidebar-state',
+} = Astro.props;
+---
+
+<script>
+    // 侧边栏状态管理
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.querySelector('${sidebarSelector}');
+        if (!sidebar) return;
+        
+        // 加载侧边栏状态
+        function loadSidebarState() {
+            try {
+                const state = localStorage.getItem('${storageKey}');
+                if (state) {
+                    const parsedState = JSON.parse(state);
+                    if (parsedState.collapsed) {
+                        sidebar.classList.add('collapsed');
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load sidebar state:', e);
+            }
+        }
+        
+        // 保存侧边栏状态
+        function saveSidebarState(collapsed) {
+            try {
+                localStorage.setItem('${storageKey}', JSON.stringify({ collapsed }));
+            } catch (e) {
+                console.error('Failed to save sidebar state:', e);
+            }
+        }
+        
+        // 初始化侧边栏状态
+        loadSidebarState();
+        
+        // 查找折叠/展开按钮
+        const toggleButton = sidebar.querySelector('.sidebar-toggle') || document.querySelector('[aria-label*="Toggle sidebar"]');
+        
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                const collapsed = sidebar.classList.toggle('collapsed');
+                saveSidebarState(collapsed);
+            });
+        }
+        
+        // 监听窗口大小变化，在移动端自动折叠侧边栏
+        function handleResize() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('collapsed');
+                saveSidebarState(true);
+            } else {
+                // 保持桌面端的状态
+                loadSidebarState();
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize(); // 初始检查
+    });
+</script>
+
+<style>
+    /* 侧边栏折叠状态样式 */
+    nav.sidebar.collapsed {
+        width: 60px;
+    }
+    
+    nav.sidebar.collapsed .sidebar-content {
+        padding: 0.5rem;
+    }
+    
+    nav.sidebar.collapsed .sidebar-item {
+        padding: 0.5rem;
+    }
+    
+    nav.sidebar.collapsed .sidebar-item-text {
+        display: none;
+    }
+    
+    nav.sidebar.collapsed .sidebar-item-icon {
+        margin-right: 0;
+        justify-content: center;
+    }
+    
+    /* 平滑过渡 */
+    nav.sidebar {
+        transition: width 0.3s var(--fs-ease-out);
+    }
+    
+    nav.sidebar .sidebar-content {
+        transition: padding 0.3s var(--fs-ease-out);
+    }
+    
+    nav.sidebar .sidebar-item {
+        transition: padding 0.3s var(--fs-ease-out);
+    }
+    
+    nav.sidebar .sidebar-item-text {
+        transition: opacity 0.2s ease, transform 0.3s ease;
+    }
+    
+    nav.sidebar.collapsed .sidebar-item-text {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    
+    @media (max-width: 768px) {
+        nav.sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: var(--z-navigation);
+            background: var(--sl-color-bg-nav);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transform: translateX(0);
+            transition: transform 0.3s var(--fs-ease-out);
+        }
+        
+        nav.sidebar.collapsed {
+            transform: translateX(-100%);
+            width: 250px;
+        }
+        
+        nav.sidebar.collapsed .sidebar-content {
+            padding: 1rem;
+        }
+        
+        nav.sidebar.collapsed .sidebar-item {
+            padding: 0.75rem 1rem;
+        }
+        
+        nav.sidebar.collapsed .sidebar-item-text {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>

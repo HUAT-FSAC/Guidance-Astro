@@ -21,19 +21,70 @@ const { items } = Astro.props;
 const pathLabels: Record<string, string> = {
     '2024-learning-roadmap': '2024 学习路线',
     '2025': '2025 赛季',
-    '感知': '感知',
-    '定位建图': '定位建图',
-    '规控': '规控',
-    '仿真测试': '仿真测试',
-    '电气': '电气',
-    '机械': '机械',
-    '项管': '项管',
+    'sensing': '感知',
+    'localization-mapping': '定位建图',
+    'planning-control': '规划控制',
+    'simulation': '仿真测试',
+    'electrical': '电气',
+    'mechanical': '机械',
+    'management': '项管',
+    'inspection': '过检模块',
     'docs': '文档',
     'join': '加入我们',
     'team': '团队介绍',
     'news': '新闻',
-    '文档中心': '文档中心',
+    'docs-center': '文档中心',
     '入门': '入门指南',
+    'onboarding': '入门',
+    '流程与模板': '流程与模板',
+    'processes-and-templates': '流程与模板',
+    '资源中心': '资源中心',
+    'resource-hub': '资源中心',
+    '运营与协作': '运营与协作',
+    'operations-and-collaboration': '运营与协作',
+    '项目进度看板': '项目进度看板',
+    'project-progress-board': '项目进度看板',
+    '体验与反馈': '体验与反馈',
+    'feedback-and-experience': '体验与反馈',
+    'archive': '文档归档',
+    'general': '通用指南',
+    'ros-basics': 'ROS 基础',
+    'datasets': '数据集相关',
+    'ros-toturial-creating-ws-and-package': '创建工作空间和包',
+    'create-workspace-and-package': '创建工作空间和包',
+    'dataset-generating': '数据集生成',
+    'dataset-generation': '数据集生成',
+    'dataset-labeling': '数据集标注',
+    'dataset-labeling-basics': '数据集标注基础',
+    'dataset-standard': '数据集标准',
+    'dataset-labeling-and-generation-standard': '数据集标注和生成标准',
+    'docker-ros-installing': 'Docker ROS 安装',
+    'ros-installing': 'ROS 安装',
+    'ros-vsc-setup': 'ROS VSCode 配置',
+    'setting-up-proxy-on-linux': 'Linux 代理设置',
+    'vsc-c-c++-dev-and-debug': 'VSCode C/C++ 开发与调试',
+    'fssim-introduction': 'FSSIM 介绍',
+    'resource-roundup': '资料汇总',
+    'learning-path': '学习路线',
+    'season-notes': '赛季记录',
+    'ins5711daa': 'INS5711DAA',
+    'control-fundamentals': '控制基础',
+    'high-speed-tracking': '高速循迹',
+    'straight-line-acceleration': '直线加速',
+    'battery-pack': '电池箱',
+    'hardware-design': '硬件设计',
+    'software-development': '软件开发',
+    'wiring-harness': '线束',
+    'braking-system': '制动系统',
+    'drivetrain': '传动系统',
+    'frame-and-body': '车架车身',
+    'steering-and-suspension': '转向悬架',
+    'business-development': '营销',
+    'media-operations': '新媒体',
+    'team-operations': '运营',
+    'camera': '摄像头',
+    'lidar': '激光雷达',
+    'simulation-platforms': '仿真平台',
 };
 
 // 从 URL 解析面包屑
@@ -51,7 +102,16 @@ function parseBreadcrumbs(pathname: string): BreadcrumbItem[] {
         
         // 解码 URL 编码的中文
         const decodedSegment = decodeURIComponent(segment);
-        const label = pathLabels[decodedSegment] || decodedSegment;
+        
+        // 优先使用路径映射中的标签
+        let label = pathLabels[decodedSegment] || pathLabels[segment] || decodedSegment;
+        
+        // 处理特殊情况
+        if (segment === 'en') {
+            label = 'English';
+        } else if (segment === 'zh' || segment === 'root') {
+            label = '中文';
+        }
         
         const isLast = i === segments.length - 1;
         

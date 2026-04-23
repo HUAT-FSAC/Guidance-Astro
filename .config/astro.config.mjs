@@ -1,12 +1,12 @@
 import { defineConfig } from 'astro/config'
-import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './sidebar.mjs'
-import cloudflareStaticHeaders from '../src/integrations/cloudflare-static-headers'
 import filterKnownBuildWarnings from '../src/integrations/filter-known-build-warnings'
+import criticalCssIntegration from '../src/integrations/critical-css'
 
 export default defineConfig({
-    adapter: cloudflare({ imageService: 'compile', sessionKVBindingName: 'SESSION_KV' }),
+    // 不使用适配器，使用默认的静态构建
+
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
     redirects: {
@@ -66,10 +66,40 @@ export default defineConfig({
         ssr: {
             external: ['crypto'],
         },
+        build: {
+            // 启用压缩
+            minify: 'terser',
+            terserOptions: {
+                compress: {
+                    drop_console: true,
+                    drop_debugger: true,
+                    passes: 2,
+                    pure_funcs: ['console.log', 'console.warn', 'console.error'],
+                },
+                mangle: true,
+                output: {
+                    comments: false,
+                },
+            },
+            // 启用代码分割
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        // 将第三方库分离到单独的chunk
+                        starlight: ['@astrojs/starlight'],
+                    },
+                    chunkFileNames: 'chunks/[name]-[hash].js',
+                    entryFileNames: 'entry/[name]-[hash].js',
+                    assetFileNames: 'assets/[name]-[hash].[ext]',
+                },
+            },
+            // 优化构建缓存
+            cacheDir: '.vite-cache',
+        },
     },
     integrations: [
-        cloudflareStaticHeaders(),
         filterKnownBuildWarnings(),
+        criticalCssIntegration(),
         starlight({
             title: { zh: 'HUAT FSAC', en: 'HUAT FSAC' },
             description:
@@ -80,7 +110,7 @@ export default defineConfig({
                 root: { label: '中文', lang: 'zh' },
                 en: { label: 'English', lang: 'en' },
             },
-            customCss: ['./src/styles/docs-global.css', './src/styles/code-blocks.css'],
+            customCss: ['./src/styles/docs-global.css', './src/styles/code-blocks.css', './src/styles/search-suggestions.css', './src/styles/search-highlight.css'],
             head: [
                 {
                     tag: 'meta',
@@ -150,11 +180,49 @@ export default defineConfig({
                 },
                 {
                     tag: 'link',
+                    attrs: { rel: 'preload', href: '/og-image.png', as: 'image', type: 'image/png' },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'preload',
+                        href: '/sw.js',
+                        as: 'script',
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'preconnect',
+                        href: 'https://fonts.googleapis.com',
+                        crossorigin: 'anonymous',
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'preconnect',
+                        href: 'https://fonts.gstatic.com',
+                        crossorigin: 'anonymous',
+                    },
+                },
+                {
+                    tag: 'link',
                     attrs: {
                         rel: 'preload',
                         href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
                         as: 'style',
                         crossorigin: 'anonymous',
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'stylesheet',
+                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
+                        crossorigin: 'anonymous',
+                        media: 'print',
+                        onload: "this.media='all'",
                     },
                 },
                 {

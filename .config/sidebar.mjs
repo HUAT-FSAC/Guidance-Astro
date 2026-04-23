@@ -38,6 +38,11 @@ export default [
                 link: '/docs-center/资源中心/',
             },
             {
+                label: '内容贡献指南',
+                translations: { en: 'Contributing Guide' },
+                link: '/docs-center/contributing/',
+            },
+            {
                 label: '运营与协作',
                 translations: { en: 'Operations & Collaboration' },
                 collapsed: false,
@@ -73,28 +78,35 @@ export default [
         collapsed: false,
         items: [
             {
-                label: '📁 无人系统组 - 感知',
-                translations: { en: '📁 Autonomous - Sensing' },
-                collapsed: true,
-                autogenerate: { directory: 'archive/2025/sensing' },
-            },
-            {
-                label: '📁 无人系统组 - 定位建图',
-                translations: { en: '📁 Autonomous - Localization' },
-                collapsed: true,
-                autogenerate: { directory: 'archive/2025/localization-mapping' },
-            },
-            {
-                label: '📁 无人系统组 - 规控',
-                translations: { en: '📁 Autonomous - Planning & Control' },
-                collapsed: true,
-                autogenerate: { directory: 'archive/2025/planning-control' },
-            },
-            {
-                label: '📁 无人系统组 - 仿真测试',
-                translations: { en: '📁 Autonomous - Simulation' },
-                collapsed: true,
-                autogenerate: { directory: 'archive/2025/simulation' },
+                label: '📁 无人系统组',
+                translations: { en: '📁 Autonomous Systems' },
+                collapsed: false,
+                items: [
+                    {
+                        label: '感知',
+                        translations: { en: 'Sensing' },
+                        collapsed: true,
+                        autogenerate: { directory: 'archive/2025/sensing' },
+                    },
+                    {
+                        label: '定位建图',
+                        translations: { en: 'Localization & Mapping' },
+                        collapsed: true,
+                        autogenerate: { directory: 'archive/2025/localization-mapping' },
+                    },
+                    {
+                        label: '规划控制',
+                        translations: { en: 'Planning & Control' },
+                        collapsed: true,
+                        autogenerate: { directory: 'archive/2025/planning-control' },
+                    },
+                    {
+                        label: '仿真测试',
+                        translations: { en: 'Simulation' },
+                        collapsed: true,
+                        autogenerate: { directory: 'archive/2025/simulation' },
+                    },
+                ],
             },
             {
                 label: '📁 电气部',

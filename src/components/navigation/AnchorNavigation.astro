@@ -1,0 +1,290 @@
+---
+/**
+ * 锚点导航组件
+ * 显示页面内部的标题导航
+ */
+
+interface AnchorItem {
+    id: string;
+    title: string;
+    level: number;
+    children?: AnchorItem[];
+}
+
+interface Props {
+    /** 最大标题级别（默认 3） */
+    maxLevel?: number;
+    /** 容器选择器（默认 .sl-markdown-content） */
+    containerSelector?: string;
+    /** 是否自动生成（默认 true） */
+    autoGenerate?: boolean;
+    /** 手动指定锚点项 */
+    items?: AnchorItem[];
+}
+
+const {
+    maxLevel = 3,
+    containerSelector = '.sl-markdown-content',
+    autoGenerate = true,
+    items: manualItems,
+} = Astro.props;
+
+// 自动生成锚点导航
+function generateAnchors(): AnchorItem[] {
+    const anchors: AnchorItem[] = [];
+    const stack: AnchorItem[] = [];
+    
+    // 模拟 DOM 解析（在服务器端）
+    // 注意：在实际运行时，这需要在客户端执行
+    
+    return anchors;
+}
+
+const items = manualItems || (autoGenerate ? generateAnchors() : []);
+---
+
+{items.length > 0 && (
+    <nav class="anchor-navigation" aria-label="页面锚点导航">
+        <h3 class="anchor-navigation-title">页面导航</h3>
+        <ul class="anchor-navigation-list">
+            {items.map((item) => (
+                <li class={`anchor-navigation-item level-${item.level}`}>
+                    <a
+                        href={`#${item.id}`}
+                        class="anchor-navigation-link"
+                        aria-label={`跳转到 ${item.title}`}
+                    >
+                        {item.title}
+                    </a>
+                    {item.children && item.children.length > 0 && (
+                        <ul class="anchor-navigation-sub-list">
+                            {item.children.map((child) => (
+                                <li class={`anchor-navigation-item level-${child.level}`}>
+                                    <a
+                                        href={`#${child.id}`}
+                                        class="anchor-navigation-link"
+                                        aria-label={`跳转到 ${child.title}`}
+                                    >
+                                        {child.title}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </li>
+            ))}
+        </ul>
+    </nav>
+)}
+
+<script>
+    // 在客户端执行锚点导航生成和交互
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.querySelector('${containerSelector}');
+        const navigation = document.querySelector('.anchor-navigation');
+        
+        if (!container || !navigation) return;
+        
+        // 生成锚点导航
+        function generateAnchors() {
+            const headings = container.querySelectorAll(`h1, h2, h3, h4, h5, h6`);
+            const anchors = [];
+            const stack = [];
+            
+            headings.forEach((heading) => {
+                const level = parseInt(heading.tagName.substring(1));
+                if (level > ${maxLevel}) return;
+                
+                const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
+                if (!heading.id) {
+                    heading.id = id;
+                }
+                
+                const item = {
+                    id,
+                    title: heading.textContent || '',
+                    level,
+                    children: []
+                };
+                
+                // 维护栈结构
+                while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+                    stack.pop();
+                }
+                
+                if (stack.length === 0) {
+                    anchors.push(item);
+                } else {
+                    stack[stack.length - 1].children?.push(item);
+                }
+                
+                stack.push(item);
+            });
+            
+            return anchors;
+        }
+        
+        // 渲染锚点导航
+        function renderAnchors(anchors) {
+            const list = navigation.querySelector('.anchor-navigation-list');
+            if (!list) return;
+            
+            list.innerHTML = '';
+            
+            function renderItem(item) {
+                const li = document.createElement('li');
+                li.className = `anchor-navigation-item level-${item.level}`;
+                
+                const a = document.createElement('a');
+                a.href = `#${item.id}`;
+                a.className = 'anchor-navigation-link';
+                a.ariaLabel = `跳转到 ${item.title}`;
+                a.textContent = item.title;
+                
+                li.appendChild(a);
+                
+                if (item.children && item.children.length > 0) {
+                    const subList = document.createElement('ul');
+                    subList.className = 'anchor-navigation-sub-list';
+                    
+                    item.children.forEach(child => {
+                        subList.appendChild(renderItem(child));
+                    });
+                    
+                    li.appendChild(subList);
+                }
+                
+                return li;
+            }
+            
+            anchors.forEach(item => {
+                list.appendChild(renderItem(item));
+            });
+        }
+        
+        // 生成并渲染锚点导航
+        const anchors = generateAnchors();
+        renderAnchors(anchors);
+        
+        // 监听滚动，高亮当前锚点
+        function highlightCurrentAnchor() {
+            const links = navigation.querySelectorAll('.anchor-navigation-link');
+            const sections = Array.from(links).map(link => {
+                const id = link.getAttribute('href')?.substring(1);
+                return document.getElementById(id);
+            }).filter(Boolean);
+            
+            let currentSection = null;
+            
+            for (const section of sections) {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100) {
+                    currentSection = section;
+                } else {
+                    break;
+                }
+            }
+            
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (currentSection && link.getAttribute('href') === `#${currentSection.id}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', highlightCurrentAnchor);
+        highlightCurrentAnchor(); // 初始高亮
+    });
+</script>
+
+<style>
+    .anchor-navigation {
+        background: var(--fs-bg-surface);
+        border: 1px solid var(--fs-border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .anchor-navigation-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+        color: var(--sl-color-accent);
+        border-bottom: 1px solid var(--fs-border-subtle);
+        padding-bottom: 0.5rem;
+    }
+    
+    .anchor-navigation-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .anchor-navigation-item {
+        margin: 0.25rem 0;
+    }
+    
+    .anchor-navigation-link {
+        display: block;
+        padding: 0.4rem 0.6rem;
+        color: var(--sl-color-text);
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        transition: all var(--transition-fast);
+        font-size: 0.9rem;
+    }
+    
+    .anchor-navigation-link:hover {
+        background: var(--fs-border-subtle);
+        color: var(--sl-color-accent);
+    }
+    
+    .anchor-navigation-link.active {
+        background: rgba(243, 156, 18, 0.15);
+        color: var(--sl-color-accent);
+        font-weight: 600;
+    }
+    
+    .anchor-navigation-sub-list {
+        list-style: none;
+        margin: 0.25rem 0 0 1rem;
+        padding: 0;
+    }
+    
+    .anchor-navigation-item.level-2 .anchor-navigation-link {
+        font-weight: 500;
+    }
+    
+    .anchor-navigation-item.level-3 .anchor-navigation-link {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+    
+    .anchor-navigation-item.level-4 .anchor-navigation-link {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        .anchor-navigation {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .anchor-navigation-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .anchor-navigation-link {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .anchor-navigation-sub-list {
+            margin-left: 0.75rem;
+        }
+    }
+</style>

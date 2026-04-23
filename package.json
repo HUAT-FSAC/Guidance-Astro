@@ -21,9 +21,6 @@
         "quality:lighthouse": "lhci collect --config=.config/lighthouserc.json && lhci assert --config=.config/lighthouserc.json",
         "metrics:collect": "node scripts/metrics/collect-github-metrics.mjs",
         "dev:worker": "wrangler pages dev dist",
-        "db:migrate": "wrangler d1 execute fsac-auth --file=src/db/schema.sql",
-        "db:migrate:local": "wrangler d1 execute fsac-auth --local --file=src/db/schema.sql",
-        "db:seed:local": "wrangler d1 execute fsac-auth --local --file=src/db/seed.sql",
         "prepare": "husky"
     },
     "dependencies": {
@@ -31,7 +28,6 @@
         "@astrojs/cloudflare": "^13.1.7",
         "@astrojs/starlight": "^0.38.0",
         "astro": "^6.1.4",
-        "bcryptjs": "^2.4.3",
         "qrcode": "^1.5.4",
         "sharp": "^0.34.5",
         "typescript": "^5.9.3"
@@ -42,11 +38,9 @@
             "minimatch@>=9.0.0 <9.0.6": ">=9.0.6",
             "ajv@<6.14.0": "~6.14.0",
             "rollup@>=4.0.0 <4.59.0": ">=4.59.0"
-        },
-        "ignoredBuiltDependencies": ["workerd"]
+        }
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20260305.0",
         "@commitlint/cli": "^20.4.2",
         "@commitlint/config-conventional": "^20.4.2",
         "@playwright/test": "^1.58.2",
@@ -60,8 +54,8 @@
         "lint-staged": "^15.2.10",
         "prettier": "^3.3.3",
         "rimraf": "^6.1.3",
+        "terser": "^5.46.1",
         "typescript-eslint": "^7.18.0",
-        "vitest": "^4.0.18",
-        "wrangler": "^4.80.0"
+        "vitest": "^4.0.18"
     }
 }
