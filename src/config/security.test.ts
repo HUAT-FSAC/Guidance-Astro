@@ -30,7 +30,7 @@ describe('security headers', () => {
     })
 
     it('returns a no-cache policy for HTML pages and the service worker', () => {
-        expect(getCacheControlHeader('/docs-center/')).toBe('public, max-age=0, must-revalidate')
+        expect(getCacheControlHeader('/docs-center/')).toBe('public, max-age=3600, must-revalidate')
         expect(getCacheControlHeader('/sw.js')).toBe('no-cache, no-store, must-revalidate')
     })
 
@@ -53,7 +53,7 @@ describe('security headers', () => {
     it('applies cache control alongside security headers without overwriting explicit values', () => {
         const defaultResponse = applyStandardHeaders(new Response('ok'), '/archive/2025/sensing/')
         expect(defaultResponse.headers.get('Cache-Control')).toBe(
-            'public, max-age=0, must-revalidate'
+            'public, max-age=3600, must-revalidate'
         )
         expect(defaultResponse.headers.get('X-Frame-Options')).toBe('SAMEORIGIN')
 

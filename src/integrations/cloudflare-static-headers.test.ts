@@ -10,7 +10,7 @@ describe('renderCloudflareStaticHeaders', () => {
         expect(output).toContain('  Content-Security-Policy: ')
         expect(output).toContain('  X-Frame-Options: SAMEORIGIN')
         expect(output).toContain('  Permissions-Policy: ')
-        expect(output).toContain('  Cache-Control: public, max-age=0, must-revalidate')
+        expect(output).toContain('  Cache-Control: public, max-age=3600, must-revalidate')
     })
 
     it('adds explicit cache rules for fingerprinted assets and the service worker', () => {
