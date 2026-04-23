@@ -317,20 +317,9 @@ const isSuperAdmin = user?.role === 'super_admin'
         </div>
     </div>
 
-    <script define:vars={{ isSuperAdmin: isSuperAdmin }}>
+    <script>
         let currentEditingId = null;
         let currentDeletingId = null;
-
-        // 打开编辑弹窗
-        function openEditModal(id, username, email, displayName, role) {
-            currentEditingId = id;
-            document.getElementById('editUserId').value = id;
-            document.getElementById('editUsername').value = username;
-            document.getElementById('editEmail').value = email;
-            document.getElementById('editDisplayName').value = displayName;
-            document.getElementById('editRole').value = role;
-            document.getElementById('editModal').classList.add('active');
-        }
 
         // 关闭编辑弹窗
         function closeEditModal() {
@@ -338,13 +327,7 @@ const isSuperAdmin = user?.role === 'super_admin'
             currentEditingId = null;
         }
 
-        // 打开删除弹窗
-        function openDeleteModal(id, username) {
-            currentDeletingId = id;
-            document.getElementById('deleteUserId').value = id;
-            document.getElementById('deleteUsername').textContent = username;
-            document.getElementById('deleteModal').classList.add('active');
-        }
+
 
         // 关闭删除弹窗
         function closeDeleteModal() {

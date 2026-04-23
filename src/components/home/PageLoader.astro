@@ -29,8 +29,8 @@
             loader.dataset.huatInit = "1";
         } catch (e) {
             // 如果 dataset 访问失败（如旧版浏览器），继续执行
-            if ((loader as any).__huatInit) return;
-            (loader as any).__huatInit = true;
+            if ((loader as HTMLElement & { __huatInit?: boolean }).__huatInit) return;
+            (loader as HTMLElement & { __huatInit?: boolean }).__huatInit = true;
         }
 
         const STORAGE_KEY = "huat_fsac_visited";
@@ -136,14 +136,14 @@
                 // dataset 删除失败时忽略
             }
             try {
-                delete (loader as any).__huatCleanup;
+                delete (loader as HTMLElement & { __huatCleanup?: () => void }).__huatCleanup;
             } catch (e) {
                 // 属性删除失败时忽略
             }
         }
 
         try {
-            (loader as any).__huatCleanup = cleanup;
+            (loader as HTMLElement & { __huatCleanup?: () => void }).__huatCleanup = cleanup;
         } catch (e) {
             // 属性设置失败时忽略
         }
