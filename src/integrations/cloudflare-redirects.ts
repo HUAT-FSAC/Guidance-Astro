@@ -24,8 +24,10 @@ export function renderCloudflareRedirects(redirects: Record<string, RedirectConf
         }
     }
 
-    // 注意：不添加 /* /404.html 404 规则，这会干扰首页访问
-    // Cloudflare Pages 会自动处理 404
+    // 添加 404 规则
+    rules.push('')
+    rules.push('# 404 页面')
+    rules.push('/* /404.html 404')
 
     return rules.join('\n')
 }
