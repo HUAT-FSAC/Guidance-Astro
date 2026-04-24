@@ -20,12 +20,12 @@ Push to main → Cloudflare Build → Deploy to Production
 
 ### Build Settings
 
-| Setting | Value |
-|---------|-------|
-| Framework preset | Astro |
-| Build command | `pnpm build` |
-| Build output directory | `dist` |
-| Node.js version | 18.x |
+| Setting                | Value        |
+| ---------------------- | ------------ |
+| Framework preset       | Astro        |
+| Build command          | `pnpm build` |
+| Build output directory | `dist`       |
+| Node.js version        | 18.x         |
 
 ---
 
@@ -47,8 +47,13 @@ wrangler login
 # 1. Build the site
 pnpm build
 
-# 2. Deploy to Cloudflare Pages
-wrangler pages deploy dist --project-name=huat-fsac-guidance
+# 2. Verify the static output
+test -f dist/index.html
+test -f dist/_redirects
+test -f dist/_headers
+
+# 3. Deploy to Cloudflare Pages
+wrangler pages deploy dist --project-name=huat-fsac
 ```
 
 ---
@@ -62,8 +67,9 @@ No environment variables are required for build. All configuration is handled in
 ## Preview Deployments
 
 Every pull request generates a preview deployment at:
+
 ```
-https://<commit-hash>.huat-fsac-guidance.pages.dev
+https://<commit-hash>.huat-fsac.pages.dev
 ```
 
 ---
@@ -73,7 +79,7 @@ https://<commit-hash>.huat-fsac-guidance.pages.dev
 ### Via Cloudflare Dashboard
 
 1. Go to [Cloudflare Pages Dashboard](https://dash.cloudflare.com/)
-2. Select "huat-fsac-guidance" project
+2. Select "huat-fsac" project
 3. Navigate to "Deployments"
 4. Find the previous deployment
 5. Click "..." → "Rollback to this deployment"
@@ -82,10 +88,10 @@ https://<commit-hash>.huat-fsac-guidance.pages.dev
 
 ```bash
 # List recent deployments
-wrangler pages deployment list --project-name=huat-fsac-guidance
+wrangler pages deployment list --project-name=huat-fsac
 
 # Rollback to specific deployment
-wrangler pages deployment rollback <deployment-id> --project-name=huat-fsac-guidance
+wrangler pages deployment rollback <deployment-id> --project-name=huat-fsac
 ```
 
 ---
@@ -100,11 +106,11 @@ wrangler pages deployment rollback <deployment-id> --project-name=huat-fsac-guid
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue                     | Solution                                                         |
+| ------------------------- | ---------------------------------------------------------------- |
 | `pnpm: command not found` | Cloudflare Pages uses pnpm by default when pnpm-lock.yaml exists |
-| Type errors | Run `pnpm lint` locally before pushing |
-| Missing dependencies | Check pnpm-lock.yaml is committed |
+| Type errors               | Run `pnpm lint` locally before pushing                           |
+| Missing dependencies      | Check pnpm-lock.yaml is committed                                |
 
 ---
 

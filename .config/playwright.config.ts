@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4321'
+const webServerCommand =
+    process.env.PLAYWRIGHT_WEB_SERVER_COMMAND || 'pnpm dev --host 127.0.0.1 --port 4321'
+
 export default defineConfig({
     testDir: '../tests/e2e',
     fullyParallel: true,
@@ -8,12 +12,12 @@ export default defineConfig({
     workers: process.env.CI ? 2 : undefined,
     reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     use: {
-        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4321',
+        baseURL,
         trace: 'retain-on-failure',
     },
     webServer: {
-        command: 'pnpm dev --host 127.0.0.1 --port 4321',
-        url: 'http://127.0.0.1:4321',
+        command: webServerCommand,
+        url: baseURL,
         timeout: 120000,
         reuseExistingServer: !process.env.CI,
     },

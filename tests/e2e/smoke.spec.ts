@@ -1,15 +1,22 @@
 import { expect, test } from '@playwright/test'
 
 test('首页可访问', async ({ page }) => {
-    await page.goto('/')
+    const response = await page.goto('/')
+    expect(response?.status()).toBe(200)
     await expect(page).toHaveTitle(/HUAT FSAC/)
-    await expect(page.locator('a.site-title')).toBeVisible()
+    await expect(page.locator('.hero-heading')).toContainText('HUAT FSAC')
+    await expect(page.locator('.hero-sub')).toContainText('方程式赛车队')
+    await expect(page.locator('.hero-cta')).toContainText('开始探索')
+    await expect(page.locator('main')).not.toContainText('页面未找到')
 })
 
 test('英文首页可访问', async ({ page }) => {
-    await page.goto('/en/')
+    const response = await page.goto('/en/')
+    expect(response?.status()).toBe(200)
     await expect(page.locator('.hero-heading')).toContainText('HUAT FSAC')
     await expect(page.locator('.hero-sub')).toContainText('Formula Student')
+    await expect(page.locator('.hero-cta')).toContainText('Start Exploring')
+    await expect(page.locator('main')).not.toContainText('Page not found')
 })
 
 test('文档页可访问', async ({ page }) => {
