@@ -12,7 +12,6 @@ export default defineConfig({
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
     redirects: {
-        '/': '/docs/',
         '/2024-learning-roadmap/': '/archive/2024/2024-learning-roadmap/',
         '/2025/感知/': '/archive/2025/sensing/',
         '/2025/感知/激光雷达/': '/archive/2025/sensing/激光雷达/',
