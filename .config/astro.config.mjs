@@ -4,6 +4,7 @@ import sidebar from './sidebar.mjs'
 import filterKnownBuildWarnings from '../src/integrations/filter-known-build-warnings'
 import criticalCssIntegration from '../src/integrations/critical-css'
 import cloudflareStaticHeaders from '../src/integrations/cloudflare-static-headers'
+import cloudflareRedirects from '../src/integrations/cloudflare-redirects'
 
 export default defineConfig({
     // 不使用适配器，使用默认的静态构建
@@ -102,6 +103,7 @@ export default defineConfig({
         filterKnownBuildWarnings(),
         criticalCssIntegration(),
         cloudflareStaticHeaders(),
+        cloudflareRedirects(),
         starlight({
             title: { zh: 'HUAT FSAC', en: 'HUAT FSAC' },
             description:
