@@ -15,18 +15,23 @@ const {
     sidebarSelector = 'nav.sidebar',
     storageKey = 'huat-sidebar-state',
 } = Astro.props;
+
+const clientConfig = {
+    sidebarSelector,
+    storageKey,
+};
 ---
 
-<script>
+<script define:vars={{ clientConfig }}>
     // 侧边栏状态管理
     document.addEventListener('DOMContentLoaded', () => {
-        const sidebar = document.querySelector('${sidebarSelector}');
+        const sidebar = document.querySelector(clientConfig.sidebarSelector);
         if (!sidebar) return;
         
         // 加载侧边栏状态
         function loadSidebarState() {
             try {
-                const state = localStorage.getItem('${storageKey}');
+                const state = localStorage.getItem(clientConfig.storageKey);
                 if (state) {
                     const parsedState = JSON.parse(state);
                     if (parsedState.collapsed) {
@@ -43,7 +48,7 @@ const {
         // 保存侧边栏状态
         function saveSidebarState(collapsed) {
             try {
-                localStorage.setItem('${storageKey}', JSON.stringify({ collapsed }));
+                localStorage.setItem(clientConfig.storageKey, JSON.stringify({ collapsed }));
             } catch (e) {
                 console.error('Failed to save sidebar state:', e);
             }

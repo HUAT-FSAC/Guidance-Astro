@@ -10,7 +10,10 @@ import { setupComponentLifecycle } from './component-init'
  */
 export interface LazyComponentConfig {
     selector: string
-    importFn: () => Promise<{ default: (element: HTMLElement) => () => void } | { init: (element: HTMLElement) => () => void }>
+    importFn: () => Promise<
+        | { default: (element: HTMLElement) => () => void }
+        | { init: (element: HTMLElement) => () => void }
+    >
     delay?: number
 }
 
@@ -19,10 +22,14 @@ export interface LazyComponentConfig {
  * @param config 组件配置
  */
 export function lazyLoadComponent(config: LazyComponentConfig): void {
-    const { selector, importFn, delay = 1000 } = config
+    const { selector, importFn, delay } = config
 
     const initFn = async (element: HTMLElement): Promise<() => void> => {
         try {
+            // 如果有延迟，先等待
+            if (delay) {
+                await new Promise((resolve) => setTimeout(resolve, delay))
+            }
             // 延迟加载组件
             const module = await importFn()
             const init = module.default || module.init
@@ -56,10 +63,11 @@ export function lazyLoadComponents(configs: LazyComponentConfig[]): void {
 export function lazyLoadThemeController(): void {
     lazyLoadComponent({
         selector: '[data-theme-switcher]',
-        importFn: () => import('./theme-controller').then((module) => ({
-            init: module.initThemeController
-        })),
-        delay: 500
+        importFn: () =>
+            import('./theme-controller').then((module) => ({
+                init: module.initThemeController,
+            })),
+        delay: 500,
     })
 }
 
@@ -69,10 +77,11 @@ export function lazyLoadThemeController(): void {
 export function lazyLoadShareMenu(): void {
     lazyLoadComponent({
         selector: '[data-share-container], [data-share-button]',
-        importFn: () => import('./share-controller').then((module) => ({
-            init: module.initShareMenu
-        })),
-        delay: 1000
+        importFn: () =>
+            import('./share-controller').then((module) => ({
+                init: module.initShareMenu,
+            })),
+        delay: 1000,
     })
 }
 

@@ -309,7 +309,7 @@ export function handleValidationError(field: string, message: string, _value?: u
 export function safeJsonParse<T>(jsonString: string, defaultValue: T): T {
     try {
         return JSON.parse(jsonString) as T
-    } catch (error) {
+    } catch {
         handleValidationError('JSON', 'Invalid JSON format', jsonString)
         return defaultValue
     }
@@ -324,7 +324,7 @@ export function safeJsonParse<T>(jsonString: string, defaultValue: T): T {
 export function safeJsonStringify(value: unknown, defaultValue = ''): string {
     try {
         return JSON.stringify(value)
-    } catch (error) {
+    } catch {
         handleValidationError('JSON', 'Failed to stringify', value)
         return defaultValue
     }

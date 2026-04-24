@@ -2,7 +2,7 @@ import { defineMiddleware } from 'astro:middleware'
 import { applyStandardHeaders, generateNonce } from './config/security'
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    const { url, pathname } = context
+    const { pathname } = context
 
     // 生成 CSP nonce（每个请求唯一）
     const nonce = generateNonce()

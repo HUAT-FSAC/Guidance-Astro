@@ -3,7 +3,7 @@
  * 提供搜索建议和自动完成功能
  */
 
-import { getSearchHistory, filterSearchHistory } from './search-history'
+import { filterSearchHistory } from './search-history'
 
 /**
  * 热门搜索词
@@ -23,7 +23,7 @@ const POPULAR_SEARCHES = [
     '赛车',
     '数据集',
     'Docker',
-    'VSCode 配置'
+    'VSCode 配置',
 ]
 
 /**
@@ -51,27 +51,26 @@ export function getSearchSuggestions(query: string, limit: number = 10): SearchS
         return POPULAR_SEARCHES.slice(0, limit).map((item, index) => ({
             id: `popular-${index}`,
             type: 'popular',
-            query: item
+            query: item,
         }))
     }
 
     // 从搜索历史中获取建议
-    const historySuggestions = filterSearchHistory(query)
-        .map((item) => ({
-            id: `history-${item.id}`,
-            type: 'history' as const,
-            query: item.query,
-            timestamp: item.timestamp
-        }))
+    const historySuggestions = filterSearchHistory(query).map((item) => ({
+        id: `history-${item.id}`,
+        type: 'history' as const,
+        query: item.query,
+        timestamp: item.timestamp,
+    }))
 
     // 从热门搜索中获取建议
-    const popularSuggestions = POPULAR_SEARCHES
-        .filter((item) => item.toLowerCase().includes(lowerQuery))
-        .map((item, index) => ({
-            id: `popular-${index}`,
-            type: 'popular' as const,
-            query: item
-        }))
+    const popularSuggestions = POPULAR_SEARCHES.filter((item) =>
+        item.toLowerCase().includes(lowerQuery)
+    ).map((item, index) => ({
+        id: `popular-${index}`,
+        type: 'popular' as const,
+        query: item,
+    }))
 
     // 合并建议并去重
     const combined = [...historySuggestions, ...popularSuggestions]
@@ -154,21 +153,24 @@ export function renderSearchSuggestions(
     suggestions.forEach((suggestion) => {
         const li = document.createElement('li')
         li.className = `search-suggestions-item search-suggestions-${suggestion.type}`
-        
+
         let icon = ''
         let typeLabel = ''
 
         switch (suggestion.type) {
             case 'history':
-                icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>'
+                icon =
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>'
                 typeLabel = '历史'
                 break
             case 'popular':
-                icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'
+                icon =
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'
                 typeLabel = '热门'
                 break
             case 'suggestion':
-                icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>'
+                icon =
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>'
                 typeLabel = '建议'
                 break
         }
@@ -327,6 +329,6 @@ if (typeof window !== 'undefined') {
     ).huatSearchSuggestions = {
         get: getSearchSuggestions,
         render: renderSearchSuggestions,
-        init: initSearchSuggestions
+        init: initSearchSuggestions,
     }
 }

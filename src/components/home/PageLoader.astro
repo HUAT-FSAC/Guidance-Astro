@@ -27,7 +27,7 @@
         try {
             if (loader.dataset && loader.dataset.huatInit === "1") return;
             loader.dataset.huatInit = "1";
-        } catch (e) {
+        } catch (_) {
             // 如果 dataset 访问失败（如旧版浏览器），继续执行
             if ((loader as HTMLElement & { __huatInit?: boolean }).__huatInit) return;
             (loader as HTMLElement & { __huatInit?: boolean }).__huatInit = true;
@@ -57,12 +57,12 @@
                 revealTimeoutId = window.setTimeout(function () {
                     try {
                         loader.style.display = "none";
-                    } catch (e) {
+                    } catch (_) {
                         // DOM 操作失败时静默处理
                     }
                     dispatchHidden();
                 }, 250);
-            } catch (e) {
+            } catch (_) {
                 // classList 操作失败时，直接隐藏
                 loader.style.display = "none";
                 dispatchHidden();
@@ -75,7 +75,7 @@
                 const elapsed = Date.now() - startTime;
                 const delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
                 revealTimeoutId = window.setTimeout(revealContent, delay);
-            } catch (e) {
+            } catch (_) {
                 // 出错时直接显示内容
                 loader.style.display = "none";
                 dispatchHidden();
@@ -86,12 +86,12 @@
             // 立即隐藏，防止闪烁
             try {
                 loader.style.display = "none";
-            } catch (e) {
+            } catch (_) {
                 // 静默处理 DOM 操作失败
             }
             try {
                 loader.classList.add("loaded");
-            } catch (e) {
+            } catch (_) {
                 // classList 失败已通过 display:none 隐藏
             }
             dispatchHidden();
@@ -99,7 +99,7 @@
             // 标记本次会话已访问
             try {
                 sessionStorage.setItem(STORAGE_KEY, "true");
-            } catch (e) {
+            } catch (_) {
                 // sessionStorage 可能不可用（隐私模式），忽略错误
             }
 
@@ -122,34 +122,34 @@
         function cleanup() {
             try {
                 if (revealTimeoutId) clearTimeout(revealTimeoutId);
-            } catch (e) {
+            } catch (_) {
                 // 清理超时 ID 失败时忽略
             }
             try {
                 if (maxWaitId) clearTimeout(maxWaitId);
-            } catch (e) {
+            } catch (_) {
                 // 清理超时 ID 失败时忽略
             }
             try {
                 delete loader.dataset.huatInit;
-            } catch (e) {
+            } catch (_) {
                 // dataset 删除失败时忽略
             }
             try {
                 delete (loader as HTMLElement & { __huatCleanup?: () => void }).__huatCleanup;
-            } catch (e) {
+            } catch (_) {
                 // 属性删除失败时忽略
             }
         }
 
         try {
             (loader as HTMLElement & { __huatCleanup?: () => void }).__huatCleanup = cleanup;
-        } catch (e) {
+        } catch (_) {
             // 属性设置失败时忽略
         }
         try {
             window.addEventListener("beforeunload", cleanup);
-        } catch (e) {
+        } catch (_) {
             // 事件监听失败时忽略
         }
     })();

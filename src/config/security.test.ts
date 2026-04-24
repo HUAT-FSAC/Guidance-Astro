@@ -29,7 +29,7 @@ describe('security headers', () => {
         expect(response.headers.get('X-Frame-Options')).toBe('SAMEORIGIN')
     })
 
-    it('returns a no-cache policy for HTML pages and the service worker', () => {
+    it('returns a short-cache policy for HTML pages and a no-store policy for the service worker', () => {
         expect(getCacheControlHeader('/docs-center/')).toBe('public, max-age=3600, must-revalidate')
         expect(getCacheControlHeader('/sw.js')).toBe('no-cache, no-store, must-revalidate')
     })

@@ -760,6 +760,26 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         padding: 0.625rem 0.75rem;
         font-size: 0.9rem;
     }
+
+    /* 触摸目标优化 */
+    .sl-markdown-content a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .sl-markdown-content button,
+    .sl-markdown-content [role='button'] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* 侧边栏触摸优化 */
+    .sl-sidebar-item > a {
+        min-height: 44px;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
 }
 
 /* 小屏手机 */

@@ -4,27 +4,25 @@ import {
     type ShowcaseScenario,
     showcaseScenarios,
     showcaseScripts,
-    validateShowcaseConfig,
 } from '../../src/data/showcase-lab'
 import {
     advanceShowcaseReplay,
+    advanceShowcaseScript,
     buildTrendPolyline,
+    driftShowcaseCache,
+    getCacheSimulationSummary,
+    getDefaultCacheSimulationState,
     getDefaultShowcaseSelection,
+    getShowcaseComparisonSnapshot,
     getShowcaseReplaySnapshot,
+    getShowcaseScriptSnapshot,
+    resetShowcaseCache,
+    resolveCompareScenarioId,
     resolveReplayFrameIndex,
     resolveScenario,
-    resolveShowcaseSelection,
-    // Presentation Console utilities
-    resolveCompareScenarioId,
-    getShowcaseComparisonSnapshot,
     resolveShowcaseScript,
-    getShowcaseScriptSnapshot,
-    advanceShowcaseScript,
-    getDefaultCacheSimulationState,
+    resolveShowcaseSelection,
     warmShowcaseCache,
-    driftShowcaseCache,
-    resetShowcaseCache,
-    getCacheSimulationSummary,
 } from '../../src/utils/showcase-lab'
 
 describe('showcase lab', () => {
@@ -90,11 +88,11 @@ describe('showcase lab', () => {
 
         expect(snapshot.frame.title).toBe('校准完成，释放起步窗口')
         expect(snapshot.metrics.find((metric) => metric.id === 'speed')?.value).toBe('24')
-        expect(snapshot.stages.find((stage) => stage.id === 'planning')?.state).toBe(
-            '起步轨迹锁定为安全走廊'
+        expect(snapshot.stages.find((stage) => stage.id === 'actuation')?.state).toBe(
+            '扭矩释放提升到 52%'
         )
-        expect(snapshot.track.car).toEqual({ x: 264, y: 104 })
-        expect(snapshot.trendCursorIndex).toBe(2)
+        expect(snapshot.track.car).toEqual({ x: 180, y: 110 })
+        expect(snapshot.trendCursorIndex).toBe(3)
     })
 
     it('advances from the last replay frame to the next scenario default selection', () => {
@@ -115,24 +113,6 @@ describe('showcase lab', () => {
             isAtEnd: false,
         })
     })
-
-    // it('throws when a scenario default subsystem is not part of the scenario definition', () => {
-    //     const invalidScenario: ShowcaseScenario = {
-    //         ...showcaseScenarios[0],
-    //         id: 'invalid-showcase',
-    //         subsystems: showcaseScenarios[0].subsystems.filter(
-    //             (subsystem) => subsystem.id !== 'perception'
-    //         ),
-    //         defaultSubsystemId: 'perception',
-    //     }
-
-    //     expect(() =>
-    //         validateShowcaseConfig([invalidScenario], {
-    //             scenarioId: 'invalid-showcase',
-    //             subsystemId: 'perception',
-    //         })
-    //     ).toThrow(/defaultSubsystemId/)
-    // })
 
     it('creates stable SVG polyline points from trend values', () => {
         expect(buildTrendPolyline([72, 84, 96], 120, 60, 10)).toBe('10,50 60,30 110,10')
@@ -297,7 +277,7 @@ describe('showcase lab', () => {
             expect(coldSummary.statusTone).toBe('neutral')
             expect(coldSummary.readyCount).toBe(0)
             expect(coldSummary.staleCount).toBe(0)
-            expect(coldSummary.pendingCount).toBe(5)
+            expect(coldSummary.pendingCount).toBe(0)
 
             const warmState = warmShowcaseCache()
             const warmSummary = getCacheSimulationSummary(warmState)

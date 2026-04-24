@@ -29,10 +29,15 @@ const {
     items: manualItems,
 } = Astro.props;
 
+// 将服务器端变量传递到客户端脚本
+const clientConfig = {
+    maxLevel,
+    containerSelector,
+};
+
 // 自动生成锚点导航
 function generateAnchors(): AnchorItem[] {
     const anchors: AnchorItem[] = [];
-    const stack: AnchorItem[] = [];
     
     // 模拟 DOM 解析（在服务器端）
     // 注意：在实际运行时，这需要在客户端执行
@@ -77,10 +82,10 @@ const items = manualItems || (autoGenerate ? generateAnchors() : []);
     </nav>
 )}
 
-<script>
+<script define:vars={{ clientConfig }}>
     // 在客户端执行锚点导航生成和交互
     document.addEventListener('DOMContentLoaded', () => {
-        const container = document.querySelector('${containerSelector}');
+        const container = document.querySelector(clientConfig.containerSelector);
         const navigation = document.querySelector('.anchor-navigation');
         
         if (!container || !navigation) return;
@@ -93,7 +98,7 @@ const items = manualItems || (autoGenerate ? generateAnchors() : []);
             
             headings.forEach((heading) => {
                 const level = parseInt(heading.tagName.substring(1));
-                if (level > ${maxLevel}) return;
+                if (level > clientConfig.maxLevel) return;
                 
                 const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
                 if (!heading.id) {

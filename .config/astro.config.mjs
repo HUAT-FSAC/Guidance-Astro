@@ -110,7 +110,12 @@ export default defineConfig({
                 root: { label: '中文', lang: 'zh' },
                 en: { label: 'English', lang: 'en' },
             },
-            customCss: ['./src/styles/docs-global.css', './src/styles/code-blocks.css', './src/styles/search-suggestions.css', './src/styles/search-highlight.css'],
+            customCss: [
+                './src/styles/docs-global.css',
+                './src/styles/code-blocks.css',
+                './src/styles/search-suggestions.css',
+                './src/styles/search-highlight.css',
+            ],
             head: [
                 {
                     tag: 'meta',
@@ -180,7 +185,12 @@ export default defineConfig({
                 },
                 {
                     tag: 'link',
-                    attrs: { rel: 'preload', href: '/og-image.png', as: 'image', type: 'image/png' },
+                    attrs: {
+                        rel: 'preload',
+                        href: '/og-image.png',
+                        as: 'image',
+                        type: 'image/png',
+                    },
                 },
                 {
                     tag: 'link',
@@ -219,7 +229,7 @@ export default defineConfig({
                     tag: 'link',
                     attrs: {
                         rel: 'stylesheet',
-                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
+                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght=400;500;600&display=swap',
                         crossorigin: 'anonymous',
                         media: 'print',
                         onload: "this.media='all'",

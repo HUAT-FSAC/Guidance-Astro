@@ -3,7 +3,7 @@
  * 提供离线访问和资源缓存支持
  */
 
-const CACHE_NAME = 'huat-fsac-v3';
+const CACHE_NAME = 'huat-fsac-v4';
 const OFFLINE_URL = '/offline.html';
 
 // 需要预缓存的关键资源
@@ -242,12 +242,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
-    // 跳过非 GET 请求
     if (request.method !== 'GET') {
         return;
     }
 
-    // 跳过浏览器扩展和开发者工具请求
     if (request.url.startsWith('chrome-extension://') ||
         request.url.includes('__vite') ||
         request.url.includes('hot-update') ||
@@ -255,14 +253,29 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // 对于不同类型的请求使用不同的缓存策略
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    let strategy;
+
+    if (request.mode === 'navigate') {
+        strategy = 'NETWORK_FIRST';
+    } else if (pathname.startsWith('/_astro/') || pathname.startsWith('/pagefind/') ||
+               CACHEABLE_EXTENSIONS.some(ext => pathname.endsWith(ext) && (
+                   ext === '.woff' || ext === '.woff2' || ext === '.css' ||
+                   ext === '.png' || ext === '.jpg' || ext === '.jpeg' ||
+                   ext === '.svg' || ext === '.webp' || ext === '.avif'
+               ))) {
+        strategy = 'CACHE_FIRST';
+    } else if (pathname.endsWith('.json') || pathname.endsWith('.xml')) {
+        strategy = 'STALE_WHILE_REVALIDATE';
+    } else {
+        strategy = 'NETWORK_FIRST';
+    }
+
     event.respondWith(
         (async () => {
             try {
-                // 先尝试获取网络响应来确定内容类型
-                const networkResponse = await fetch(request.clone());
-                const strategy = getCacheStrategy(request, networkResponse);
-
                 switch (strategy) {
                     case 'CACHE_FIRST':
                         return cacheFirst(request);
@@ -272,19 +285,16 @@ self.addEventListener('fetch', (event) => {
                     default:
                         return networkFirst(request);
                 }
-            } catch (error) {
-                // 网络失败，尝试从缓存获取
+            } catch (_) {
                 const cachedResponse = await caches.match(request);
                 if (cachedResponse) {
                     return cachedResponse;
                 }
 
-                // 如果是导航请求，返回离线页面
                 if (request.mode === 'navigate') {
                     return caches.match(OFFLINE_URL);
                 }
 
-                // 返回错误响应
                 return new Response('Network error occurred', {
                     status: 408,
                     headers: { 'Content-Type': 'text/plain' }
