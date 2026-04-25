@@ -24,10 +24,9 @@ export function renderCloudflareRedirects(redirects: Record<string, RedirectConf
         }
     }
 
-    // 添加 404 规则
-    rules.push('')
-    rules.push('# 404 页面')
-    rules.push('/* /404.html 404')
+    // 注意：不添加 /* /404.html 404 catch-all 规则
+    // Cloudflare Pages 会自动使用 dist/404.html 处理不存在的路径
+    // 手动添加 catch-all 规则会覆盖所有静态文件服务（包括 index.html），导致首页 404
 
     return rules.join('\n')
 }
