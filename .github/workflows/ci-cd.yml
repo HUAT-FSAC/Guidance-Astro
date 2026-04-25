@@ -249,6 +249,9 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
 
+      - name: Configure pnpm for deploy
+        run: pnpm config set ignore-workspace-root-check true
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -260,6 +263,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4'
           command: pages deploy dist --project-name=huat-fsac-staging --branch=develop
 
   deploy-production:
@@ -284,6 +288,9 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
 
+      - name: Configure pnpm for deploy
+        run: pnpm config set ignore-workspace-root-check true
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -295,6 +302,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4'
           command: pages deploy dist --project-name=huat-fsac --branch=main
 
   lighthouse:
