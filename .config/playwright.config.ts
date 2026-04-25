@@ -19,7 +19,7 @@ export default defineConfig({
         command: webServerCommand,
         url: baseURL,
         timeout: 120000,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === 'true' || !process.env.CI,
     },
     projects: [
         {

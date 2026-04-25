@@ -171,6 +171,7 @@ jobs:
       - name: Run deployment smoke tests
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4321
+          PLAYWRIGHT_REUSE_SERVER: 'true'
         run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
