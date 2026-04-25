@@ -240,17 +240,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
-
-      - name: Configure pnpm for deploy
-        run: pnpm config set ignore-workspace-root-check true
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -259,12 +252,10 @@ jobs:
           path: dist
 
       - name: Deploy to Cloudflare Pages (Staging)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4'
-          command: pages deploy dist --project-name=huat-fsac-staging --branch=develop
+        run: npx wrangler@4 pages deploy dist --project-name=huat-fsac-staging --branch=develop
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   deploy-production:
     name: Deploy to Production
@@ -279,17 +270,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
-
-      - name: Configure pnpm for deploy
-        run: pnpm config set ignore-workspace-root-check true
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -298,12 +282,10 @@ jobs:
           path: dist
 
       - name: Deploy to Cloudflare Pages (Production)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4'
-          command: pages deploy dist --project-name=huat-fsac --branch=main
+        run: npx wrangler@4 pages deploy dist --project-name=huat-fsac --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   lighthouse:
     name: Lighthouse Post-Deploy Check
