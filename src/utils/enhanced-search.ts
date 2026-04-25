@@ -123,7 +123,9 @@ function setupSearchTracking(): void {
 
         // 监听搜索结果加载完成事件
         const observer = new MutationObserver(() => {
-            const searchResults = document.querySelector('[data-pagefind-ui]') || document.querySelector('.pagefind-ui')
+            const searchResults =
+                document.querySelector('[data-pagefind-ui]') ||
+                document.querySelector('.pagefind-ui')
             if (searchResults) {
                 const query = pagefindInput.value.trim()
                 if (query) {

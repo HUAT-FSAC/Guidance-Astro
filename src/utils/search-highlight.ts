@@ -9,7 +9,11 @@
  * @param query 搜索查询
  * @param className 高亮类名
  */
-export function highlightSearchResults(content: string, query: string, className: string = 'search-highlight'): string {
+export function highlightSearchResults(
+    content: string,
+    query: string,
+    className: string = 'search-highlight'
+): string {
     if (!query || query.trim().length === 0) {
         return content
     }
@@ -80,6 +84,6 @@ if (typeof window !== 'undefined') {
         }
     ).huatSearchHighlight = {
         highlight: highlightSearchResults,
-        init: initSearchResultHighlight
+        init: initSearchResultHighlight,
     }
 }

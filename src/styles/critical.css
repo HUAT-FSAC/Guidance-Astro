@@ -51,14 +51,19 @@
 
 /* 主题切换过渡 */
 html {
-    transition: background-color var(--theme-transition), color var(--theme-transition);
+    transition:
+        background-color var(--theme-transition),
+        color var(--theme-transition);
 }
 
 /* 基本布局 */
 body {
     margin: 0;
     padding: 0;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
 }
 
 /* 导航栏 */
@@ -125,18 +130,18 @@ nav.sidebar a[aria-current='page'] {
         line-height: 1.75;
         padding: 0 0.5rem;
     }
-    
+
     .sl-markdown-content h1 {
         font-size: 1.75rem;
         padding-bottom: 0.5rem;
     }
-    
+
     .sl-markdown-content h2 {
         font-size: 1.35rem;
         margin-top: 2rem;
         padding-top: 1rem;
     }
-    
+
     .sl-markdown-content h3 {
         font-size: 1.15rem;
         margin-top: 1.5rem;

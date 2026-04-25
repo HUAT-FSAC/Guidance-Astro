@@ -33,7 +33,7 @@ export function renderCloudflareRedirects(redirects: Record<string, RedirectConf
 
 export default function cloudflareRedirects(): AstroIntegration {
     // 使用闭包存储 redirects 配置
-    let redirectsConfig: Record<string, any> = {}
+    let redirectsConfig: Record<string, RedirectConfig> = {}
 
     return {
         name: 'cloudflare-redirects',
