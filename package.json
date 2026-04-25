@@ -20,7 +20,7 @@
         "quality:bundle": "node scripts/quality/check-bundle-budget.mjs",
         "quality:lighthouse": "lhci collect --config=.config/lighthouserc.json && lhci assert --config=.config/lighthouserc.json",
         "metrics:collect": "node scripts/metrics/collect-github-metrics.mjs",
-        "dev:worker": "wrangler pages dev dist",
+        "dev:worker": "wrangler pages dev dist --compatibility-date=2024-04-01",
         "prepare": "husky"
     },
     "dependencies": {
