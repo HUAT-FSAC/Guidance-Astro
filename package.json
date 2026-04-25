@@ -42,6 +42,7 @@
         }
     },
     "devDependencies": {
+        "@cloudflare/workers-types": "^4.20260425.1",
         "@commitlint/cli": "^20.4.2",
         "@commitlint/config-conventional": "^20.4.2",
         "@playwright/test": "^1.58.2",

@@ -4,7 +4,10 @@
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 
-import type { D1Database, KVNamespace } from '@cloudflare/workers-types'
+// 静态构建模式：使用内联类型声明替代 @cloudflare/workers-types
+// 避免 workers-types 与 DOM 类型的冲突
+type D1Database = unknown
+type KVNamespace = unknown
 
 declare module 'cloudflare:workers' {
     export interface Env {

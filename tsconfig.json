@@ -10,7 +10,6 @@
             "@data/*": ["src/data/*"],
             "@lib/*": ["src/lib/*"]
         },
-        "types": ["@cloudflare/workers-types"],
         "skipLibCheck": true,
         "strictNullChecks": true,
         "noImplicitAny": true,
