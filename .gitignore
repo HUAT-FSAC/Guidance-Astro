@@ -187,3 +187,7 @@ $RECYCLE.BIN/
 
 # 调试文件
 .node_repl_history
+
+# Lighthouse CI reports
+.lighthouseci/
+

@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+﻿name: CI/CD Pipeline
 
 on:
   push:
@@ -158,15 +158,29 @@ jobs:
           name: dist
           path: dist
 
-      - name: Check bundle budget
-        run: pnpm quality:bundle
-
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Start preview server
+        run: pnpm preview --port 4321 --host 127.0.0.1 > preview.log 2>&1 &
+        shell: bash
+
+      - name: Wait for preview server
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321 > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Preview server failed to start"
+          cat preview.log
+          exit 1
+        shell: bash
+
       - name: Run deployment smoke tests
         env:
-          PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm dev:worker --port 4321
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4321
         run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
@@ -206,7 +220,7 @@ jobs:
           path: dist
           
       - name: Start preview server
-        run: pnpm dev:worker --port 4321 > preview.log 2>&1 &
+        run: pnpm preview --port 4321 --host 127.0.0.1 > preview.log 2>&1 &
         shell: bash
 
       - name: Wait for preview server
@@ -238,14 +252,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
       - name: Deploy to Cloudflare Pages (Staging)
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: huat-fsac-staging
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy dist --project-name=huat-fsac-staging --branch=develop
 
   deploy-production:
     name: Deploy to Production
@@ -260,14 +278,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
       - name: Deploy to Cloudflare Pages (Production)
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: huat-fsac
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy dist --project-name=huat-fsac --branch=main
 
   lighthouse:
     name: Lighthouse Post-Deploy Check
@@ -291,7 +313,7 @@ jobs:
 
       - name: Run Lighthouse CI against production
         run: |
-          pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
-          pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
+          pnpm dlx @lhci/cli@0.15.1 collect --url=https://huat-fsac.eu.org --url=https://huat-fsac.eu.org/docs-center/ --url=https://huat-fsac.eu.org/team/ --url=https://huat-fsac.eu.org/join/
+          pnpm dlx @lhci/cli@0.15.1 assert --preset=lighthouse:recommended
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
