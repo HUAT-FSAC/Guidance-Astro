@@ -6,7 +6,7 @@ export default function criticalCssIntegration() {
     return {
         name: 'critical-css',
         hooks: {
-            'astro:build:done': async ({ dir }) => {
+            'astro:build:done': async ({ dir }: { dir: URL }) => {
                 const criticalCssPath = path.resolve('src/styles/critical.css')
                 const criticalCss = fs.readFileSync(criticalCssPath, 'utf8')
 
@@ -15,7 +15,9 @@ export default function criticalCssIntegration() {
                 // 遍历所有HTML文件
                 const htmlFiles = fs
                     .readdirSync(dirPath, { recursive: true })
-                    .filter((file) => file.endsWith('.html'))
+                    .filter(
+                        (file): file is string => typeof file === 'string' && file.endsWith('.html')
+                    )
 
                 for (const htmlFile of htmlFiles) {
                     const htmlPath = path.join(dirPath, htmlFile)

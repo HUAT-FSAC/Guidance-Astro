@@ -24,24 +24,32 @@ export interface LazyComponentConfig {
 export function lazyLoadComponent(config: LazyComponentConfig): void {
     const { selector, importFn, delay } = config
 
-    const initFn = async (element: HTMLElement): Promise<() => void> => {
-        try {
-            // 如果有延迟，先等待
-            if (delay) {
-                await new Promise((resolve) => setTimeout(resolve, delay))
-            }
-            // 延迟加载组件
-            const module = await importFn()
-            const init = module.default || module.init
+    const initFn = (element: HTMLElement): (() => void) | void => {
+        let cleanup: (() => void) | undefined
 
-            if (typeof init === 'function') {
-                return init(element)
+        const load = async () => {
+            try {
+                // 如果有延迟，先等待
+                if (delay) {
+                    await new Promise((resolve) => setTimeout(resolve, delay))
+                }
+                // 延迟加载组件
+                const module = await importFn()
+                const init = 'default' in module ? module.default : module.init
+
+                if (typeof init === 'function') {
+                    cleanup = init(element)
+                }
+            } catch (error) {
+                console.error(`Failed to lazy load component for selector "${selector}":`, error)
             }
-        } catch (error) {
-            console.error(`Failed to lazy load component for selector "${selector}":`, error)
         }
 
-        return () => {}
+        load()
+
+        return () => {
+            if (cleanup) cleanup()
+        }
     }
 
     setupComponentLifecycle(selector, initFn)

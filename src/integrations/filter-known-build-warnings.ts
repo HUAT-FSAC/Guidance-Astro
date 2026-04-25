@@ -46,45 +46,61 @@ export default function filterKnownBuildWarnings(): AstroIntegration {
                 // 拦截 stdout
                 if (!originalStdoutWrite) {
                     originalStdoutWrite = process.stdout.write
-                    process.stdout.write = ((
+                    process.stdout.write = function (
+                        this: typeof process.stdout,
                         buffer: string | Uint8Array,
-                        encoding?: BufferEncoding | ((err?: Error) => void),
-                        cb?: (err?: Error) => void
-                    ): boolean => {
+                        encodingOrCb?: unknown,
+                        cb?: unknown
+                    ): boolean {
                         const str = typeof buffer === 'string' ? buffer : buffer.toString()
-                        if (shouldFilterMessage(str)) return true
-                        if (typeof encoding === 'function') {
-                            return originalStdoutWrite!.call(process.stdout, buffer, encoding)
+                        if (shouldFilterMessage(str)) {
+                            if (typeof encodingOrCb === 'function') {
+                                ;(encodingOrCb as (err?: Error | null) => void)()
+                            } else if (typeof cb === 'function') {
+                                ;(cb as (err?: Error | null) => void)()
+                            }
+                            return true
+                        }
+                        if (typeof encodingOrCb === 'function') {
+                            return originalStdoutWrite!.call(this, buffer, encodingOrCb as never)
                         }
                         return originalStdoutWrite!.call(
-                            process.stdout,
+                            this,
                             buffer,
-                            encoding as BufferEncoding,
-                            cb
+                            encodingOrCb as BufferEncoding,
+                            cb as never
                         )
-                    }) as typeof process.stdout.write
+                    } as typeof process.stdout.write
                 }
 
                 // 拦截 stderr
                 if (!originalStderrWrite) {
                     originalStderrWrite = process.stderr.write
-                    process.stderr.write = ((
+                    process.stderr.write = function (
+                        this: typeof process.stderr,
                         buffer: string | Uint8Array,
-                        encoding?: BufferEncoding | ((err?: Error) => void),
-                        cb?: (err?: Error) => void
-                    ): boolean => {
+                        encodingOrCb?: unknown,
+                        cb?: unknown
+                    ): boolean {
                         const str = typeof buffer === 'string' ? buffer : buffer.toString()
-                        if (shouldFilterMessage(str)) return true
-                        if (typeof encoding === 'function') {
-                            return originalStderrWrite!.call(process.stderr, buffer, encoding)
+                        if (shouldFilterMessage(str)) {
+                            if (typeof encodingOrCb === 'function') {
+                                ;(encodingOrCb as (err?: Error | null) => void)()
+                            } else if (typeof cb === 'function') {
+                                ;(cb as (err?: Error | null) => void)()
+                            }
+                            return true
+                        }
+                        if (typeof encodingOrCb === 'function') {
+                            return originalStderrWrite!.call(this, buffer, encodingOrCb as never)
                         }
                         return originalStderrWrite!.call(
-                            process.stderr,
+                            this,
                             buffer,
-                            encoding as BufferEncoding,
-                            cb
+                            encodingOrCb as BufferEncoding,
+                            cb as never
                         )
-                    }) as typeof process.stderr.write
+                    } as typeof process.stderr.write
                 }
             },
             'astro:build:done': () => {

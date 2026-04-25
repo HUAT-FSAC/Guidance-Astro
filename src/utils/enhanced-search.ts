@@ -129,7 +129,7 @@ function setupSearchTracking(): void {
             if (searchResults) {
                 const query = pagefindInput.value.trim()
                 if (query) {
-                    initSearchResultHighlight(searchResults, query)
+                    initSearchResultHighlight(searchResults as HTMLElement, query)
                 }
             }
         })

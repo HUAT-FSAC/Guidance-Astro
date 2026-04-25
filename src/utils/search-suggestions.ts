@@ -274,7 +274,7 @@ export function initSearchSuggestions(
                 e.preventDefault()
                 if (activeItem) {
                     const button = activeItem.querySelector('.search-suggestions-button')
-                    if (button) {
+                    if (button && button instanceof HTMLElement) {
                         button.click()
                     }
                 }
