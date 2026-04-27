@@ -151,11 +151,20 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Verify dist contents
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Dist directory listing:"
+          ls -la dist/ | head -n 20
+          echo "---"
+          test -f dist/index.html && echo "dist/index.html exists" || echo "dist/index.html MISSING"
+        shell: bash
+
       - name: Run deployment smoke tests
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4321
           PLAYWRIGHT_REUSE_SERVER: 'true'
-          PLAYWRIGHT_WEB_SERVER_COMMAND: 'python3 -m http.server 4321 --bind 127.0.0.1 --directory dist'
+          PLAYWRIGHT_WEB_SERVER_COMMAND: 'cd dist && python3 -m http.server 4321 --bind 127.0.0.1'
         run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
