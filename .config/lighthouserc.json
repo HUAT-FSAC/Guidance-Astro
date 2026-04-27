@@ -1,13 +1,9 @@
-﻿{
+{
     "ci": {
         "collect": {
             "numberOfRuns": 1,
-            "url": [
-                "http://localhost:4321/",
-                "http://localhost:4321/docs-center/",
-                "http://localhost:4321/team/",
-                "http://localhost:4321/join/"
-            ],
+            "staticDistDir": "dist",
+            "url": ["/", "/docs-center/", "/team/", "/join/"],
             "settings": {
                 "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
             }

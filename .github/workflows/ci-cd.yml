@@ -1,4 +1,4 @@
-﻿name: CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -151,27 +151,11 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Start preview server
-        run: pnpm preview --port 4321 --host 127.0.0.1 > preview.log 2>&1 &
-        shell: bash
-
-      - name: Wait for preview server
-        run: |
-          for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:4321 > /dev/null; then
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Preview server failed to start"
-          cat preview.log
-          exit 1
-        shell: bash
-
       - name: Run deployment smoke tests
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4321
           PLAYWRIGHT_REUSE_SERVER: 'true'
+          PLAYWRIGHT_WEB_SERVER_COMMAND: 'python3 -m http.server 4321 --bind 127.0.0.1 --directory dist'
         run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
@@ -208,24 +192,14 @@ jobs:
           name: dist
           path: dist
           
-      - name: Start preview server
-        run: pnpm preview --port 4321 --host 127.0.0.1 > preview.log 2>&1 &
-        shell: bash
-
-      - name: Wait for preview server
+      - name: Check dist contents
         run: |
-          for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:4321 > /dev/null; then
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Preview server failed to start"
-          cat preview.log
-          exit 1
+          echo "Dist directory contents:"
+          ls -la dist/
+          echo "---"
+          test -f dist/index.html || (echo "Missing dist/index.html" && exit 1)
+          test -f dist/404.html || (echo "Missing dist/404.html" && exit 1)
+          echo "Build artifacts look good"
         shell: bash
-
-      - name: Check preview server
-        run: curl -fsS http://127.0.0.1:4321 | head -n 10
 
 
