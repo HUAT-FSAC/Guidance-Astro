@@ -33,17 +33,17 @@
 请粘贴关键日志摘要或截图链接，至少覆盖 `lint/typecheck/test/build`。
 
 - **Lint** (`pnpm lint`):
-  - 结果：
-  - 证据：
+    - 结果：
+    - 证据：
 - **TypeCheck** (`pnpm exec tsc --noEmit`):
-  - 结果：
-  - 证据：
+    - 结果：
+    - 证据：
 - **Test** (`pnpm test:run` 或相关测试命令):
-  - 结果：
-  - 证据：
+    - 结果：
+    - 证据：
 - **Build** (`pnpm build`):
-  - 结果：
-  - 证据：
+    - 结果：
+    - 证据：
 
 ## 影响范围
 

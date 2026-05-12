@@ -1,68 +1,68 @@
-function initGlobalFeatures(): void {
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeTheme();
-        initializeAnalytics();
-        initializeKeyboardShortcuts();
-    });
+/**
+ * 全局初始化模块
+ * 在页面加载时初始化所有全局功能
+ */
 
-    document.addEventListener('astro:page-load', () => {
-        initializeTheme();
-        initializeAnalytics();
-        initializeKeyboardShortcuts();
-    });
-}
+/**
+ * 初始化所有全局功能
+ */
+export function initGlobalFeatures(): void {
+    if (typeof window === 'undefined') return
 
-function initializeTheme(): void {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
+    // 初始化搜索快捷键（关键功能，同步加载）
+    import('./enhanced-search').then(({ initSearchShortcut }) => {
+        initSearchShortcut()
+    })
+
+    // 延迟加载非关键功能
+    setTimeout(() => {
+        // 初始化性能监控
+        import('./performance').then(({ initPerformanceMonitor }) => {
+            initPerformanceMonitor({
+                reportToAnalytics: true,
+                logToConsole: import.meta.env.DEV,
+            })
+        })
+
+        // 初始化分析跟踪
+        import('./analytics').then(({ initAnalytics }) => {
+            initAnalytics()
+        })
+
+        // 懒加载非关键组件
+        import('./lazy-components').then(({ lazyLoadAllComponents }) => {
+            lazyLoadAllComponents()
+        })
+    }, 500)
+
+    // 开发环境提示
+    if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('[GlobalInit] All features initialized')
     }
 }
 
-function initializeAnalytics(): void {
-    if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('js', new Date());
-        window.gtag('config', import.meta.env.GOOGLE_ANALYTICS_ID || '');
-    }
-}
-
-function initializeKeyboardShortcuts(): void {
-    const shortcuts = [
-        { key: 'Escape', handler: () => closeModals() },
-        { key: '?', handler: () => showKeyboardHelp() },
-    ];
-
-    document.addEventListener('keydown', (e) => {
-        const shortcut = shortcuts.find(s => s.key === e.key);
-        if (shortcut) {
-            e.preventDefault();
-            shortcut.handler();
-        }
-    });
-}
-
-function closeModals(): void {
-    document.querySelectorAll('[role="dialog"]').forEach(dialog => {
-        dialog.removeAttribute('open');
-    });
-}
-
-function showKeyboardHelp(): void {
-    console.log('Keyboard shortcuts help');
-}
-
+/**
+ * 设置全局初始化生命周期
+ * 处理 Astro 页面导航
+ */
 export function setupGlobalInit(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') return
 
     const init = () => {
-        initGlobalFeatures();
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
-    } else {
-        init();
+        initGlobalFeatures()
     }
 
-    document.addEventListener('astro:page-load', init);
+    // 初始加载
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true })
+    } else {
+        init()
+    }
+
+    // Astro 页面导航
+    document.addEventListener('astro:page-load', init)
 }
+
+// 自动执行初始化
+setupGlobalInit()

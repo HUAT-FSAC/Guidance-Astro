@@ -1,5 +1,6 @@
 import { setupComponentLifecycle } from './component-init'
 import { safeGetItem, safeSetItem } from './storage'
+import { trapFocus, announce } from './accessibility'
 
 type ThemeScheme = 'light' | 'dark'
 
@@ -67,13 +68,28 @@ function getPreferredScheme(): ThemeScheme {
     return 'light'
 }
 
-function setDropdownState(root: HTMLElement, dropdownSelector: string, isOpen: boolean): void {
+function setDropdownState(
+    root: HTMLElement,
+    dropdownSelector: string,
+    isOpen: boolean,
+    onOpen?: () => void,
+    onClose?: () => void
+): void {
     const dropdown = root.querySelector(dropdownSelector)
     const toggle = root.querySelector('button')
+    const currentlyOpen = dropdown?.classList.contains('active') ?? false
+
+    if (currentlyOpen === isOpen) return
 
     dropdown?.classList.toggle('active', isOpen)
     dropdown?.setAttribute('aria-hidden', String(!isOpen))
     toggle?.setAttribute('aria-expanded', String(isOpen))
+
+    if (isOpen) {
+        onOpen?.()
+    } else {
+        onClose?.()
+    }
 }
 
 function isDropdownVisible(root: HTMLElement, dropdownSelector: string): boolean {
@@ -130,6 +146,7 @@ export function initThemeController(
 
     let longPressTimer: ReturnType<typeof setTimeout> | undefined
     let longPressTriggered = false
+    let untrapFocus: (() => void) | null = null
 
     const applyScheme = (scheme: ThemeScheme) => {
         document.documentElement.setAttribute('data-theme', scheme)
@@ -142,11 +159,28 @@ export function initThemeController(
 
         root.querySelectorAll<HTMLElement>(optionSelector).forEach((option) => {
             option.classList.toggle('active', option.dataset.color === color)
+            option.setAttribute('aria-selected', String(option.dataset.color === color))
         })
 
         if (indicator) {
             indicator.style.background = color
         }
+    }
+
+    const closeDropdown = () => {
+        setDropdownState(root, dropdownSelector, false, undefined, () => {
+            if (untrapFocus) {
+                untrapFocus()
+                untrapFocus = null
+            }
+            toggle.focus()
+        })
+    }
+
+    const openDropdown = () => {
+        setDropdownState(root, dropdownSelector, true, () => {
+            untrapFocus = trapFocus(dropdown)
+        })
     }
 
     const clearLongPressTimer = () => {
@@ -161,7 +195,7 @@ export function initThemeController(
         clearLongPressTimer()
         longPressTimer = setTimeout(() => {
             longPressTriggered = true
-            setDropdownState(root, dropdownSelector, true)
+            openDropdown()
         }, longPressDuration)
     }
 
@@ -204,7 +238,7 @@ export function initThemeController(
         }
 
         if (isDropdownVisible(root, dropdownSelector)) {
-            setDropdownState(root, dropdownSelector, false)
+            closeDropdown()
             return
         }
 
@@ -213,23 +247,43 @@ export function initThemeController(
         const next = current === 'dark' ? 'light' : 'dark'
         applyScheme(next)
         persistThemeScheme(next)
+        announce(next === 'dark' ? '已切换至深色模式' : '已切换至亮色模式')
     }
 
     const handleContextMenu = (event: Event) => {
         event.preventDefault()
         event.stopPropagation()
-        setDropdownState(root, dropdownSelector, !isDropdownVisible(root, dropdownSelector))
+        if (isDropdownVisible(root, dropdownSelector)) {
+            closeDropdown()
+        } else {
+            openDropdown()
+        }
     }
 
     const handleDocumentClick = (event: MouseEvent) => {
         if (!root.contains(event.target as Node)) {
-            setDropdownState(root, dropdownSelector, false)
+            closeDropdown()
         }
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-            setDropdownState(root, dropdownSelector, false)
+            closeDropdown()
+        }
+
+        if (isDropdownVisible(root, dropdownSelector)) {
+            const options = Array.from(root.querySelectorAll<HTMLElement>(optionSelector))
+            const currentIndex = options.indexOf(document.activeElement as HTMLElement)
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault()
+                const nextIndex = (currentIndex + 1) % options.length
+                options[nextIndex].focus()
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault()
+                const nextIndex = (currentIndex - 1 + options.length) % options.length
+                options[nextIndex].focus()
+            }
         }
     }
 
@@ -244,7 +298,11 @@ export function initThemeController(
         applyThemeColor(color, accent)
         safeSetItem(THEME_STORAGE_KEYS.color, color)
         safeSetItem(THEME_STORAGE_KEYS.accent, accent)
-        setDropdownState(root, dropdownSelector, false)
+        
+        const themeName = option.getAttribute('title') || '新主题'
+        announce(`已切换至 ${themeName} 主题`)
+        
+        closeDropdown()
     }
 
     if (typeof window !== 'undefined' && 'PointerEvent' in window) {
@@ -285,6 +343,7 @@ export function initThemeController(
 
     return () => {
         clearLongPressTimer()
+        if (untrapFocus) untrapFocus()
 
         if (typeof window !== 'undefined' && 'PointerEvent' in window) {
             toggle.removeEventListener('pointerdown', handlePointerDown)

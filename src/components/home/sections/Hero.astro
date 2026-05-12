@@ -68,7 +68,7 @@ const bgStyle = backgroundImage
             linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
         background-size: 50px 50px;
-        border-bottom: 1px solid var(--fs-border-subtle);
+        border-bottom: 1px solid var(--fs-color-border);
     }
 
     :global([data-theme='light']) .hero-v2 {
@@ -127,12 +127,11 @@ const bgStyle = backgroundImage
         font-weight: 900;
         letter-spacing: -0.04em;
         line-height: 1.1;
-        color: #ffffff;
+        color: var(--fs-color-heading);
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     :global([data-theme='light']) .hero-heading {
-        color: #050505;
         text-shadow: none;
     }
 
@@ -144,15 +143,11 @@ const bgStyle = backgroundImage
     }
 
     .hero-desc {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--fs-color-text-dimmed);
         margin: 0 auto 3rem auto;
         max-width: 680px;
         line-height: 1.8;
         font-size: 1.1rem;
-    }
-
-    :global([data-theme='light']) .hero-desc {
-        color: rgba(0, 0, 0, 0.7);
     }
 
     /* 具有工程风的斜切 CTA 按钮 */
@@ -162,7 +157,7 @@ const bgStyle = backgroundImage
         align-items: center;
         gap: 0.8rem;
         padding: 1rem 3rem;
-        color: #fff !important;
+        color: var(--fs-color-heading) !important;
         background: transparent !important;
         border-radius: 0 !important;
         font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -242,6 +237,18 @@ const bgStyle = backgroundImage
         .hero-cta {
             width: 100%;
             justify-content: center;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero-cta,
+        .hero-cta::after,
+        .hero-cta::before {
+            transition: none !important;
+        }
+        .hero-bg {
+            animation: none !important;
+            transform: none !important;
         }
     }
 </style>

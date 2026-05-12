@@ -1,4 +1,5 @@
 import { setupComponentLifecycle } from './component-init'
+import { trapFocus, announce } from './accessibility'
 
 const SELECTORS = {
     toggle: '[data-language-toggle]',
@@ -47,7 +48,7 @@ export function initLanguageSwitcher(
 ): (() => void) | void {
     const toggle = root.querySelector(SELECTORS.toggle) as HTMLButtonElement | null
     const menu = root.querySelector(SELECTORS.menu) as HTMLElement | null
-    const optionButtons = root.querySelectorAll<HTMLButtonElement>(SELECTORS.option)
+    const optionButtons = Array.from(root.querySelectorAll<HTMLButtonElement>(SELECTORS.option))
 
     if (!toggle || !menu) {
         return
@@ -61,15 +62,31 @@ export function initLanguageSwitcher(
     const getCurrentPath = options.currentPath ?? (() => window.location.pathname)
     const persistLocale = options.persistLocale ?? persistPreferredLocale
 
+    let untrapFocus: (() => void) | null = null
+
     const closeMenu = () => {
         toggle.setAttribute('aria-expanded', 'false')
         menu.classList.remove('open')
+        if (untrapFocus) {
+            untrapFocus()
+            untrapFocus = null
+        }
+        toggle.focus()
+    }
+
+    const openMenu = () => {
+        toggle.setAttribute('aria-expanded', 'true')
+        menu.classList.add('open')
+        untrapFocus = trapFocus(menu)
     }
 
     const toggleMenu = () => {
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
-        toggle.setAttribute('aria-expanded', (!isExpanded).toString())
-        menu.classList.toggle('open', !isExpanded)
+        if (isExpanded) {
+            closeMenu()
+        } else {
+            openMenu()
+        }
     }
 
     const optionHandlers = new Map<HTMLButtonElement, () => void>()
@@ -81,6 +98,10 @@ export function initLanguageSwitcher(
             }
 
             persistLocale(locale)
+            
+            const localeName = option.textContent?.trim() || locale
+            announce(`已切换语言为 ${localeName}`)
+            
             closeMenu()
             navigate(resolveLocalizedPath(getCurrentPath(), locale))
         }
@@ -91,26 +112,51 @@ export function initLanguageSwitcher(
 
     const handleDocumentClick = (event: Event) => {
         if (!root.contains(event.target as Node)) {
-            closeMenu()
+            // No focus return on outside click to avoid jarring behavior
+            toggle.setAttribute('aria-expanded', 'false')
+            menu.classList.remove('open')
+            if (untrapFocus) {
+                untrapFocus()
+                untrapFocus = null
+            }
         }
     }
 
-    const handleToggleKeydown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
             closeMenu()
+        }
+
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
+        if (isExpanded) {
+            const currentIndex = optionButtons.indexOf(document.activeElement as HTMLButtonElement)
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault()
+                const nextIndex = (currentIndex + 1) % optionButtons.length
+                optionButtons[nextIndex].focus()
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault()
+                const nextIndex = (currentIndex - 1 + optionButtons.length) % optionButtons.length
+                optionButtons[nextIndex].focus()
+            }
         }
     }
 
     toggle.addEventListener('click', toggleMenu)
-    toggle.addEventListener('keydown', handleToggleKeydown)
+    root.addEventListener('keydown', handleKeyDown)
     document.addEventListener('click', handleDocumentClick)
-    closeMenu()
+    
+    // Initial state
+    toggle.setAttribute('aria-expanded', 'false')
+    menu.classList.remove('open')
 
     return () => {
         toggle.removeEventListener('click', toggleMenu)
-        toggle.removeEventListener('keydown', handleToggleKeydown)
+        root.removeEventListener('keydown', handleKeyDown)
         document.removeEventListener('click', handleDocumentClick)
         optionHandlers.forEach((handler, option) => option.removeEventListener('click', handler))
+        if (untrapFocus) untrapFocus()
     }
 }
 
