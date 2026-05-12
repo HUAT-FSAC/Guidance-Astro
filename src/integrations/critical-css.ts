@@ -1,38 +1,43 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { readdir, readFile, writeFile } from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import type { AstroIntegration } from 'astro';
 
-export default function criticalCssIntegration() {
+export default function criticalCssIntegration(): AstroIntegration {
     return {
         name: 'critical-css',
         hooks: {
             'astro:build:done': async ({ dir }: { dir: URL }) => {
-                const criticalCssPath = path.resolve('src/styles/critical.css')
-                const criticalCss = fs.readFileSync(criticalCssPath, 'utf8')
+                const criticalCssPath = path.resolve('src/styles/critical.css');
+                const criticalCssResult = await readFile(criticalCssPath, 'utf8').catch(() => null);
+                if (!criticalCssResult) {
+                    return;
+                }
 
-                const dirPath = fileURLToPath(dir)
+                const dirPath = fileURLToPath(dir);
+                const allFiles = await readdir(dirPath, { recursive: true }).catch(() => []);
 
-                // 遍历所有HTML文件
-                const htmlFiles = fs
-                    .readdirSync(dirPath, { recursive: true })
-                    .filter(
-                        (file): file is string => typeof file === 'string' && file.endsWith('.html')
-                    )
+                const htmlFiles = allFiles.filter(
+                    (file): file is string => typeof file === 'string' && file.endsWith('.html')
+                );
 
-                for (const htmlFile of htmlFiles) {
-                    const htmlPath = path.join(dirPath, htmlFile)
-                    const htmlContent = fs.readFileSync(htmlPath, 'utf8')
+                const writePromises = htmlFiles.map(async (htmlFile) => {
+                    const htmlPath = path.join(dirPath, htmlFile);
+                    const htmlContent = await readFile(htmlPath, 'utf8').catch(() => null);
+                    if (!htmlContent) {
+                        return;
+                    }
 
-                    // 将关键CSS内联到HTML头部
                     const modifiedHtml = htmlContent.replace(
                         '<head>',
-                        `<head>\n<style>${criticalCss}</style>`
-                    )
+                        `<head>\n<style>${criticalCssResult}</style>`
+                    );
 
-                    // 写回修改后的HTML文件
-                    fs.writeFileSync(htmlPath, modifiedHtml)
-                }
+                    await writeFile(htmlPath, modifiedHtml).catch(() => {});
+                });
+
+                await Promise.all(writePromises);
             },
         },
-    }
+    };
 }
