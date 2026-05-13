@@ -48,11 +48,7 @@ const bgStyle = backgroundImage
     </div>
 </section>
 
-<style>
-    /* 引入更硬核的字体给标题 */
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap');
-
-    .hero-v2 {
+<style>.hero-v2 {
         position: relative;
         padding: 6rem 1.5rem;
         display: flex;
@@ -249,6 +245,33 @@ const bgStyle = backgroundImage
         .hero-bg {
             animation: none !important;
             transform: none !important;
+        }
+    }
+
+    /* 横屏手机适配 - 短视口设备 (如 iPhone SE 横屏) */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .hero-v2 {
+            padding: 2rem 1.5rem;
+            min-height: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-inner {
+            padding: 1.5rem 0;
+        }
+
+        .hero-heading {
+            font-size: 1.75rem;
+        }
+
+        .hero-desc {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-cta {
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
         }
     }
 </style>

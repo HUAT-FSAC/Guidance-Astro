@@ -60,7 +60,11 @@ starlight-toc a:hover {
 /* 卡片样式 */
 .sl-link-card:hover,
 .card:hover {
-    background: linear-gradient(180deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%) !important;
+    background: linear-gradient(
+        180deg,
+        var(--fs-bg-elevated) 0%,
+        var(--fs-bg-surface) 100%
+    ) !important;
     border-color: var(--sl-color-accent) !important;
 }
 
@@ -119,6 +123,38 @@ select,
 .no-theme-transition,
 .no-theme-transition * {
     transition: none;
+}
+
+/* ==================== iOS 安全区域适配 (Safe Area) ==================== */
+/* 支持 iPhone X+ 系列的刘海屏和底部横条 */
+
+header.header {
+    /* 导航栏顶部安全区域 */
+    padding-top: env(safe-area-inset-top, 0);
+}
+
+.theme-switcher {
+    /* 主题切换器底部和右侧安全区域 */
+    bottom: calc(env(safe-area-inset-bottom, 1rem) + 1rem);
+    right: calc(env(safe-area-inset-right, 1rem) + 1rem);
+}
+
+.back-to-top,
+.scroll-progress {
+    /* 返回顶部按钮和滚动进度条右侧/底部安全区域 */
+    right: calc(env(safe-area-inset-right, 1rem) + 1rem);
+    bottom: calc(env(safe-area-inset-bottom, 1rem) + 1rem);
+}
+
+/* 固定定位元素通用安全区域 */
+@media (max-width: 768px) {
+    .fixed-bottom {
+        bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .fixed-right {
+        right: env(safe-area-inset-right, 0);
+    }
 }
 
 /* 主题切换时短暂禁用动画，完成后恢复 */
@@ -240,11 +276,11 @@ nav.sidebar h2::before {
 }
 
 :root[data-theme='light'] .sl-markdown-content a {
-    color: #d48806;
+    color: color-mix(in srgb, var(--sl-color-accent) 85%, black);
 }
 
 :root[data-theme='light'] .sl-markdown-content a:hover {
-    color: #b56a00;
+    color: color-mix(in srgb, var(--sl-color-accent) 70%, black);
 }
 
 /* ==================== 列表样式 ==================== */
@@ -733,7 +769,7 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     }
 
     .sl-markdown-content pre {
-        font-size: 0.8rem;
+        font-size: 0.875rem;
         padding: 0.75rem !important;
     }
 
@@ -768,6 +804,51 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     .sl-markdown-content img {
         box-shadow: none;
     }
+
+    /* 隐藏非内容元素 */
+    header.header,
+    nav.sidebar,
+    starlight-toc,
+    .theme-switcher,
+    .back-to-top,
+    .scroll-progress,
+    footer,
+    .sl-pagination,
+    .doc-floating-actions {
+        display: none !important;
+    }
+
+    /* 确保内容区域全宽显示 */
+    .sl-markdown-content {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 确保链接可读 */
+    .sl-markdown-content a[href]::after {
+        content: ' (' attr(href) ')';
+        font-size: 0.85em;
+        color: #666;
+    }
+
+    /* 避免分页时元素被截断 */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    blockquote,
+    table,
+    pre,
+    figure {
+        page-break-inside: avoid;
+    }
 }
 
 /* ==================== 动画效果 ==================== */
@@ -783,29 +864,38 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     }
 }
 
-.sl-markdown-content > * {
+/* 仅对主要结构性元素应用淡入动画，避免对所有子元素做动画导致性能问题和布局抖动 */
+.sl-markdown-content > h1,
+.sl-markdown-content > h2,
+.sl-markdown-content > h3,
+.sl-markdown-content > h4,
+.sl-markdown-content > section,
+.sl-markdown-content > blockquote,
+.sl-markdown-content > table,
+.sl-markdown-content > .sl-link-card,
+.sl-markdown-content > .card,
+.sl-markdown-content > starlight-tabs,
+.sl-markdown-content > .starlight-aside {
     animation: fadeIn 0.5s ease forwards;
 }
 
-/* 延迟动画 */
-.sl-markdown-content > *:nth-child(1) {
+/* 延迟动画 - 基于元素类型而非位置，确保节奏一致 */
+.sl-markdown-content > h1 {
     animation-delay: 0.05s;
 }
 
-.sl-markdown-content > *:nth-child(2) {
+.sl-markdown-content > h2:first-of-type {
     animation-delay: 0.1s;
 }
 
-.sl-markdown-content > *:nth-child(3) {
+.sl-markdown-content > blockquote,
+.sl-markdown-content > table {
     animation-delay: 0.15s;
 }
 
-.sl-markdown-content > *:nth-child(4) {
+.sl-markdown-content > .sl-link-card,
+.sl-markdown-content > .card {
     animation-delay: 0.2s;
-}
-
-.sl-markdown-content > *:nth-child(5) {
-    animation-delay: 0.25s;
 }
 
 /* ==================== 渐显排版动效 (Scroll Reveal Animations) ==================== */
@@ -821,6 +911,8 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 .reveal-upon-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
+    /* 动画完成后移除 will-change 以释放 GPU 内存 */
+    will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -829,4 +921,35 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         transform: translateY(0);
         transition: none;
     }
+}
+
+/* ==================== 键盘焦点增强 (Focus Visible) ==================== */
+/* 使用 :focus-visible 确保仅在键盘导航时显示焦点样式，不影响鼠标用户 */
+
+*:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+}
+
+/* 链接的特殊焦点样式 */
+a:focus-visible {
+    outline-width: 2px;
+    outline-offset: 1px;
+}
+
+/* 按钮的焦点样式 */
+button:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline-width: 2px;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--fs-accent-glow);
+}
+
+/* 移除默认的 focus 样式（由上面的 :focus-visible 替代） */
+*:focus:not(:focus-visible) {
+    outline: none;
 }

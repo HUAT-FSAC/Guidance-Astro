@@ -123,6 +123,13 @@ export default defineConfig({
             head: [
                 {
                     tag: 'meta',
+                    attrs: {
+                        name: 'viewport',
+                        content: 'width=device-width, initial-scale=1.0, viewport-fit=cover',
+                    },
+                },
+                {
+                    tag: 'meta',
                     attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' },
                 },
                 {
@@ -234,6 +241,25 @@ export default defineConfig({
                     attrs: {
                         rel: 'stylesheet',
                         href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght=400;500;600&display=swap',
+                        crossorigin: 'anonymous',
+                        media: 'print',
+                        onload: "this.media='all'",
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'preload',
+                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap',
+                        as: 'style',
+                        crossorigin: 'anonymous',
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'stylesheet',
+                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap',
                         crossorigin: 'anonymous',
                         media: 'print',
                         onload: "this.media='all'",

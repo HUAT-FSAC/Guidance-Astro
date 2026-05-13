@@ -213,7 +213,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: var(--radius-xl);
         padding: 12px;
         min-width: 200px;
         opacity: 0;
@@ -285,7 +285,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         padding: 10px 12px;
         background: transparent;
         border: none;
-        border-radius: 10px;
+        border-radius: var(--radius-md);
         color: rgba(255, 255, 255, 0.9);
         cursor: pointer;
         transition: all 0.2s ease;

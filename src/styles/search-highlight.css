@@ -92,7 +92,7 @@
 
 .search-suggestions-type {
     margin-left: 0.75rem;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--sl-color-gray-4);
     flex-shrink: 0;
 }
@@ -146,7 +146,7 @@
 
 .search-history-query time {
     margin-left: auto;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--sl-color-gray-4);
 }
 
