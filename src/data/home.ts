@@ -73,10 +73,10 @@ export const heroConfig = {
     title: 'HUAT FSAC',
     subtitle: '方程式赛车队',
     description:
-        '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。',
+        '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。\n在 Formula Student 赛场上，我们追求卓越，挑战极限。',
     ctaText: '开始探索',
     ctaLink: '/2024-learning-roadmap/',
-    backgroundImage: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1920',
+    backgroundImages: ['/assets/photo-together.jpg', '/assets/huat.jpg', '/assets/about-us.jpg'],
 }
 
 // ==================== 统计数据 ====================

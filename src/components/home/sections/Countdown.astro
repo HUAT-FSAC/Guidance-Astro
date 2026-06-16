@@ -14,7 +14,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
             <h2 class="countdown-event">{primary.name}</h2>
             <p class="countdown-meta">
                 <span class="meta-icon">📍</span>{primary.location}
-                &nbsp;·&nbsp;
+                <span class="meta-sep">·</span>
                 <span class="meta-icon">📅</span>{primary.startDate} — {primary.endDate}
             </p>
         </div>
@@ -90,6 +90,10 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
 
 <style>
     .countdown-section {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        min-height: 100vh;
         padding: 4rem 2rem;
         background: linear-gradient(135deg,
             rgba(243, 156, 18, 0.08) 0%,
@@ -108,36 +112,39 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     }
 
     .countdown-inner {
-        max-width: 860px;
-        margin: 0 auto;
-        text-align: center;
+        max-width: 1000px;
+        margin: 0;
+        text-align: left;
+        padding-left: 5rem;
+        padding-top: 8rem;
     }
 
     .countdown-label {
         display: inline-block;
-        font-size: 0.78rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 1000;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 10px;
         color: var(--sl-color-accent, #f39c12);
-        margin-bottom: 0.75rem;
+        margin-bottom: 20rem;
     }
 
     .countdown-event {
-        font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-        font-weight: 800;
+        font-size: clamp(3rem, 3.5vw, 2.2rem);
+        font-weight: 2000;
         margin: 0 0 0.75rem 0;
-        color: var(--sl-color-text);
+        color: #fff;
         line-height: 1.2;
     }
 
     .countdown-meta {
-        font-size: 0.9rem;
-        opacity: 0.65;
+        font-size: 2rem;
+        opacity: 1;
         margin: 0 0 2.5rem 0;
     }
 
-    .meta-icon { margin-right: 0.2rem; }
+    .meta-icon { margin-right: 1rem; }
+    .meta-sep { margin: 1 2rem; opacity: 0.5; }
 
     /* ── 倒计时数字 ── */
     .countdown-display {
@@ -186,7 +193,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     }
 
     .cd-label {
-        font-size: 0.75rem;
+        font-size: 6rem;
         font-weight: 600;
         opacity: 0.6;
         text-transform: uppercase;

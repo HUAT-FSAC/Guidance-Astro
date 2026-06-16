@@ -47,7 +47,7 @@ export default defineConfig({
     },
     integrations: [
         starlight({
-            title: 'FSAC AST Docs',
+            title: '东风 HUAT 无人驾驶车队',
             favicon: '/favicon.png',
             customCss: [
                 // 全局文档样式
@@ -63,6 +63,21 @@ export default defineConfig({
                         'http-equiv': 'X-Content-Type-Options',
                         content: 'nosniff',
                     },
+                },
+
+                {
+                    tag: 'script',
+                    content: `
+                  function updateFavicon(theme) {
+                    const link = document.querySelector('link[rel="icon"]');
+                    link.href = theme === 'dark' ? '/favicon-dark.png' : '/favicon-light.png';
+                  }
+                  const observer = new MutationObserver(() => {
+                    updateFavicon(document.documentElement.getAttribute('data-theme'));
+                  });
+                  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+                  updateFavicon(document.documentElement.getAttribute('data-theme'));
+                `,
                 },
                 {
                     tag: 'meta',
@@ -295,6 +310,7 @@ export default defineConfig({
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             // 自定义组件覆盖
             components: {
+                Header: './src/components/overrides/Header.astro',
                 // 添加图片灯箱等全局功能
                 PageFrame: './src/components/overrides/PageFrame.astro',
                 // 自定义内容区域，添加阅读进度和编辑链接

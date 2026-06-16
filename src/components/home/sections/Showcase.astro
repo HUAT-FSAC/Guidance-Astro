@@ -1,0 +1,342 @@
+---
+const modules = [
+    {
+        cn: '智能驾驶实验室',
+        en: 'SHOWCASE LAB',
+        link: '/showcase-dashboard/',
+    },
+    {
+        cn: '征服赛道',
+        en: 'CONQUER THE TRACK',
+        link: '/cars/',
+    },
+    {
+        cn: '认识团队',
+        en: 'MEET THE TEAM',
+        link: '/team/',
+    },
+    {
+        cn: 'Formula Student',
+        en: 'GLOBAL COMPETITION',
+        link: '/about-fs/',
+    },
+];
+---
+
+<section class="showcase-section reveal-upon-scroll" aria-label="模块展示">
+    <div class="showcase-container">
+        <!-- 左栏：品牌标识 -->
+        <div class="showcase-left reveal-upon-scroll">
+            <div class="showcase-brand">
+                <h2 class="showcase-title">FORMULA STUDENT</h2>
+                <h3 class="showcase-subtitle">AUTONOMOUS CHINA</h3>
+                <p class="showcase-team">东风 HUAT 无人驾驶方程式赛车队</p>
+            </div>
+            <span class="showcase-badge">2025 SEASON</span>
+        </div>
+
+        <!-- 中栏：主视觉 -->
+        <div class="showcase-center reveal-upon-scroll">
+            <div class="showcase-monitor">
+                <img
+                    src="/assets/huat.jpg"
+                    alt="HUAT 赛车"
+                    class="showcase-image"
+                    loading="lazy"
+                />
+                <span class="showcase-label">FSAC-25 LIVE</span>
+            </div>
+        </div>
+
+        <!-- 右栏：模块导航列表 -->
+        <div class="showcase-right reveal-upon-scroll">
+            <div class="showcase-module-header">
+                <span class="showcase-module-badge">MODULES // 功能模块</span>
+            </div>
+            <ul class="showcase-module-list">
+                {modules.map((mod, i) => (
+                    <li class="showcase-module-item reveal-upon-scroll" style={`transition-delay: ${i * 0.1}s;`}>
+                        <a href={mod.link} class="showcase-module-link">
+                            <span class="mod-cn">{mod.cn}</span>
+                            <span class="mod-en">{mod.en}</span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </div>
+</section>
+
+<style>
+    .showcase-section {
+        padding: 6rem 3rem;
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .showcase-container {
+        display: flex;
+        gap: 4rem;
+        align-items: stretch;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ======== 左栏：品牌标识 ======== */
+    .showcase-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+        padding-left: 2rem;
+    }
+
+    .showcase-title {
+        font-family: 'Space Grotesk', monospace;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        color: #ffffff;
+        line-height: 1.1;
+        letter-spacing: 4px;
+        margin: 0;
+    }
+
+    .showcase-subtitle {
+        font-family: 'Space Grotesk', monospace;
+        font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+        font-weight: 700;
+        color: var(--sl-color-accent);
+        letter-spacing: 6px;
+        margin: 0.5rem 0 0;
+    }
+
+    .showcase-team {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.45);
+        letter-spacing: 2px;
+        margin: 1rem 0 0;
+    }
+
+    .showcase-badge {
+        display: inline-block;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: rgba(255, 255, 255, 0.3);
+        padding: 0.4rem 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 2px;
+        align-self: flex-start;
+    }
+
+    /* ======== 中栏：主视觉 ======== */
+    .showcase-center {
+        flex: 1.4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .showcase-monitor {
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4/3;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .showcase-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .showcase-label {
+        position: absolute;
+        bottom: 0.6rem;
+        right: 0.8rem;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+        color: rgba(255, 255, 255, 0.5);
+        background: rgba(0, 0, 0, 0.7);
+        padding: 0.2rem 0.6rem;
+        border-radius: 2px;
+    }
+
+    /* ======== 右栏：模块列表 ======== */
+    .showcase-right {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .showcase-module-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .showcase-module-badge {
+        display: inline-block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: rgba(255, 255, 255, 0.35);
+        text-transform: uppercase;
+        padding: 0.35rem 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+
+    .showcase-module-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .showcase-module-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .showcase-module-item:first-child {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .showcase-module-link {
+        display: block;
+        padding: 1.5rem 0.75rem;
+        text-decoration: none !important;
+        color: inherit !important;
+        position: relative;
+        transition: background var(--transition-fast);
+    }
+
+    .showcase-module-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 18%;
+        bottom: 18%;
+        width: 3px;
+        background: var(--sl-color-accent);
+        opacity: 0;
+        transform: scaleY(0);
+        transition: opacity var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .showcase-module-link:hover::before {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+
+    .showcase-module-link:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mod-cn {
+        display: block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.3;
+    }
+
+    .mod-en {
+        display: block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 4px;
+        color: rgba(255, 255, 255, 0.3);
+        transition: color var(--transition-fast);
+        margin-top: 0.2rem;
+        text-transform: uppercase;
+    }
+
+    .showcase-module-link:hover .mod-en {
+        color: var(--sl-color-accent);
+    }
+
+    /* ======== 浅色模式 ======== */
+    :global([data-theme='light']) .showcase-title {
+        color: #000000;
+    }
+
+    :global([data-theme='light']) .showcase-team {
+        color: rgba(0, 0, 0, 0.45);
+    }
+
+    :global([data-theme='light']) .showcase-badge {
+        color: rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    :global([data-theme='light']) .showcase-monitor {
+        border-color: rgba(0, 0, 0, 0.15);
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    :global([data-theme='light']) .showcase-module-badge {
+        color: rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    :global([data-theme='light']) .showcase-module-item {
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    :global([data-theme='light']) .showcase-module-link:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    :global([data-theme='light']) .mod-cn {
+        color: #000000;
+    }
+
+    :global([data-theme='light']) .mod-en {
+        color: rgba(0, 0, 0, 0.35);
+    }
+
+    :global([data-theme='light']) .showcase-module-link:hover .mod-en {
+        color: var(--sl-color-accent);
+    }
+
+    /* ======== 响应式 ======== */
+    @media (max-width: 768px) {
+        .showcase-section {
+            padding: 3rem 1.25rem;
+        }
+
+        .showcase-container {
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .showcase-left {
+            padding-left: 0;
+            gap: 1.5rem;
+        }
+
+        .showcase-monitor {
+            aspect-ratio: 16/9;
+        }
+    }
+</style>

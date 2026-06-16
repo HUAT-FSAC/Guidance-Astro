@@ -1,0 +1,390 @@
+---
+const departments = [
+    {
+        cn: '算法部',
+        en: 'ALGORITHMS',
+        link: '/archive/2025/sensing/',
+        subs: ['感知', '定位建图', '规控', '仿真'],
+    },
+    {
+        cn: '电气部',
+        en: 'ELECTRICAL',
+        link: '/archive/2025/electrical/',
+        subs: ['线束', '软件', '硬件', '电池箱'],
+    },
+    {
+        cn: '机械部',
+        en: 'MECHANICAL',
+        link: '/archive/2025/mechanical/',
+        subs: ['转向悬架', '传动', '车架', '制动'],
+    },
+    {
+        cn: '项管部',
+        en: 'MANAGEMENT',
+        link: '/archive/2025/management/',
+        subs: ['新媒体', '营销', '运营'],
+    },
+];
+---
+
+<section class="terminal-section reveal-upon-scroll" aria-label="部门导航">
+    <div class="terminal-container">
+        <!-- 左列：部门术语列表 -->
+        <div class="terminal-left">
+            <div class="terminal-header">
+                <span class="terminal-badge">ARCHIVE ACCESS // 部门档案</span>
+            </div>
+            <ul class="terminal-list">
+                {departments.map((dept, i) => (
+                    <li class="terminal-item reveal-upon-scroll" style={`transition-delay: ${i * 0.1}s;`}>
+                        <a href={dept.link} class="terminal-link">
+                            <span class="dept-cn">{dept.cn}</span>
+                            <span class="dept-en">{dept.en}</span>
+                            <span class="dept-sub">{dept.subs.join(' · ')}</span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+
+        <!-- 右列：点阵图形显示 -->
+        <div class="terminal-right reveal-upon-scroll">
+            <svg
+                class="dot-matrix-display"
+                viewBox="0 0 800 400"
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+                aria-label="东风HUAT无人驾驶车队标识"
+            >
+                <defs>
+                    <pattern id="dot-main" width="3" height="3" patternUnits="userSpaceOnUse">
+                        <circle cx="1.5" cy="1.5" r="1.2" fill="rgba(255,255,255,0.85)" />
+                    </pattern>
+                    <pattern id="dot-dim" width="12" height="12" patternUnits="userSpaceOnUse">
+                        <circle cx="6" cy="6" r="0.8" fill="rgba(255,255,255,0.1)" />
+                    </pattern>
+                    <pattern id="dot-accent" width="2" height="2" patternUnits="userSpaceOnUse">
+                        <circle cx="1" cy="1" r="0.8" fill="rgba(255,255,255,0.95)" />
+                    </pattern>
+                </defs>
+
+                <!-- 暗噪点底色 -->
+                <rect width="800" height="400" fill="url(#dot-dim)" />
+
+                <!-- 散射环境噪点 -->
+                <circle cx="30" cy="50" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="80" cy="30" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="150" cy="55" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="220" cy="35" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="400" cy="45" r="2" fill="rgba(255,255,255,0.3)" />
+                <circle cx="380" cy="30" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="450" cy="50" r="1.8" fill="rgba(255,255,255,0.25)" />
+                <circle cx="520" cy="40" r="1.5" fill="rgba(255,255,255,0.3)" />
+                <circle cx="570" cy="60" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="45" cy="120" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="120" cy="100" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="200" cy="90" r="1" fill="rgba(255,255,255,0.2)" />
+                <circle cx="280" cy="110" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="350" cy="85" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="430" cy="105" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="500" cy="95" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="560" cy="130" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="40" cy="200" r="1.5" fill="rgba(255,255,255,0.2)" />
+                <circle cx="100" cy="180" r="1.2" fill="rgba(255,255,255,0.25)" />
+                <circle cx="180" cy="195" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="260" cy="185" r="1" fill="rgba(255,255,255,0.2)" />
+                <circle cx="340" cy="200" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="420" cy="190" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="500" cy="210" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="560" cy="190" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="60" cy="280" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="160" cy="300" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="250" cy="290" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="350" cy="310" r="1" fill="rgba(255,255,255,0.2)" />
+                <circle cx="450" cy="295" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="530" cy="285" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="560" cy="320" r="1.5" fill="rgba(255,255,255,0.3)" />
+                <circle cx="100" cy="350" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="200" cy="370" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="400" cy="355" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="400" cy="365" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="620" cy="40" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="680" cy="55" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="740" cy="35" r="1.2" fill="rgba(255,255,255,0.25)" />
+                <circle cx="650" cy="100" r="1.5" fill="rgba(255,255,255,0.2)" />
+                <circle cx="720" cy="120" r="1.3" fill="rgba(255,255,255,0.25)" />
+                <circle cx="760" cy="90" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="630" cy="200" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="700" cy="195" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="770" cy="210" r="1.3" fill="rgba(255,255,255,0.2)" />
+                <circle cx="640" cy="300" r="1.8" fill="rgba(255,255,255,0.3)" />
+                <circle cx="710" cy="290" r="1.2" fill="rgba(255,255,255,0.2)" />
+                <circle cx="760" cy="310" r="1.5" fill="rgba(255,255,255,0.25)" />
+                <circle cx="500" cy="350" r="1.5" fill="rgba(255,255,255,0.25)" />
+
+                <!-- 标题：HUAT（超大点阵文字） -->
+                <text
+                    x="400" y="140"
+                    text-anchor="middle"
+                    font-family="'Space Grotesk', monospace"
+                    font-size="80"
+                    font-weight="900"
+                    letter-spacing="16"
+                    fill="url(#dot-accent)"
+                >HUAT</text>
+
+                <!-- 副标题：HUBEI UNIVERSITY OF AUTOMOTIVE TECHNOLOGY -->
+                <text
+                    x="400" y="195"
+                    text-anchor="middle"
+                    font-family="'Space Grotesk', system-ui, sans-serif"
+                    font-size="14"
+                    font-weight="600"
+                    letter-spacing="6"
+                    fill="url(#dot-main)"
+                >HUBEI UNIVERSITY OF AUTOMOTIVE TECHNOLOGY</text>
+
+                <!-- 第三行：DONGFENG  AUTONOMOUS  RACING  TEAM -->
+                <text
+                    x="400" y="240"
+                    text-anchor="middle"
+                    font-family="'Space Grotesk', system-ui, sans-serif"
+                    font-size="16"
+                    font-weight="700"
+                    letter-spacing="10"
+                    fill="url(#dot-main)"
+                >DONGFENG  AUTONOMOUS  RACING  TEAM</text>
+
+                <!-- 底部装饰线 -->
+                <rect x="160" y="270" width="480" height="2" fill="url(#dot-main)" opacity="0.6" />
+
+                <!-- 底部标签 -->
+                <text
+                    x="400" y="310"
+                    text-anchor="middle"
+                    font-family="'Space Grotesk', system-ui, sans-serif"
+                    font-size="11"
+                    font-weight="400"
+                    letter-spacing="8"
+                    fill="url(#dot-main)"
+                >FORMULA STUDENT AUTONOMOUS CHINA</text>
+
+                <!-- 建立年份小字 -->
+                <text
+                    x="400" y="340"
+                    text-anchor="middle"
+                    font-family="'Space Grotesk', system-ui, sans-serif"
+                    font-size="9"
+                    font-weight="400"
+                    letter-spacing="5"
+                    fill="url(#dot-main)"
+                >EST. 2015  ·  SHIYAN  ·  HUBEI  ·  CHINA</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<style>
+    .terminal-section {
+        padding: 6rem 4rem;
+        margin: 4rem 0 0;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .terminal-container {
+        display: flex;
+        gap: 6rem;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ======== 左列：部门列表 ======== */
+    .terminal-left {
+        flex: 1;
+        min-width: 0;
+        padding-left: 6rem;
+    }
+
+    .terminal-header {
+        margin-bottom: 2rem;
+    }
+
+    .terminal-badge {
+        display: inline-block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: rgba(255, 255, 255, 0.35);
+        text-transform: uppercase;
+        padding: 0.4rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+
+    .terminal-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .terminal-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-item:first-child {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-link {
+        display: block;
+        padding: 1.75rem 1rem;
+        text-decoration: none !important;
+        color: inherit !important;
+        position: relative;
+        transition: background var(--transition-fast);
+    }
+
+    .terminal-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 15%;
+        bottom: 15%;
+        width: 3px;
+        background: var(--sl-color-accent);
+        opacity: 0;
+        transform: scaleY(0);
+        transition: opacity var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .terminal-link:hover::before {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+
+    .terminal-link:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .dept-cn {
+        display: block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.3;
+    }
+
+    .dept-en {
+        display: block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 5px;
+        color: rgba(255, 255, 255, 0.35);
+        transition: color var(--transition-fast);
+        margin-top: 0.2rem;
+        text-transform: uppercase;
+    }
+
+    .terminal-link:hover .dept-en {
+        color: var(--sl-color-accent);
+    }
+
+    .dept-sub {
+        display: block;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 0.7rem;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.2);
+        margin-top: 0.4rem;
+        letter-spacing: 1px;
+    }
+
+    /* ======== 右列：点阵图形 ======== */
+    .terminal-right {
+        flex: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .dot-matrix-display {
+        width: 100%;
+        max-width: 720px;
+        height: auto;
+    }
+
+    /* ======== 响应式 ======== */
+    @media (max-width: 768px) {
+        .terminal-section {
+            padding: 3rem 1.25rem;
+        }
+
+        .terminal-container {
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .terminal-left {
+            width: 100%;
+        }
+
+        .terminal-right {
+            width: 100%;
+        }
+
+        .dot-matrix-display {
+            max-width: 420px;
+        }
+
+        .terminal-link {
+            padding: 1.25rem 0.5rem;
+        }
+
+        .dept-cn {
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+        }
+    }
+
+    /* ======== 浅色模式 ======== */
+    :global([data-theme='light']) .terminal-badge {
+        color: rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    :global([data-theme='light']) .terminal-item {
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    :global([data-theme='light']) .terminal-link:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    :global([data-theme='light']) .dept-cn {
+        color: #000000;
+    }
+
+    :global([data-theme='light']) .dept-en {
+        color: rgba(0, 0, 0, 0.35);
+    }
+
+    :global([data-theme='light']) .terminal-link:hover .dept-en {
+        color: var(--sl-color-accent);
+    }
+
+    :global([data-theme='light']) .dept-sub {
+        color: rgba(0, 0, 0, 0.25);
+    }
+
+    :global([data-theme='light']) .dot-matrix-display {
+        filter: invert(1);
+    }
+</style>

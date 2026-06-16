@@ -119,6 +119,26 @@
             window.addEventListener("beforeunload", cleanup);
         } catch (e) {}
     })();
+
+    // View Transitions：先显示动画，页面在背后加载，动画结束后展现页面
+    document.addEventListener("astro:before-swap", function () {
+        const el = document.getElementById("pageLoader");
+        if (el) {
+            el.classList.remove("loaded");
+            el.style.display = "";
+        }
+    });
+    document.addEventListener("astro:page-load", function () {
+        const el = document.getElementById("pageLoader");
+        if (el) {
+            setTimeout(function () {
+                el.classList.add("loaded");
+                setTimeout(function () {
+                    el.style.display = "none";
+                }, 250);
+            }, 3000);
+        }
+    });
 </script>
 
 <style>

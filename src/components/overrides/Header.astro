@@ -1,0 +1,89 @@
+---
+---
+
+<div class="custom-header">
+  <a href="/" class="header-left">
+    <img src="/@fs/D:/FSAC/src/assets/logo-canvas.png" alt="HUAT FSAC" class="header-logo" />
+    <span class="header-title">东风 HUAT 无人驾驶车队</span>
+  </a>
+
+  <nav class="header-nav">
+    <a href="/">首页</a>
+    <a href="/team/">关于我们</a>
+    <a href="/cars/">关于赛车</a>
+    <a href="/docs-center/">学习模块</a>
+    <a href="/join/">加入我们</a>
+    <a href="https://github.com/HUAT-FSAC" target="_blank" class="nav-github">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    </a>
+  </nav>
+</div>
+
+<style>
+  .custom-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 2rem;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .header-logo {
+    height: 100px;
+    width: auto;
+  }
+  .header-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--sl-color-text-accent);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 3em;
+    margin-left: auto;
+    height: 100%;
+  }
+  .header-nav a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .header-nav a:hover {
+    color: var(--sl-color-text-accent);
+  }
+  .header-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--sl-color-accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  .header-nav a:hover::after {
+    transform: scaleX(1);
+  }
+  .nav-github {
+    display: flex;
+    align-items: center;
+    color: var(--sl-color-gray-2);
+  }
+  .nav-github:hover {
+    color: var(--sl-color-text-accent);
+  }
+</style>

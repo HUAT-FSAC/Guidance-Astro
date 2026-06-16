@@ -4,6 +4,7 @@
  * 在所有文档页面中添加全局组件（灯箱、悬浮按钮等）
  * 【临时禁用】导航栏登录状态显示 - 复试后再启用
  */
+import { ViewTransitions } from "astro:transitions";
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/PageFrame.astro";
 import ImageLightbox from "../docs/ImageLightbox.astro";
@@ -13,6 +14,7 @@ import ErrorBoundary from "../ErrorBoundary.astro";
 const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
+<ViewTransitions />
 <ErrorBoundary>
     <Default {...Astro.props}>
         <slot name="header" slot="header" />

@@ -8,13 +8,11 @@ hero:
 ---
 
 import Hero from '../../components/home/sections/Hero.astro'
-import Achievement from '../../components/home/sections/Achievement.astro'
 import NewsSection from '../../components/home/sections/NewsSection.astro'
-import FormulaStudentInfo from '../../components/home/sections/FormulaStudentInfo.astro'
 import Stats from '../../components/home/sections/Stats.astro'
 import Countdown from '../../components/home/sections/Countdown.astro'
-import ShowcaseLab from '../../components/home/sections/ShowcaseLab.astro'
-import Features from '../../components/home/sections/Features.astro'
+import Showcase from '../../components/home/sections/Showcase.astro'
+import CoreModules from '../../components/home/sections/CoreModules.astro'
 import Seasons from '../../components/home/sections/Seasons.astro'
 import Sponsors from '../../components/home/sections/Sponsors.astro'
 import Acknowledgement from '../../components/home/sections/Acknowledgement.astro'
@@ -28,12 +26,11 @@ import ParticleBackground from '../../components/home/ui/ParticleBackground.astr
 import MobileNavigation from '../../components/home/ui/MobileNavigation.astro'
 import ScrollReveal from '../../components/home/ui/ScrollReveal.astro'
 import ParallaxScroll from '../../components/home/ui/ParallaxScroll.astro'
+import AboutUs from '../../components/home/sections/AboutUs.astro'
 import {
     heroConfig,
     stats,
-    achievements,
     newsItems,
-    formulaStudentInfo,
     seasons,
     sponsorGroups,
 } from '../../data/home'
@@ -41,8 +38,14 @@ import {
 <style>{`
   :root {
     --sl-content-width: 100% !important;
+    --sl-nav-height: 100px !important;
   }
   
+  /* Hero 全屏 */
+  .hero-v2 {
+    min-height: 100vh !important;
+  }
+
   /* 隐藏默认的 hero 区域 */
   .hero {
     display: none !important;
@@ -216,34 +219,20 @@ import {
     description={heroConfig.description}
     ctaText={heroConfig.ctaText}
     ctaLink={heroConfig.ctaLink}
-    backgroundImage={heroConfig.backgroundImage}
+    backgroundImages={heroConfig.backgroundImages}
 />
+
+{/* ==================== 关于我们 ==================== */}
+
+<AboutUs />
 
 {/* ==================== 统计数据 ==================== */}
 
 <Stats stats={stats} />
 
-{/* ==================== 比赛倒计时 ==================== */}
+{/* ==================== 模块展示 ==================== */}
 
-<Countdown />
-
-{/* ==================== 智能驾驶交互实验室 ==================== */}
-
-<ShowcaseLab />
-
-{/* ==================== 成就展示区域 ==================== */}
-{achievements.map((achievement, index) => (
-
-  <Achievement 
-    badge={achievement.badge}
-    title={achievement.title}
-    description={achievement.description}
-    ctaText={achievement.ctaText}
-    ctaLink={achievement.ctaLink}
-    image={achievement.image}
-    reverse={index % 2 === 1}
-  />
-))}
+<Showcase />
 
 {/* ==================== 核心模块 ==================== */}
 
@@ -252,7 +241,7 @@ import {
         <span class="home-block-label">学习资源</span>
         <h2 class="home-block-title">📚 核心模块</h2>
     </div>
-    <Features />
+    <CoreModules />
 </section>
 
 {/* ==================== 新闻动态 ==================== */}
@@ -273,15 +262,8 @@ import {
 
 <Recruitment />
 
-{/* ==================== Formula Student 介绍 ==================== */}
 
-<FormulaStudentInfo
-    title={formulaStudentInfo.title}
-    subtitle={formulaStudentInfo.subtitle}
-    description={formulaStudentInfo.description}
-    ctaText={formulaStudentInfo.ctaText}
-    ctaLink={formulaStudentInfo.ctaLink}
-/>
+
 
 {/* ==================== 赞助商 ==================== */}
 
