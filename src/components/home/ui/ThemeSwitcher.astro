@@ -12,7 +12,7 @@ interface ThemeColor {
 }
 
 const themeColors: ThemeColor[] = [
-    { name: '经典橙', color: '#f39c12', accent: '#e67e22' },
+    { name: '经典蓝', color: '#3b82f6', accent: '#2563eb' },
     { name: '电竞蓝', color: '#3498db', accent: '#2980b9' },
     { name: '赛道红', color: '#e74c3c', accent: '#c0392b' },
     { name: '科技紫', color: '#9b59b6', accent: '#8e44ad' },
@@ -92,7 +92,7 @@ const themeColors: ThemeColor[] = [
     }
 
     const themeColors: ThemeColor[] = [
-        { name: '经典橙', color: '#f39c12', accent: '#e67e22' },
+        { name: '经典蓝', color: '#3b82f6', accent: '#2563eb' },
         { name: '电竞蓝', color: '#3498db', accent: '#2980b9' },
         { name: '赛道红', color: '#e74c3c', accent: '#c0392b' },
         { name: '科技紫', color: '#9b59b6', accent: '#8e44ad' },
@@ -117,6 +117,13 @@ const themeColors: ThemeColor[] = [
     function safeSetItem(key: string, value: string): void {
         try {
             localStorage.setItem(key, value)
+        } catch {
+        }
+    }
+
+    function safeRemoveItem(key: string): void {
+        try {
+            localStorage.removeItem(key)
         } catch {
         }
     }
@@ -225,9 +232,16 @@ const themeColors: ThemeColor[] = [
 
         const savedColor = safeGetItem(STORAGE_KEY_COLOR)
         const savedAccent = safeGetItem(STORAGE_KEY_ACCENT)
-        if (savedColor && savedAccent) {
+
+        // 检查保存的主题色是否还在当前主题列表中（不在 = 旧数据，忽略）
+        const isValidTheme = savedColor && savedAccent && themeColors.some(t => t.color === savedColor && t.accent === savedAccent)
+
+        if (isValidTheme) {
             applyThemeColor(savedColor, savedAccent)
         } else {
+            // 旧主题或没有保存 → 清除并改用默认（蓝色）
+            safeRemoveItem(STORAGE_KEY_COLOR)
+            safeRemoveItem(STORAGE_KEY_ACCENT)
             applyThemeColor(themeColors[0].color, themeColors[0].accent)
         }
 
@@ -415,8 +429,8 @@ const themeColors: ThemeColor[] = [
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: var(--sl-color-accent, #f39c12);
-        box-shadow: 0 1px 4px color-mix(in srgb, var(--sl-color-accent, #f39c12) 40%, transparent);
+        background: var(--sl-color-accent, #3b82f6);
+        box-shadow: 0 1px 4px color-mix(in srgb, var(--sl-color-accent, #3b82f6) 40%, transparent);
         border: 1.5px solid rgba(255, 255, 255, 0.3);
         z-index: 10;
     }
@@ -430,14 +444,14 @@ const themeColors: ThemeColor[] = [
         position: absolute;
         inset: 0;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--sl-color-accent, #f39c12), transparent);
+        background: linear-gradient(135deg, var(--sl-color-accent, #3b82f6), transparent);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
 
     .theme-toggle:hover {
         transform: scale(1.08);
-        border-color: var(--sl-color-accent, #f39c12);
+        border-color: var(--sl-color-accent, #3b82f6);
         box-shadow: 
             0 8px 30px rgba(0, 0, 0, 0.5),
             0 0 20px rgba(243, 156, 18, 0.2);

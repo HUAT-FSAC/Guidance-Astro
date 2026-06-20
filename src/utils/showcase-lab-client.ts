@@ -162,6 +162,14 @@ function renderMarkers(root: HTMLElement, snapshot: ShowcaseReplaySnapshot): voi
     container.replaceChildren(...circles)
 }
 
+const SUBSYSTEM_ICONS: Record<string, string> = {
+    perception: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    localization: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    planning: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    control: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    actuation: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>`,
+}
+
 function renderSubsystemTabs(
     root: HTMLElement,
     subsystems: ShowcaseSubsystem[],
@@ -171,15 +179,12 @@ function renderSubsystemTabs(
     const document = root.ownerDocument
     const tabs = subsystems.map((subsystem) => {
         const isActive = subsystem.id === activeSubsystemId
-        const button = createHtmlElement(
-            document,
-            'button',
-            `subsystem-tab${isActive ? ' is-active' : ''}`,
-            subsystem.label
-        )
+        const button = document.createElement('button')
         button.type = 'button'
+        button.className = `subsystem-card${isActive ? ' is-active' : ''}`
         button.dataset.subsystemId = subsystem.id
         button.setAttribute('aria-pressed', String(isActive))
+        button.innerHTML = `<span class="subsystem-card-icon">${SUBSYSTEM_ICONS[subsystem.id] || ''}</span><span class="subsystem-card-label">${subsystem.label}</span><span class="subsystem-card-desc">${subsystem.eyebrow}</span>`
         return button
     })
 
@@ -304,8 +309,8 @@ function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeStat
                 deltaIndicatorEl.style.color = isPositive
                     ? '#10b981'
                     : delta.delta < 0
-                      ? '#fb7185'
-                      : '#f59e0b'
+                      ? '#818cf8'
+                      : '#3b82f6'
             }
         }
     })

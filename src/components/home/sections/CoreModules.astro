@@ -66,6 +66,13 @@ const departments = [
                     <pattern id="dot-accent" width="2" height="2" patternUnits="userSpaceOnUse">
                         <circle cx="1" cy="1" r="0.8" fill="rgba(255,255,255,0.95)" />
                     </pattern>
+                    <pattern id="dot-huat" width="2" height="2" patternUnits="userSpaceOnUse">
+                        <circle cx="1" cy="1" r="0.8" fill="rgba(59,130,246,0.95)" />
+                    </pattern>
+                    <pattern id="dot-huat-light" width="2" height="2" patternUnits="userSpaceOnUse">
+                        <!-- 浅色模式：SVG整体会invert，蓝色反转后变橙色 -->
+                        <circle cx="1" cy="1" r="0.8" fill="rgba(0,115,255,0.95)" />
+                    </pattern>
                 </defs>
 
                 <!-- 暗噪点底色 -->
@@ -124,13 +131,13 @@ const departments = [
 
                 <!-- 标题：HUAT（超大点阵文字） -->
                 <text
+                    class="huat-title"
                     x="400" y="140"
                     text-anchor="middle"
                     font-family="'Space Grotesk', monospace"
                     font-size="80"
                     font-weight="900"
                     letter-spacing="16"
-                    fill="url(#dot-accent)"
                 >HUAT</text>
 
                 <!-- 副标题：HUBEI UNIVERSITY OF AUTOMOTIVE TECHNOLOGY -->
@@ -320,6 +327,14 @@ const departments = [
         width: 100%;
         max-width: 720px;
         height: auto;
+    }
+
+    .huat-title {
+        fill: url(#dot-huat);
+    }
+
+    :global([data-theme='light']) .huat-title {
+        fill: url(#dot-huat-light);
     }
 
     /* ======== 响应式 ======== */

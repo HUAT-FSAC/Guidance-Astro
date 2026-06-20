@@ -2,88 +2,215 @@
 ---
 
 <div class="custom-header">
-  <a href="/" class="header-left">
-    <img src="/@fs/D:/FSAC/src/assets/logo-canvas.png" alt="HUAT FSAC" class="header-logo" />
-    <span class="header-title">东风 HUAT 无人驾驶车队</span>
-  </a>
+  <!-- 背景噪点层 -->
+  <div class="header-noise" aria-hidden="true"></div>
 
-  <nav class="header-nav">
-    <a href="/">首页</a>
-    <a href="/team/">关于我们</a>
-    <a href="/cars/">关于赛车</a>
-    <a href="/docs-center/">学习模块</a>
-    <a href="/join/">加入我们</a>
-    <a href="https://github.com/HUAT-FSAC" target="_blank" class="nav-github">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  <!-- 底部扫描线 -->
+  <div class="header-scanline" aria-hidden="true"></div>
+
+  <div class="header-inner">
+    <a href="/" class="header-left">
+      <img src="/@fs/D:/FSAC/public/assets/logo.jpg" alt="HUAT FSAC" class="header-logo" />
+      <span class="header-title">东风 HUAT 无人驾驶车队</span>
     </a>
-  </nav>
+
+    <nav class="header-nav">
+      <a href="/">首页</a>
+      <a href="/team/">关于我们</a>
+      <a href="/cars/">关于赛车</a>
+      <a href="/docs-center/">学习模块</a>
+      <a href="/join/">加入我们</a>
+      <a href="https://github.com/HUAT-FSAC" target="_blank" class="nav-github">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+    </nav>
+  </div>
 </div>
 
 <style>
   .custom-header {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    gap: 2rem;
+    padding: 0 1.5rem;
+    background: #000000;
+    box-sizing: border-box;
+    overflow: hidden;
   }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1600px;
+  }
+
+  /* ======== 背景噪点层 ======== */
+  .header-noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1.5px 1.5px at 40% 15%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.25), transparent),
+      radial-gradient(1.5px 1.5px at 70% 30%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1.5px 1.5px at 60% 90%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.25), transparent),
+      radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1.5px 1.5px at 50% 55%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.25), transparent);
+  }
+
+  /* ======== 底部扫描线 ======== */
+  .header-scanline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.08) 20%,
+      rgba(255,165,0,0.3) 50%,
+      rgba(255,255,255,0.08) 80%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
   .header-left {
     display: flex;
     align-items: center;
     gap: 3rem;
     text-decoration: none;
     min-width: 0;
+    position: relative;
+    z-index: 1;
   }
+
   .header-logo {
-    height: 100px;
+    height: 80px;
     width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.2));
   }
+
   .header-title {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--sl-color-text-accent);
+    font-weight: 700;
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
+    letter-spacing: 2px;
+    text-shadow:
+      0 0 10px rgba(255,255,255,0.4),
+      0 0 30px rgba(255,255,255,0.15);
   }
+
   .header-nav {
     display: flex;
     align-items: center;
     gap: 3em;
-    margin-left: auto;
     height: 100%;
+    position: relative;
+    z-index: 1;
   }
+
   .header-nav a {
-    color: var(--sl-color-gray-2);
+    color: rgba(255,255,255,0.75);
     text-decoration: none;
-    font-size: 1.2rem;
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-size: 1.1rem;
     font-weight: 500;
+    letter-spacing: 1px;
     white-space: nowrap;
-    transition: color 0.2s;
+    transition: color 0.25s, text-shadow 0.25s;
     position: relative;
   }
+
   .header-nav a:hover {
-    color: var(--sl-color-text-accent);
+    color: #ffa500;
+    text-shadow: 0 0 12px rgba(255,165,0,0.5);
   }
-  .header-nav a::after {
+
+  /* 当前激活页面下划线指示器 */
+  .header-nav a[aria-current="page"] {
+    color: #ffa500;
+    text-shadow: 0 0 12px rgba(255,165,0,0.5);
+  }
+
+  .header-nav a[aria-current="page"]::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--sl-color-accent);
-    transform: scaleX(0);
-    transition: transform 0.2s;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffa500;
+    box-shadow: 0 0 8px rgba(255,165,0,0.8);
   }
-  .header-nav a:hover::after {
-    transform: scaleX(1);
-  }
+
   .nav-github {
     display: flex;
     align-items: center;
-    color: var(--sl-color-gray-2);
+    color: rgba(255,255,255,0.75);
   }
+
   .nav-github:hover {
-    color: var(--sl-color-text-accent);
+    color: #ffa500 !important;
+    text-shadow: 0 0 12px rgba(255,165,0,0.5);
+  }
+
+  /* ======== 覆盖 Starlight 默认 header 内边距 ======== */
+  :global(.header) {
+    padding: 0 !important;
+    border-bottom: none !important;
+    background-color: #000 !important;
+  }
+
+  /* ======== 响应式 ======== */
+  @media (max-width: 768px) {
+    .custom-header {
+      padding: 0 1.25rem;
+    }
+
+    .header-left {
+      gap: 1.5rem;
+    }
+
+    .header-logo {
+      height: 50px;
+    }
+
+    .header-title {
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .header-nav {
+      gap: 1.5em;
+    }
+
+    .header-nav a {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* ======== 浅色模式 ======== */
+  :global([data-theme='light']) .custom-header {
+    background: #0a0a0a;
   }
 </style>

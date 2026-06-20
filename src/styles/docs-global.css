@@ -17,8 +17,8 @@ starlight-theme-select {
     --fs-bg-elevated: #151518;
 
     /* 品牌主题色 (配合 Starlight) */
-    --sl-color-accent: #ff3d00;
-    --fs-accent-glow: rgba(255, 61, 0, 0.25);
+    --sl-color-accent: #3b82f6;
+    --fs-accent-glow: rgba(59, 130, 246, 0.25);
 
     /* 切角与边框 */
     --fs-border-subtle: rgba(255, 255, 255, 0.08);
@@ -75,7 +75,7 @@ starlight-theme-select {
     --fs-bg-elevated: #ffffff;
     --fs-border-subtle: rgba(0, 0, 0, 0.08);
     --fs-border-focus: rgba(0, 0, 0, 0.2);
-    --fs-accent-glow: rgba(255, 61, 0, 0.15);
+    --fs-accent-glow: rgba(59, 130, 246, 0.15);
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
 }
@@ -270,7 +270,7 @@ nav.sidebar h2::before {
 .sl-markdown-content blockquote {
     margin: 2rem 0;
     padding: 1.25rem 1.5rem;
-    background: linear-gradient(90deg, rgba(255, 61, 0, 0.05), transparent);
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), transparent);
     border: 1px solid var(--fs-border-subtle);
     border-left: 3px solid var(--sl-color-accent);
     border-radius: var(--radius-sm);

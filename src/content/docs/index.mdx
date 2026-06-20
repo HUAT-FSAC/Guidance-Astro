@@ -27,6 +27,7 @@ import MobileNavigation from '../../components/home/ui/MobileNavigation.astro'
 import ScrollReveal from '../../components/home/ui/ScrollReveal.astro'
 import ParallaxScroll from '../../components/home/ui/ParallaxScroll.astro'
 import AboutUs from '../../components/home/sections/AboutUs.astro'
+import TeamMembers from '../../components/home/sections/TeamMembers.astro'
 import {
     heroConfig,
     stats,
@@ -38,7 +39,14 @@ import {
 <style>{`
   :root {
     --sl-content-width: 100% !important;
-    --sl-nav-height: 100px !important;
+    --sl-nav-height: 130px !important;
+  }
+
+  /* 防止横向滚动条 + 纯黑背景 */
+  :global(html),
+  :global(body) {
+    overflow-x: hidden;
+    background: #000 !important;
   }
   
   /* Hero 全屏 */
@@ -51,12 +59,16 @@ import {
     display: none !important;
   }
   
-  /* 全宽内容 */
-  main {
+  /* 全宽 + 去所有水平内边距 + 强制占满宽度 */
+  :global(.content-panel),
+  :global(.sl-container),
+  :global(.sl-markdown-content),
+  :global(.main-frame) {
+    padding-inline: 0 !important;
+    margin-inline: 0 !important;
     max-width: 100% !important;
-    padding: 0 !important;
   }
-  
+
   .sl-markdown-content {
     max-width: 100% !important;
   }
@@ -69,6 +81,9 @@ import {
   }
   
   /* Apple 风格极简深色背景 - 仅在暗色模式下生效 */
+  :global(.content-panel) {
+    padding: 0 !important;
+  }
   :global([data-theme='dark']) .content-panel {
     background-color: #000000 !important;
     /* 顶部微弱的光源效果，模拟高级质感 */
@@ -140,7 +155,7 @@ import {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 3px;
-    color: var(--sl-color-accent, #f39c12);
+    color: var(--sl-color-accent, #3b82f6);
     margin-bottom: 1rem;
   }
 
@@ -230,16 +245,19 @@ import {
 
 <Stats stats={stats} />
 
+{/* ==================== 指导老师与团队 ==================== */}
+
+<TeamMembers backgroundImage="/assets/photo-together.jpg" />
+
 {/* ==================== 模块展示 ==================== */}
 
 <Showcase />
 
 {/* ==================== 核心模块 ==================== */}
 
-<section class="home-block">
-    <div class="home-block-header">
-        <span class="home-block-label">学习资源</span>
-        <h2 class="home-block-title">📚 核心模块</h2>
+<section class="home-block" style="max-width: 80%; min-height: 65vh;">
+    <div class="home-block-header" style="text-align: center;">
+        <span class="home-block-label" style="font-size: 2.5rem !important;">学习资源</span>
     </div>
     <CoreModules />
 </section>

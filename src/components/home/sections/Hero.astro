@@ -60,6 +60,7 @@ const images = (backgroundImages ?? []).map((src) => ({
     </div>
 </section>
 
+<!-- 占位块：hero 是 fixed，需要推动后续内容到可视区以下 -->
 <script>
     const bgLayers = document.querySelectorAll<HTMLElement>('.hero-bg')
     if (bgLayers.length > 1) {
@@ -69,7 +70,7 @@ const images = (backgroundImages ?? []).map((src) => ({
 
         function showSlide(index: number) {
             bgLayers.forEach((el, i) => {
-                el.style.opacity = i === index ? '0.5' : '0'
+                el.style.opacity = i === index ? '1' : '0'
                 el.style.transition = 'opacity 1s ease-in-out'
             })
         }
@@ -93,7 +94,7 @@ const images = (backgroundImages ?? []).map((src) => ({
 
         // init: show first, hide others
         bgLayers.forEach((el, i) => {
-            el.style.opacity = i === 0 ? '0.5' : '0'
+            el.style.opacity = i === 0 ? '1' : '0'
             el.style.transition = 'opacity 1s ease-in-out'
         })
 
@@ -106,28 +107,21 @@ const images = (backgroundImages ?? []).map((src) => ({
 
     .hero-v2 {
         position: relative;
+        margin-top: -130px;
+        padding-top: 130px;
         min-height: 100vh;
-        padding: 6rem 1.5rem;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        border-radius: 0;
-        margin: 0 auto 0 auto;
-        max-width: 100%;
-        background-color: var(--fs-bg-base);
-        background-image: 
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        border-bottom: 1px solid var(--fs-border-subtle);
+        background-color: #000;
     }
 
     :global([data-theme='light']) .hero-v2 {
         background-color: #f8f9fa;
-        background-image: 
-            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     }
 
     .hero-bg {
@@ -136,19 +130,21 @@ const images = (backgroundImages ?? []).map((src) => ({
         background-image: var(--hero-bg);
         background-size: cover;
         background-position: center center;
+        background-color: #000;
         opacity: 0;
+        filter: brightness(0.5);
         pointer-events: none;
     }
 
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(3, 3, 3, 0) 0%, rgba(3, 3, 3, 0.4) 40%, rgba(3, 3, 3, 0.85) 100%);
+        background: linear-gradient(180deg, rgba(3, 3, 3, 0.3) 0%, rgba(3, 3, 3, 0.5) 50%, rgba(3, 3, 3, 0.85) 100%);
         pointer-events: none;
     }
 
     :global([data-theme='light']) .hero-overlay {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 40%, rgba(255, 255, 255, 0.85) 100%);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.75) 100%);
     }
 
     .hero-inner {

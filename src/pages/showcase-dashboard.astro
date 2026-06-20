@@ -88,15 +88,33 @@ const toneBadge = {
 
                 <section class="panel-section">
                     <h2 class="section-title">子系统</h2>
-                    <div class="subsystem-tabs" id="showcase-subsystem-tabs">
+                    <div class="subsystem-grid" id="showcase-subsystem-tabs">
                         {initialScenario.subsystems.map((subsystem) => (
-                            <button class={`subsystem-tab ${subsystem.id === initialSubsystem.id ? 'is-active' : ''}`} type="button" data-subsystem-id={subsystem.id}>
-                                {subsystem.label}
+                            <button class={`subsystem-card ${subsystem.id === initialSubsystem.id ? 'is-active' : ''}`} type="button" data-subsystem-id={subsystem.id}>
+                                <span class="subsystem-card-icon">
+                                    {subsystem.id === 'perception' && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    )}
+                                    {subsystem.id === 'localization' && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    )}
+                                    {subsystem.id === 'planning' && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                    )}
+                                    {subsystem.id === 'control' && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    )}
+                                    {subsystem.id === 'actuation' && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                                    )}
+                                </span>
+                                <span class="subsystem-card-label">{subsystem.label}</span>
+                                <span class="subsystem-card-desc">{subsystem.eyebrow}</span>
                             </button>
                         ))}
                     </div>
-                    <div class="subsystem-panel">
-                        <span class="subsystem-eyebrow" id="showcase-subsystem-eyebrow">{initialSubsystem.eyebrow}</span>
+                    <div class="subsystem-panel" id="showcase-subsystem-panel">
+                        <span class="subsystem-eyebrow" id="showcase-subsystem-eyebrow" style="display:none"></span>
                         <h4 class="subsystem-headline" id="showcase-subsystem-headline">{initialSubsystem.headline}</h4>
                         <p class="subsystem-summary" id="showcase-subsystem-summary">{initialSubsystem.summary}</p>
                         <ul class="subsystem-list" id="showcase-subsystem-list">
@@ -118,8 +136,8 @@ const toneBadge = {
                     <svg class="track-map" viewBox="0 0 480 280" role="img">
                         <defs>
                             <linearGradient id="track-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#f59e0b"></stop>
-                                <stop offset="100%" stop-color="#fb7185"></stop>
+                                <stop offset="0%" stop-color="#3b82f6"></stop>
+                                <stop offset="100%" stop-color="#818cf8"></stop>
                             </linearGradient>
                         </defs>
                         <path class="track-outline" id="showcase-track-path" d={initialTrack.path}></path>
@@ -303,8 +321,8 @@ const toneBadge = {
         }
 
         :root {
-            --accent: #f59e0b;
-            --accent-secondary: #fb7185;
+            --accent: #3b82f6;
+            --accent-secondary: #818cf8;
             --bg-primary: rgba(7, 10, 18, 0.98);
             --bg-secondary: rgba(14, 18, 28, 0.95);
             --bg-tertiary: rgba(9, 12, 20, 0.92);
@@ -517,48 +535,85 @@ const toneBadge = {
             color: var(--accent);
         }
 
-        .subsystem-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
+        .subsystem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
             margin-bottom: 0.75rem;
         }
 
-        .subsystem-tab {
-            padding: 0.4rem 0.7rem;
-            background: transparent;
+        .subsystem-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.65rem 0.4rem;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             color: var(--text-secondary);
-            font-size: 0.75rem;
+            font-family: inherit;
             cursor: pointer;
             transition: all 0.2s;
+            text-align: center;
         }
 
-        .subsystem-tab:hover,
-        .subsystem-tab.is-active {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: rgba(245, 158, 11, 0.4);
-            color: var(--accent);
+        .subsystem-card:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .subsystem-card.is-active {
+            background: rgba(59, 130, 246, 0.12);
+            border-color: rgba(59, 130, 246, 0.45);
+            color: var(--text-primary);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .subsystem-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #1e3a5f;
+            color: #93c5fd;
+        }
+
+        .subsystem-card.is-active .subsystem-card-icon {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .subsystem-card-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .subsystem-card-desc {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            line-height: 1.3;
         }
 
         .subsystem-panel {
             font-size: 0.8rem;
-        }
-
-        .subsystem-eyebrow {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            color: var(--accent);
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
         }
 
         .subsystem-headline {
-            font-size: 0.95rem;
-            margin: 0.25rem 0;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
         }
 
         .subsystem-summary {
             color: var(--text-secondary);
+            font-size: 0.73rem;
             margin-bottom: 0.5rem;
         }
 
@@ -570,6 +625,7 @@ const toneBadge = {
         .subsystem-list li {
             position: relative;
             color: var(--text-secondary);
+            font-size: 0.73rem;
         }
 
         .subsystem-list li::before {
@@ -577,6 +633,28 @@ const toneBadge = {
             position: absolute;
             left: -0.75rem;
             color: var(--accent);
+        }
+
+        [data-theme="light"] .subsystem-card {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        [data-theme="light"] .subsystem-card:hover {
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        [data-theme="light"] .subsystem-card.is-active {
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        [data-theme="light"] .subsystem-card-icon {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        [data-theme="light"] .subsystem-card.is-active .subsystem-card-icon {
+            background: #2563eb;
+            color: #fff;
         }
 
         .viz-main {
@@ -634,13 +712,13 @@ const toneBadge = {
             stroke-width: 2;
         }
 
-        .marker--cone { fill: #f59e0b; }
+        .marker--cone { fill: #3b82f6; }
         .marker--apex { fill: #f97316; }
         .marker--gate { fill: #38bdf8; }
 
         .track-car {
             fill: #f8fafc;
-            stroke: #fb7185;
+            stroke: #818cf8;
             stroke-width: 3;
         }
 
@@ -779,7 +857,7 @@ const toneBadge = {
 
         .tone-optimal { border-color: #10b981; }
         .tone-tracking { border-color: var(--accent); }
-        .tone-watch { border-color: #fb7185; }
+        .tone-watch { border-color: #818cf8; }
 
         .stage-head {
             display: flex;
