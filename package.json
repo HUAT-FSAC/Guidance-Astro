@@ -25,9 +25,9 @@
     },
     "dependencies": {
         "@astrojs/check": "^0.9.8",
-        "@astrojs/cloudflare": "^13.1.7",
+        "@astrojs/cloudflare": "^13.1.10",
         "@astrojs/starlight": "^0.38.4",
-        "astro": "^6.1.9",
+        "astro": "^7.1.0",
         "qrcode": "^1.5.4",
         "sharp": "^0.34.5",
         "typescript": "^5.9.3"
