@@ -15,8 +15,8 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
 <section class="fs-section reveal-upon-scroll">
     <div class="fs-background" data-parallax data-parallax-speed="0.2"></div>
     <div class="fs-content reveal-upon-scroll" style="transition-delay: 0.1s;">
-        <span class="fs-label">{subtitle}</span>
         <h2 class="fs-title">{title}</h2>
+        <span class="fs-label">{subtitle}</span>
         <p class="fs-description">{description}</p>
         <a href={ctaLink} class="fs-cta">
             {ctaText || "了解更多"}
@@ -102,14 +102,35 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
     }
 
     .fs-label {
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        display: inline-block;
+        display: block;
+        margin-top: 0.75rem;
         font-size: 0.85rem;
-        font-weight: 800;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        letter-spacing: 4px;
-        color: var(--sl-color-accent);
-        margin-bottom: 1.5rem;
+        opacity: 0.5;
+        font-weight: 600;
+        color: rgba(255,255,255,0.7);
+    }
+
+    :global([data-theme='light']) .fs-label {
+        color: rgba(0,0,0,0.6);
+    }
+
+    .fs-title {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin: 0;
+        color: #fff;
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    :global([data-theme='light']) .fs-title {
+        color: #000;
     }
 
     .fs-title {

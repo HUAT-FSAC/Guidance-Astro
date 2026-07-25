@@ -1,0 +1,129 @@
+---
+interface Props{
+    backgroundImage?:string
+}
+const { backgroundImage } = Astro.props
+const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
+---
+
+<section class="team-hero" role="region" aria-label="Team">
+    <div class="team-bg" role="presentation" aria-hidden="true" style={bgStyle}></div>
+    <div class="team-overlay" role="presentation" aria-hidden="true"></div>
+    <div class="team-content">
+        <h1 class="team-heading">指导老师与团队成员</h1>
+        <span class="team-sub">ADVISORS & TEAM MEMBERS</span>
+        <a class="team-cta" href="/team/" role="button" data-astro-prefetch="hover">查看完整团队</a>
+    </div>
+</section>
+
+<style>
+    .team-hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .team-bg {
+        position: absolute;
+        inset: 0;
+        background-image: var(--team-bg);
+        background-size: cover;
+        background-position: center;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .team-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.85) 100%);
+        pointer-events: none;
+    }
+
+    .team-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        padding: 4rem 2rem;
+        max-width: 900px;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 4px;
+    }
+
+    .team-content .team-heading {
+        font-size: clamp(3rem, 7vw, 5rem);
+        margin: 0 0 1rem 0;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        line-height: 1.1;
+        color: #ffffff;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .team-content .team-sub {
+        display: block;
+        color: #ffffff;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin: 0 0 2.5rem 0;
+        font-weight: 400;
+    }
+
+    .team-cta {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 3rem;
+        color: #fff !important;
+        background: transparent !important;
+        border: 1px solid var(--sl-color-accent) !important;
+        border-radius: 0 !important;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: all 0.3s var(--fs-ease-out);
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        overflow: hidden;
+    }
+
+    :global([data-theme='light']) .team-cta {
+        color: var(--sl-color-accent) !important;
+    }
+
+    .team-cta::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--sl-color-accent);
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s var(--fs-ease-out);
+    }
+
+    .team-cta:hover {
+        color: #000 !important;
+        border-color: transparent !important;
+        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
+    }
+
+    .team-cta:hover::before {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+    @media (max-width: 480px) {
+        .team-content { padding: 1.5rem 0; }
+        .team-cta { width: 100%; justify-content: center; }
+    }
+</style>

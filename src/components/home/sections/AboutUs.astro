@@ -1,0 +1,77 @@
+---
+import ImageCarousel from './ImageCarousel.astro';
+---
+
+<section class="home-block" style="max-width: 80%; min-height: 65vh;">
+  <div class="home-block-header" style="text-align: center;">
+    <span class="home-block-label">关于我们</span>
+    <span class="home-block-subtitle">ABOUT US</span>
+  </div>
+  <div style="display: flex; gap: 5rem; align-items: center;">
+    <div style="flex: 1.6;">
+      <div class="about-content">
+        <p>
+        东风 HUAT 无人驾驶方程式赛车队成立于 2015 年，是湖北汽车工业学院首支专注于无人驾驶方程式赛车的学生团队，由一群对自动驾驶技术充满热情的工程学子创建。团队由来自智能网联汽车学院的算法、电气、机械、项管等多个专业的本科生组成。
+        </p>
+        <p>
+        我们是湖北汽车工业学院智能网联汽车学院两级共同打造的学生科研团队。在学校、学院与东风商用车的大力支持下，每年自主设计并制造一辆全新的无人驾驶方程式赛车，参加中国大学生无人驾驶方程式大赛（FSAC）。我们的使命是结合工程实践，打造面向智能网联汽车的创新型人才培养平台。
+        </p>
+        <p>
+        "力争上游，擎动未来"是我们的口号。从 2019 年首次参赛至今，从电车到无人车，我们与赛车相伴，不断突破技术极限。2024 赛季更取得了历史最佳成绩。十年磨一剑，赛道见证了无数人的青春与汗水，而荣誉铭刻在每一个 HUAT 人的心中。
+        </p>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <ImageCarousel images={[
+        { src: '/assets/about-us.jpg', alt: '团队照片 1' },
+      ]} interval={3000} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-content {
+    line-height: 1.8;
+    font-size: 1.3rem;
+    color: var(--sl-color-text);
+    opacity: 0.85;
+    max-width: 1000px;
+  }
+  .about-content p {
+    text-indent: 2em;
+  }
+
+  .home-block-label {
+    font-size: 3rem !important;
+    font-weight: 800;
+    color: #000;
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+
+  .home-block-subtitle {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  section.home-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .home-block-header {
+    margin-bottom: 8rem !important;   /* 改这个值，越大距离越远 */
+  }
+
+  @media (max-width: 1000px) {
+    section.home-block > div:last-child {
+      flex-direction: column !important;
+    }
+  }
+</style>

@@ -3,39 +3,19 @@
  * 比赛倒计时组件
  * 展示下一场比赛距今的倒计时，已过期则显示回顾状态
  */
-import type { Locale } from '../../../utils/i18n'
-import { getTranslations } from '../../../utils/i18n'
-
-interface Props {
-    locale?: Locale
-}
-
-const { locale = 'zh' } = Astro.props
-const t = getTranslations(locale)
-
 import { raceEvents } from '../../../data/home';
 const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
-
-const eventInfo = {
-    zh: {
-        name: '中国大学生方程式系列赛 2025',
-        location: '上海国际赛车场'
-    },
-    en: {
-        name: 'China Formula Student Series 2025',
-        location: 'Shanghai International Circuit'
-    }
-}
 ---
 
 <section class="countdown-section">
     <div class="countdown-inner">
         <div class="countdown-header">
-            <span class="countdown-label">{t.countdown.label}</span>
-            <h2 class="countdown-event">{eventInfo[locale].name}</h2>
+            <span class="countdown-label">赛前冲刺</span>
+            <span class="countdown-subtitle">COUNTDOWN</span>
+            <h2 class="countdown-event">{primary.name}</h2>
             <p class="countdown-meta">
-                <span class="meta-icon">📍</span>{eventInfo[locale].location}
-                &nbsp;·&nbsp;
+                <span class="meta-icon">📍</span>{primary.location}
+                <span class="meta-sep">·</span>
                 <span class="meta-icon">📅</span>{primary.startDate} — {primary.endDate}
             </p>
         </div>
@@ -44,30 +24,30 @@ const eventInfo = {
         <div class="countdown-display" id="countdown-display">
             <div class="cd-unit">
                 <span class="cd-num" id="cd-days">--</span>
-                <span class="cd-label">{t.countdown.days}</span>
+                <span class="cd-label">天</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-hours">--</span>
-                <span class="cd-label">{t.countdown.hours}</span>
+                <span class="cd-label">时</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-minutes">--</span>
-                <span class="cd-label">{t.countdown.minutes}</span>
+                <span class="cd-label">分</span>
             </div>
             <span class="cd-sep">:</span>
             <div class="cd-unit">
                 <span class="cd-num" id="cd-seconds">--</span>
-                <span class="cd-label">{t.countdown.seconds}</span>
+                <span class="cd-label">秒</span>
             </div>
         </div>
 
         <p class="countdown-ended hidden" id="countdown-ended">
-            {t.countdown.ended}
+            🏁 赛事已圆满结束，感谢所有人的付出！
         </p>
 
-        <a href={locale === 'en' ? '/en/about-fs/' : '/about-fs/'} class="countdown-cta">{t.countdown.cta}</a>
+        <a href="/about-fs/" class="countdown-cta">了解更多赛事信息 →</a>
     </div>
 </section>
 
@@ -111,6 +91,10 @@ const eventInfo = {
 
 <style>
     .countdown-section {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        min-height: 100vh;
         padding: 4rem 2rem;
         background: linear-gradient(135deg,
             rgba(243, 156, 18, 0.08) 0%,
@@ -129,36 +113,49 @@ const eventInfo = {
     }
 
     .countdown-inner {
-        max-width: 860px;
-        margin: 0 auto;
-        text-align: center;
+        max-width: 1000px;
+        margin: 0;
+        text-align: left;
+        padding-left: 5rem;
+        padding-top: 8rem;
     }
 
     .countdown-label {
         display: inline-block;
-        font-size: 0.78rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 800;
+        color: #fff;
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .countdown-subtitle {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        letter-spacing: 3px;
-        color: var(--sl-color-accent, #f39c12);
-        margin-bottom: 0.75rem;
+        font-weight: 600;
+        color: #ffffff;
     }
 
     .countdown-event {
-        font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-        font-weight: 800;
+        font-size: clamp(3rem, 3.5vw, 2.2rem);
+        font-weight: 2000;
         margin: 0 0 0.75rem 0;
-        color: var(--sl-color-text);
+        color: #fff;
         line-height: 1.2;
     }
 
     .countdown-meta {
-        font-size: 0.9rem;
-        opacity: 0.65;
+        font-size: 2rem;
+        opacity: 1;
         margin: 0 0 2.5rem 0;
     }
 
-    .meta-icon { margin-right: 0.2rem; }
+    .meta-icon { margin-right: 1rem; }
+    .meta-sep { margin: 1 2rem; opacity: 0.5; }
 
     /* ── 倒计时数字 ── */
     .countdown-display {
@@ -188,7 +185,7 @@ const eventInfo = {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(243,156,18,0.06), transparent);
+        background: linear-gradient(135deg, rgba(59,130,246,0.06), transparent);
         pointer-events: none;
     }
 
@@ -200,14 +197,14 @@ const eventInfo = {
     .cd-num {
         font-size: clamp(2rem, 6vw, 3.5rem);
         font-weight: 900;
-        color: var(--sl-color-accent, #f39c12);
+        color: var(--sl-color-accent, #3b82f6);
         line-height: 1;
         font-variant-numeric: tabular-nums;
         letter-spacing: -1px;
     }
 
     .cd-label {
-        font-size: 0.75rem;
+        font-size: 6rem;
         font-weight: 600;
         opacity: 0.6;
         text-transform: uppercase;
@@ -217,7 +214,7 @@ const eventInfo = {
     .cd-sep {
         font-size: 2.5rem;
         font-weight: 900;
-        color: var(--sl-color-accent, #f39c12);
+        color: var(--sl-color-accent, #3b82f6);
         opacity: 0.4;
         margin-bottom: 1.5rem;
         align-self: center;
@@ -250,7 +247,7 @@ const eventInfo = {
         background: var(--sl-color-accent);
         color: #000;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(243,156,18,0.3);
+        box-shadow: 0 6px 20px rgba(59,130,246,0.3);
     }
 
     @media (max-width: 480px) {

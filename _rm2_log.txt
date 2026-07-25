@@ -1,0 +1,4 @@
+﻿ERR mpidx: [safe-delete][SAFE_DELETE_BULK_GUARD_ERROR] CODEBUDDY_SESSION_ID is not set
+ERR 73idx: [safe-delete][SAFE_DELETE_BULK_GUARD_ERROR] CODEBUDDY_SESSION_ID is not set
+present mpidx: True
+present 73idx: True

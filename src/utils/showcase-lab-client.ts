@@ -33,6 +33,7 @@ interface ShowcaseRuntimeState {
     selection: ShowcaseSelection
     frameIndex: number
     isPlaying: boolean
+    // Presentation Console state
     isCompareEnabled: boolean
     compareScenarioId: string | null
     scriptId: string | null
@@ -51,13 +52,13 @@ function getRequiredElement<T extends Element>(root: ParentNode, selector: strin
     return element
 }
 
-function createHtmlElement<T extends HTMLElement = HTMLElement>(
+function createHtmlElement(
     document: Document,
     tagName: string,
     className?: string,
     text?: string
-): T {
-    const element = document.createElement(tagName) as T
+): HTMLElement {
+    const element = document.createElement(tagName)
 
     if (className) {
         element.className = className
@@ -161,6 +162,14 @@ function renderMarkers(root: HTMLElement, snapshot: ShowcaseReplaySnapshot): voi
     container.replaceChildren(...circles)
 }
 
+const SUBSYSTEM_ICONS: Record<string, string> = {
+    perception: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    localization: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    planning: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    control: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    actuation: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>`,
+}
+
 function renderSubsystemTabs(
     root: HTMLElement,
     subsystems: ShowcaseSubsystem[],
@@ -170,15 +179,12 @@ function renderSubsystemTabs(
     const document = root.ownerDocument
     const tabs = subsystems.map((subsystem) => {
         const isActive = subsystem.id === activeSubsystemId
-        const button = createHtmlElement<HTMLButtonElement>(
-            document,
-            'button',
-            `subsystem-tab${isActive ? ' is-active' : ''}`,
-            subsystem.label
-        )
+        const button = document.createElement('button')
         button.type = 'button'
+        button.className = `subsystem-card${isActive ? ' is-active' : ''}`
         button.dataset.subsystemId = subsystem.id
         button.setAttribute('aria-pressed', String(isActive))
+        button.innerHTML = `<span class="subsystem-card-icon">${SUBSYSTEM_ICONS[subsystem.id] || ''}</span><span class="subsystem-card-label">${subsystem.label}</span><span class="subsystem-card-desc">${subsystem.eyebrow}</span>`
         return button
     })
 
@@ -249,6 +255,8 @@ function clearScriptTimer(root: HTMLElement): void {
     delete root.dataset.scriptTimerId
 }
 
+// ==================== Presentation Console Rendering ====================
+
 function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState): void {
     const compareToggle = root.querySelector<HTMLInputElement>('[data-compare-toggle]')
     const comparePanel = root.querySelector<HTMLElement>('[data-compare-panel]')
@@ -264,7 +272,7 @@ function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeStat
     if (!runtimeState.isCompareEnabled) return
 
     const compareScenarioId =
-        runtimeState.compareScenarioId ??
+        runtimeState.compareScenarioId ||
         resolveCompareScenarioId(runtimeState.selection.scenarioId)
     compareScenarioSelect.value = compareScenarioId
 
@@ -275,6 +283,7 @@ function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeStat
         0
     )
 
+    // Render delta highlights
     const highlightsContainer = comparePanel.querySelector<HTMLUListElement>(
         '[data-compare-highlights]'
     )
@@ -284,6 +293,7 @@ function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeStat
             .join('')
     }
 
+    // Render metric comparisons
     comparison.metricDeltas.slice(0, 2).forEach((delta) => {
         const metricEl = comparePanel.querySelector<HTMLElement>(`[data-metric-id="${delta.id}"]`)
         if (metricEl) {
@@ -299,8 +309,8 @@ function renderComparePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeStat
                 deltaIndicatorEl.style.color = isPositive
                     ? '#10b981'
                     : delta.delta < 0
-                      ? '#fb7185'
-                      : '#f59e0b'
+                      ? '#818cf8'
+                      : '#3b82f6'
             }
         }
     })
@@ -340,7 +350,7 @@ function renderScriptPanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState
         stepCounter.textContent = `Step ${scriptSnapshot.stepIndex + 1} / ${scriptSnapshot.totalSteps}`
     }
     if (stepTitle) stepTitle.textContent = step.title
-    if (stepNarration) stepNarration.textContent = step.narration || ''
+    if (stepNarration) stepNarration.textContent = step.narration
 }
 
 function renderCachePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState): void {
@@ -356,13 +366,16 @@ function renderCachePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState)
 
     cacheStatus.textContent = summary.statusLabel
     cacheStatus.setAttribute('data-status', state.mode)
+    // 使用 resources 数组的长度作为缓存包数量
     cachePacks.textContent = String(state.resources.length)
     cacheHitRate.textContent = `${state.hitRate}%`
+    // 格式化最后同步时间
     const lastSyncLabel = state.lastSyncTime
         ? new Date(state.lastSyncTime).toLocaleTimeString()
         : '从未同步'
     cacheLastSync.textContent = lastSyncLabel
 
+    // Render resource statuses
     state.resources.forEach((resource, index) => {
         const resourceEl = root.querySelector<HTMLElement>(`[data-resource-index="${index}"]`)
         if (resourceEl) {
@@ -456,6 +469,7 @@ function renderShowcase(
     renderReplayPanel(root, snapshot, runtimeState.isPlaying)
     syncScenarioChips(root, snapshot.selection.scenarioId)
 
+    // Render Presentation Console
     renderComparePanel(root, runtimeState)
     renderScriptPanel(root, runtimeState)
     renderCachePanel(root, runtimeState)
@@ -482,15 +496,10 @@ function scheduleReplay(
 
     const snapshot = getShowcaseReplaySnapshot(runtimeState.selection, runtimeState.frameIndex)
     const timerId = window.setTimeout(() => {
-        applyState((currentState) => {
-            const advanced = advanceShowcaseReplay(currentState.selection, currentState.frameIndex)
-            return {
-                ...currentState,
-                selection: advanced.selection,
-                frameIndex: advanced.frameIndex,
-                isPlaying: true,
-            }
-        })
+        applyState((currentState) => ({
+            ...advanceShowcaseReplay(currentState.selection, currentState.frameIndex),
+            isPlaying: true,
+        }))
     }, snapshot.scenario.replay.frameDurationMs)
 
     root.dataset.replayTimerId = String(timerId)
@@ -517,8 +526,7 @@ function persistSelection(root: HTMLElement, selection: ShowcaseSelection): void
 }
 
 function getStoredConsoleState(): StoredConsoleState | null {
-    const result = safeGetJSON<StoredConsoleState | null>(SHOWCASE_CONSOLE_STORAGE_KEY, null)
-    return result
+    return safeGetJSON<StoredConsoleState>(SHOWCASE_CONSOLE_STORAGE_KEY, null)
 }
 
 function persistConsoleState(
@@ -567,13 +575,13 @@ function scheduleScriptPlayback(
                     scenarioId: nextSnapshot.currentStep!.scenarioId,
                     subsystemId: nextSnapshot.currentStep!.subsystemId,
                 }),
-                frameIndex: nextSnapshot.currentStep!.frameIndex ?? currentState.frameIndex,
+                frameIndex: nextSnapshot.currentStep!.frameIndex,
                 isPlaying: false,
                 scriptStepIndex: nextScriptState.stepIndex,
                 isScriptPlaying: true,
             }))
         }
-    }, 3000)
+    }, 3000) // 3 seconds per step
 
     root.dataset.scriptTimerId = String(timerId)
 }
@@ -594,6 +602,7 @@ function bindShowcaseLab(root: HTMLElement): void {
         selection: getStoredSelection(root),
         frameIndex: 0,
         isPlaying: false,
+        // Presentation Console state
         isCompareEnabled: storedConsoleState?.isCompareEnabled || false,
         compareScenarioId: initialCompareScenarioId,
         scriptId: storedConsoleState?.scriptId || null,
@@ -629,6 +638,7 @@ function bindShowcaseLab(root: HTMLElement): void {
         }
 
         if (trigger.dataset.scenarioId) {
+            // When switching scenarios, update compare scenario if it conflicts
             const newScenarioId = trigger.dataset.scenarioId
             let newCompareScenarioId = runtimeState.compareScenarioId
             if (newCompareScenarioId === newScenarioId) {
@@ -654,7 +664,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                 }),
                 frameIndex: runtimeState.frameIndex,
                 isPlaying: false,
-                isScriptPlaying: false,
+                isScriptPlaying: false, // Pause script on manual interaction
             })
             return
         }
@@ -696,6 +706,7 @@ function bindShowcaseLab(root: HTMLElement): void {
             return
         }
 
+        // Script controls
         if (trigger.hasAttribute('data-script-prev')) {
             const newStepIndex = Math.max(runtimeState.scriptStepIndex - 1, 0)
             const snapshot = getShowcaseScriptSnapshot(runtimeState.scriptId, newStepIndex)
@@ -706,7 +717,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex ?? runtimeState.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex,
                     scriptStepIndex: newStepIndex,
                     isScriptPlaying: false,
                     isPlaying: false,
@@ -728,7 +739,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex ?? runtimeState.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex,
                     scriptStepIndex: nextState.stepIndex,
                     isScriptPlaying: false,
                     isPlaying: false,
@@ -746,8 +757,10 @@ function bindShowcaseLab(root: HTMLElement): void {
             return
         }
 
+        // Cache controls
         if (trigger.hasAttribute('data-cache-warm')) {
             const newCacheState = warmShowcaseCache()
+            // Simulate extra cache for compare mode
             if (runtimeState.isCompareEnabled) {
                 newCacheState.cachedPacks += 2
             }
@@ -792,11 +805,12 @@ function bindShowcaseLab(root: HTMLElement): void {
                 ...runtimeState,
                 frameIndex: resolveReplayFrameIndex(snapshot.scenario, Number(target.value)),
                 isPlaying: false,
-                isScriptPlaying: false,
+                isScriptPlaying: false, // Pause script on manual interaction
             })
             return
         }
 
+        // Compare mode toggle
         if (target.hasAttribute('data-compare-toggle')) {
             applyState({
                 ...runtimeState,
@@ -813,6 +827,7 @@ function bindShowcaseLab(root: HTMLElement): void {
             return
         }
 
+        // Script selection
         if (target.hasAttribute('data-script-select')) {
             const scriptId = target.value || null
             const snapshot = getShowcaseScriptSnapshot(scriptId, 0)
@@ -824,7 +839,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex ?? runtimeState.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex,
                     scriptId,
                     scriptStepIndex: 0,
                     isScriptPlaying: false,
@@ -841,10 +856,11 @@ function bindShowcaseLab(root: HTMLElement): void {
             return
         }
 
+        // Compare scenario selection
         if (target.hasAttribute('data-compare-scenario-select')) {
             applyState({
                 ...runtimeState,
-                compareScenarioId: target.value || null,
+                compareScenarioId: target.value,
             })
             return
         }

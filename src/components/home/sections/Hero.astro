@@ -8,25 +8,37 @@ interface Props {
     description: string
     ctaText: string
     ctaLink: string
-    backgroundImage?: string
+    backgroundImages?: string[]
 }
 
-const { title, subtitle, description, ctaText, ctaLink, backgroundImage } = Astro.props
+const { title, subtitle, description, ctaText, ctaLink, backgroundImages } = Astro.props
 
-const largeBg = backgroundImage ? optimizeExternalImage(backgroundImage, 1600, 80) : ''
-const smallBg = backgroundImage ? optimizeExternalImage(backgroundImage, 900, 80) : ''
-const bgStyle = backgroundImage
-    ? `--hero-bg: url(${largeBg}); --hero-bg-mobile: url(${smallBg});`
-    : ''
+const images = (backgroundImages ?? []).map((src) => ({
+    large: src ? optimizeExternalImage(src, 1600, 80) : '',
+    small: src ? optimizeExternalImage(src, 900, 80) : '',
+}))
 ---
 
-<!-- HTML Head Injection for LCP preloading -->
-{largeBg && (
-    <link rel="preload" as="image" href={largeBg} fetchpriority="high" />
+{/* preload first image */}
+{images.length > 0 && (
+    <link rel="preload" as="image" href={images[0].large} fetchpriority="high" />
 )}
 
 <section class="hero-v2" role="region" aria-label="Hero">
-    <div class="hero-bg" role="presentation" aria-hidden="true" style={bgStyle} data-parallax data-parallax-speed="0.25"></div>
+    {images.length > 0 ? (
+        images.map((img, i) => (
+            <div
+                class={`hero-bg hero-bg-${i}`}
+                role="presentation"
+                aria-hidden="true"
+                style={`--hero-bg: url(${img.large}); --hero-bg-mobile: url(${img.small});`}
+                data-parallax
+                data-parallax-speed="0.25"
+            ></div>
+        ))
+    ) : (
+        <div class="hero-bg hero-bg-0" role="presentation" aria-hidden="true" data-parallax data-parallax-speed="0.25"></div>
+    )}
     <div class="hero-overlay" role="presentation" aria-hidden="true"></div>
 
     <div class="hero-inner">
@@ -48,30 +60,68 @@ const bgStyle = backgroundImage
     </div>
 </section>
 
-<style>.hero-v2 {
+<!-- 占位块：hero 是 fixed，需要推动后续内容到可视区以下 -->
+<script>
+    const bgLayers = document.querySelectorAll<HTMLElement>('.hero-bg')
+    if (bgLayers.length > 1) {
+        let current = 0
+        let interval: number
+        const total = bgLayers.length
+
+        function showSlide(index: number) {
+            bgLayers.forEach((el, i) => {
+                el.style.opacity = i === index ? '1' : '0'
+                el.style.transition = 'opacity 1s ease-in-out'
+            })
+        }
+
+        function nextSlide() {
+            current = (current + 1) % total
+            showSlide(current)
+        }
+
+        function startCarousel() {
+            interval = window.setInterval(nextSlide, 5000)
+        }
+
+        function stopCarousel() {
+            clearInterval(interval)
+        }
+
+        const hero = document.querySelector('.hero-v2')
+        hero?.addEventListener('mouseenter', stopCarousel)
+        hero?.addEventListener('mouseleave', startCarousel)
+
+        // init: show first, hide others
+        bgLayers.forEach((el, i) => {
+            el.style.opacity = i === 0 ? '1' : '0'
+            el.style.transition = 'opacity 1s ease-in-out'
+        })
+
+        startCarousel()
+    }
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap');
+
+    .hero-v2 {
         position: relative;
-        padding: 6rem 1.5rem;
+        margin-top: -130px;
+        padding-top: 130px;
+        min-height: 100vh;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        border-radius: 0;
-        margin: 0 auto 3rem auto;
-        max-width: 100%;
-        background-color: var(--fs-bg-base);
-        /* 赛道发车线网格背景 */
-        background-image: 
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        border-bottom: 1px solid var(--fs-color-border);
+        background-color: #000;
     }
 
     :global([data-theme='light']) .hero-v2 {
         background-color: #f8f9fa;
-        background-image: 
-            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     }
 
     .hero-bg {
@@ -79,23 +129,22 @@ const bgStyle = backgroundImage
         inset: 0;
         background-image: var(--hero-bg);
         background-size: cover;
-        background-position: center bottom;
-        opacity: 0.35;
+        background-position: center center;
+        background-color: #000;
+        opacity: 0;
+        filter: brightness(0.5);
         pointer-events: none;
-        /* 压暗图片，使其只在底部浮现 */
-        mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
-        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
     }
 
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(3, 3, 3, 0), rgba(3, 3, 3, 0.6));
+        background: linear-gradient(180deg, rgba(3, 3, 3, 0.3) 0%, rgba(3, 3, 3, 0.5) 50%, rgba(3, 3, 3, 0.85) 100%);
         pointer-events: none;
     }
 
     :global([data-theme='light']) .hero-overlay {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6));
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.75) 100%);
     }
 
     .hero-inner {
@@ -118,43 +167,49 @@ const bgStyle = backgroundImage
 
     .hero-heading {
         font-family: 'Space Grotesk', system-ui, sans-serif;
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-size: clamp(3rem, 7vw, 5rem);
         margin: 0 0 1.5rem 0;
         font-weight: 900;
         letter-spacing: -0.04em;
         line-height: 1.1;
-        color: var(--fs-color-heading);
+        color: #ffffff;
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     :global([data-theme='light']) .hero-heading {
+        color: #050505;
         text-shadow: none;
     }
 
     .hero-sub {
-        color: var(--sl-color-accent);
+        color: #ffffff;
         margin-bottom: 1.5rem;
         font-weight: 700;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
     }
 
     .hero-desc {
-        color: var(--fs-color-text-dimmed);
+        color: #ffffff;
         margin: 0 auto 3rem auto;
-        max-width: 680px;
+        max-width: 1000px;
         line-height: 1.8;
-        font-size: 1.1rem;
+        white-space: pre-line;
+        font-size: 1.4rem;
     }
 
-    /* 具有工程风的斜切 CTA 按钮 */
+    :global([data-theme='light']) .hero-desc {
+        color: rgba(0, 0, 0, 0.7);
+    }
+
     .hero-cta {
         position: relative;
         display: inline-flex;
         align-items: center;
         gap: 0.8rem;
         padding: 1rem 3rem;
-        color: var(--fs-color-heading) !important;
+        color: #fff !important;
         background: transparent !important;
+        border: 1px solid var(--sl-color-accent) !important;
         border-radius: 0 !important;
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-weight: 700;
@@ -163,46 +218,29 @@ const bgStyle = backgroundImage
         letter-spacing: 1px;
         text-decoration: none;
         transition: all 0.3s var(--fs-ease-out);
-        /* 经典电竞/机械切角 */
         clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: visible;
+        overflow: hidden;
     }
 
     :global([data-theme='light']) .hero-cta {
         color: var(--sl-color-accent) !important;
     }
 
-    /* 边框伪元素 - 不被 clip-path 裁剪 */
-    .hero-cta::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border: 1px solid var(--sl-color-accent);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        pointer-events: none;
-        transition: all 0.3s var(--fs-ease-out);
-    }
-
-    /* 内部填充动效 */
     .hero-cta::before {
         content: '';
         position: absolute;
-        inset: 1px;
+        top: 0; left: 0; width: 100%; height: 100%;
         background: var(--sl-color-accent);
         z-index: -1;
         transform: scaleX(0);
         transform-origin: right;
         transition: transform 0.4s var(--fs-ease-out);
-        clip-path: polygon(calc(15px - 1px) 0, 100% 0, 100% calc(100% - calc(15px - 1px)), calc(100% - calc(15px - 1px)) 100%, 0 100%, 0 calc(15px - 1px));
     }
 
     .hero-cta:hover {
         color: #000 !important;
+        border-color: transparent !important;
         box-shadow: 0 0 20px var(--fs-accent-glow) !important;
-    }
-
-    .hero-cta:hover::after {
-        border-color: transparent;
     }
 
     .hero-cta:hover::before {
@@ -233,45 +271,6 @@ const bgStyle = backgroundImage
         .hero-cta {
             width: 100%;
             justify-content: center;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .hero-cta,
-        .hero-cta::after,
-        .hero-cta::before {
-            transition: none !important;
-        }
-        .hero-bg {
-            animation: none !important;
-            transform: none !important;
-        }
-    }
-
-    /* 横屏手机适配 - 短视口设备 (如 iPhone SE 横屏) */
-    @media (max-height: 500px) and (orientation: landscape) {
-        .hero-v2 {
-            padding: 2rem 1.5rem;
-            min-height: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-inner {
-            padding: 1.5rem 0;
-        }
-
-        .hero-heading {
-            font-size: 1.75rem;
-        }
-
-        .hero-desc {
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-cta {
-            padding: 0.75rem 2rem;
-            font-size: 0.9rem;
         }
     }
 </style>

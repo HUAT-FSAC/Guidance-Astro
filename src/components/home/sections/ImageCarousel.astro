@@ -1,0 +1,101 @@
+---
+interface Props {
+    images: { src: string; alt: string }[];
+}
+
+const { images } = Astro.props;
+const id = 'carousel-' + Math.random().toString(36).slice(2, 8);
+---
+
+<div class="carousel" id={id}>
+    {images.map((img, i) => (
+        <img
+            src={img.src}
+            alt={img.alt}
+            class="carousel-image"
+            data-index={i}
+            style={{ display: i === 0 ? 'block' : 'none' }}
+        />
+    ))}
+    <div class="carousel-dots">
+        {images.map((_, i) => (
+            <button class="dot" data-index={i} data-active={i === 0 ? '' : undefined}></button>
+        ))}
+    </div>
+</div>
+
+<script>
+    (function () {
+        const container = document.getElementById('{id}');
+        if (!container) return;
+        const images = container.querySelectorAll('.carousel-image');
+        const dots = container.querySelectorAll('.dot');
+        let current = 0;
+        let timer = setInterval(function () {
+            images[current].style.display = 'none';
+            dots[current].removeAttribute('data-active');
+            current = (current + 1) % images.length;
+            images[current].style.display = 'block';
+            dots[current].setAttribute('data-active', '');
+        }, {interval});
+        container.addEventListener('mouseenter', function () { clearInterval(timer); });
+        container.addEventListener('mouseleave', function () {
+            timer = setInterval(function () {
+                images[current].style.display = 'none';
+                dots[current].removeAttribute('data-active');
+                current = (current + 1) % images.length;
+                images[current].style.display = 'block';
+                dots[current].setAttribute('data-active', '');
+            }, {interval});
+        });
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                const idx = parseInt(dot.getAttribute('data-index'));
+                if (idx === current) return;
+                images[current].style.display = 'none';
+                dots[current].removeAttribute('data-active');
+                current = idx;
+                images[current].style.display = 'block';
+                dots[current].setAttribute('data-active', '');
+            });
+        });
+    })();
+</script>
+
+<style>
+    .carousel {
+        position: relative;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .carousel-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+        filter: brightness(0.5);
+        transition: opacity 0.5s;
+    }
+    .carousel-dots {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+    }
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255,255,255,0.5);
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.3s;
+    }
+    .dot[data-active] {
+        background: #fff;
+    }
+</style>

@@ -1,0 +1,1435 @@
+<!--
+  来源: https://huat-fsac.eu.org/team/
+  提取日期: 2026-05-13
+  依赖说明:
+    - Google Fonts: Space Grotesk (标题字体), JetBrains Mono (等宽字体) - 通过 CDN 加载
+    - DiceBear API: 用于生成成员头像 (https://api.dicebear.com/7.x/bottts/svg)
+    - Unsplash: 赛季回顾图片 (https://images.unsplash.com)
+    - 贡献者图像: https://contrib.rocks
+  无其他第三方 JS 库依赖,所有交互为原生 JS 实现。
+-->
+<!DOCTYPE html>
+<html lang="zh" dir="ltr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>我们的团队 | HUAT FSAC</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" crossorigin="anonymous">
+
+<style>
+/* ========== CSS 变量与令牌 ========== */
+:root {
+  --fs-bg-base: #030303;
+  --fs-bg-surface: #0a0a0c;
+  --fs-bg-elevated: #151518;
+  --sl-color-accent: #ff3d00;
+  --fs-accent-glow: rgba(255, 61, 0, 0.25);
+
+  --fs-color-text: #ececec;
+  --fs-color-text-dimmed: rgba(255, 255, 255, 0.6);
+  --fs-color-heading: #ffffff;
+  --fs-color-border: rgba(255, 255, 255, 0.08);
+  --fs-color-surface-hover: rgba(255, 255, 255, 0.04);
+  --fs-border-subtle: rgba(255, 255, 255, 0.08);
+  --fs-border-focus: rgba(255, 61, 0, 0.5);
+  --sl-color-white: #ffffff;
+  --sl-color-text: #ececec;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 50%;
+  --fs-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--fs-ease-out);
+  --transition-normal: 0.4s var(--fs-ease-out);
+  --theme-transition: 0.3s ease-out;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.65), 0 10px 10px -5px rgba(0, 0, 0, 0.35);
+
+  --z-background: 1;
+  --z-content: 10;
+  --z-navigation: 100;
+  --z-floating: 1000;
+}
+
+:root[data-theme='light'] {
+  --fs-bg-base: #ffffff;
+  --fs-bg-surface: #f5f5f7;
+  --fs-bg-elevated: #ffffff;
+  --fs-accent-glow: rgba(255, 61, 0, 0.15);
+
+  --fs-color-text: #1a1a2e;
+  --fs-color-text-dimmed: rgba(0, 0, 0, 0.5);
+  --fs-color-heading: #050505;
+  --fs-color-border: rgba(0, 0, 0, 0.08);
+  --fs-border-subtle: rgba(0, 0, 0, 0.08);
+  --fs-border-focus: rgba(255, 61, 0, 0.4);
+  --sl-color-white: #050505;
+
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  transition: background-color var(--theme-transition), color var(--theme-transition);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--fs-bg-base);
+  color: var(--fs-color-text);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1.6;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ========== 导航栏 ========== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-navigation);
+  background: rgba(3, 3, 3, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--fs-border-subtle);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--fs-color-heading);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.header-logo .accent { color: var(--sl-color-accent); }
+
+.header-nav { display: flex; align-items: center; gap: 1.5rem; }
+
+.header-nav a {
+  color: var(--fs-color-text-dimmed);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.header-nav a:hover, .header-nav a.active { color: var(--fs-color-heading); }
+
+.theme-toggle-btn {
+  background: none;
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--fs-color-text);
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover { border-color: var(--fs-border-focus); }
+
+/* ========== 页面容器 ========== */
+.page-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ========== 内容排版 ========== */
+.sl-markdown-content { font-size: 1.05rem; line-height: 1.7; letter-spacing: 0.01em; }
+
+.sl-markdown-content h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--fs-border-subtle);
+  color: var(--sl-color-white);
+}
+
+.sl-markdown-content h2 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--fs-border-subtle);
+  color: var(--sl-color-white);
+}
+
+.sl-markdown-content h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--sl-color-white);
+  margin-top: 2rem;
+  border-left: 3px solid var(--sl-color-accent);
+  padding-left: 0.75rem;
+}
+
+.sl-markdown-content p { margin: 0.75rem 0; color: var(--fs-color-text); }
+
+.sl-markdown-content ul { padding-left: 1.5rem; }
+.sl-markdown-content li { margin: 0.4rem 0; }
+
+.sl-markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.sl-markdown-content th, .sl-markdown-content td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid var(--fs-border-subtle);
+}
+
+.sl-markdown-content th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+.sl-markdown-content a {
+  color: var(--sl-color-accent);
+  text-decoration: none;
+}
+
+.sl-markdown-content a:hover { text-decoration: underline; }
+
+.sl-markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--fs-border-subtle);
+  margin: 3rem 0;
+}
+
+/* ========== 团队 ID 卡片 (核心) ========== */
+.team-id-card {
+  perspective: 1000px;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.card-inner {
+  position: relative;
+  background: linear-gradient(145deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%);
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform .5s cubic-bezier(.23, 1, .32, 1), box-shadow .5s ease;
+  transform-style: preserve-3d;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.team-id-card:hover .card-inner {
+  transform: translateY(-5px) rotateX(4deg) rotateY(-4deg);
+  box-shadow: -10px 15px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--fs-accent-glow);
+  border-color: var(--fs-border-focus);
+}
+
+.card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+
+.card-group { text-transform: uppercase; }
+
+.card-logo { color: var(--sl-color-accent); }
+
+.avatar-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1.25rem;
+  transform: translateZ(20px);
+}
+
+.avatar-bg {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 5px,
+    rgba(255, 61, 0, 0.1) 5px,
+    rgba(255, 61, 0, 0.1) 10px
+  );
+  border-radius: 50%;
+  border: 2px solid var(--sl-color-accent);
+  opacity: 0.5;
+}
+
+.avatar-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 2;
+  background: var(--fs-bg-base);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.avatar-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--sl-color-accent);
+  box-shadow: 0 0 10px var(--sl-color-accent);
+  z-index: 3;
+  opacity: 0;
+  animation: scan 3s infinite linear;
+  animation-play-state: paused;
+}
+
+.team-id-card:hover .avatar-scanline { opacity: 0.8; animation-play-state: running; }
+
+@keyframes scan {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+
+.card-info {
+  text-align: center;
+  transform: translateZ(15px);
+  width: 100%;
+}
+
+.card-info .member-name {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  letter-spacing: 1px;
+}
+
+[data-theme='light'] .card-info .member-name { color: #000; }
+
+.card-info .member-role {
+  font-size: 0.85rem;
+  color: var(--sl-color-accent);
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.card-footer {
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--fs-border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0.5;
+}
+
+.barcode {
+  height: 12px;
+  width: 60px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #fff 0, #fff 2px,
+    transparent 2px, transparent 4px,
+    #fff 4px, #fff 5px,
+    transparent 5px, transparent 8px
+  );
+}
+
+[data-theme='light'] .barcode {
+  background-image: repeating-linear-gradient(
+    to right,
+    #000 0, #000 2px,
+    transparent 2px, transparent 4px,
+    #000 4px, #000 5px,
+    transparent 5px, transparent 8px
+  );
+}
+
+.id-number {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+
+.card-inner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--sl-color-accent), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.team-id-card:hover .card-inner::after { opacity: 1; }
+
+/* 成员卡片网格 */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ========== 成就展示区域 ========== */
+.achievement-section {
+  padding: 5rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.achievement-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.achievement-container.reverse { direction: rtl; }
+.achievement-container.reverse > * { direction: ltr; }
+
+.achievement-content { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.achievement-badge {
+  display: inline-block;
+  background: rgba(255, 61, 0, 0.15);
+  color: var(--sl-color-accent);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+  letter-spacing: 1px;
+}
+
+.achievement-title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--sl-color-white);
+  margin: 0;
+  line-height: 1.15;
+}
+
+.achievement-description {
+  font-size: 1.1rem;
+  color: var(--fs-color-text-dimmed);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 500px;
+}
+
+.achievement-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--sl-color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  transition: gap var(--transition-fast);
+}
+
+.achievement-cta:hover { gap: 0.75rem; }
+
+.achievement-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* ========== 赛季回顾轮播区域 ========== */
+.home-block { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+
+.home-block-header { text-align: center; margin-bottom: 3rem; }
+
+.home-block-label {
+  display: inline-block;
+  background: rgba(255, 61, 0, 0.15);
+  color: var(--sl-color-accent);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.home-block-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0; color: var(--sl-color-white); }
+
+/* 轮播容器 */
+.seasons-carousel-container {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  padding: 0 0.5rem;
+}
+
+.season-card {
+  background: linear-gradient(145deg, var(--fs-bg-elevated), var(--fs-bg-surface));
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+.season-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--fs-border-subtle);
+}
+
+.season-year {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--sl-color-accent);
+}
+
+.season-badge {
+  background: rgba(255, 61, 0, 0.15);
+  color: var(--sl-color-accent);
+  padding: 0.3rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.season-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+.season-gallery { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.gallery-item {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.team-info { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.leadership { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.leader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+.leader-icon { font-size: 1.5rem; }
+
+.leader-details { display: flex; flex-direction: column; }
+
+.leader-role { font-size: 0.75rem; color: var(--fs-color-text-dimmed); }
+
+.leader-name { font-weight: 600; color: var(--sl-color-white); }
+
+.members-section { flex: 1; }
+
+.members-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.member-group {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+
+.group-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sl-color-accent);
+  margin-bottom: 0.5rem;
+}
+
+.group-members { display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; }
+
+.group-members .member-name {
+  font-size: 0.78rem;
+  color: var(--fs-color-text-dimmed);
+}
+
+/* 轮播按钮 */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--fs-bg-elevated);
+  border: 1px solid var(--fs-border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--fs-color-text);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.carousel-nav:hover { border-color: var(--fs-border-focus); background: var(--fs-bg-surface); }
+.carousel-nav.prev { left: 0.5rem; }
+.carousel-nav.next { right: 0.5rem; }
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--fs-border-subtle);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.indicator.active { background: var(--sl-color-accent); border-color: var(--sl-color-accent); }
+
+/* ========== 滚动显示动画 ========== */
+.reveal-upon-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--fs-ease-out), transform 0.8s var(--fs-ease-out);
+  will-change: opacity, transform;
+}
+
+.reveal-upon-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-upon-scroll { opacity: 1; transform: translateY(0); transition: none; }
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+  .page-container { padding: 1rem; }
+
+  .sl-markdown-content { font-size: 0.95rem; line-height: 1.75; padding: 0 0.5rem; }
+  .sl-markdown-content h1 { font-size: 1.75rem; padding-bottom: 0.5rem; }
+  .sl-markdown-content h2 { font-size: 1.35rem; margin-top: 2rem; padding-top: 1rem; }
+  .sl-markdown-content h3 { font-size: 1.15rem; margin-top: 1.5rem; }
+
+  .team-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+
+  .achievement-section { padding: 3rem 1.25rem; }
+  .achievement-container { grid-template-columns: 1fr; gap: 2rem; }
+  .achievement-container.reverse .achievement-image { order: -1; }
+
+  .home-block { padding: 3rem 1.25rem; }
+  .home-block-header { margin-bottom: 2rem; }
+  .home-block-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+  .season-content { grid-template-columns: 1fr; }
+  .members-grid { grid-template-columns: 1fr; }
+  .carousel-nav { width: 36px; height: 36px; }
+
+  .header { padding: 0.6rem 1rem; }
+  .header-nav { gap: 1rem; }
+  .header-nav a { font-size: 0.8rem; }
+}
+
+/* ========== 页脚 ========== */
+.page-footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--fs-border-subtle);
+  color: var(--fs-color-text-dimmed);
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 导航栏 ========== -->
+<header class="header">
+  <a href="/" class="header-logo">
+    HUAT<span class="accent">FSAC</span>
+  </a>
+  <nav class="header-nav">
+    <a href="#team-section">团队</a>
+    <a href="#culture-section">文化</a>
+    <a href="#join-section">加入</a>
+    <a href="#seasons-section">赛季</a>
+    <button class="theme-toggle-btn" id="themeToggle" title="切换亮/暗模式" aria-label="切换主题">☀️ / 🌙</button>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <!-- ========== 团队介绍 ========== -->
+  <div class="sl-markdown-content">
+    <p>HUAT FSAC 由一群充满激情的工程学子组成。我们来自不同的专业背景，但共同的目标将我们凝聚在一起——设计、制造并驾驶最出色的无人驾驶方程式赛车。</p>
+    <p></p>
+  </div>
+
+  <!-- ========== 团队架构 - 核心成员 ID 卡片 ========== -->
+  <div id="team-section" class="sl-markdown-content">
+    <h2>团队架构</h2>
+    <p>我们的团队分为多个技术小组，每个小组负责赛车的不同方面：</p>
+
+    <div class="team-grid">
+      <!-- 队长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">FSAC</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=captain&backgroundColor=transparent" alt="队长 / 统筹" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">队长 / 统筹</h3>
+            <p class="member-role">车队运营与整车交付</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: YV9SFBNY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 感知组组长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">Vision Dept.</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=perception&backgroundColor=transparent" alt="感知组组长" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">感知组组长</h3>
+            <p class="member-role">LiDAR &amp; Vision</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: IYJ1PU4U</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 定位建图组长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">Mapping Dept.</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=mapping&backgroundColor=transparent" alt="定位建图组长" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">定位建图组长</h3>
+            <p class="member-role">SLAM &amp; Odometry</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: NQZZ5AG4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 规划控制组长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">Control Dept.</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=planning&backgroundColor=transparent" alt="规划控制组长" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">规划控制组长</h3>
+            <p class="member-role">MPC &amp; Path Planning</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: 59A1A6RG</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 电控组长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">Electronic Dept.</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=electronic&backgroundColor=transparent" alt="电控组长" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">电控组长</h3>
+            <p class="member-role">BMS &amp; Motor Control</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: D81OEZAC</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 机械组长 -->
+      <div class="team-id-card">
+        <div class="card-inner">
+          <div class="card-header">
+            <span class="card-group">Mechanical Dept.</span>
+            <span class="card-logo">HUAT</span>
+          </div>
+          <div class="avatar-wrapper">
+            <div class="avatar-bg"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=mechanical&backgroundColor=transparent" alt="机械组长" class="avatar-img" loading="lazy">
+            <div class="avatar-scanline"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="member-name">机械组长</h3>
+            <p class="member-role">Chassis &amp; Aero</p>
+          </div>
+          <div class="card-footer">
+            <div class="barcode"></div>
+            <span class="id-number">ID: RTKUSAKB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ========== 团队文化 ========== -->
+    <div id="culture-section">
+      <h2>团队文化</h2>
+      <h3>我们的价值观</h3>
+      <ul>
+        <li><strong>🎯 追求卓越</strong>：不满足于"足够好"，追求每一个细节的完美</li>
+        <li><strong>🤝 团队协作</strong>：跨组协作，共同解决复杂的工程问题</li>
+        <li><strong>📚 持续学习</strong>：保持好奇心，不断学习新技术</li>
+        <li><strong>💡 勇于创新</strong>：敢于尝试新方法，挑战传统思维</li>
+      </ul>
+      <h3>日常活动</h3>
+      <table>
+        <thead><tr><th>活动</th><th>频率</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>周例会</td><td>每周一次</td><td>各组进度汇报、问题讨论</td></tr>
+          <tr><td>技术分享</td><td>每两周一次</td><td>组员轮流进行技术讲座</td></tr>
+          <tr><td>Code Review</td><td>每周</td><td>代码审查与优化</td></tr>
+          <tr><td>实车测试</td><td>按需</td><td>场地测试与数据采集</td></tr>
+          <tr><td>团建活动</td><td>每月一次</td><td>增进团队凝聚力</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ========== 加入我们 ========== -->
+    <div id="join-section">
+      <h2>加入我们</h2>
+      <h3>我们需要这样的你</h3>
+      <ul>
+        <li>🔥 对无人驾驶/机器人技术充满热情</li>
+        <li>💪 有较强的学习能力和动手能力</li>
+        <li>🎯 有责任心，能够按时完成任务</li>
+        <li>🤗 善于沟通，乐于团队合作</li>
+      </ul>
+      <h3>可选技术栈</h3>
+      <ul>
+        <li><strong>编程语言：</strong>Python, C++, MATLAB</li>
+        <li><strong>框架工具：</strong>ROS/ROS2, OpenCV, PCL, PyTorch</li>
+        <li><strong>开发环境：</strong>Linux, Git, Docker</li>
+        <li><strong>专业知识：</strong>控制理论、计算机视觉、机器学习</li>
+      </ul>
+      <h3>联系方式</h3>
+      <ul>
+        <li>📧 邮箱：fsac@example.com</li>
+        <li>💬 QQ群：123456789</li>
+        <li>🏢 地址：湖北汽车工业学院 XXX 实验室</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ========== 历届成员 ========== -->
+    <h2>历届成员</h2>
+    <p>感谢所有为 HUAT FSAC 做出贡献的成员，你们的努力和付出是我们前进的动力！</p>
+    <div style="display: flex; justify-content: center; margin-top: 2rem;">
+      <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">
+        <img src="https://contrib.rocks/image?repo=HUAT-FSAC/Guidance-Astro" alt="贡献者" loading="lazy">
+      </a>
+    </div>
+  </div>
+
+</div><!-- /page-container -->
+
+<!-- ========== 团队成就区域 (来自首页) ========== -->
+<section class="achievement-section reveal-upon-scroll" role="region" aria-label="创新与激情的交汇">
+  <div class="achievement-container reverse">
+    <div class="achievement-content reveal-upon-scroll">
+      <span class="achievement-badge">我们的团队</span>
+      <h2 class="achievement-title">创新与激情的交汇</h2>
+      <p class="achievement-description">认识我们充满活力的工程学子团队，他们设计、制造并驾驶单座赛车。每年在 Formula Student 比赛中，我们都在挑战可能的边界，打造获胜的机器。</p>
+      <a href="#team-section" class="achievement-cta">
+        认识团队
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+    <div class="achievement-image reveal-upon-scroll" style="transition-delay: 0.15s;">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?fm=webp&w=900&q=80" alt="创新与激情的交汇 - 成就展示" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ========== 赛季回顾 - 团队成员轮播 (来自首页) ========== -->
+<section class="home-block" id="seasons-section">
+  <div class="home-block-header">
+    <span class="home-block-label">我们的足迹</span>
+    <h2 class="home-block-title">🏎️ 赛季回顾</h2>
+  </div>
+
+  <div class="seasons-carousel-container" role="region" aria-roledescription="carousel" aria-label="赛季回顾">
+    <div class="carousel-viewport" id="seasonsViewport">
+      <div class="carousel-track" id="seasonsTrack" aria-live="polite">
+        <!-- 2025 -->
+        <div class="carousel-slide" data-index="0">
+          <div class="season-card">
+            <div class="season-header">
+              <div class="season-year">2025</div>
+              <div class="season-badge">Season Team</div>
+            </div>
+            <div class="season-content">
+              <div class="season-gallery">
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?fm=webp&w=900&q=85" alt="2025 车队成员" loading="lazy" decoding="async">
+                  <div class="gallery-caption">车队成员</div>
+                </div>
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=webp&w=900&q=85" alt="2025 赛车实拍" loading="lazy" decoding="async">
+                  <div class="gallery-caption">赛车实拍</div>
+                </div>
+              </div>
+              <div class="team-info">
+                <div class="leadership">
+                  <div class="leader-card">
+                    <div class="leader-icon">👨‍🏫</div>
+                    <div class="leader-details">
+                      <span class="leader-role">指导老师</span>
+                      <span class="leader-name">金湘遂</span>
+                    </div>
+                  </div>
+                  <div class="leader-card">
+                    <div class="leader-icon">🎖️</div>
+                    <div class="leader-details">
+                      <span class="leader-role">队长</span>
+                      <span class="leader-name">潘世泉</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="members-section">
+                  <div class="members-grid">
+                    <div class="member-group">
+                      <div class="group-name">机械部</div>
+                      <div class="group-members">
+                        <span class="member-name">潘世泉</span><span class="member-name">黄宇轩</span><span class="member-name">陈柏霖</span><span class="member-name">罗炯恒</span><span class="member-name">成杰</span><span class="member-name">刘文涛</span><span class="member-name">雷世豪</span><span class="member-name">汪智强</span><span class="member-name">闫博</span><span class="member-name">杨昌鑫</span><span class="member-name">涂伟麟</span>
+                      </div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部</div>
+                      <div class="group-members">
+                        <span class="member-name">许基天</span><span class="member-name">郑雨乐</span><span class="member-name">郑舟鑫</span><span class="member-name">周凌</span><span class="member-name">魏博</span><span class="member-name">于欣渤</span><span class="member-name">崔心怡</span><span class="member-name">汪雅兰</span><span class="member-name">刘定智</span><span class="member-name">吴民正</span><span class="member-name">何流</span>
+                      </div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">算法部</div>
+                      <div class="group-members">
+                        <span class="member-name">陈子扬</span><span class="member-name">徐子达</span><span class="member-name">张鑫跃</span><span class="member-name">陈娟</span><span class="member-name">蔡俊翔</span><span class="member-name">卫冠杰</span><span class="member-name">金俊杰</span><span class="member-name">万仁成</span><span class="member-name">黄昭然</span>
+                      </div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">项管部</div>
+                      <div class="group-members">
+                        <span class="member-name">房静琳</span><span class="member-name">熊傲然</span><span class="member-name">王颂扬</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="carousel-slide" data-index="1">
+          <div class="season-card">
+            <div class="season-header">
+              <div class="season-year">2024</div>
+              <div class="season-badge">Season Team</div>
+            </div>
+            <div class="season-content">
+              <div class="season-gallery">
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?fm=webp&w=900&q=85" alt="2024 车队成员" loading="lazy" decoding="async">
+                  <div class="gallery-caption">车队成员</div>
+                </div>
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=webp&w=900&q=85" alt="2024 赛车实拍" loading="lazy" decoding="async">
+                  <div class="gallery-caption">赛车实拍</div>
+                </div>
+              </div>
+              <div class="team-info">
+                <div class="leadership">
+                  <div class="leader-card">
+                    <div class="leader-icon">👨‍🏫</div>
+                    <div class="leader-details">
+                      <span class="leader-role">指导老师</span>
+                      <span class="leader-name">指导老师</span>
+                    </div>
+                  </div>
+                  <div class="leader-card">
+                    <div class="leader-icon">🎖️</div>
+                    <div class="leader-details">
+                      <span class="leader-role">队长</span>
+                      <span class="leader-name">队长姓名</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="members-section">
+                  <div class="members-grid">
+                    <div class="member-group">
+                      <div class="group-name">算法部 - 惯导</div>
+                      <div class="group-members"><span class="member-name">成员A</span><span class="member-name">成员B</span><span class="member-name">成员C</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">算法部 - 雷达</div>
+                      <div class="group-members"><span class="member-name">成员D</span><span class="member-name">成员E</span><span class="member-name">成员F</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">算法部 - 视觉</div>
+                      <div class="group-members"><span class="member-name">成员G</span><span class="member-name">成员H</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">算法部 - 规划控制</div>
+                      <div class="group-members"><span class="member-name">蔡俊翔</span><span class="member-name">成员I</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部 - 线束</div>
+                      <div class="group-members"><span class="member-name">成员J</span><span class="member-name">成员K</span><span class="member-name">成员L</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部 - 软件</div>
+                      <div class="group-members"><span class="member-name">成员M</span><span class="member-name">成员N</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部 - 硬件</div>
+                      <div class="group-members"><span class="member-name">成员O</span><span class="member-name">成员P</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部 - 电池箱</div>
+                      <div class="group-members"><span class="member-name">成员Q</span><span class="member-name">成员R</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">机械部 - 转向悬架</div>
+                      <div class="group-members"><span class="member-name">成员S</span><span class="member-name">成员T</span><span class="member-name">成员U</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">机械部 - 传动</div>
+                      <div class="group-members"><span class="member-name">成员V</span><span class="member-name">成员W</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">机械部 - 车架车身</div>
+                      <div class="group-members"><span class="member-name">成员X</span><span class="member-name">成员Y</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">机械部 - 制动</div>
+                      <div class="group-members"><span class="member-name">成员Z</span><span class="member-name">成员AA</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">项管部 - 新媒体</div>
+                      <div class="group-members"><span class="member-name">成员AB</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">项管部 - 营销</div>
+                      <div class="group-members"><span class="member-name">成员AC</span><span class="member-name">成员AD</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">项管部 - 运营</div>
+                      <div class="group-members"><span class="member-name">成员AE</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="carousel-slide" data-index="2">
+          <div class="season-card">
+            <div class="season-header">
+              <div class="season-year">2023</div>
+              <div class="season-badge">Season Team</div>
+            </div>
+            <div class="season-content">
+              <div class="season-gallery">
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?fm=webp&w=900&q=85" alt="2023 车队成员" loading="lazy" decoding="async">
+                  <div class="gallery-caption">车队成员</div>
+                </div>
+                <div class="gallery-item">
+                  <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=webp&w=900&q=85" alt="2023 赛车实拍" loading="lazy" decoding="async">
+                  <div class="gallery-caption">赛车实拍</div>
+                </div>
+              </div>
+              <div class="team-info">
+                <div class="leadership">
+                  <div class="leader-card">
+                    <div class="leader-icon">👨‍🏫</div>
+                    <div class="leader-details">
+                      <span class="leader-role">指导老师</span>
+                      <span class="leader-name">指导老师</span>
+                    </div>
+                  </div>
+                  <div class="leader-card">
+                    <div class="leader-icon">🎖️</div>
+                    <div class="leader-details">
+                      <span class="leader-role">队长</span>
+                      <span class="leader-name">队长姓名</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="members-section">
+                  <div class="members-grid">
+                    <div class="member-group">
+                      <div class="group-name">算法部</div>
+                      <div class="group-members"><span class="member-name">成员A</span><span class="member-name">成员B</span><span class="member-name">成员C</span><span class="member-name">成员D</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">电气部</div>
+                      <div class="group-members"><span class="member-name">成员E</span><span class="member-name">成员F</span><span class="member-name">成员G</span><span class="member-name">成员H</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">机械部</div>
+                      <div class="group-members"><span class="member-name">成员I</span><span class="member-name">成员J</span><span class="member-name">成员K</span><span class="member-name">成员L</span></div>
+                    </div>
+                    <div class="member-group">
+                      <div class="group-name">项管部</div>
+                      <div class="group-members"><span class="member-name">成员M</span><span class="member-name">成员N</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="carousel-nav prev" id="prevBtn" aria-label="Previous Season">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+    </button>
+    <button class="carousel-nav next" id="nextBtn" aria-label="Next Season">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 18 6-6-6-6"></path>
+      </svg>
+    </button>
+    <div class="carousel-indicators">
+      <button class="indicator active" data-index="0" aria-label="Go to slide 1"></button>
+      <button class="indicator" data-index="1" aria-label="Go to slide 2"></button>
+      <button class="indicator" data-index="2" aria-label="Go to slide 3"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 页脚 ========== -->
+<div class="page-footer">
+  <p>来源: <a href="https://huat-fsac.eu.org" style="color: var(--sl-color-accent);">HUAT FSAC</a> — 湖北汽车工业学院方程式赛车队</p>
+</div>
+
+<!-- ========== JavaScript ========== -->
+<script>
+// ========== 主题切换 ==========
+(function() {
+  var stored = localStorage.getItem('huat-color-scheme');
+  var starlightStored = localStorage.getItem('starlight-theme');
+  if (stored === 'light' || stored === 'dark') {
+    document.documentElement.setAttribute('data-theme', stored);
+  } else if (starlightStored === 'light' || starlightStored === 'dark') {
+    document.documentElement.setAttribute('data-theme', starlightStored);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('huat-color-scheme', next);
+    localStorage.setItem('starlight-theme', next);
+  });
+})();
+
+// ========== 滚动显示动画 ==========
+(function() {
+  var cleanup;
+  function initReveal() {
+    if (cleanup) { cleanup(); cleanup = undefined; }
+    var elements = document.querySelectorAll('.reveal-upon-scroll');
+    if (elements.length === 0) return;
+    var observer = new IntersectionObserver(function(entries, obs) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { root: null, rootMargin: '0px', threshold: 0.15 });
+    elements.forEach(function(el) {
+      el.classList.remove('is-visible');
+      observer.observe(el);
+    });
+    cleanup = function() { observer.disconnect(); };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReveal);
+  } else {
+    initReveal();
+  }
+})();
+
+// ========== 赛季轮播 ==========
+(function() {
+  var resizeBound = false;
+
+  function initCarousel() {
+    var viewport = document.getElementById('seasonsViewport');
+    var track = document.getElementById('seasonsTrack');
+    var slides = document.querySelectorAll('.carousel-slide');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var indicators = document.querySelectorAll('.indicator');
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    if (!track || slides.length === 0 || track.dataset.initialized === 'true' || isMobile) return;
+    track.dataset.initialized = 'true';
+
+    var autoplay = !prefersReduced;
+    var currentIndex = 0;
+    var totalSlides = slides.length;
+    var autoplayTimer = null;
+
+    function updateSlide() {
+      track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+      indicators.forEach(function(ind, i) {
+        if (i === currentIndex) { ind.classList.add('active'); }
+        else { ind.classList.remove('active'); }
+      });
+    }
+
+    function goNext() { currentIndex = (currentIndex + 1) % totalSlides; updateSlide(); }
+    function goPrev() { currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; updateSlide(); }
+
+    nextBtn && nextBtn.addEventListener('click', function() { goNext(); resetAutoplay(); });
+    prevBtn && prevBtn.addEventListener('click', function() { goPrev(); resetAutoplay(); });
+
+    indicators.forEach(function(ind) {
+      ind.addEventListener('click', function(e) {
+        currentIndex = parseInt(e.target.dataset.index || '0');
+        updateSlide();
+        resetAutoplay();
+      });
+    });
+
+    function startAutoplay() {
+      if (!autoplay || autoplayTimer) return;
+      autoplayTimer = setInterval(goNext, 5000);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    }
+
+    function resetAutoplay() {
+      if (!autoplay) return;
+      stopAutoplay();
+      startAutoplay();
+    }
+
+    // 触摸滑动
+    var touchStartX = 0, touchEndX = 0;
+    track.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      if (autoplay) stopAutoplay();
+    }, { passive: true });
+
+    track.addEventListener('touchend', function(e) {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+      if (autoplay) startAutoplay();
+    }, { passive: true });
+
+    function handleSwipe() {
+      if (touchEndX < touchStartX - 50) goNext();
+      else if (touchEndX > touchStartX + 50) goPrev();
+    }
+
+    if (autoplay) {
+      if (viewport) {
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) startAutoplay();
+            else stopAutoplay();
+          });
+        }, { threshold: 0.2 });
+        obs.observe(viewport);
+      } else {
+        startAutoplay();
+      }
+      track.addEventListener('mouseenter', stopAutoplay);
+      track.addEventListener('mouseleave', startAutoplay);
+    }
+  }
+
+  function lazyInit() {
+    var viewport = document.getElementById('seasonsViewport');
+    if (!viewport) return;
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) { obs.disconnect(); initCarousel(); }
+        });
+      }, { rootMargin: '200px' });
+      obs.observe(viewport);
+    } else {
+      initCarousel();
+    }
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    lazyInit();
+  } else {
+    document.addEventListener('DOMContentLoaded', lazyInit, { once: true });
+  }
+
+  if (!resizeBound) {
+    window.addEventListener('resize', function() {
+      var track = document.getElementById('seasonsTrack');
+      if (track && !window.matchMedia('(max-width: 768px)').matches && track.dataset.initialized !== 'true') {
+        lazyInit();
+      }
+    }, { passive: true });
+    resizeBound = true;
+  }
+})();
+</script>
+
+</body>
+</html>

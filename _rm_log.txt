@@ -1,0 +1,19 @@
+﻿USER: kerwin\21711
+D:\Coding\Projects\Guidance-Astro\.git\objects\pack S-1-5-21-3906930117-703503084-1964519050-3345071517:(I)(OI)(CI)(RX,W)
+                                                    S-1-5-21-1653152248-1060147316-555497609-3100630651:(I)(OI)(CI)(RX,W)
+                                                    BUILTIN\Administrators:(I)(F)
+                                                    BUILTIN\Administrators:(I)(OI)(CI)(IO)(F)
+                                                    NT AUTHORITY\SYSTEM:(I)(F)
+                                                    NT AUTHORITY\SYSTEM:(I)(OI)(CI)(IO)(F)
+                                                    NT AUTHORITY\Authenticated Users:(I)(M)
+                                                    NT AUTHORITY\Authenticated Users:(I)(OI)(CI)(IO)(M)
+                                                    BUILTIN\Users:(I)(RX)
+                                                    BUILTIN\Users:(I)(OI)(CI)(IO)(GR,GE)
+
+已成功处理 1 个文件; 处理 0 个文件时失败
+setowner: D:\Coding\Projects\Guidance-Astro\.git\objects\pack: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\multi-pack-index: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-1f91d30ba239421ac0ddccc3c029f612f6c75cb0.idx: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-1f91d30ba239421ac0ddccc3c029f612f6c75cb0.pack: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-3f59f317fbdff2d0343e21518579a261be2f582c.idx: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-3f59f317fbdff2d0343e21518579a261be2f582c.pack: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-3f59f317fbdff2d0343e21518579a261be2f582c.rev: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-5e3ded4c0f7b209e3c8bb9a65c2467dfbe85ac9d.idx: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-5e3ded4c0f7b209e3c8bb9a65c2467dfbe85ac9d.pack: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-5e3ded4c0f7b209e3c8bb9a65c2467dfbe85ac9d.rev: 拒绝访问。 D:\Coding\Projects\Guidance-Astro\.git\objects\pack\pack-73a6a1979304078d1ebfa27a0b4ddc2b908724ad.idx: 拒绝访问。 已成功处理 0 个文件; 处理 11 个文件时失败
+grant: 无效参数“/grant:r”
+ERR mpidx: [safe-delete][SAFE_DELETE_FAIL_CLOSED] {"target":"D:\\Coding\\Projects\\Guidance-Astro\\.git\\objects\\pack\\multi-pack-index","reason":"trash-failed","detail":"使用“3”个参数调用“DeleteFile”时发生异常:“这个系统不支持该功能。”"}
+ERR 73idx: [safe-delete][SAFE_DELETE_FAIL_CLOSED] {"target":"D:\\Coding\\Projects\\Guidance-Astro\\.git\\objects\\pack\\pack-73a6a1979304078d1ebfa27a0b4ddc2b908724ad.idx","reason":"trash-failed","detail":"使用“3”个参数调用“DeleteFile”时发生异常:“这个系统不支持该功能。”"}
+present mpidx: True
+present 73idx: True
