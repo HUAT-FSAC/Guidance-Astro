@@ -5,6 +5,7 @@ import ImageCarousel from './ImageCarousel.astro';
 <section class="home-block" style="max-width: 80%; min-height: 65vh;">
   <div class="home-block-header" style="text-align: center;">
     <span class="home-block-label">关于我们</span>
+    <span class="home-block-subtitle">ABOUT US</span>
   </div>
   <div style="display: flex; gap: 5rem; align-items: center;">
     <div style="flex: 1.6;">
@@ -41,10 +42,22 @@ import ImageCarousel from './ImageCarousel.astro';
   }
 
   .home-block-label {
-    font-size: 2.5rem !important;
-    text-decoration: none;
-    border-bottom: 3px solid #000;
+    font-size: 3rem !important;
+    font-weight: 800;
+    color: #000;
+    border-bottom: 3px solid #3b82f6;
     padding-bottom: 10px;
+    display: inline-block;
+  }
+
+  .home-block-subtitle {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #ffffff;
   }
 
   section.home-block {

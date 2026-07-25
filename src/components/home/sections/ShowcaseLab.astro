@@ -7,8 +7,8 @@ const defaultScenario = showcaseScenarios[0]
 <section class="showcase-entry home-block">
     <div class="showcase-entry-shell">
         <div class="showcase-entry-content">
-            <span class="showcase-entry-kicker">Autonomous Showcase</span>
             <h2 class="showcase-entry-heading">智能驾驶交互实验室</h2>
+            <span class="showcase-entry-subtitle">AUTONOMOUS SHOWCASE</span>
             <p class="showcase-entry-description">
                 用完全本地的数据、SVG 可视化和浏览器状态管理，<br/>
                 直观展示无人驾驶赛车从感知到执行器的整条闭环。
@@ -100,30 +100,27 @@ const defaultScenario = showcaseScenarios[0]
         gap: 1.5rem;
     }
 
-    .showcase-entry-kicker {
-        font-size: 0.75rem;
-        letter-spacing: 0.25em;
-        text-transform: uppercase;
-        font-weight: 700;
-        color: var(--sl-color-accent, #3b82f6);
-    }
-
     .showcase-entry-heading {
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-size: clamp(2.5rem, 5vw, 3.5rem);
-        font-weight: 700;
+        font-weight: 800;
         line-height: 1.1;
         margin: 0;
-        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: var(--sl-color-text);
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        display: inline-block;
     }
 
-    :global([data-theme='light']) .showcase-entry-heading {
-        background: linear-gradient(135deg, #0f172a, #334155);
-        -webkit-background-clip: text;
-        background-clip: text;
+    .showcase-entry-subtitle {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        opacity: 0.5;
+        font-weight: 600;
+        color: var(--sl-color-text);
     }
 
     .showcase-entry-description {

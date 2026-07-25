@@ -8,7 +8,6 @@ hero:
 ---
 
 import Hero from '../../components/home/sections/Hero.astro'
-import NewsSection from '../../components/home/sections/NewsSection.astro'
 import Stats from '../../components/home/sections/Stats.astro'
 import Countdown from '../../components/home/sections/Countdown.astro'
 import Showcase from '../../components/home/sections/Showcase.astro'
@@ -16,7 +15,6 @@ import CoreModules from '../../components/home/sections/CoreModules.astro'
 import Seasons from '../../components/home/sections/Seasons.astro'
 import Sponsors from '../../components/home/sections/Sponsors.astro'
 import Acknowledgement from '../../components/home/sections/Acknowledgement.astro'
-import Recruitment from '../../components/home/sections/Recruitment.astro'
 import PageLoader from '../../components/home/PageLoader.astro'
 import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro'
 import ScrollProgress from '../../components/home/ui/ScrollProgress.astro'
@@ -28,10 +26,10 @@ import ScrollReveal from '../../components/home/ui/ScrollReveal.astro'
 import ParallaxScroll from '../../components/home/ui/ParallaxScroll.astro'
 import AboutUs from '../../components/home/sections/AboutUs.astro'
 import TeamMembers from '../../components/home/sections/TeamMembers.astro'
+import JoinUs from '../../components/home/sections/JoinUs.astro'
 import {
     heroConfig,
     stats,
-    newsItems,
     seasons,
     sponsorGroups,
 } from '../../data/home'
@@ -151,18 +149,31 @@ import {
 
   .home-block-label {
     display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--sl-color-text);
+    border-bottom: 3px solid var(--sl-color-accent);
+    padding-bottom: 0.5rem;
+  }
+
+  .home-block-subtitle {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--sl-color-accent, #3b82f6);
-    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #ffffff;
   }
 
   .home-block-title {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 800;
     margin: 0;
+    color: var(--sl-color-text);
+    border-bottom: 3px solid var(--sl-color-accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
   }
 
   .home-block--center {
@@ -187,6 +198,17 @@ import {
   }
 
   /* 全局淡入动画 - 移除，由 ScrollReveal 替代 */
+
+  .groups-bg-section {
+    background: rgba(255,255,255,0.06);
+    padding: 4rem 2rem 2rem;
+    margin: 0 calc(-50vw + 50%);
+    width: 100vw;
+  }
+
+  :global([data-theme='light']) .groups-bg-section {
+    background: rgba(0,0,0,0.04);
+  }
 
   @media (max-width: 768px) {
     .home-block {
@@ -249,45 +271,38 @@ import {
 
 <TeamMembers backgroundImage="/assets/photo-together.jpg" />
 
-{/* ==================== 模块展示 ==================== */}
+{/* ==================== 团队分组 ==================== */}
 
-<Showcase />
-
-{/* ==================== 核心模块 ==================== */}
-
-<section class="home-block" style="max-width: 80%; min-height: 65vh;">
+<section class="groups-bg-section">
     <div class="home-block-header" style="text-align: center;">
-        <span class="home-block-label" style="font-size: 2.5rem !important;">学习资源</span>
+        <span class="home-block-label" style="font-size: 2.5rem !important;">团队分组</span>
+        <span class="home-block-subtitle">TEAM GROUPS</span>
     </div>
     <CoreModules />
 </section>
 
-{/* ==================== 新闻动态 ==================== */}
+{/* ==================== 功能模块 ==================== */}
 
-<NewsSection title="新闻动态" subtitle="保持更新，了解最新进展" news={newsItems} />
+<Showcase />
 
 {/* ==================== 赛季回顾 ==================== */}
 
 <section class="home-block">
     <div class="home-block-header">
-        <span class="home-block-label">我们的足迹</span>
-        <h2 class="home-block-title">🏎️ 赛季回顾</h2>
     </div>
     <Seasons seasons={seasons} />
 </section>
 
-{/* ==================== 招新入口 ==================== */}
+{/* ==================== 加入我们 ==================== */}
 
-<Recruitment />
-
-
-
+<JoinUs backgroundImage="/assets/join.jpg" />
 
 {/* ==================== 赞助商 ==================== */}
 
 <section class="home-block">
     <div class="home-block-header">
-        <h2 class="home-block-title">❤️ 合作伙伴</h2>
+        <h2 class="home-block-title">合作伙伴</h2>
+        <span class="home-block-subtitle">PARTNERS</span>
     </div>
     <Sponsors groups={sponsorGroups} />
 </section>
@@ -302,8 +317,8 @@ import {
 
 <section class="home-block home-block--center">
     <div class="home-block-header">
-        <span class="home-block-label">开源贡献</span>
-        <h2 class="home-block-title">🤝 贡献者</h2>
+        <h2 class="home-block-title">贡献者</h2>
+        <span class="home-block-subtitle">CONTRIBUTORS</span>
     </div>
     <div class="contributors-image">
         <a href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors">

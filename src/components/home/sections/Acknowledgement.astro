@@ -4,7 +4,10 @@
 
 <section class="acknowledgement">
     <div class="ack-container">
-        <h2 class="ack-title">🙏 致谢</h2>
+        <div class="ack-header" style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="ack-title">致谢</h2>
+            <span class="ack-subtitle">ACKNOWLEDGEMENT</span>
+        </div>
 
         <div class="ack-content">
             <p>
@@ -78,11 +81,25 @@
     }
 
     .ack-title {
-        font-size: 2rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 800;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 0;
         color: var(--sl-color-text);
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+
+    .ack-subtitle {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #ffffff;
+        text-align: center;
     }
 
     .ack-content {

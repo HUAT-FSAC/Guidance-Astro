@@ -1,8 +1,8 @@
 [
     {
         "year": "2025",
-        "teamImg": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
-        "carImg": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800",
+        "carImg": "/assets/2025-car.jpg",
+        "explainImg": "/assets/2025-explain.jpg",
         "advisor": "金湘遂",
         "captain": "潘世泉",
         "members": [

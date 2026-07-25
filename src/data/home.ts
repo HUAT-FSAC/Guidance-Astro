@@ -29,8 +29,8 @@ export interface ThemeOption {
 
 export interface SeasonItem {
     year: string
-    teamImg: string
     carImg: string
+    explainImg: string
     advisor?: string // 指导老师
     captain?: string // 队长
     members?: {
@@ -76,7 +76,7 @@ export const heroConfig = {
         '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。\n在 Formula Student 赛场上，我们追求卓越，挑战极限。',
     ctaText: '开始探索',
     ctaLink: '/2024-learning-roadmap/',
-    backgroundImages: ['/assets/photo-together.jpg', '/assets/huat.jpg', '/assets/about-us.jpg'],
+    backgroundImages: ['/assets/photo-together.jpg', '/assets/2023.jpg', '/assets/2022.jpg'],
 }
 
 // ==================== 统计数据 ====================

@@ -15,7 +15,10 @@ const fetchPriority = getImageFetchPriority(false);
 {
     groups.map((group: SponsorGroup) => (
         <div class="sponsor-section reveal-upon-scroll">
-            <h3 class="reveal-upon-scroll" style="transition-delay: 0.1s;">{group.name}</h3>
+            <div class="sponsor-header" style="text-align: center; margin-bottom: 2rem;">
+                <h3 class="sponsor-title reveal-upon-scroll" style="transition-delay: 0.1s;">{group.name}</h3>
+                <span class="sponsor-subtitle">SPONSORS</span>
+            </div>
             <div class="sponsor-grid">
                 {group.items.map((sponsor: SponsorItem, index: number) => (
                     <div class="sponsor-card reveal-upon-scroll" style={`transition-delay: ${index * 0.1 + 0.2}s;`}>
@@ -45,22 +48,24 @@ const fetchPriority = getImageFetchPriority(false);
         margin: 4rem 0;
     }
 
-    .sponsor-section h3 {
+    .sponsor-title {
         font-family: 'Space Grotesk', system-ui, sans-serif;
-        opacity: 0.9;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 1.25rem;
-        margin-bottom: 2.5rem;
-        color: var(--sl-color-white);
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: var(--sl-color-text);
         display: inline-block;
-        border-bottom: 2px solid var(--sl-color-accent);
+        border-bottom: 3px solid var(--sl-color-accent);
         padding-bottom: 0.5rem;
+        margin: 0 0 0.5rem;
     }
-    
-    :global([data-theme="light"]) .sponsor-section h3 {
-        color: #000;
+
+    .sponsor-subtitle {
+        display: block;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #ffffff;
     }
 
     .sponsor-grid {

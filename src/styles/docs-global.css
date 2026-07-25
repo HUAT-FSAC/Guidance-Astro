@@ -288,7 +288,6 @@ nav.sidebar h2::before {
     border-radius: var(--radius-sm);
     box-shadow: var(--card-shadow);
     transition: transform var(--transition-normal);
-    cursor: zoom-in;
     border: 1px solid var(--fs-border-subtle);
 }
 

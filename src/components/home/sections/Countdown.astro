@@ -11,6 +11,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     <div class="countdown-inner">
         <div class="countdown-header">
             <span class="countdown-label">赛前冲刺</span>
+            <span class="countdown-subtitle">COUNTDOWN</span>
             <h2 class="countdown-event">{primary.name}</h2>
             <p class="countdown-meta">
                 <span class="meta-icon">📍</span>{primary.location}
@@ -122,11 +123,21 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     .countdown-label {
         display: inline-block;
         font-size: 3rem;
-        font-weight: 1000;
+        font-weight: 800;
+        color: #fff;
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .countdown-subtitle {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        letter-spacing: 10px;
-        color: var(--sl-color-accent, #3b82f6);
-        margin-bottom: 20rem;
+        font-weight: 600;
+        color: #ffffff;
     }
 
     .countdown-event {
