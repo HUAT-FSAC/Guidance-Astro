@@ -350,7 +350,7 @@ function renderScriptPanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState
         stepCounter.textContent = `Step ${scriptSnapshot.stepIndex + 1} / ${scriptSnapshot.totalSteps}`
     }
     if (stepTitle) stepTitle.textContent = step.title
-    if (stepNarration) stepNarration.textContent = step.narration
+    if (stepNarration) stepNarration.textContent = step.narration ?? null
 }
 
 function renderCachePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState): void {
@@ -497,6 +497,7 @@ function scheduleReplay(
     const snapshot = getShowcaseReplaySnapshot(runtimeState.selection, runtimeState.frameIndex)
     const timerId = window.setTimeout(() => {
         applyState((currentState) => ({
+            ...currentState,
             ...advanceShowcaseReplay(currentState.selection, currentState.frameIndex),
             isPlaying: true,
         }))
@@ -526,7 +527,7 @@ function persistSelection(root: HTMLElement, selection: ShowcaseSelection): void
 }
 
 function getStoredConsoleState(): StoredConsoleState | null {
-    return safeGetJSON<StoredConsoleState>(SHOWCASE_CONSOLE_STORAGE_KEY, null)
+    return safeGetJSON<StoredConsoleState | null>(SHOWCASE_CONSOLE_STORAGE_KEY, null)
 }
 
 function persistConsoleState(
@@ -575,7 +576,7 @@ function scheduleScriptPlayback(
                     scenarioId: nextSnapshot.currentStep!.scenarioId,
                     subsystemId: nextSnapshot.currentStep!.subsystemId,
                 }),
-                frameIndex: nextSnapshot.currentStep!.frameIndex,
+                frameIndex: nextSnapshot.currentStep!.frameIndex ?? 0,
                 isPlaying: false,
                 scriptStepIndex: nextScriptState.stepIndex,
                 isScriptPlaying: true,
@@ -717,7 +718,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex ?? 0,
                     scriptStepIndex: newStepIndex,
                     isScriptPlaying: false,
                     isPlaying: false,
@@ -739,7 +740,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex ?? 0,
                     scriptStepIndex: nextState.stepIndex,
                     isScriptPlaying: false,
                     isPlaying: false,
@@ -839,7 +840,7 @@ function bindShowcaseLab(root: HTMLElement): void {
                         scenarioId: snapshot.currentStep.scenarioId,
                         subsystemId: snapshot.currentStep.subsystemId,
                     }),
-                    frameIndex: snapshot.currentStep.frameIndex,
+                    frameIndex: snapshot.currentStep.frameIndex ?? 0,
                     scriptId,
                     scriptStepIndex: 0,
                     isScriptPlaying: false,

@@ -1,5 +1,5 @@
 import { setupComponentLifecycle } from './component-init'
-import { trapFocus, announce } from './accessibility'
+import { announce, trapFocus } from './accessibility'
 
 const SELECTORS = {
     toggle: '[data-language-toggle]',
@@ -98,10 +98,10 @@ export function initLanguageSwitcher(
             }
 
             persistLocale(locale)
-            
+
             const localeName = option.textContent?.trim() || locale
             announce(`已切换语言为 ${localeName}`)
-            
+
             closeMenu()
             navigate(resolveLocalizedPath(getCurrentPath(), locale))
         }
@@ -146,7 +146,7 @@ export function initLanguageSwitcher(
     toggle.addEventListener('click', toggleMenu)
     root.addEventListener('keydown', handleKeyDown)
     document.addEventListener('click', handleDocumentClick)
-    
+
     // Initial state
     toggle.setAttribute('aria-expanded', 'false')
     menu.classList.remove('open')
