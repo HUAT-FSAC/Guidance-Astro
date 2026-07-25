@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4321'
 const webServerCommand =
-    process.env.PLAYWRIGHT_WEB_SERVER_COMMAND || 'pnpm dev --host 127.0.0.1 --port 4321'
+    process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ||
+    'pnpm dlx http-server dist/client --host 127.0.0.1 --port 4321 -p 4321'
 
 export default defineConfig({
     testDir: '../tests/e2e',

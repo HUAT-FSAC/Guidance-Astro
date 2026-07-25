@@ -191,3 +191,4 @@ $RECYCLE.BIN/
 # Lighthouse CI reports
 .lighthouseci/
 
+.workbuddy/memory/
