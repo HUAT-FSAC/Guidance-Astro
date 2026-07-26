@@ -452,9 +452,9 @@ const themeColors: ThemeColor[] = [
     .theme-toggle:hover {
         transform: scale(1.08);
         border-color: var(--sl-color-accent, #3b82f6);
-        box-shadow: 
+        box-shadow:
             0 8px 30px rgba(0, 0, 0, 0.5),
-            0 0 20px rgba(243, 156, 18, 0.2);
+            0 0 20px var(--fs-accent-glow);
     }
 
     .theme-toggle:hover::before {
@@ -475,9 +475,9 @@ const themeColors: ThemeColor[] = [
     }
 
     :global([data-theme='light']) .theme-toggle:hover {
-        box-shadow: 
+        box-shadow:
             0 8px 30px rgba(0, 0, 0, 0.15),
-            0 0 20px rgba(243, 156, 18, 0.15);
+            0 0 20px var(--fs-accent-glow);
     }
 
     .icon-sun,

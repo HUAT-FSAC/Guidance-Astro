@@ -274,7 +274,7 @@ export default defineConfig({
                     },
                 },
                 { tag: 'link', attrs: { rel: 'manifest', href: '/manifest.json' } },
-                { tag: 'meta', attrs: { name: 'theme-color', content: '#f39c12' } },
+                { tag: 'meta', attrs: { name: 'theme-color', content: '#3b82f6' } },
                 { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/favicon.png' } },
                 {
                     tag: 'script',

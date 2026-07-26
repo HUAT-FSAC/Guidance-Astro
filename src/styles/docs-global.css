@@ -39,6 +39,32 @@ starlight-theme-select {
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
     --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
 
+    /* ==================== 语义颜色令牌 ==================== */
+    /* 令 critical.css 与 docs-global.css 共享同一套语义令牌，
+       消除两套 build 路径下的颜色失配（蓝 #3b82f6 为规范默认）。 */
+    --fs-color-heading: #ffffff;
+    --fs-color-text: #ececec;
+    --fs-color-text-muted: rgba(255, 255, 255, 0.85);
+    --fs-color-text-dimmed: rgba(255, 255, 255, 0.6);
+    --fs-color-border: rgba(255, 255, 255, 0.08);
+    --fs-color-border-strong: rgba(255, 255, 255, 0.2);
+    --fs-color-surface-hover: rgba(255, 255, 255, 0.04);
+    --fs-color-surface-active: rgba(255, 255, 255, 0.1);
+    --fs-color-aside-bg: rgba(255, 255, 255, 0.03);
+    --fs-color-card-bg: rgba(255, 255, 255, 0.04);
+    --fs-color-section-alt: #f8f9fa;
+    --fs-color-code-bg: rgba(59, 130, 246, 0.1);
+    --fs-color-code-inline-text: var(--sl-color-accent);
+    --fs-color-table-header-bg: rgba(255, 255, 255, 0.05);
+    /* 图片遮罩层：始终为半透明黑（不分主题，用于压暗背景图保证文字可读性） */
+    --fs-color-overlay-soft: rgba(0, 0, 0, 0.4);
+    --fs-color-overlay-strong: rgba(0, 0, 0, 0.85);
+    /* 图片上的文字：始终为白色（用于压暗遮罩上的文字，不分主题） */
+    --fs-color-on-image: #ffffff;
+    --radius-xs: 2px;
+    --radius-xl: 16px;
+    --radius-full: 50%;
+
     /* ==================== 统一 z-index 层级管理 ==================== */
     /*
      * 层级规范:
@@ -78,6 +104,21 @@ starlight-theme-select {
     --fs-accent-glow: rgba(59, 130, 246, 0.15);
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+
+    /* 语义令牌 - 亮色 */
+    --fs-color-heading: #050505;
+    --fs-color-text: #1a1a2e;
+    --fs-color-text-muted: rgba(0, 0, 0, 0.75);
+    --fs-color-text-dimmed: rgba(0, 0, 0, 0.5);
+    --fs-color-border: rgba(0, 0, 0, 0.08);
+    --fs-color-border-strong: rgba(0, 0, 0, 0.2);
+    --fs-color-surface-hover: rgba(0, 0, 0, 0.03);
+    --fs-color-surface-active: rgba(0, 0, 0, 0.1);
+    --fs-color-aside-bg: rgba(0, 0, 0, 0.02);
+    --fs-color-card-bg: #ffffff;
+    --fs-color-section-alt: #f8f9fa;
+    --fs-color-code-bg: rgba(59, 130, 246, 0.12);
+    --fs-color-table-header-bg: rgba(0, 0, 0, 0.05);
 }
 
 /* ==================== 主题切换平滑过渡 ==================== */
@@ -86,6 +127,82 @@ html {
     transition:
         background-color var(--theme-transition),
         color var(--theme-transition);
+}
+
+/* ==================== 主页共享工具类 ==================== */
+/*
+ * 提取自 Hero / TeamMembers / Showcase / JoinUs / Seasons 等组件中
+ * 重复的「全宽出血」与「切角 CTA」模式，消除 9+ 处 CSS 重复。
+ * 组件仍保留各自的 min-height / flex / 背景等特有样式。
+ */
+
+/* 全宽出血：突破父容器宽度限制到视口边缘 */
+.fs-full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+/* 切角 CTA：clip-path 工程切角 + ::before 横向填充 hover 动效 */
+.fs-cta-clip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 3rem;
+    color: var(--fs-color-heading) !important;
+    background: transparent !important;
+    border: 1px solid var(--sl-color-accent) !important;
+    border-radius: 0 !important;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s var(--fs-ease-out);
+    clip-path: polygon(
+        15px 0,
+        100% 0,
+        100% calc(100% - 15px),
+        calc(100% - 15px) 100%,
+        0 100%,
+        0 15px
+    );
+    overflow: hidden;
+}
+
+.fs-cta-clip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--sl-color-accent);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--fs-ease-out);
+}
+
+.fs-cta-clip:hover {
+    color: var(--fs-bg-base) !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 20px var(--fs-accent-glow) !important;
+}
+
+.fs-cta-clip:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* 亮色模式：CTA 文字改为强调色。
+   注意：本文件是全局样式表（经 Starlight customCss 引入），不需要 :global() 包装——
+   :global() 仅在 .astro 组件的 <style scoped> 中有意义，在普通 CSS 文件中会被
+   lightningcss 视为非法伪类并丢弃整条规则。 */
+[data-theme='light'] .fs-cta-clip {
+    color: var(--sl-color-accent) !important;
 }
 
 /* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */
@@ -238,11 +355,11 @@ nav.sidebar h2::before {
 }
 
 :root[data-theme='light'] .sl-markdown-content a {
-    color: #d48806;
+    color: #2563eb;
 }
 
 :root[data-theme='light'] .sl-markdown-content a:hover {
-    color: #b56a00;
+    color: #1d4ed8;
 }
 
 /* ==================== 列表样式 ==================== */
@@ -387,8 +504,8 @@ nav.sidebar h2::before {
 }
 
 :root[data-theme='light'] .sl-markdown-content code:not(pre code) {
-    background: rgba(243, 156, 18, 0.12);
-    color: #8a4b00;
+    background: rgba(59, 130, 246, 0.12);
+    color: #1d4ed8;
 }
 
 /* 代码块增强 */
@@ -440,7 +557,7 @@ starlight-toc a:hover {
 }
 
 starlight-toc a[aria-current='true'] {
-    background: rgba(243, 156, 18, 0.15);
+    background: rgba(59, 130, 246, 0.15);
     color: var(--sl-color-accent);
     font-weight: 600;
 }
@@ -460,7 +577,7 @@ nav.sidebar a:hover {
 }
 
 nav.sidebar a[aria-current='page'] {
-    background: rgba(243, 156, 18, 0.15);
+    background: rgba(59, 130, 246, 0.15);
     border-left: 3px solid var(--sl-color-accent);
 }
 
@@ -472,10 +589,10 @@ nav.sidebar a[aria-current='page'] {
 
 :root[data-theme='dark'] nav.sidebar a[aria-current='page'],
 :root[data-theme='dark'] starlight-toc a[aria-current='true'] {
-    background: rgba(243, 156, 18, 0.22);
-    color: #0b0b08;
-    /* 深色的文字可在浅色强调背景上更清晰 */
-    border-left-color: rgba(243, 156, 18, 0.95);
+    background: rgba(59, 130, 246, 0.22);
+    color: #ffffff;
+    /* 白色文字在蓝色强调背景上更清晰 */
+    border-left-color: var(--sl-color-accent);
 }
 
 :root[data-theme='light'] nav.sidebar a,
@@ -485,7 +602,7 @@ nav.sidebar a[aria-current='page'] {
 
 :root[data-theme='light'] nav.sidebar a[aria-current='page'],
 :root[data-theme='light'] starlight-toc a[aria-current='true'] {
-    background: rgba(243, 156, 18, 0.18);
+    background: rgba(59, 130, 246, 0.18);
     color: #0b1220;
     border-left-color: var(--sl-color-accent);
 }

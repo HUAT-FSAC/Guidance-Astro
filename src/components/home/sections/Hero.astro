@@ -24,7 +24,7 @@ const images = (backgroundImages ?? []).map((src) => ({
     <link rel="preload" as="image" href={images[0].large} fetchpriority="high" />
 )}
 
-<section class="hero-v2" role="region" aria-label="Hero">
+<section class="hero-v2 fs-full-bleed" role="region" aria-label="Hero">
     {images.length > 0 ? (
         images.map((img, i) => (
             <div
@@ -48,7 +48,7 @@ const images = (backgroundImages ?? []).map((src) => ({
         {description && <p class="hero-desc">{description}</p>}
 
         <a
-            class="hero-cta"
+            class="hero-cta fs-cta-clip"
             href={ctaLink}
             role="button"
             data-astro-prefetch="hover"
@@ -62,7 +62,13 @@ const images = (backgroundImages ?? []).map((src) => ({
 
 <!-- 占位块：hero 是 fixed，需要推动后续内容到可视区以下 -->
 <script>
+    import { createLogger } from '../../../utils/logger'
+
+    const log = createLogger('Hero')
+
     const bgLayers = document.querySelectorAll<HTMLElement>('.hero-bg')
+    log.info('扫描背景图层', { found: bgLayers.length })
+
     if (bgLayers.length > 1) {
         let current = 0
         let interval: number
@@ -76,16 +82,20 @@ const images = (backgroundImages ?? []).map((src) => ({
         }
 
         function nextSlide() {
+            const prev = current
             current = (current + 1) % total
             showSlide(current)
+            log.info('切换背景图', { from: prev, to: current, total })
         }
 
         function startCarousel() {
             interval = window.setInterval(nextSlide, 5000)
+            log.info('自动轮播已启动', { intervalMs: 5000, total })
         }
 
         function stopCarousel() {
             clearInterval(interval)
+            log.info('自动轮播已暂停（hover）')
         }
 
         const hero = document.querySelector('.hero-v2')
@@ -99,6 +109,8 @@ const images = (backgroundImages ?? []).map((src) => ({
         })
 
         startCarousel()
+    } else {
+        log.info('背景图层数 ≤ 1，跳过轮播逻辑')
     }
 </script>
 
@@ -110,18 +122,15 @@ const images = (backgroundImages ?? []).map((src) => ({
         margin-top: -130px;
         padding-top: 130px;
         min-height: 100vh;
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background-color: #000;
+        background-color: var(--fs-bg-base);
     }
 
     :global([data-theme='light']) .hero-v2 {
-        background-color: #f8f9fa;
+        background-color: var(--fs-bg-surface);
     }
 
     .hero-bg {
@@ -130,7 +139,7 @@ const images = (backgroundImages ?? []).map((src) => ({
         background-image: var(--hero-bg);
         background-size: cover;
         background-position: center center;
-        background-color: #000;
+        background-color: var(--fs-bg-base);
         opacity: 0;
         filter: brightness(0.5);
         pointer-events: none;
@@ -172,24 +181,23 @@ const images = (backgroundImages ?? []).map((src) => ({
         font-weight: 900;
         letter-spacing: -0.04em;
         line-height: 1.1;
-        color: #ffffff;
+        color: var(--fs-color-heading);
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     :global([data-theme='light']) .hero-heading {
-        color: #050505;
         text-shadow: none;
     }
 
     .hero-sub {
-        color: #ffffff;
+        color: var(--fs-color-heading);
         margin-bottom: 1.5rem;
         font-weight: 700;
         font-size: 1.5rem;
     }
 
     .hero-desc {
-        color: #ffffff;
+        color: var(--fs-color-text-muted);
         margin: 0 auto 3rem auto;
         max-width: 1000px;
         line-height: 1.8;
@@ -197,56 +205,7 @@ const images = (backgroundImages ?? []).map((src) => ({
         font-size: 1.4rem;
     }
 
-    :global([data-theme='light']) .hero-desc {
-        color: rgba(0, 0, 0, 0.7);
-    }
-
-    .hero-cta {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 3rem;
-        color: #fff !important;
-        background: transparent !important;
-        border: 1px solid var(--sl-color-accent) !important;
-        border-radius: 0 !important;
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        transition: all 0.3s var(--fs-ease-out);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: hidden;
-    }
-
-    :global([data-theme='light']) .hero-cta {
-        color: var(--sl-color-accent) !important;
-    }
-
-    .hero-cta::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--sl-color-accent);
-        z-index: -1;
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.4s var(--fs-ease-out);
-    }
-
-    .hero-cta:hover {
-        color: #000 !important;
-        border-color: transparent !important;
-        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
-    }
-
-    .hero-cta:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
+    /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
 
     @media (max-width: 900px) {
         .hero-v2 {

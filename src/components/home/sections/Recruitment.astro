@@ -20,7 +20,7 @@ const { content, href = '/join/' } = Astro.props
                     <span class="dept">{department}</span>
                 ))}
             </div>
-            <a href={href} class="cta-button">
+            <a href={href} class="cta-button fs-cta-clip">
                 {content.ctaText}
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -49,8 +49,8 @@ const { content, href = '/join/' } = Astro.props
     }
 
     :global([data-theme='light']) .recruitment-section {
-        background-color: #f8f9fa;
-        border-color: rgba(0,0,0,0.05);
+        background-color: var(--fs-color-section-alt);
+        border-color: var(--fs-border-subtle);
     }
 
     .recruitment-container {
@@ -83,23 +83,15 @@ const { content, href = '/join/' } = Astro.props
         margin: 0 0 1rem 0;
         letter-spacing: -0.02em;
         line-height: 1.1;
-        color: #fff;
-    }
-
-    :global([data-theme='light']) .recruitment-content h2 {
-        color: #000;
+        color: var(--fs-color-heading);
     }
 
     .recruitment-content p {
         font-size: 1.1rem;
         line-height: 1.8;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--fs-color-text-muted);
         margin-bottom: 2rem;
         max-width: 600px;
-    }
-
-    :global([data-theme='light']) .recruitment-content p {
-        color: rgba(0, 0, 0, 0.7);
     }
 
     .departments {
@@ -111,12 +103,12 @@ const { content, href = '/join/' } = Astro.props
     }
 
     .dept {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--fs-color-card-bg);
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
         font-weight: 600;
-        color: #fff;
-        border: 1px solid var(--fs-border-focus);
+        color: var(--fs-color-heading);
+        border: 1px solid var(--fs-color-border-strong);
         border-radius: var(--radius-sm);
         height: 36px;
         display: inline-flex;
@@ -128,62 +120,11 @@ const { content, href = '/join/' } = Astro.props
     }
 
     .dept:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--fs-color-surface-active);
         border-color: var(--sl-color-accent);
     }
 
-    :global([data-theme='light']) .dept {
-        background: rgba(0, 0, 0, 0.03);
-        color: #000;
-        border-color: rgba(0, 0, 0, 0.1);
-    }
-
-    .cta-button {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 3rem;
-        color: #fff !important;
-        background: transparent !important;
-        border: 1px solid var(--sl-color-accent) !important;
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none !important;
-        transition: all 0.3s var(--fs-ease-out);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: hidden;
-    }
-
-    :global([data-theme='light']) .cta-button {
-        color: var(--sl-color-accent) !important;
-    }
-
-    .cta-button::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--sl-color-accent);
-        z-index: -1;
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.4s var(--fs-ease-out);
-    }
-
-    .cta-button:hover {
-        color: #000 !important;
-        border-color: transparent !important;
-        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
-    }
-
-    .cta-button:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
-
+    /* CTA 基础样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
     .cta-button svg {
         transition: transform var(--transition-normal);
     }
@@ -220,9 +161,9 @@ const { content, href = '/join/' } = Astro.props
     }
 
     :global([data-theme='light']) .icon-item {
-        background: #ffffff;
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: var(--fs-color-card-bg);
+        border-color: var(--fs-border-subtle);
+        box-shadow: var(--card-shadow);
     }
 
     .icon-item:nth-child(2) { animation-delay: 1.5s; }
@@ -231,14 +172,14 @@ const { content, href = '/join/' } = Astro.props
 
     .icon-item:hover {
         transform: scale(1.1);
-        background: linear-gradient(180deg, #1c1c21 0%, var(--fs-bg-surface) 100%);
+        background: linear-gradient(180deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%);
         border-color: var(--fs-border-focus);
         box-shadow: var(--card-shadow-hover), 0 0 20px var(--fs-accent-glow);
     }
 
     :global([data-theme='light']) .icon-item:hover {
-        background: rgba(255, 255, 255, 1);
-        border-color: rgba(0, 0, 0, 0.15);
+        background: var(--fs-color-card-bg);
+        border-color: var(--fs-color-border-strong);
     }
 
     @keyframes float {

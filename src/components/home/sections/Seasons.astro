@@ -69,7 +69,7 @@ const { seasons } = Astro.props;
         padding: 5rem 0;
         width: 100vw;
         margin-left: calc(-50vw + 50%);
-        background: var(--sl-color-bg, #fff);
+        background: var(--fs-bg-base);
     }
 
     .seasons-header {
@@ -81,7 +81,7 @@ const { seasons } = Astro.props;
         display: inline-block;
         font-size: 3rem;
         font-weight: 800;
-        color: var(--sl-color-text);
+        color: var(--fs-color-heading);
         line-height: 1.2;
         border-bottom: 3px solid var(--sl-color-accent);
         padding-bottom: 0.5rem;
@@ -94,7 +94,7 @@ const { seasons } = Astro.props;
         letter-spacing: 0.2em;
         text-transform: uppercase;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--fs-color-heading);
     }
 
     .seasons-carousel {
@@ -159,7 +159,7 @@ const { seasons } = Astro.props;
         top: 1rem;
         left: 1rem;
         background: var(--sl-color-accent);
-        color: #fff;
+        color: var(--fs-color-on-image);
         font-size: 0.85rem;
         font-weight: 700;
         padding: 0.3rem 0.8rem;
@@ -186,9 +186,11 @@ const { seasons } = Astro.props;
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.2);
-        background: rgba(0,0,0,0.5);
-        color: #fff;
+        /* 浮于媒体之上的控件：始终为半透明深色背景 + 白色描边/图标，
+           不随主题变化（保证在任意图片上都可读） */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: var(--fs-color-overlay-soft);
+        color: var(--fs-color-on-image);
         cursor: pointer;
         display: flex;
         align-items: center;

@@ -6,13 +6,13 @@ const { backgroundImage } = Astro.props
 const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
 ---
 
-<section class="team-hero" role="region" aria-label="Team">
+<section class="team-hero fs-full-bleed" role="region" aria-label="Team">
     <div class="team-bg" role="presentation" aria-hidden="true" style={bgStyle}></div>
     <div class="team-overlay" role="presentation" aria-hidden="true"></div>
     <div class="team-content">
         <h1 class="team-heading">指导老师与团队成员</h1>
         <span class="team-sub">ADVISORS & TEAM MEMBERS</span>
-        <a class="team-cta" href="/team/" role="button" data-astro-prefetch="hover">查看完整团队</a>
+        <a class="team-cta fs-cta-clip" href="/team/" role="button" data-astro-prefetch="hover">查看完整团队</a>
     </div>
 </section>
 
@@ -24,9 +24,7 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background-color: #000;
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
+        background-color: var(--fs-bg-base);
     }
 
     .team-bg {
@@ -42,7 +40,7 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     .team-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.85) 100%);
+        background: linear-gradient(180deg, transparent 0%, var(--fs-color-overlay-soft) 40%, var(--fs-color-overlay-strong) 100%);
         pointer-events: none;
     }
 
@@ -62,65 +60,20 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
         font-weight: 900;
         letter-spacing: 0.1em;
         line-height: 1.1;
-        color: #ffffff;
+        color: var(--fs-color-on-image);
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .team-content .team-sub {
         display: block;
-        color: #ffffff;
+        color: var(--fs-color-on-image);
         font-size: 1.2rem;
         letter-spacing: 2px;
         margin: 0 0 2.5rem 0;
         font-weight: 400;
     }
 
-    .team-cta {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 3rem;
-        color: #fff !important;
-        background: transparent !important;
-        border: 1px solid var(--sl-color-accent) !important;
-        border-radius: 0 !important;
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        transition: all 0.3s var(--fs-ease-out);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: hidden;
-    }
-
-    :global([data-theme='light']) .team-cta {
-        color: var(--sl-color-accent) !important;
-    }
-
-    .team-cta::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--sl-color-accent);
-        z-index: -1;
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.4s var(--fs-ease-out);
-    }
-
-    .team-cta:hover {
-        color: #000 !important;
-        border-color: transparent !important;
-        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
-    }
-
-    .team-cta:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
+    /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
 
     @media (max-width: 480px) {
         .team-content { padding: 1.5rem 0; }

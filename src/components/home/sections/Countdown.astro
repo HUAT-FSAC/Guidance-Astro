@@ -7,7 +7,7 @@ import { raceEvents } from '../../../data/home';
 const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
 ---
 
-<section class="countdown-section">
+<section class="countdown-section" data-start-date={primary.startDate}>
     <div class="countdown-inner">
         <div class="countdown-header">
             <span class="countdown-label">赛前冲刺</span>
@@ -51,42 +51,12 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     </div>
 </section>
 
-<script define:vars={{ startDate: primary.startDate }}>
-    function pad(n) { return String(n).padStart(2, '0'); }
+<script>
+    import { destroyCountdowns, initCountdowns } from '../../../utils/countdown';
 
-    function updateCountdown() {
-        const target = new Date(startDate).getTime();
-        const now = Date.now();
-        const diff = target - now;
-
-        const displayEl = document.getElementById('countdown-display');
-        const endedEl   = document.getElementById('countdown-ended');
-
-        if (diff <= 0) {
-            displayEl?.classList.add('hidden');
-            endedEl?.classList.remove('hidden');
-            return;
-        }
-
-        const days    = Math.floor(diff / 86400000);
-        const hours   = Math.floor((diff % 86400000) / 3600000);
-        const minutes = Math.floor((diff % 3600000) / 60000);
-        const seconds = Math.floor((diff % 60000) / 1000);
-
-        const d = document.getElementById('cd-days');
-        const h = document.getElementById('cd-hours');
-        const m = document.getElementById('cd-minutes');
-        const s = document.getElementById('cd-seconds');
-
-        if (d) d.textContent = String(days);
-        if (h) h.textContent = pad(hours);
-        if (m) m.textContent = pad(minutes);
-        if (s) s.textContent = pad(seconds);
-    }
-
-    updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    document.addEventListener('astro:before-swap', () => clearInterval(timer));
+    initCountdowns();
+    document.addEventListener('astro:page-load', initCountdowns);
+    document.addEventListener('astro:before-swap', destroyCountdowns);
 </script>
 
 <style>
@@ -97,19 +67,19 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         min-height: 100vh;
         padding: 4rem 2rem;
         background: linear-gradient(135deg,
-            rgba(243, 156, 18, 0.08) 0%,
+            rgba(59, 130, 246, 0.08) 0%,
             transparent 60%
         );
-        border-top: 1px solid rgba(243, 156, 18, 0.15);
-        border-bottom: 1px solid rgba(243, 156, 18, 0.15);
+        border-top: 1px solid var(--fs-border-subtle);
+        border-bottom: 1px solid var(--fs-border-subtle);
     }
 
     :global([data-theme='light']) .countdown-section {
         background: linear-gradient(135deg,
-            rgba(243, 156, 18, 0.06) 0%,
+            rgba(59, 130, 246, 0.06) 0%,
             rgba(255, 255, 255, 0) 60%
         );
-        border-color: rgba(243, 156, 18, 0.2);
+        border-color: var(--fs-border-subtle);
     }
 
     .countdown-inner {
@@ -124,7 +94,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         display: inline-block;
         font-size: 3rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--fs-color-heading);
         border-bottom: 3px solid var(--sl-color-accent);
         padding-bottom: 0.5rem;
         margin-bottom: 0;
@@ -137,14 +107,14 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         letter-spacing: 0.2em;
         text-transform: uppercase;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--fs-color-heading);
     }
 
     .countdown-event {
         font-size: clamp(3rem, 3.5vw, 2.2rem);
         font-weight: 2000;
         margin: 0 0 0.75rem 0;
-        color: #fff;
+        color: var(--fs-color-heading);
         line-height: 1.2;
     }
 
@@ -173,8 +143,8 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         align-items: center;
         gap: 0.3rem;
         min-width: 90px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(243, 156, 18, 0.2);
+        background: var(--fs-color-card-bg);
+        border: 1px solid var(--fs-color-border);
         border-radius: 1rem;
         padding: 1.25rem 1rem;
         position: relative;
@@ -191,13 +161,13 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
 
     :global([data-theme='light']) .cd-unit {
         background: rgba(0, 0, 0, 0.02);
-        border-color: rgba(243, 156, 18, 0.25);
+        border-color: var(--fs-color-border-strong);
     }
 
     .cd-num {
         font-size: clamp(2rem, 6vw, 3.5rem);
         font-weight: 900;
-        color: var(--sl-color-accent, #3b82f6);
+        color: var(--sl-color-accent);
         line-height: 1;
         font-variant-numeric: tabular-nums;
         letter-spacing: -1px;
@@ -214,7 +184,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
     .cd-sep {
         font-size: 2.5rem;
         font-weight: 900;
-        color: var(--sl-color-accent, #3b82f6);
+        color: var(--sl-color-accent);
         opacity: 0.4;
         margin-bottom: 1.5rem;
         align-self: center;
@@ -245,9 +215,9 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
 
     .countdown-cta:hover {
         background: var(--sl-color-accent);
-        color: #000;
+        color: var(--fs-bg-base);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59,130,246,0.3);
+        box-shadow: 0 6px 20px var(--fs-accent-glow);
     }
 
     @media (max-width: 480px) {

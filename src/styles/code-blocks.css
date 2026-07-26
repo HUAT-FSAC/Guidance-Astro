@@ -20,7 +20,7 @@
 .expressive-code .frame:hover {
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(243, 156, 18, 0.3) !important;
+        0 0 0 1px rgba(59, 130, 246, 0.3) !important;
 }
 
 /* ==================== 代码块头部 (文件名/标题) ==================== */
@@ -98,7 +98,7 @@
 }
 
 :root[data-theme='light'] .expressive-code .highlight {
-    background: rgba(243, 156, 18, 0.12) !important;
+    background: rgba(59, 130, 246, 0.12) !important;
     border-left: 3px solid var(--sl-color-accent) !important;
 }
 
@@ -144,7 +144,7 @@
 
 /* ==================== 行高亮效果 ==================== */
 .expressive-code .highlight {
-    background: rgba(243, 156, 18, 0.15) !important;
+    background: rgba(59, 130, 246, 0.15) !important;
     border-left: 3px solid var(--sl-color-accent) !important;
     margin-left: -1.25rem !important;
     padding-left: calc(1.25rem - 3px) !important;
@@ -282,20 +282,20 @@
 
 /* ==================== 行内代码样式 ==================== */
 .sl-markdown-content :not(pre) > code {
-    background: rgba(243, 156, 18, 0.15) !important;
+    background: rgba(59, 130, 246, 0.15) !important;
     color: var(--sl-color-accent) !important;
     padding: 0.2em 0.5em !important;
     border-radius: var(--radius-sm) !important;
     font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
     font-size: 0.9em !important;
     font-weight: 500;
-    border: 1px solid rgba(243, 156, 18, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.2);
     transition: all 0.2s ease;
 }
 
 .sl-markdown-content :not(pre) > code:hover {
-    background: rgba(243, 156, 18, 0.25) !important;
-    border-color: rgba(243, 156, 18, 0.4);
+    background: rgba(59, 130, 246, 0.25) !important;
+    border-color: rgba(59, 130, 246, 0.4);
 }
 
 /* ==================== 代码块标签（语言标识）==================== */

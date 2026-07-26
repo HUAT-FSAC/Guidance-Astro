@@ -19,6 +19,14 @@ describe('shouldFilterBuildWarning', () => {
         expect(shouldFilterBuildWarning(['Module "node:crypto" has been externalized.'])).toBe(true)
     })
 
+    it('filters empty-body redirect source routes (Cloudflare adapter)', () => {
+        expect(
+            shouldFilterBuildWarning([
+                '  ├─ /2025/电气/电池箱/index.html (+23ms) (file not created, response body was empty)',
+            ])
+        ).toBe(true)
+    })
+
     it('does not filter unrelated warnings', () => {
         expect(shouldFilterBuildWarning(['Entry docs → index was not found.'])).toBe(false)
         expect(

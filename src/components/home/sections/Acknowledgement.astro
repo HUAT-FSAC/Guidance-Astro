@@ -59,10 +59,10 @@
         position: relative;
         z-index: 2;
         padding: 4rem 0;
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--fs-color-aside-bg);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--fs-border-subtle);
         border-radius: 2rem;
         margin: 3rem auto;
         max-width: 1400px;
@@ -70,7 +70,7 @@
 
     :global([data-theme='light']) .acknowledgement {
         background: rgba(255, 255, 255, 0.6);
-        border-color: rgba(0, 0, 0, 0.1);
+        border-color: var(--fs-border-subtle);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
@@ -98,7 +98,7 @@
         letter-spacing: 0.2em;
         text-transform: uppercase;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--fs-color-heading);
         text-align: center;
     }
 
@@ -127,7 +127,7 @@
         padding: 1.5rem 2rem;
         border-left: 4px solid var(--sl-color-accent);
         border-right: 4px solid var(--sl-color-accent);
-        background: rgba(255, 255, 255, 0.03);
+        background: var(--fs-color-aside-bg);
         border-radius: 1rem;
         font-style: italic;
     }
@@ -135,7 +135,7 @@
     .ack-signature {
         margin-top: 2rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid var(--fs-border-subtle);
         text-align: center;
     }
 

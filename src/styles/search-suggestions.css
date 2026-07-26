@@ -69,7 +69,7 @@
 }
 
 .search-suggestions-history .search-suggestions-type {
-    background-color: rgba(243, 156, 18, 0.1);
+    background-color: rgba(59, 130, 246, 0.1);
     color: var(--sl-color-accent);
 }
 
@@ -86,7 +86,7 @@
 }
 
 .search-match {
-    background-color: rgba(243, 156, 18, 0.2);
+    background-color: rgba(59, 130, 246, 0.2);
     color: var(--sl-color-accent);
     padding: 0.125rem 0.25rem;
     border-radius: var(--sl-radius-small);

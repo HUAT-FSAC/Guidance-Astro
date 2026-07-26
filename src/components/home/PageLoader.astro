@@ -179,7 +179,7 @@
     .page-loader {
         position: fixed;
         inset: 0;
-        background: #000;
+        background: var(--fs-bg-base);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -188,10 +188,6 @@
         transition:
             opacity 0.2s ease,
             visibility 0.2s ease;
-    }
-
-    :global([data-theme="light"]) .page-loader {
-        background: #fff;
     }
 
     .page-loader.loaded {
@@ -212,29 +208,21 @@
     }
 
     .logo-text {
-        color: #fff;
-    }
-
-    :global([data-theme="light"]) .logo-text {
-        color: #000;
+        color: var(--fs-color-heading);
     }
 
     .logo-accent {
-        color: var(--sl-color-accent, #3b82f6);
+        color: var(--sl-color-accent);
         margin-left: 0.5rem;
     }
 
     .loader-bar {
         width: 200px;
         height: 3px;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--fs-color-surface-active);
         border-radius: 3px;
         overflow: hidden;
         margin: 0 auto;
-    }
-
-    :global([data-theme="light"]) .loader-bar {
-        background: rgba(0, 0, 0, 0.1);
     }
 
     .loader-progress {
@@ -242,8 +230,8 @@
         width: 0%;
         background: linear-gradient(
             90deg,
-            var(--sl-color-accent, #3b82f6),
-            #fff
+            var(--sl-color-accent),
+            var(--fs-color-heading)
         );
         border-radius: 3px;
         animation: loading 1.5s ease-in-out infinite;

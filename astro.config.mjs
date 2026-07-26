@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config'
 import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
+import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
 
 // https://astro.build/config
 export default defineConfig({
@@ -46,6 +47,7 @@ export default defineConfig({
         '/文档中心/': '/docs-center/',
     },
     integrations: [
+        filterKnownBuildWarnings(),
         starlight({
             title: '东风 HUAT 无人驾驶车队',
             favicon: '/favicon.png',
@@ -254,7 +256,7 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: {
                         name: 'theme-color',
-                        content: '#f39c12',
+                        content: '#3b82f6',
                     },
                 },
                 // Apple Touch Icon

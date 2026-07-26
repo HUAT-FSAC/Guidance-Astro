@@ -81,8 +81,8 @@ const altText = generateAltText(title, "成就展示");
     }
 
     :global([data-theme="light"]) .achievement-section {
-        background-color: #f8f9fa;
-        background-image: 
+        background-color: var(--fs-color-section-alt);
+        background-image:
             linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
     }
@@ -165,22 +165,14 @@ const altText = generateAltText(title, "成就展示");
         line-height: 1.1;
         letter-spacing: -0.02em;
         margin: 0;
-        color: #ffffff;
-    }
-
-    :global([data-theme="light"]) .achievement-title {
-        color: #050505;
+        color: var(--fs-color-heading);
     }
 
     .achievement-description {
         font-size: 1.15rem;
         line-height: 1.8;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--fs-color-text-muted);
         margin: 0;
-    }
-
-    :global([data-theme="light"]) .achievement-description {
-        color: rgba(0, 0, 0, 0.75);
     }
 
     .achievement-cta {
@@ -195,7 +187,7 @@ const altText = generateAltText(title, "成就展示");
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #fff !important;
+        color: var(--fs-color-heading) !important;
         background: transparent;
         text-decoration: none;
         transition: all var(--transition-normal);
@@ -231,7 +223,7 @@ const altText = generateAltText(title, "成就展示");
     }
 
     .achievement-cta:hover {
-        color: #000 !important;
+        color: var(--fs-bg-base) !important;
         box-shadow: 0 0 20px var(--fs-accent-glow) !important;
     }
     
@@ -274,7 +266,7 @@ const altText = generateAltText(title, "成就展示");
 
     :global([data-theme="light"]) .achievement-image {
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        border-color: rgba(0, 0, 0, 0.1);
+        border-color: var(--fs-border-subtle);
     }
 
     .achievement-image:hover {
