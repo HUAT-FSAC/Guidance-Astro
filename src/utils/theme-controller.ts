@@ -1,6 +1,6 @@
 import { setupComponentLifecycle } from './component-init'
 import { safeGetItem, safeSetItem } from './storage'
-import { trapFocus, announce } from './accessibility'
+import { announce, trapFocus } from './accessibility'
 
 type ThemeScheme = 'light' | 'dark'
 
@@ -298,10 +298,10 @@ export function initThemeController(
         applyThemeColor(color, accent)
         safeSetItem(THEME_STORAGE_KEYS.color, color)
         safeSetItem(THEME_STORAGE_KEYS.accent, accent)
-        
+
         const themeName = option.getAttribute('title') || '新主题'
         announce(`已切换至 ${themeName} 主题`)
-        
+
         closeDropdown()
     }
 

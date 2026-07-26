@@ -244,18 +244,46 @@ const zhHomeContent: HomeContent = {
         contributors: { label: '致谢', title: '鸣谢' },
     },
     featureCards: [
-        { href: '/docs-center/', icon: 'open-book', title: '学习模块', description: '系统化的无人驾驶赛车技术学习路径与资料。' },
-        { href: '/cars/', icon: 'rocket', title: '赛车研发', description: '从概念设计到赛道验证的全流程研发实践。' },
-        { href: '/team/', icon: 'laptop', title: '团队介绍', description: '认识这支充满激情与创造力的工程学子团队。' },
-        { href: '/join/', icon: 'document', title: '加入我们', description: '无论你擅长什么，这里都有属于你的位置。' },
+        {
+            href: '/docs-center/',
+            icon: 'open-book',
+            title: '学习模块',
+            description: '系统化的无人驾驶赛车技术学习路径与资料。',
+        },
+        {
+            href: '/cars/',
+            icon: 'rocket',
+            title: '赛车研发',
+            description: '从概念设计到赛道验证的全流程研发实践。',
+        },
+        {
+            href: '/team/',
+            icon: 'laptop',
+            title: '团队介绍',
+            description: '认识这支充满激情与创造力的工程学子团队。',
+        },
+        {
+            href: '/join/',
+            icon: 'document',
+            title: '加入我们',
+            description: '无论你擅长什么，这里都有属于你的位置。',
+        },
     ],
     newsItems,
     seasonsLabels: { label: '关于赛车', subtitle: 'ABOUT THE RACE CAR' },
     recruitment: {
         badge: 'JOIN US',
         title: '加入 HUAT FSAC',
-        description: '我们正在招募对赛车工程充满热情的同学，一起设计、制造并驾驶无人驾驶方程式赛车。',
-        departments: ['感知算法', '规控决策', '嵌入式系统', '机械结构', '车身空气动力学', '商业运营'],
+        description:
+            '我们正在招募对赛车工程充满热情的同学，一起设计、制造并驾驶无人驾驶方程式赛车。',
+        departments: [
+            '感知算法',
+            '规控决策',
+            '嵌入式系统',
+            '机械结构',
+            '车身空气动力学',
+            '商业运营',
+        ],
         ctaText: '立即加入',
     },
     formulaStudentInfo,
@@ -287,10 +315,31 @@ const enHomeContentData: HomeContent = {
         contributors: { label: 'ACKNOWLEDGEMENT', title: 'Contributors' },
     },
     featureCards: [
-        { href: '/en/docs-center/', icon: 'open-book', title: 'Learning Modules', description: 'A systematic learning path and resources for autonomous race car technology.' },
-        { href: '/en/cars/', icon: 'rocket', title: 'Car Development', description: 'End-to-end R&D practice from concept design to track validation.' },
-        { href: '/en/team/', icon: 'laptop', title: 'Our Team', description: 'Meet the passionate and creative team of engineering students.' },
-        { href: '/en/join/', icon: 'document', title: 'Join Us', description: 'No matter what you are good at, there is a place for you here.' },
+        {
+            href: '/en/docs-center/',
+            icon: 'open-book',
+            title: 'Learning Modules',
+            description:
+                'A systematic learning path and resources for autonomous race car technology.',
+        },
+        {
+            href: '/en/cars/',
+            icon: 'rocket',
+            title: 'Car Development',
+            description: 'End-to-end R&D practice from concept design to track validation.',
+        },
+        {
+            href: '/en/team/',
+            icon: 'laptop',
+            title: 'Our Team',
+            description: 'Meet the passionate and creative team of engineering students.',
+        },
+        {
+            href: '/en/join/',
+            icon: 'document',
+            title: 'Join Us',
+            description: 'No matter what you are good at, there is a place for you here.',
+        },
     ],
     newsItems: [
         {
@@ -322,8 +371,16 @@ const enHomeContentData: HomeContent = {
     recruitment: {
         badge: 'JOIN US',
         title: 'Join HUAT FSAC',
-        description: 'We are recruiting students passionate about race car engineering to design, build and race autonomous formula cars together.',
-        departments: ['Perception', 'Planning & Control', 'Embedded Systems', 'Mechanical', 'Aero', 'Business'],
+        description:
+            'We are recruiting students passionate about race car engineering to design, build and race autonomous formula cars together.',
+        departments: [
+            'Perception',
+            'Planning & Control',
+            'Embedded Systems',
+            'Mechanical',
+            'Aero',
+            'Business',
+        ],
         ctaText: 'Join Now',
     },
     formulaStudentInfo: {

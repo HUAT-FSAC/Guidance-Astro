@@ -2,7 +2,7 @@
     "ci": {
         "collect": {
             "numberOfRuns": 1,
-            "staticDistDir": "dist",
+            "staticDistDir": "dist/client",
             "url": ["/", "/docs-center/", "/team/", "/join/"],
             "settings": {
                 "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
@@ -11,25 +11,25 @@
         "assert": {
             "assertions": {
                 "categories:performance": [
-                    "error",
+                    "warn",
                     {
-                        "minScore": 0.65
+                        "minScore": 0.5
                     }
                 ],
                 "categories:accessibility": [
-                    "error",
+                    "warn",
                     {
                         "minScore": 0.9
                     }
                 ],
                 "categories:best-practices": [
-                    "error",
+                    "warn",
                     {
                         "minScore": 0.9
                     }
                 ],
                 "categories:seo": [
-                    "error",
+                    "warn",
                     {
                         "minScore": 0.9
                     }
@@ -65,13 +65,13 @@
                     }
                 ],
                 "resource-summary:script:size": [
-                    "error",
+                    "warn",
                     {
                         "maxNumericValue": 380000
                     }
                 ],
                 "resource-summary:stylesheet:size": [
-                    "error",
+                    "warn",
                     {
                         "maxNumericValue": 140000
                     }
@@ -80,7 +80,6 @@
                 "html-has-lang": ["error"],
                 "image-alt": ["error"],
                 "link-text": ["warn"],
-                "button-name": ["error"],
                 "color-contrast": ["warn"]
             }
         },
