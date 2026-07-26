@@ -2,7 +2,7 @@
     "ci": {
         "collect": {
             "numberOfRuns": 1,
-            "staticDistDir": "dist",
+            "staticDistDir": "dist/client",
             "url": ["/", "/docs-center/", "/team/", "/join/"],
             "settings": {
                 "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
