@@ -5,6 +5,29 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { initShareMenu } from './share-controller'
 import { initThemeController, THEME_STORAGE_KEYS } from './theme-controller'
 
+// Mock localStorage for jsdom environment
+const localStorageMock = {
+    store: {} as Record<string, string>,
+    getItem(key: string) {
+        return this.store[key] ?? null
+    },
+    setItem(key: string, value: string) {
+        this.store[key] = value
+    },
+    removeItem(key: string) {
+        delete this.store[key]
+    },
+    clear() {
+        this.store = {}
+    },
+}
+
+Object.defineProperty(globalThis, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+    configurable: true,
+})
+
 const themeMarkup = `
     <div data-theme-switcher data-current-scheme="dark">
         <button class="theme-toggle" type="button" aria-expanded="false">
@@ -50,7 +73,7 @@ describe('floating controls', () => {
         document.documentElement.setAttribute('data-theme', 'dark')
         document.documentElement.removeAttribute('style')
         document.body.innerHTML = ''
-        localStorage.clear()
+        localStorageMock.clear()
         vi.restoreAllMocks()
         Object.defineProperty(window, 'StarlightThemeProvider', {
             configurable: true,
@@ -63,7 +86,7 @@ describe('floating controls', () => {
 
     it('toggles theme and persists the selected scheme', () => {
         document.body.innerHTML = themeMarkup
-        localStorage.setItem(THEME_STORAGE_KEYS.scheme, 'dark')
+        localStorageMock.setItem(THEME_STORAGE_KEYS.scheme, 'dark')
 
         const cleanup = initThemeController(
             document.querySelector('[data-theme-switcher]') as HTMLElement
@@ -72,8 +95,8 @@ describe('floating controls', () => {
         ;(document.querySelector('.theme-toggle') as HTMLButtonElement).click()
 
         expect(document.documentElement.getAttribute('data-theme')).toBe('light')
-        expect(localStorage.getItem(THEME_STORAGE_KEYS.scheme)).toBe('light')
-        expect(localStorage.getItem(THEME_STORAGE_KEYS.starlightScheme)).toBe('light')
+        expect(localStorageMock.getItem(THEME_STORAGE_KEYS.scheme)).toBe('light')
+        expect(localStorageMock.getItem(THEME_STORAGE_KEYS.starlightScheme)).toBe('light')
         expect(
             document.querySelector('[data-theme-switcher]')?.getAttribute('data-current-scheme')
         ).toBe('light')
@@ -84,7 +107,7 @@ describe('floating controls', () => {
 
     it('falls back to the starlight theme when no custom scheme is stored', () => {
         document.body.innerHTML = themeMarkup
-        localStorage.setItem(THEME_STORAGE_KEYS.starlightScheme, 'light')
+        localStorageMock.setItem(THEME_STORAGE_KEYS.starlightScheme, 'light')
 
         const cleanup = initThemeController(
             document.querySelector('[data-theme-switcher]') as HTMLElement
@@ -115,8 +138,8 @@ describe('floating controls', () => {
         toggle.dispatchEvent(new PointerEvent('pointerup', { button: 0, bubbles: true }))
         ;(document.querySelector('[data-color="#2ecc71"]') as HTMLButtonElement).click()
 
-        expect(localStorage.getItem(THEME_STORAGE_KEYS.color)).toBe('#2ecc71')
-        expect(localStorage.getItem(THEME_STORAGE_KEYS.accent)).toBe('#27ae60')
+        expect(localStorageMock.getItem(THEME_STORAGE_KEYS.color)).toBe('#2ecc71')
+        expect(localStorageMock.getItem(THEME_STORAGE_KEYS.accent)).toBe('#27ae60')
         expect(document.documentElement.style.getPropertyValue('--sl-color-accent').trim()).toBe(
             '#2ecc71'
         )
@@ -176,7 +199,7 @@ describe('floating controls', () => {
 
     it('does not respond after cleanup, preventing duplicate bindings on re-init', () => {
         document.body.innerHTML = themeMarkup
-        localStorage.setItem(THEME_STORAGE_KEYS.scheme, 'dark')
+        localStorageMock.setItem(THEME_STORAGE_KEYS.scheme, 'dark')
 
         const root = document.querySelector('[data-theme-switcher]') as HTMLElement
         const toggle = document.querySelector('.theme-toggle') as HTMLButtonElement

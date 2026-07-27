@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const distDir = path.join('dist', '_astro')
+const distDir = path.join('dist', 'client', '_astro')
 
 const budgets = {
     maxTotalJsKB: Number(process.env.BUNDLE_BUDGET_TOTAL_JS_KB ?? 380),

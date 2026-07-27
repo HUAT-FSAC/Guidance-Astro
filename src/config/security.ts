@@ -11,6 +11,7 @@ export interface SecurityHeader {
 /**
  * 生成 CSP nonce（用于内联脚本）
  * 在 Workers 环境中每次请求生成新的 nonce
+ * 静态构建时使用固定 nonce（通过构建时注入）
  */
 export function generateNonce(): string {
     const array = new Uint8Array(16)
@@ -21,17 +22,17 @@ export function generateNonce(): string {
 /**
  * 获取基础 CSP 指令
  * 支持传入 nonce 来允许特定的内联脚本
+ * 静态部署时要求必须提供 nonce（通过构建时注入）
  */
 export function getCSPDirectives(nonce?: string) {
     const scriptSrc = ["'self'", 'https://cloud.umami.is']
 
-    // 如果有 nonce，使用 nonce 策略；否则在生产环境仍然允许必要的内联脚本
+    // 必须有 nonce 才允许内联脚本
     if (nonce) {
         scriptSrc.push(`'nonce-${nonce}'`)
     } else {
-        // 开发环境或静态生成时允许内联脚本
-        // 注意：生产环境应该使用 nonce 或严格的 hash
-        scriptSrc.push("'unsafe-inline'")
+        // 静态部署无 nonce 时拒绝内联脚本
+        // 开发环境通过 dev toolbar 注入 nonce
     }
 
     return {
@@ -82,25 +83,14 @@ export const securityHeaders: SecurityHeader[] = [
         value: 'SAMEORIGIN',
     },
     {
-        name: 'X-XSS-Protection',
-        value: '1; mode=block',
-    },
-    {
         name: 'Referrer-Policy',
         value: 'strict-origin-when-cross-origin',
     },
     {
         name: 'Permissions-Policy',
-        value: [
-            'accelerometer=()',
-            'camera=()',
-            'geolocation=()',
-            'gyroscope=()',
-            'magnetometer=()',
-            'microphone=()',
-            'payment=()',
-            'usb=()',
-        ].join(', '),
+        value: ['accelerometer=()', 'gyroscope=()', 'magnetometer=()', 'payment=()', 'usb=()'].join(
+            ', '
+        ),
     },
     {
         name: 'Cross-Origin-Opener-Policy',
@@ -156,6 +146,11 @@ export function isCSPValid(csp: string): boolean {
 
     // unsafe-eval 允许 eval() 攻击，不应出现在 CSP 中
     if (csp.includes("'unsafe-eval'")) {
+        return false
+    }
+
+    // unsafe-inline 允许内联脚本，生产环境不应出现
+    if (csp.includes("'unsafe-inline'")) {
         return false
     }
 

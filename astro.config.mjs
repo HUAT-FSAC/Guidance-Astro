@@ -58,15 +58,8 @@ export default defineConfig({
                 './src/styles/code-blocks.css',
             ],
             head: [
-                // 安全头部
-                {
-                    tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-Content-Type-Options',
-                        content: 'nosniff',
-                    },
-                },
-
+                // 安全头部由 security.ts 统一管理，通过中间件注入
+                // 此处保留不依赖中间件的客户端配置
                 {
                     tag: 'script',
                     content: `
@@ -80,27 +73,6 @@ export default defineConfig({
                   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
                   updateFavicon(document.documentElement.getAttribute('data-theme'));
                 `,
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-Frame-Options',
-                        content: 'SAMEORIGIN',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        'http-equiv': 'X-XSS-Protection',
-                        content: '1; mode=block',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'referrer',
-                        content: 'strict-origin-when-cross-origin',
-                    },
                 },
                 // SEO 元数据
                 {

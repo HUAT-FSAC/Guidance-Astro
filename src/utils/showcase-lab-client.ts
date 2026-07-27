@@ -366,9 +366,8 @@ function renderCachePanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState)
 
     cacheStatus.textContent = summary.statusLabel
     cacheStatus.setAttribute('data-status', state.mode)
-    // 使用 resources 数组的长度作为缓存包数量
-    cachePacks.textContent = String(state.resources.length)
-    cacheHitRate.textContent = `${state.hitRate}%`
+    cachePacks.textContent = String(summary.cachedPacks)
+    cacheHitRate.textContent = `${summary.hitRate}%`
     // 格式化最后同步时间
     const lastSyncLabel = state.lastSyncTime
         ? new Date(state.lastSyncTime).toLocaleTimeString()
@@ -761,10 +760,6 @@ function bindShowcaseLab(root: HTMLElement): void {
         // Cache controls
         if (trigger.hasAttribute('data-cache-warm')) {
             const newCacheState = warmShowcaseCache()
-            // Simulate extra cache for compare mode
-            if (runtimeState.isCompareEnabled) {
-                newCacheState.cachedPacks += 2
-            }
             applyState({
                 ...runtimeState,
                 cacheSimulationState: newCacheState,

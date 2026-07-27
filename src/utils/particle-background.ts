@@ -65,6 +65,9 @@ function initParticles(): void {
         return
     }
 
+    const canvasEl: HTMLCanvasElement = canvas
+    const ctx2d: CanvasRenderingContext2D = ctx
+
     // 桌面/平板/移动分级参数
     const MAX_PARTICLES = isSmallScreen ? 35 : 80
     const DESKTOP_DENSITY = 22000 // 原 15000，越大粒子越少
@@ -97,13 +100,13 @@ function initParticles(): void {
 
     function initParticleArray(): void {
         particles = []
-        const rawCount = Math.floor((canvas.width * canvas.height) / particleDensity)
+        const rawCount = Math.floor((canvasEl.width * canvasEl.height) / particleDensity)
         const count = Math.min(rawCount, MAX_PARTICLES)
 
         for (let i = 0; i < count; i++) {
             particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
+                x: Math.random() * canvasEl.width,
+                y: Math.random() * canvasEl.height,
                 size: Math.random() * 2 + 0.5,
                 speedX: (Math.random() - 0.5) * 0.3,
                 speedY: (Math.random() - 0.5) * 0.3,
@@ -117,10 +120,10 @@ function initParticles(): void {
 
     function resize(): void {
         updateSettings()
-        canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
+        canvasEl.width = window.innerWidth
+        canvasEl.height = window.innerHeight
         initParticleArray()
-        log.info('画布尺寸更新', { width: canvas.width, height: canvas.height, drawLines })
+        log.info('画布尺寸更新', { width: canvasEl.width, height: canvasEl.height, drawLines })
     }
 
     /** 构建空间哈希网格：cell 大小 = maxDistance，值为该格内的粒子下标数组。 */
@@ -160,12 +163,12 @@ function initParticles(): void {
                         const distanceSq = ddx * ddx + ddy * ddy
                         if (distanceSq < maxDistanceSq) {
                             const alpha = 0.1 * (1 - distanceSq / maxDistanceSq)
-                            ctx.beginPath()
-                            ctx.moveTo(p1.x, p1.y)
-                            ctx.lineTo(p2.x, p2.y)
-                            ctx.strokeStyle = `rgba(${lineColor}, ${alpha})`
-                            ctx.lineWidth = 0.5
-                            ctx.stroke()
+                            ctx2d.beginPath()
+                            ctx2d.moveTo(p1.x, p1.y)
+                            ctx2d.lineTo(p2.x, p2.y)
+                            ctx2d.strokeStyle = `rgba(${lineColor}, ${alpha})`
+                            ctx2d.lineWidth = 0.5
+                            ctx2d.stroke()
                         }
                     }
                 }
@@ -180,7 +183,7 @@ function initParticles(): void {
         }
         lastFrame = now
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx2d.clearRect(0, 0, canvasEl.width, canvasEl.height)
 
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i]
@@ -190,15 +193,15 @@ function initParticles(): void {
             p.x += p.speedX
             p.y += p.speedY
 
-            if (p.x < 0) p.x = canvas.width
-            if (p.x > canvas.width) p.x = 0
-            if (p.y < 0) p.y = canvas.height
-            if (p.y > canvas.height) p.y = 0
+            if (p.x < 0) p.x = canvasEl.width
+            if (p.x > canvasEl.width) p.x = 0
+            if (p.y < 0) p.y = canvasEl.height
+            if (p.y > canvasEl.height) p.y = 0
 
-            ctx.beginPath()
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(${particleColor}, ${p.opacity})`
-            ctx.fill()
+            ctx2d.beginPath()
+            ctx2d.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+            ctx2d.fillStyle = `rgba(${particleColor}, ${p.opacity})`
+            ctx2d.fill()
         }
 
         if (drawLines) drawLinesWithGrid()

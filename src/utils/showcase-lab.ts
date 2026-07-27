@@ -560,6 +560,30 @@ export function advanceShowcaseScript(
 }
 
 /**
+ * 计算缓存命中率
+ * 基于就绪资源占总资源的比例
+ * @param state - 当前缓存状态
+ * @returns 命中率百分比
+ */
+export function computeCacheHitRate(state: ShowcaseCacheSimulationState): number {
+    if (state.resources.length === 0) {
+        return 0
+    }
+    const readyCount = state.resources.filter((r) => r.status === 'ready').length
+    return Math.round((readyCount / state.resources.length) * 100)
+}
+
+/**
+ * 计算缓存包数量
+ * 只有就绪状态的资源才算作缓存包
+ * @param state - 当前缓存状态
+ * @returns 缓存包数量
+ */
+export function computeCachedPacks(state: ShowcaseCacheSimulationState): number {
+    return state.resources.filter((r) => r.status === 'ready').length
+}
+
+/**
  * 获取默认缓存模拟状态
  * @returns 默认的缓存状态
  */
@@ -592,7 +616,7 @@ export function resetShowcaseCache(): ShowcaseCacheSimulationState {
 }
 
 /**
- * 获取缓存模拟摘要
+ * 获取缓存模拟摘要（包含计算出的命中率和包数量）
  * @param state - 当前缓存状态
  * @returns 缓存摘要数据
  */
@@ -602,10 +626,14 @@ export function getCacheSimulationSummary(state: ShowcaseCacheSimulationState): 
     readyCount: number
     staleCount: number
     pendingCount: number
+    hitRate: number
+    cachedPacks: number
 } {
     const readyCount = state.resources.filter((r) => r.status === 'ready').length
     const staleCount = state.resources.filter((r) => r.status === 'stale').length
     const pendingCount = state.resources.filter((r) => r.status === 'pending').length
+    const hitRate = computeCacheHitRate(state)
+    const cachedPacks = computeCachedPacks(state)
 
     let statusLabel: string
     let statusTone: 'positive' | 'warning' | 'neutral'
@@ -632,5 +660,7 @@ export function getCacheSimulationSummary(state: ShowcaseCacheSimulationState): 
         readyCount,
         staleCount,
         pendingCount,
+        hitRate,
+        cachedPacks,
     }
 }

@@ -78,10 +78,10 @@ describe('security config', () => {
             expect(header?.value).toBe('strict-origin-when-cross-origin')
         })
 
-        it('includes Permissions-Policy with camera and microphone', () => {
+        it('includes Permissions-Policy with accelerometer and gyroscope disabled', () => {
             const header = securityHeaders.find((h) => h.name === 'Permissions-Policy')
-            expect(header?.value).toContain('camera=()')
-            expect(header?.value).toContain('microphone=()')
+            expect(header?.value).toContain('accelerometer=()')
+            expect(header?.value).toContain('gyroscope=()')
         })
     })
 

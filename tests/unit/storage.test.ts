@@ -3,26 +3,49 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
     safeGetItem,
-    safeSetItem,
-    safeRemoveItem,
     safeGetJSON,
+    safeRemoveItem,
+    safeSetItem,
     safeSetJSON,
 } from '../../src/utils/storage'
 
+// Mock localStorage for jsdom environment
+const localStorageMock = {
+    store: {} as Record<string, string>,
+    getItem(key: string) {
+        return this.store[key] ?? null
+    },
+    setItem(key: string, value: string) {
+        this.store[key] = value
+    },
+    removeItem(key: string) {
+        delete this.store[key]
+    },
+    clear() {
+        this.store = {}
+    },
+}
+
+Object.defineProperty(globalThis, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+    configurable: true,
+})
+
 describe('storage', () => {
     beforeEach(() => {
-        localStorage.clear()
+        localStorageMock.clear()
         vi.spyOn(console, 'warn').mockImplementation(() => {})
     })
 
     afterEach(() => {
-        localStorage.clear()
+        localStorageMock.clear()
         vi.restoreAllMocks()
     })
 
     describe('safeGetItem', () => {
         it('should return stored value', () => {
-            localStorage.setItem('key', 'value')
+            localStorageMock.setItem('key', 'value')
             expect(safeGetItem('key')).toBe('value')
         })
 
@@ -35,7 +58,7 @@ describe('storage', () => {
         })
 
         it('should return default when localStorage throws', () => {
-            vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+            vi.spyOn(localStorageMock, 'getItem').mockImplementation(() => {
                 throw new Error('access denied')
             })
             expect(safeGetItem('key', 'safe')).toBe('safe')
@@ -45,11 +68,11 @@ describe('storage', () => {
     describe('safeSetItem', () => {
         it('should store value and return true', () => {
             expect(safeSetItem('key', 'value')).toBe(true)
-            expect(localStorage.getItem('key')).toBe('value')
+            expect(localStorageMock.getItem('key')).toBe('value')
         })
 
         it('should return false when localStorage throws', () => {
-            vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+            vi.spyOn(localStorageMock, 'setItem').mockImplementation(() => {
                 throw new Error('quota exceeded')
             })
             expect(safeSetItem('key', 'value')).toBe(false)
@@ -58,13 +81,13 @@ describe('storage', () => {
 
     describe('safeRemoveItem', () => {
         it('should remove item and return true', () => {
-            localStorage.setItem('key', 'value')
+            localStorageMock.setItem('key', 'value')
             expect(safeRemoveItem('key')).toBe(true)
-            expect(localStorage.getItem('key')).toBeNull()
+            expect(localStorageMock.getItem('key')).toBeNull()
         })
 
         it('should return false when localStorage throws', () => {
-            vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+            vi.spyOn(localStorageMock, 'removeItem').mockImplementation(() => {
                 throw new Error('access denied')
             })
             expect(safeRemoveItem('key')).toBe(false)
@@ -73,7 +96,7 @@ describe('storage', () => {
 
     describe('safeGetJSON', () => {
         it('should parse stored JSON', () => {
-            localStorage.setItem('obj', JSON.stringify({ a: 1 }))
+            localStorageMock.setItem('obj', JSON.stringify({ a: 1 }))
             expect(safeGetJSON('obj', {})).toEqual({ a: 1 })
         })
 
@@ -82,7 +105,7 @@ describe('storage', () => {
         })
 
         it('should return default for invalid JSON', () => {
-            localStorage.setItem('bad', 'not-json{')
+            localStorageMock.setItem('bad', 'not-json{')
             expect(safeGetJSON('bad', [])).toEqual([])
         })
     })
@@ -90,7 +113,7 @@ describe('storage', () => {
     describe('safeSetJSON', () => {
         it('should serialize and store object', () => {
             expect(safeSetJSON('obj', { b: 2 })).toBe(true)
-            expect(JSON.parse(localStorage.getItem('obj')!)).toEqual({ b: 2 })
+            expect(JSON.parse(localStorageMock.getItem('obj')!)).toEqual({ b: 2 })
         })
 
         it('should handle circular references gracefully', () => {
