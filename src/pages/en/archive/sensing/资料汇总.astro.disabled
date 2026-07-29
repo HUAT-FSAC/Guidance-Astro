@@ -1,3 +1,0 @@
----
-return Astro.redirect('/en/archive/sensing/resource-roundup/', 302)
----

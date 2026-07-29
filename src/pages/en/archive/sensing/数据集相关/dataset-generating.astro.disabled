@@ -1,3 +1,0 @@
----
-return Astro.redirect('/en/archive/sensing/datasets/dataset-generation/', 302)
----
