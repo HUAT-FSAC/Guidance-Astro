@@ -168,6 +168,9 @@ $RECYCLE.BIN/
 # AI/编辑器相关
 .claude/
 .omc/
+.mimocode/
+.trae/
+.workbuddy/
 
 # ------------------------------------------
 # 部署平台配置 (如使用)
