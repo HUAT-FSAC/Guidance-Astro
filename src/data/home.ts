@@ -192,6 +192,7 @@ export interface RecruitmentContent {
 }
 
 export interface ShowcaseContent {
+    href: string
     title: string
     subtitle: string
     description: string
@@ -236,6 +237,7 @@ export interface HomeContent {
 }
 
 const zhShowcaseContent: ShowcaseContent = {
+    href: '/showcase-dashboard/',
     title: '智能驾驶交互实验室',
     subtitle: 'AUTONOMOUS SHOWCASE',
     description:
@@ -270,6 +272,7 @@ const enAchievements: AchievementItem[] = [
 ]
 
 const enShowcaseContent: ShowcaseContent = {
+    href: '/en/showcase-dashboard/',
     title: 'Autonomous Driving Lab',
     subtitle: 'AUTONOMOUS SHOWCASE',
     description:

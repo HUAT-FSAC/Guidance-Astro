@@ -8,6 +8,7 @@ interface Props {
 
 const defaultScenario = showcaseScenarios[0]
 const fallbackContent: ShowcaseContent = {
+    href: '/showcase-dashboard/',
     title: '智能驾驶交互实验室',
     subtitle: 'AUTONOMOUS SHOWCASE',
     description: '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
@@ -36,7 +37,7 @@ const { content = fallbackContent } = Astro.props
                     </div>
                 ))}
             </div>
-            <a href="/showcase-dashboard/" class="showcase-entry-cta">
+            <a href={content.href} class="showcase-entry-cta">
                 <span>{content.cta}</span>
                 <span class="cta-arrow">→</span>
             </a>

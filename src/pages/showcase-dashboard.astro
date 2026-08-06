@@ -1,13 +1,17 @@
 ---
-import { showcaseScenarios, showcaseScripts } from '../data/showcase-lab'
-import {
-    SHOWCASE_SELECTION_STORAGE_KEY,
-    buildTrendCursor,
-    buildTrendPolyline,
-    getShowcaseReplaySnapshot,
-} from '../utils/showcase-lab'
+import { getLocalizedShowcaseReplaySnapshot, getLocalizedShowcaseScenarios, getLocalizedShowcaseScripts, showcaseUiLabels, type ShowcaseLocale } from '../data/showcase-lab-i18n'
+import { SHOWCASE_SELECTION_STORAGE_KEY, buildTrendCursor, buildTrendPolyline, getShowcaseReplaySnapshot } from '../utils/showcase-lab'
 
-const initialReplay = getShowcaseReplaySnapshot()
+interface Props {
+    locale?: ShowcaseLocale
+}
+
+const { locale = 'zh' } = Astro.props
+const uiLabels = showcaseUiLabels[locale]
+const localizedShowcaseScenarios = getLocalizedShowcaseScenarios(locale)
+const localizedShowcaseScripts = getLocalizedShowcaseScripts(locale)
+
+const initialReplay = getLocalizedShowcaseReplaySnapshot(getShowcaseReplaySnapshot(), locale)
 const {
     frame: initialFrame,
     frameIndex: initialFrameIndex,
@@ -33,29 +37,29 @@ const toneBadge = {
 ---
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang={locale === 'en' ? 'en' : 'zh-CN'}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能驾驶交互实验室 | FSAC</title>
+    <title>{uiLabels.title} | FSAC</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body data-theme="dark">
-    <div class="dashboard" data-showcase-lab data-storage-key={SHOWCASE_SELECTION_STORAGE_KEY}>
+    <div class="dashboard" data-showcase-lab data-locale={locale} data-storage-key={SHOWCASE_SELECTION_STORAGE_KEY}>
         <header class="dashboard-header">
-            <a href="/" class="back-link">
+            <a href={locale === 'en' ? '/en/' : '/'} class="back-link">
                 <span class="back-icon">←</span>
-                <span>返回首页</span>
+                <span>{uiLabels.backHome}</span>
             </a>
             <div class="header-title">
-                <h1>智能驾驶交互实验室</h1>
+                <h1>{uiLabels.title}</h1>
                 <span class="header-badge">Autonomous Showcase</span>
             </div>
             <div class="header-scenarios">
-                {showcaseScenarios.map((scenario) => (
+                {localizedShowcaseScenarios.map((scenario) => (
                     <button
                         class={`scenario-chip ${scenario.id === initialScenario.id ? 'is-active' : ''}`}
                         type="button"
@@ -70,7 +74,7 @@ const toneBadge = {
         <main class="dashboard-main">
             <aside class="panel panel--left">
                 <section class="panel-section">
-                    <h2 class="section-title">场景信息</h2>
+                    <h2 class="section-title">{uiLabels.scenarioInfo}</h2>
                     <div class="scenario-info">
                         <h3 class="scenario-name" data-showcase-scenario-name>{initialScenario.name}</h3>
                         <p class="scenario-tagline" id="showcase-tagline">{initialScenario.tagline}</p>
@@ -80,14 +84,14 @@ const toneBadge = {
                         {initialScenario.badges.map((badge) => <span class="showcase-badge">{badge}</span>)}
                     </div>
                     <div class="strategy-card">
-                        <span class="strategy-label">当前策略</span>
+                        <span class="strategy-label">{uiLabels.currentStrategy}</span>
                         <strong class="strategy-title" id="showcase-strategy-title">{initialScenario.strategy.title}</strong>
                         <p class="strategy-copy" id="showcase-strategy-copy">{initialScenario.strategy.copy}</p>
                     </div>
                 </section>
 
                 <section class="panel-section">
-                    <h2 class="section-title">子系统</h2>
+                    <h2 class="section-title">{uiLabels.subsystems}</h2>
                     <div class="subsystem-grid" id="showcase-subsystem-tabs">
                         {initialScenario.subsystems.map((subsystem) => (
                             <button class={`subsystem-card ${subsystem.id === initialSubsystem.id ? 'is-active' : ''}`} type="button" data-subsystem-id={subsystem.id}>
@@ -170,9 +174,9 @@ const toneBadge = {
             <aside class="panel panel--right">
                 <div class="tabs">
                     <div class="tabs-header">
-                        <button class="tab-btn is-active" data-tab="metrics">指标</button>
-                        <button class="tab-btn" data-tab="stages">链路</button>
-                        <button class="tab-btn" data-tab="console">控制台</button>
+                        <button class="tab-btn is-active" data-tab="metrics">{uiLabels.metrics}</button>
+                        <button class="tab-btn" data-tab="stages">{uiLabels.stages}</button>
+                        <button class="tab-btn" data-tab="console">{uiLabels.console}</button>
                     </div>
 
                     <div class="tabs-content">
@@ -218,12 +222,12 @@ const toneBadge = {
                                     </div>
                                     <div class="console-card-body" data-compare-panel style="display: none;">
                                         <select data-compare-scenario-select>
-                                            {showcaseScenarios.map((scenario) => (
+                                            {localizedShowcaseScenarios.map((scenario) => (
                                                 <option value={scenario.id}>{scenario.name}</option>
                                             ))}
                                         </select>
                                         <div class="compare-delta" data-compare-delta>
-                                            <strong>差异摘要</strong>
+                                            <strong>{uiLabels.compareSummary}</strong>
                                             <ul data-compare-highlights></ul>
                                         </div>
                                     </div>
@@ -232,12 +236,12 @@ const toneBadge = {
                                 <div class="console-card" data-demo-script>
                                     <div class="console-card-header">
                                         <h4>Demo Script</h4>
-                                        <span class="script-status" data-script-status>Ready</span>
+                                        <span class="script-status" data-script-status>{uiLabels.scriptReady}</span>
                                     </div>
                                     <div class="console-card-body">
                                         <select data-script-select>
-                                            <option value="">选择讲解脚本...</option>
-                                            {showcaseScripts.map((script) => (
+                                            <option value="">{uiLabels.scriptPlaceholder}</option>
+                                            {localizedShowcaseScripts.map((script) => (
                                                 <option value={script.id}>{script.name}</option>
                                             ))}
                                         </select>
@@ -259,7 +263,7 @@ const toneBadge = {
                                 <div class="console-card" data-cache-simulator>
                                     <div class="console-card-header">
                                         <h4>Cache</h4>
-                                        <span class="cache-status" data-cache-status>缓存冷态</span>
+                                        <span class="cache-status" data-cache-status>{uiLabels.cacheCold}</span>
                                     </div>
                                     <div class="console-card-body">
                                         <div class="cache-stats">
@@ -277,7 +281,7 @@ const toneBadge = {
                                             <button type="button" class="cache-btn cache-btn--drift" data-cache-drift>Drift</button>
                                             <button type="button" class="cache-btn cache-btn--reset" data-cache-reset>Reset</button>
                                         </div>
-                                        <div class="cache-last-sync" data-cache-last-sync style="display: none;">从未同步</div>
+                                        <div class="cache-last-sync" data-cache-last-sync style="display: none;">{uiLabels.lastSyncNever}</div>
                                     </div>
                                 </div>
                             </div>

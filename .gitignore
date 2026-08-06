@@ -173,7 +173,7 @@ $RECYCLE.BIN/
 .workbuddy/
 
 # 废弃的英文归档页面（乱码文件名 / .disabled 文件）
-src/pages/en/archive/
+src/content/docs/en/archive/
 
 # ------------------------------------------
 # 部署平台配置 (如使用)
