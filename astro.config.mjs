@@ -3,12 +3,39 @@ import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
+import purgecss from 'vite-plugin-purgecss'
 
 // https://astro.build/config
 export default defineConfig({
     adapter: cloudflare({ imageService: 'compile' }),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
+    vite: {
+        build: {
+            cssCodeSplit: true,
+        },
+        plugins: [
+            purgecss({
+                content: ['./src/**/*.astro', './src/**/*.ts', './src/**/*.tsx'],
+                // 保留所有 @keyframes，防止 animation 引用断裂
+                keyframes: false,
+                // 保留 CSS 变量
+                variables: false,
+                safelist: {
+                    standard: [
+                        /^sl-/,
+                        /^starlight/,
+                        /^is-/,
+                        /^has-/,
+                        /^__/,
+                        /^lang-/,
+                        /^_astro/,
+                        'data-theme',
+                    ],
+                },
+            }),
+        ],
+    },
     redirects: {
         '/docs/': '/',
         '/2024-learning-roadmap/': '/archive/2024/2024-learning-roadmap/',

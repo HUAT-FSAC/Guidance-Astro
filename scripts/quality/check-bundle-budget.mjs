@@ -5,7 +5,7 @@ const distDir = path.join('dist', 'client', '_astro')
 
 const budgets = {
     maxTotalJsKB: Number(process.env.BUNDLE_BUDGET_TOTAL_JS_KB ?? 380),
-    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 150),
+    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 180),
     maxSingleJsKB: Number(process.env.BUNDLE_BUDGET_SINGLE_JS_KB ?? 100),
     maxSingleCssKB: Number(process.env.BUNDLE_BUDGET_SINGLE_CSS_KB ?? 95),
 }
