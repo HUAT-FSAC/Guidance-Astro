@@ -161,14 +161,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Run bundle budget check
-        run: pnpm quality:bundle
-
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
+
+      - name: Run bundle budget check
+        run: pnpm quality:bundle
 
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
