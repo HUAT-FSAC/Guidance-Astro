@@ -84,9 +84,9 @@ function parseValue(value: string) {
     }
 
     :global([data-theme="light"]) .stat-item {
-        background: rgba(255, 255, 255, 0.8);
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: var(--fs-bg-surface);
+        border-color: var(--fs-color-border);
+        box-shadow: var(--card-shadow);
     }
 
     .stat-item:hover {
@@ -102,7 +102,7 @@ function parseValue(value: string) {
 
     :global([data-theme="light"]) .stat-item:hover {
         background: var(--fs-bg-base);
-        border-color: rgba(0, 0, 0, 0.2);
+        border-color: var(--fs-color-border-strong);
     }
 
     .stat-item .value {

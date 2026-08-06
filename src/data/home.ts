@@ -191,6 +191,18 @@ export interface RecruitmentContent {
     ctaText: string
 }
 
+export interface ShowcaseContent {
+    title: string
+    subtitle: string
+    description: string
+    features: string[]
+    cta: string
+    preview: {
+        title: string
+        subtitle: string
+    }
+}
+
 export interface HomeContent {
     hero: {
         title: string
@@ -202,7 +214,7 @@ export interface HomeContent {
         backgroundImages: string[]
     }
     stats: StatItem[]
-    showcase: Record<string, unknown>
+    showcase: ShowcaseContent
     achievements: AchievementItem[]
     sectionHeaders: {
         features: { label: string; title: string }
@@ -223,6 +235,53 @@ export interface HomeContent {
     }
 }
 
+const zhShowcaseContent: ShowcaseContent = {
+    title: '智能驾驶交互实验室',
+    subtitle: 'AUTONOMOUS SHOWCASE',
+    description:
+        '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
+    features: ['多场景预设', '实时可视化', '离线演示'],
+    cta: '进入实验室',
+    preview: {
+        title: '发车校准',
+        subtitle: '传感器同步与车端自检的最后 12 秒',
+    },
+}
+
+const enAchievements: AchievementItem[] = [
+    {
+        badge: 'OUR CARS',
+        title: 'Conquer the Track',
+        description:
+            'Welcome to HUAT FSAC. See how cutting-edge electric and autonomous technology is reshaping racing, from concept design to track validation.',
+        ctaText: 'View Our Cars',
+        ctaLink: '/en/cars/',
+        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800',
+    },
+    {
+        badge: 'OUR TEAM',
+        title: 'Where Innovation Meets Passion',
+        description:
+            'Meet the engineering students who design, build and race single-seat cars. Every Formula Student season pushes us to expand what is possible.',
+        ctaText: 'Meet the Team',
+        ctaLink: '/en/team/',
+        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800',
+    },
+]
+
+const enShowcaseContent: ShowcaseContent = {
+    title: 'Autonomous Driving Lab',
+    subtitle: 'AUTONOMOUS SHOWCASE',
+    description:
+        'Explore the complete autonomous racing loop through local data, SVG visualizations and browser-based state management—from perception to actuation.',
+    features: ['Scenario presets', 'Live visualization', 'Offline demo'],
+    cta: 'Enter the Lab',
+    preview: {
+        title: 'Launch Calibration',
+        subtitle: 'The final 12 seconds of sensor sync and vehicle self-checks',
+    },
+}
+
 // 中文内容
 const zhHomeContent: HomeContent = {
     hero: {
@@ -235,7 +294,7 @@ const zhHomeContent: HomeContent = {
         backgroundImages: heroConfig.backgroundImages,
     },
     stats,
-    showcase: {},
+    showcase: zhShowcaseContent,
     achievements,
     sectionHeaders: {
         features: { label: '模块', title: '核心模块' },
@@ -306,8 +365,8 @@ const enHomeContentData: HomeContent = {
         { value: '50+', label: 'Team Members' },
         { value: '10+', label: 'Years of Experience' },
     ],
-    showcase: {},
-    achievements,
+    showcase: enShowcaseContent,
+    achievements: enAchievements,
     sectionHeaders: {
         features: { label: 'MODULES', title: 'Core Modules' },
         seasons: { label: 'SEASONS', title: 'Season Review' },

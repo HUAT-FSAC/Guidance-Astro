@@ -1,34 +1,43 @@
 ---
 import { showcaseScenarios } from '../../../data/showcase-lab'
+import type { ShowcaseContent } from '../../../data/home'
+
+interface Props {
+    content?: ShowcaseContent
+}
 
 const defaultScenario = showcaseScenarios[0]
+const fallbackContent: ShowcaseContent = {
+    title: '智能驾驶交互实验室',
+    subtitle: 'AUTONOMOUS SHOWCASE',
+    description: '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
+    features: ['多场景预设', '实时可视化', '离线演示'],
+    cta: '进入实验室',
+    preview: {
+        title: defaultScenario.name,
+        subtitle: defaultScenario.tagline,
+    },
+}
+
+const { content = fallbackContent } = Astro.props
 ---
 
 <section class="showcase-entry home-block">
     <div class="showcase-entry-shell">
         <div class="showcase-entry-content">
-            <h2 class="showcase-entry-heading">智能驾驶交互实验室</h2>
-            <span class="showcase-entry-subtitle">AUTONOMOUS SHOWCASE</span>
-            <p class="showcase-entry-description">
-                用完全本地的数据、SVG 可视化和浏览器状态管理，<br/>
-                直观展示无人驾驶赛车从感知到执行器的整条闭环。
-            </p>
+            <h2 class="showcase-entry-heading">{content.title}</h2>
+            <span class="showcase-entry-subtitle">{content.subtitle}</span>
+            <p class="showcase-entry-description">{content.description}</p>
             <div class="showcase-entry-features">
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>多场景预设</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>实时可视化</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">◉</span>
-                    <span>离线演示</span>
-                </div>
+                {content.features.map((feature) => (
+                    <div class="feature-item">
+                        <span class="feature-icon">◉</span>
+                        <span>{feature}</span>
+                    </div>
+                ))}
             </div>
             <a href="/showcase-dashboard/" class="showcase-entry-cta">
-                <span>进入实验室</span>
+                <span>{content.cta}</span>
                 <span class="cta-arrow">→</span>
             </a>
         </div>
@@ -58,8 +67,8 @@ const defaultScenario = showcaseScenarios[0]
                     </svg>
                 </div>
                 <div class="preview-info">
-                    <span class="preview-scenario">{defaultScenario.name}</span>
-                    <span class="preview-tagline">{defaultScenario.tagline}</span>
+                    <span class="preview-scenario">{content.preview.title}</span>
+                    <span class="preview-tagline">{content.preview.subtitle}</span>
                 </div>
             </div>
         </div>

@@ -148,12 +148,17 @@ const images = (backgroundImages ?? []).map((src) => ({
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(3, 3, 3, 0.3) 0%, rgba(3, 3, 3, 0.5) 50%, rgba(3, 3, 3, 0.85) 100%);
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--fs-bg-base) 30%, transparent) 0%,
+            color-mix(in srgb, var(--fs-bg-base) 50%, transparent) 50%,
+            color-mix(in srgb, var(--fs-bg-base) 85%, transparent) 100%
+        );
         pointer-events: none;
     }
 
     :global([data-theme='light']) .hero-overlay {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.75) 100%);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--fs-bg-base) 20%, transparent) 0%, color-mix(in srgb, var(--fs-bg-base) 40%, transparent) 50%, color-mix(in srgb, var(--fs-bg-base) 75%, transparent) 100%);
     }
 
     .hero-inner {
@@ -182,7 +187,7 @@ const images = (backgroundImages ?? []).map((src) => ({
         letter-spacing: -0.04em;
         line-height: 1.1;
         color: var(--fs-color-heading);
-        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        text-shadow: 0 10px 30px color-mix(in srgb, var(--fs-bg-base) 50%, transparent);
     }
 
     :global([data-theme='light']) .hero-heading {

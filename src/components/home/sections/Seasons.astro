@@ -3,20 +3,30 @@ import type { SeasonItem } from "../../../data/home";
 
 interface Props {
     seasons: SeasonItem[];
+    labels?: {
+        label: string;
+        subtitle: string;
+    };
+    locale?: "zh" | "en";
 }
 
-const { seasons } = Astro.props;
+const {
+    seasons,
+    labels = { label: "关于赛车", subtitle: "ABOUT THE RACE CAR" },
+    locale = "zh",
+} = Astro.props;
+const isEnglish = locale === "en";
 ---
 
-<section class="seasons-section reveal-upon-scroll" role="region" aria-label="关于赛车">
+<section class="seasons-section reveal-upon-scroll" role="region" aria-label={labels.label}>
     <div class="seasons-header">
-        <span class="seasons-label">关于赛车</span>
-        <span class="seasons-subtitle">ABOUT THE RACE CAR</span>
+        <span class="seasons-label">{labels.label}</span>
+        <span class="seasons-subtitle">{labels.subtitle}</span>
     </div>
 
     <div class="seasons-carousel" data-seasons-carousel>
         {/* 左箭头 */}
-        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label="上一组">
+        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={isEnglish ? "Previous season" : "上一组"}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
@@ -28,7 +38,7 @@ const { seasons } = Astro.props;
                         <div class="seasons-img seasons-img--left">
                             <img
                                 src={season.carImg}
-                                alt={`${season.year} 赛车`}
+                                alt={isEnglish ? `${season.year} race car` : `${season.year} 赛车`}
                                 loading="lazy"
                                 decoding="async"
                             />
@@ -37,7 +47,7 @@ const { seasons } = Astro.props;
                         <div class="seasons-img seasons-img--right">
                             <img
                                 src={season.explainImg}
-                                alt={`${season.year} 解说`}
+                                alt={isEnglish ? `${season.year} explanation` : `${season.year} 解说`}
                                 loading="lazy"
                                 decoding="async"
                             />
@@ -49,14 +59,14 @@ const { seasons } = Astro.props;
         </div>
 
         {/* 右箭头 */}
-        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label="下一组">
+        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={isEnglish ? "Next season" : "下一组"}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
         {/* 指示器 */}
         <div class="seasons-dots">
             {seasons.map((_, index) => (
-                <button class={`seasons-dot ${index === 0 ? 'is-active' : ''}`} data-dot={index} aria-label={`第 ${index + 1} 组`}></button>
+                <button class={`seasons-dot ${index === 0 ? 'is-active' : ''}`} data-dot={index} aria-label={isEnglish ? `Season ${index + 1}` : `第 ${index + 1} 组`}></button>
             ))}
         </div>
     </div>
