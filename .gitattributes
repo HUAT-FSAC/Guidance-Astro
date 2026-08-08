@@ -67,3 +67,6 @@
 *.mp3 binary
 *.ogg binary
 *.wav binary
+
+.husky/pre-commit text eol=lf
+.husky/commit-msg text eol=lf
