@@ -223,14 +223,36 @@ export default defineConfig({
                         type: 'image/png',
                     },
                 },
-                // 性能优化：预加载首屏字体（如果使用）
+                // 性能优化：字体加载
                 {
                     tag: 'link',
                     attrs: {
-                        rel: 'preload',
-                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
-                        as: 'style',
+                        rel: 'preconnect',
+                        href: 'https://fonts.googleapis.com',
+                    },
+                },
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'preconnect',
+                        href: 'https://fonts.gstatic.com',
                         crossorigin: 'anonymous',
+                    },
+                },
+                // 标题主字体（Space Grotesk）
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'stylesheet',
+                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap',
+                    },
+                },
+                // 代码字体（JetBrains Mono）
+                {
+                    tag: 'link',
+                    attrs: {
+                        rel: 'stylesheet',
+                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
                     },
                 },
                 // 分析脚本

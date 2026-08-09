@@ -445,6 +445,11 @@ nav.sidebar h2::before {
     white-space: nowrap;
 }
 
+/* 亮色模式下表头文字加深，保证对比度 ≥ 4.5:1 */
+:root[data-theme='light'] .sl-markdown-content th {
+    color: #1d4ed8;
+}
+
 .sl-markdown-content td {
     padding: 0.875rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -922,5 +927,9 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         opacity: 1;
         transform: translateY(0);
         transition: none;
+    }
+
+    .sl-markdown-content > * {
+        animation: none !important;
     }
 }

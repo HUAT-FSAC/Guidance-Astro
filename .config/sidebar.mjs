@@ -1,28 +1,7 @@
 export default [
     {
-        label: '🏠 概览与入口',
-        translations: { en: '🏠 Overview & Entry' },
-        collapsed: false,
-        items: [
-            { label: '🏠 首页', translations: { en: '🏠 Home' }, link: '/' },
-            { label: '🤝 加入我们', translations: { en: '🤝 Join Us' }, link: '/join/' },
-            { label: '👥 团队', translations: { en: '👥 Team' }, link: '/team/' },
-            { label: '🚗 赛车', translations: { en: '🚗 Cars' }, link: '/cars/' },
-            {
-                label: 'ℹ️ 关于 Formula Student',
-                translations: { en: 'ℹ️ About Formula Student' },
-                link: '/about-fs/',
-            },
-            {
-                label: '📊 项目进度看板',
-                translations: { en: '📊 Project Board' },
-                link: '/docs-center/运营与协作/项目进度看板/',
-            },
-        ],
-    },
-    {
-        label: '📚 文档中心',
-        translations: { en: '📚 Docs Center' },
+        label: '文档中心',
+        translations: { en: 'Docs Center' },
         collapsed: false,
         items: [
             { label: '文档中心', translations: { en: 'Docs Center' }, link: '/docs-center/' },
@@ -45,7 +24,7 @@ export default [
             {
                 label: '运营与协作',
                 translations: { en: 'Operations & Collaboration' },
-                collapsed: false,
+                collapsed: true,
                 items: [
                     {
                         label: '运营与协作',
@@ -67,109 +46,100 @@ export default [
         ],
     },
     {
-        label: '📰 新闻动态',
-        translations: { en: '📰 News' },
+        label: '新闻动态',
+        translations: { en: 'News' },
         collapsed: false,
         items: [{ autogenerate: { directory: 'news' } }],
     },
     {
-        label: '🏎️ 2025 赛季文档',
-        translations: { en: '🏎️ 2025 Season Docs' },
+        label: '2025 赛季文档',
+        translations: { en: '2025 Season Docs' },
         collapsed: false,
         items: [
             {
-                label: '📁 无人系统组',
-                translations: { en: '📁 Autonomous Systems' },
-                collapsed: false,
-                items: [
-                    {
-                        label: '感知',
-                        translations: { en: 'Sensing' },
-                        collapsed: true,
-                        items: [{ autogenerate: { directory: 'archive/2025/sensing' } }],
-                    },
-                    {
-                        label: '定位建图',
-                        translations: { en: 'Localization & Mapping' },
-                        collapsed: true,
-                        items: [
-                            { autogenerate: { directory: 'archive/2025/localization-mapping' } },
-                        ],
-                    },
-                    {
-                        label: '规划控制',
-                        translations: { en: 'Planning & Control' },
-                        collapsed: true,
-                        items: [{ autogenerate: { directory: 'archive/2025/planning-control' } }],
-                    },
-                    {
-                        label: '仿真测试',
-                        translations: { en: 'Simulation' },
-                        collapsed: true,
-                        items: [{ autogenerate: { directory: 'archive/2025/simulation' } }],
-                    },
-                ],
+                label: '感知',
+                translations: { en: 'Sensing' },
+                collapsed: true,
+                items: [{ autogenerate: { directory: 'archive/2025/sensing' } }],
             },
             {
-                label: '📁 电气部',
-                translations: { en: '📁 Electrical' },
+                label: '定位建图',
+                translations: { en: 'Localization & Mapping' },
+                collapsed: true,
+                items: [{ autogenerate: { directory: 'archive/2025/localization-mapping' } }],
+            },
+            {
+                label: '规划控制',
+                translations: { en: 'Planning & Control' },
+                collapsed: true,
+                items: [{ autogenerate: { directory: 'archive/2025/planning-control' } }],
+            },
+            {
+                label: '仿真测试',
+                translations: { en: 'Simulation' },
+                collapsed: true,
+                items: [{ autogenerate: { directory: 'archive/2025/simulation' } }],
+            },
+            {
+                label: '电气部',
+                translations: { en: 'Electrical' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/2025/electrical' } }],
             },
             {
-                label: '📁 机械部',
-                translations: { en: '📁 Mechanical' },
+                label: '机械部',
+                translations: { en: 'Mechanical' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/2025/mechanical' } }],
             },
             {
-                label: '📁 项管部',
-                translations: { en: '📁 Operations' },
+                label: '项管部',
+                translations: { en: 'Operations' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/2025/management' } }],
             },
             {
-                label: '📁 过检模块',
-                translations: { en: '📁 Inspection' },
+                label: '过检模块',
+                translations: { en: 'Inspection' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/2025/inspection' } }],
             },
         ],
     },
     {
-        label: '📚 2024 赛季文档',
-        translations: { en: '📚 2024 Season Docs' },
+        label: '2024 赛季文档',
+        translations: { en: '2024 Season Docs' },
         collapsed: true,
         items: [
             {
-                label: '📁 感知融合',
-                translations: { en: '📁 Sensing & Fusion' },
+                label: '感知融合',
+                translations: { en: 'Sensing & Fusion' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/sensing' } }],
             },
             {
-                label: '📁 定位建图',
-                translations: { en: '📁 Localization & Mapping' },
+                label: '定位建图',
+                translations: { en: 'Localization & Mapping' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/localization-mapping' } }],
             },
             {
-                label: '📁 仿真测试',
-                translations: { en: '📁 Simulation' },
+                label: '仿真测试',
+                translations: { en: 'Simulation' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/simulation' } }],
             },
             {
-                label: '📁 规划控制',
-                translations: { en: '📁 Planning & Control' },
+                label: '规划控制',
+                translations: { en: 'Planning & Control' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/planning-control' } }],
             },
         ],
     },
     {
-        label: '📘 通用教程与指南',
-        translations: { en: '📘 General Guides' },
+        label: '通用教程与指南',
+        translations: { en: 'General Guides' },
         collapsed: true,
         items: [
             {
@@ -183,8 +153,8 @@ export default [
                 link: '/open-source-projects/',
             },
             {
-                label: '🛠️ 基础工具与环境',
-                translations: { en: '🛠️ Tools & Environment' },
+                label: '基础工具与环境',
+                translations: { en: 'Tools & Environment' },
                 collapsed: true,
                 items: [{ autogenerate: { directory: 'archive/general' } }],
             },
