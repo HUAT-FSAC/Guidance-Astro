@@ -1,0 +1,9 @@
+Verification of Q-01 through Q-04 against /openwiki documentation.
+
+Q-01: PASS - /openwiki/architecture/overview.md, /openwiki/architecture/build-and-deploy.md, /openwiki/integrations/overview.md, /openwiki/content/overview.md all detail Astro initialization (7.x), @astrojs/cloudflare adapter, all four custom integrations (filterKnownBuildWarnings, criticalCssIntegration, cloudflareStaticHeaders, cloudflareRedirects), Starlight configuration (title, favicon, locales, component overrides), and content collection assembly (docs + i18n with loaders/schemas).
+
+Q-02: PASS - /openwiki/architecture/security-and-headers.md and /openwiki/config/security-config.md detail the onRequest middleware, per-request 16-byte crypto.getRandomValues CSP nonce stored in context.locals.cspNonce, full security header table, and per-path cache-control routing (8 path patterns including /sw.js, /_astro/*, HTML, images, fonts, CSS/JS).
+
+Q-03: PASS - /openwiki/utils/showcase-lab-client.md, /openwiki/architecture/showcase-lab.md, /openwiki/pages/showcase-dashboard.md detail initShowcaseLabs() → bindShowcaseLab() restoring SSR state from localStorage, initial server render via getShowcaseReplaySnapshot() + buildTrendCursor() embedded in HTML, replay advancement via scheduleReplay()→advanceShowcaseReplay() with circular frame/scenario wrap, and presentation console synchronization via applyState() render→persist→schedule pipeline.
+
+Q-04: PASS - /openwiki/data/showcase-lab-data.md, /openwiki/utils/showcase-lab.md detail the ShowcaseScenario/ShowcaseScript/ShowcaseCacheSimulationState data models (5 scenarios, 3 scripts, cold/syncing/ready cache states), resolution fallbacks (resolveScenario→default, resolveSubsystem→default/first, resolveShowcaseSelection), and frame index clamping (resolveReplayFrameIndex: NaN/undefined/null/negative→0, exceeds max→clamped to max).
