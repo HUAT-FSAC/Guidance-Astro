@@ -115,12 +115,10 @@ const images = (backgroundImages ?? []).map((src) => ({
 </script>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap');
-
     .hero-v2 {
         position: relative;
-        margin-top: -130px;
-        padding-top: 130px;
+        margin-top: calc(-1 * var(--sl-navbar-height, 3.5rem));
+        padding-top: var(--sl-navbar-height, 3.5rem);
         min-height: 100vh;
         display: flex;
         align-items: center;

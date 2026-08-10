@@ -11,6 +11,8 @@ export function initParallax(): void {
         _parallaxCleanup = undefined
     }
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const parallaxElements = document.querySelectorAll<HTMLElement>('[data-parallax]')
     if (parallaxElements.length === 0) return
 

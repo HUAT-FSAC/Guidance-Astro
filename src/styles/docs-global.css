@@ -3,10 +3,6 @@
  * 统一美化所有文档页面
  */
 
-/* 标题主字体与代码字体（经 CSS 加载，绕过边缘 HTML 改写） */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 /* ==================== 隐藏默认主题选择器 ==================== */
 /* 使用自定义的 ThemeSwitcher 组件代替 Starlight 默认的主题切换器 */
 starlight-theme-select {

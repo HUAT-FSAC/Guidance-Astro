@@ -244,7 +244,7 @@ export default defineConfig({
                     tag: 'link',
                     attrs: {
                         rel: 'stylesheet',
-                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap',
+                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&display=swap',
                     },
                 },
                 // 代码字体（JetBrains Mono）
