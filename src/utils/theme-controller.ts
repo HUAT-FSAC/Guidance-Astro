@@ -305,6 +305,7 @@ export function initThemeController(
         closeDropdown()
     }
 
+    // PointerEvent 已覆盖触屏输入；仅旧浏览器（无 PointerEvent）才需要额外绑定触摸事件
     if (typeof window !== 'undefined' && 'PointerEvent' in window) {
         toggle.addEventListener('pointerdown', handlePointerDown)
         toggle.addEventListener('pointerup', handlePointerUp)
@@ -312,12 +313,12 @@ export function initThemeController(
     } else {
         toggle.addEventListener('mousedown', handleMouseDown)
         toggle.addEventListener('mouseup', handleMouseUp)
-    }
 
-    if (typeof window !== 'undefined' && 'ontouchstart' in window) {
-        toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
-        toggle.addEventListener('touchend', handleTouchEnd)
-        toggle.addEventListener('touchcancel', handleTouchEnd)
+        if (typeof window !== 'undefined' && 'ontouchstart' in window) {
+            toggle.addEventListener('touchstart', handleTouchStart, { passive: true })
+            toggle.addEventListener('touchend', handleTouchEnd)
+            toggle.addEventListener('touchcancel', handleTouchEnd)
+        }
     }
 
     toggle.addEventListener('click', handleToggleClick)
@@ -352,12 +353,12 @@ export function initThemeController(
         } else {
             toggle.removeEventListener('mousedown', handleMouseDown)
             toggle.removeEventListener('mouseup', handleMouseUp)
-        }
 
-        if (typeof window !== 'undefined' && 'ontouchstart' in window) {
-            toggle.removeEventListener('touchstart', handleTouchStart)
-            toggle.removeEventListener('touchend', handleTouchEnd)
-            toggle.removeEventListener('touchcancel', handleTouchEnd)
+            if (typeof window !== 'undefined' && 'ontouchstart' in window) {
+                toggle.removeEventListener('touchstart', handleTouchStart)
+                toggle.removeEventListener('touchend', handleTouchEnd)
+                toggle.removeEventListener('touchcancel', handleTouchEnd)
+            }
         }
 
         toggle.removeEventListener('click', handleToggleClick)

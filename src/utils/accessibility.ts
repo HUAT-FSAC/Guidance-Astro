@@ -3,7 +3,7 @@
  * 提供可访问性支持功能
  */
 
-import { safeGetItem, safeSetItem } from './storage'
+import { safeGetJSON, safeSetItem } from './storage'
 
 const PREFERENCES_KEY = 'huat-a11y-preferences'
 
@@ -29,13 +29,9 @@ let currentPreferences: A11yPreferences = { ...DEFAULT_PREFERENCES }
  * 加载无障碍偏好设置
  */
 function loadPreferences(): void {
-    try {
-        const stored = safeGetItem(PREFERENCES_KEY)
-        if (stored) {
-            currentPreferences = { ...DEFAULT_PREFERENCES, ...JSON.parse(stored) }
-        }
-    } catch {
-        currentPreferences = { ...DEFAULT_PREFERENCES }
+    currentPreferences = {
+        ...DEFAULT_PREFERENCES,
+        ...safeGetJSON<Partial<A11yPreferences>>(PREFERENCES_KEY, {}),
     }
     applyPreferences()
 }

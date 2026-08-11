@@ -102,20 +102,6 @@ export const securityHeaders: SecurityHeader[] = [
     },
 ]
 
-// 向后兼容的 CSP 指令导出
-export const cspDirectives = {
-    default: ["'self'"],
-    script: ["'self'", "'unsafe-inline'", 'https://cloud.umami.is'],
-    style: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-    font: ["'self'", 'data:', 'https://fonts.gstatic.com'],
-    img: ["'self'", 'data:', 'https:'],
-    media: ["'self'", 'data:', 'https:'],
-    frame: ["'self'", 'https://www.youtube.com', 'https://player.vimeo.com'],
-    connect: ["'self'", 'https://cloud.umami.is', 'https://*.umami.is'],
-    worker: ["'self'", 'blob:'],
-    manifest: ["'self'"],
-}
-
 const CACHE_CONTROL_DEFAULT = 'public, max-age=3600, must-revalidate' // 1小时
 const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable' // 1年
 const CACHE_CONTROL_SERVICE_WORKER = 'no-cache, no-store, must-revalidate'

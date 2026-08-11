@@ -183,8 +183,15 @@ export function trackDocumentReading(): (() => void) | undefined {
     }
 
     window.addEventListener('beforeunload', handleUnload)
+    // SPA 导航不触发 beforeunload，需要额外监听 Astro 导航事件与页面隐藏
+    document.addEventListener('astro:before-swap', handleUnload, { once: true })
+    window.addEventListener('pagehide', handleUnload, { once: true })
 
-    _docReadingCleanup = () => window.removeEventListener('beforeunload', handleUnload)
+    _docReadingCleanup = () => {
+        window.removeEventListener('beforeunload', handleUnload)
+        document.removeEventListener('astro:before-swap', handleUnload)
+        window.removeEventListener('pagehide', handleUnload)
+    }
     return _docReadingCleanup
 }
 

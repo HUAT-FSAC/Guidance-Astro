@@ -15,6 +15,9 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <ClientRouter />
+<script>
+    import '../../utils/global-init'
+</script>
 <ErrorBoundary>
     <Default {...Astro.props}>
         <slot name="header" slot="header" />

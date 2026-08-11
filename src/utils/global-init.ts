@@ -3,6 +3,8 @@
  * 在页面加载时初始化所有全局功能
  */
 
+let searchShortcutCleanup: (() => void) | undefined
+
 /**
  * 初始化所有全局功能
  */
@@ -11,7 +13,9 @@ export function initGlobalFeatures(): void {
 
     // 初始化搜索快捷键（关键功能，同步加载）
     import('./enhanced-search').then(({ initSearchShortcut }) => {
-        initSearchShortcut()
+        // SPA 导航会重复触发本函数，先清理上一次的监听器
+        searchShortcutCleanup?.()
+        searchShortcutCleanup = initSearchShortcut()
     })
 
     // 延迟加载非关键功能
@@ -27,11 +31,6 @@ export function initGlobalFeatures(): void {
         // 初始化分析跟踪
         import('./analytics').then(({ initAnalytics }) => {
             initAnalytics()
-        })
-
-        // 懒加载非关键组件
-        import('./lazy-components').then(({ lazyLoadAllComponents }) => {
-            lazyLoadAllComponents()
         })
     }, 500)
 

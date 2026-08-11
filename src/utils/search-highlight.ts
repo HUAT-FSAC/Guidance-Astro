@@ -36,6 +36,7 @@ function escapeRegExp(string: string): string {
 
 /**
  * 初始化搜索结果高亮
+ * 仅处理文本节点，避免破坏属性值/现有标记，防止查询文本注入 HTML
  * @param container 容器元素
  * @param query 搜索查询
  */
@@ -44,31 +45,76 @@ export function initSearchResultHighlight(container: HTMLElement, query: string)
         return
     }
 
-    // 高亮标题
-    const titles = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
-    titles.forEach((title) => {
-        title.innerHTML = highlightSearchResults(title.innerHTML, query)
+    const lowerQuery = query.trim().toLowerCase()
+
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+            if (!node.nodeValue || node.nodeValue.length === 0) {
+                return NodeFilter.FILTER_REJECT
+            }
+            const parent = node.parentElement
+            if (
+                !parent ||
+                parent.closest('.search-highlight, script, style, noscript, code, pre')
+            ) {
+                return NodeFilter.FILTER_REJECT
+            }
+            return NodeFilter.FILTER_ACCEPT
+        },
     })
 
-    // 高亮段落
-    const paragraphs = container.querySelectorAll('p')
-    paragraphs.forEach((paragraph) => {
-        paragraph.innerHTML = highlightSearchResults(paragraph.innerHTML, query)
-    })
+    const textNodes: Text[] = []
+    while (walker.nextNode()) {
+        textNodes.push(walker.currentNode as Text)
+    }
 
-    // 高亮列表项
-    const listItems = container.querySelectorAll('li')
-    listItems.forEach((item) => {
-        item.innerHTML = highlightSearchResults(item.innerHTML, query)
-    })
+    for (const node of textNodes) {
+        highlightTextNode(node, lowerQuery)
+    }
+}
 
-    // 高亮链接文本
-    const links = container.querySelectorAll('a')
-    links.forEach((link) => {
-        if (link.textContent) {
-            link.innerHTML = highlightSearchResults(link.innerHTML, query)
+/**
+ * 高亮单个文本节点中匹配的部分
+ * @param node 文本节点
+ * @param lowerQuery 小写化的搜索查询
+ */
+function highlightTextNode(node: Text, lowerQuery: string): void {
+    const text = node.nodeValue ?? ''
+    if (!text.toLowerCase().includes(lowerQuery)) {
+        return
+    }
+
+    const parent = node.parentNode
+    if (!parent) {
+        return
+    }
+
+    const fragment = document.createDocumentFragment()
+    let remaining = text
+
+    while (true) {
+        const index = remaining.toLowerCase().indexOf(lowerQuery)
+        if (index === -1) {
+            break
         }
-    })
+
+        if (index > 0) {
+            fragment.appendChild(document.createTextNode(remaining.slice(0, index)))
+        }
+
+        const span = document.createElement('span')
+        span.className = 'search-highlight'
+        span.textContent = remaining.slice(index, index + lowerQuery.length)
+        fragment.appendChild(span)
+
+        remaining = remaining.slice(index + lowerQuery.length)
+    }
+
+    if (remaining) {
+        fragment.appendChild(document.createTextNode(remaining))
+    }
+
+    parent.replaceChild(fragment, node)
 }
 
 /**

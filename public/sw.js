@@ -166,8 +166,8 @@ async function cacheFirst(request) {
 
         return networkResponse;
     } catch (error) {
-        // 对于图片，返回一个占位符
-        if (request.url.includes('.' + CACHEABLE_EXTENSIONS.filter(ext => ext.startsWith('.')).join('|'))) {
+        // 对于可缓存的静态资源，返回空响应而不是抛出错误
+        if (isCacheable(request.url)) {
             return new Response('', {
                 status: 404,
                 headers: { 'Content-Type': 'text/plain' }

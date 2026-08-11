@@ -64,39 +64,3 @@ export function lazyLoadComponents(configs: LazyComponentConfig[]): void {
         lazyLoadComponent(config)
     })
 }
-
-/**
- * 懒加载主题控制器
- */
-export function lazyLoadThemeController(): void {
-    lazyLoadComponent({
-        selector: '[data-theme-switcher]',
-        importFn: () =>
-            import('./theme-controller').then((module) => ({
-                init: module.initThemeController,
-            })),
-        delay: 500,
-    })
-}
-
-/**
- * 懒加载分享菜单
- */
-export function lazyLoadShareMenu(): void {
-    lazyLoadComponent({
-        selector: '[data-share-container], [data-share-button]',
-        importFn: () =>
-            import('./share-controller').then((module) => ({
-                init: module.initShareMenu,
-            })),
-        delay: 1000,
-    })
-}
-
-/**
- * 懒加载所有非关键组件
- */
-export function lazyLoadAllComponents(): void {
-    lazyLoadThemeController()
-    lazyLoadShareMenu()
-}
