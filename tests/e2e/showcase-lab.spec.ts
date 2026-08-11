@@ -33,8 +33,8 @@ test.describe('智能驾驶交互实验室', () => {
 
         await expect(scenarioTitle).toContainText('高速循迹')
         await expect(speedMetric).not.toHaveText(initialSpeed ?? '')
-        // 高速循迹场景现在有14个标记（10个cone + 2个apex + 2个gate）
-        await expect(trackMarkers).toHaveCount(14)
+        // 高速循迹赛道标记 16 个（12 cone + 2 apex + 2 gate）
+        await expect(trackMarkers).toHaveCount(16)
         await expect(lab).toContainText('MPC 速度优先策略')
         await expect(lab.locator('#showcase-badges')).toContainText('Telemetry')
     })
@@ -283,7 +283,8 @@ test.describe('智能驾驶交互实验室', () => {
 
         // 验证状态更新
         await expect(cacheStatus).toContainText('缓存就绪')
-        await expect(cacheHitRate).toContainText('94')
+        // 5 个资源全部就绪 -> 命中率 100%
+        await expect(cacheHitRate).toContainText('100')
     })
 
     test('点击 Simulate Drift 后缓存状态显示同步中', async ({ page }) => {

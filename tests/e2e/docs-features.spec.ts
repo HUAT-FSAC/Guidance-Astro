@@ -25,12 +25,11 @@ test.describe('文档功能', () => {
     })
 
     test('目录（TOC）在文档页显示', async ({ page }) => {
-        await page.goto('/docs-center/')
+        // 流程与模板页标题充足（23 个 h2/h3），Starlight TOC 会渲染
+        await page.goto('/docs-center/流程与模板/')
         // Starlight 的 TOC 组件
         const toc = page.locator('starlight-toc, nav[aria-label="On this page"]')
-        if ((await toc.count()) > 0) {
-            await expect(toc.first()).toBeVisible()
-        }
+        await expect(toc.first()).toBeVisible()
     })
 
     test('代码块正确渲染', async ({ page }) => {
