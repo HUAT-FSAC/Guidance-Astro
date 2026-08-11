@@ -216,6 +216,7 @@ function renderSubsystemTabs(
         button.className = `subsystem-card${isActive ? ' is-active' : ''}`
         button.dataset.subsystemId = subsystem.id
         button.setAttribute('aria-pressed', String(isActive))
+        button.setAttribute('aria-label', subsystem.label)
         button.innerHTML = `<span class="subsystem-card-icon">${SUBSYSTEM_ICONS[subsystem.id] || ''}</span><span class="subsystem-card-label">${subsystem.label}</span><span class="subsystem-card-desc">${subsystem.eyebrow}</span>`
         return button
     })

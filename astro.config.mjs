@@ -21,6 +21,8 @@ export default defineConfig({
                 keyframes: false,
                 // 保留 CSS 变量
                 variables: false,
+                // class 属性选择器（如 [class~="lg:sl-block"]）视为动态属性，不清理
+                dynamicAttributes: ['class'],
                 safelist: {
                     standard: [
                         /^sl-/,

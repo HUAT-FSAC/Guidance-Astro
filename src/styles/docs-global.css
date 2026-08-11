@@ -933,3 +933,38 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         animation: none !important;
     }
 }
+
+/* ===== Starlight 工具类响应式变体补齐 =====
+ * astro 7 / vite 8 CSS 管线会丢弃带 \: 转义类名的选择器规则
+ * （.lg\:sl-block 等），导致 .right-sidebar-panel（sl-hidden lg:sl-block）
+ * 在 >=72rem 视口仍隐藏、TOC 不显示。
+ * 改用属性选择器（免转义，管线可保留），并以 purgecss dynamicAttributes
+ * 登记 class 属性防止被未使用规则清理。
+ */
+@media (min-width: 50rem) {
+    [class~='md:sl-block'] {
+        display: block;
+    }
+
+    [class~='md:sl-flex'] {
+        display: flex;
+    }
+
+    [class~='md:sl-hidden'] {
+        display: none;
+    }
+}
+
+@media (min-width: 72rem) {
+    [class~='lg:sl-block'] {
+        display: block;
+    }
+
+    [class~='lg:sl-flex'] {
+        display: flex;
+    }
+
+    [class~='lg:sl-hidden'] {
+        display: none;
+    }
+}
