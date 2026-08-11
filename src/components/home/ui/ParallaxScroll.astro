@@ -1,14 +1,68 @@
----
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { initParallax } from '../../utils/parallax-scroll';
+﻿---
 ---
 
-<script>
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initParallax, { once: true });
-    } else {
-        initParallax();
-    }
+<script is:inline>
+    ;(function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    document.addEventListener('astro:page-load', initParallax);
+        let cleanup
+        function initParallax() {
+            if (cleanup) {
+                cleanup()
+                cleanup = undefined
+            }
+
+            const parallaxElements = document.querySelectorAll('[data-parallax]')
+            if (parallaxElements.length === 0) return
+
+            let isTicking = false
+
+            function updateParallax() {
+                const scrollY = window.scrollY
+                const windowHeight = window.innerHeight
+
+                parallaxElements.forEach(function (el) {
+                    const rect = el.getBoundingClientRect()
+
+                    if (rect.top <= windowHeight && rect.bottom >= 0) {
+                        const speed = parseFloat(el.getAttribute('data-parallax-speed') || '0.3')
+                        const parallaxType = el.getAttribute('data-parallax-type') || 'background'
+
+                        if (parallaxType === 'background') {
+                            const centerDistance = rect.top + rect.height / 2 - windowHeight / 2
+                            const move = centerDistance * speed
+                            el.style.backgroundPositionY = 'calc(50% + ' + move + 'px)'
+                        } else if (parallaxType === 'transform') {
+                            const transformMove = scrollY * speed
+                            el.style.transform = 'translateY(' + transformMove + 'px)'
+                        }
+                    }
+                })
+            }
+
+            function onScroll() {
+                if (!isTicking) {
+                    window.requestAnimationFrame(function () {
+                        updateParallax()
+                        isTicking = false
+                    })
+                    isTicking = true
+                }
+            }
+
+            updateParallax()
+            window.addEventListener('scroll', onScroll, { passive: true })
+
+            cleanup = function () {
+                window.removeEventListener('scroll', onScroll)
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initParallax, { once: true })
+        } else {
+            initParallax()
+        }
+        document.addEventListener('astro:page-load', initParallax)
+    })()
 </script>
