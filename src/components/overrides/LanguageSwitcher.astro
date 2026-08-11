@@ -1,0 +1,359 @@
+﻿---
+const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
+---
+
+<div class="language-switcher" data-language-switcher>
+    <button
+        type="button"
+        class="language-toggle"
+        data-language-toggle
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label="切换语言 / Switch language"
+    >
+        <span class="language-toggle-label">{currentLocale === 'en' ? 'English' : '中文'}</span>
+        <svg class="language-toggle-icon" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </button>
+
+    <div class="language-menu" data-language-menu role="menu" aria-label="切换语言">
+        <button
+            type="button"
+            class="language-option"
+            data-language-option
+            data-locale="zh"
+            role="menuitem"
+            aria-current={currentLocale === 'zh' ? 'true' : undefined}
+        >
+            中文
+        </button>
+        <button
+            type="button"
+            class="language-option"
+            data-language-option
+            data-locale="en"
+            role="menuitem"
+            aria-current={currentLocale === 'en' ? 'true' : undefined}
+        >
+            English
+        </button>
+    </div>
+</div>
+
+<script is:inline>
+    ;(function () {
+        const SELECTORS = {
+            toggle: '[data-language-toggle]',
+            menu: '[data-language-menu]',
+            option: '[data-language-option]',
+        }
+
+        function normalizePath(path) {
+            if (!path) {
+                return '/'
+            }
+            return path.startsWith('/') ? path : '/' + path
+        }
+
+        function resolveLocalizedPath(currentPath, locale) {
+            const normalizedPath = normalizePath(currentPath)
+            const cleanPath = normalizedPath.replace(/^\/(?:en|zh)(?=\/|$)/, '') || '/'
+            if (locale === 'zh') {
+                return cleanPath
+            }
+            return cleanPath === '/' ? '/en/' : '/en' + cleanPath
+        }
+
+        function persistPreferredLocale(locale) {
+            try {
+                localStorage.setItem('preferred-locale', locale)
+            } catch {
+                // Ignore storage failures.
+            }
+        }
+
+        let liveRegion = null
+        function announce(message) {
+            try {
+                if (!liveRegion) {
+                    liveRegion = document.createElement('div')
+                    liveRegion.setAttribute('role', 'status')
+                    liveRegion.setAttribute('aria-live', 'polite')
+                    liveRegion.setAttribute('aria-atomic', 'true')
+                    liveRegion.className = 'a11y-live-region'
+                    liveRegion.style.cssText =
+                        'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap'
+                    document.body.appendChild(liveRegion)
+                }
+                liveRegion.textContent = message
+                setTimeout(() => {
+                    if (liveRegion) liveRegion.textContent = ''
+                }, 1000)
+            } catch {
+                // Ignore announcement failures.
+            }
+        }
+
+        function trapFocus(element) {
+            const focusableElements = element.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            )
+            const firstElement = focusableElements[0]
+            const lastElement = focusableElements[focusableElements.length - 1]
+
+            function handleKeyDown(event) {
+                if (event.key !== 'Tab') return
+                if (firstElement && lastElement) {
+                    if (event.shiftKey) {
+                        if (document.activeElement === firstElement) {
+                            event.preventDefault()
+                            lastElement.focus()
+                        }
+                    } else if (document.activeElement === lastElement) {
+                        event.preventDefault()
+                        firstElement.focus()
+                    }
+                }
+            }
+
+            element.addEventListener('keydown', handleKeyDown)
+            return function () {
+                element.removeEventListener('keydown', handleKeyDown)
+            }
+        }
+
+        let documentClickHandler = null
+
+        function initLanguageSwitcher(root) {
+            const toggle = root.querySelector(SELECTORS.toggle)
+            const menu = root.querySelector(SELECTORS.menu)
+            const optionButtons = Array.from(root.querySelectorAll(SELECTORS.option))
+
+            if (!toggle || !menu) {
+                return
+            }
+            if (root.dataset.languageSwitcherInit) {
+                return
+            }
+            root.dataset.languageSwitcherInit = '1'
+
+            let untrapFocus = null
+
+            const closeMenu = () => {
+                toggle.setAttribute('aria-expanded', 'false')
+                menu.classList.remove('open')
+                if (untrapFocus) {
+                    untrapFocus()
+                    untrapFocus = null
+                }
+                toggle.focus()
+            }
+
+            const openMenu = () => {
+                toggle.setAttribute('aria-expanded', 'true')
+                menu.classList.add('open')
+                untrapFocus = trapFocus(menu)
+            }
+
+            const toggleMenu = () => {
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
+                if (isExpanded) {
+                    closeMenu()
+                } else {
+                    openMenu()
+                }
+            }
+
+            optionButtons.forEach((option) => {
+                option.addEventListener('click', () => {
+                    const locale = option.dataset.locale
+                    if (!locale) return
+
+                    persistPreferredLocale(locale)
+                    const localeName = (option.textContent || '').trim() || locale
+                    announce('已切换语言为 ' + localeName)
+                    closeMenu()
+                    window.location.href = resolveLocalizedPath(window.location.pathname, locale)
+                })
+            })
+
+            const handleKeyDown = (event) => {
+                if (event.key === 'Escape') {
+                    closeMenu()
+                }
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
+                if (isExpanded) {
+                    const currentIndex = optionButtons.indexOf(document.activeElement)
+                    if (event.key === 'ArrowDown') {
+                        event.preventDefault()
+                        const nextIndex = (currentIndex + 1) % optionButtons.length
+                        optionButtons[nextIndex].focus()
+                    } else if (event.key === 'ArrowUp') {
+                        event.preventDefault()
+                        const nextIndex = (currentIndex - 1 + optionButtons.length) % optionButtons.length
+                        optionButtons[nextIndex].focus()
+                    }
+                }
+            }
+
+            toggle.addEventListener('click', toggleMenu)
+            root.addEventListener('keydown', handleKeyDown)
+
+            toggle.setAttribute('aria-expanded', 'false')
+            menu.classList.remove('open')
+        }
+
+        function initAll() {
+            document.querySelectorAll('[data-language-switcher]').forEach(initLanguageSwitcher)
+        }
+
+        if (!documentClickHandler) {
+            documentClickHandler = (event) => {
+                document.querySelectorAll('[data-language-switcher]').forEach((root) => {
+                    if (root.contains(event.target)) return
+                    const toggle = root.querySelector(SELECTORS.toggle)
+                    const menu = root.querySelector(SELECTORS.menu)
+                    if (toggle && menu) {
+                        toggle.setAttribute('aria-expanded', 'false')
+                        menu.classList.remove('open')
+                    }
+                })
+            }
+            document.addEventListener('click', documentClickHandler)
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAll, { once: true })
+        } else {
+            initAll()
+        }
+        document.addEventListener('astro:page-load', initAll)
+    })()
+</script>
+
+<style>
+    .language-switcher {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    .language-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        padding: 0.35em 0.75em;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 6px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.85);
+        font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: color 0.25s, border-color 0.25s, text-shadow 0.25s;
+        white-space: nowrap;
+    }
+
+    .language-toggle:hover {
+        color: var(--sl-color-accent);
+        border-color: var(--sl-color-accent);
+        text-shadow: 0 0 12px var(--fs-accent-glow);
+    }
+
+    .language-toggle[aria-expanded='true'] {
+        color: var(--sl-color-accent);
+        border-color: var(--sl-color-accent);
+    }
+
+    .language-toggle[aria-expanded='true'] .language-toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    .language-toggle-icon {
+        transition: transform 0.2s ease;
+    }
+
+    .language-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        min-width: 132px;
+        padding: 0.35rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: var(--fs-bg-base, #0b1220);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-4px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        z-index: 50;
+    }
+
+    .language-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .language-option {
+        display: block;
+        width: 100%;
+        padding: 0.5em 0.9em;
+        border: none;
+        border-radius: 5px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.8);
+        font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+        font-size: 0.95rem;
+        text-align: left;
+        cursor: pointer;
+        transition: color 0.2s, background-color 0.2s;
+    }
+
+    .language-option:hover {
+        color: var(--sl-color-white, #ffffff);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .language-option[aria-current='true'] {
+        color: var(--sl-color-accent);
+        font-weight: 600;
+    }
+
+    :global([data-theme='light']) .language-toggle {
+        color: var(--fs-color-text, #1f2937);
+        border-color: rgba(0, 0, 0, 0.25);
+    }
+
+    :global([data-theme='light']) .language-toggle:hover,
+    :global([data-theme='light']) .language-toggle[aria-expanded='true'] {
+        color: var(--sl-color-accent);
+        border-color: var(--sl-color-accent);
+    }
+
+    :global([data-theme='light']) .language-menu {
+        background: var(--fs-bg-surface, #ffffff);
+        border-color: rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    :global([data-theme='light']) .language-option {
+        color: var(--fs-color-text, #1f2937);
+    }
+
+    :global([data-theme='light']) .language-option:hover {
+        background: rgba(0, 0, 0, 0.06);
+    }
+
+    @media (max-width: 768px) {
+        .language-toggle {
+            font-size: 0.85rem;
+            padding: 0.3em 0.55em;
+        }
+    }
+</style>
