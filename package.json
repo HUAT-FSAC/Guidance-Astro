@@ -7,6 +7,7 @@
         "start": "astro dev",
         "build": "astro build",
         "preview": "astro preview",
+        "preview:ssr": "wrangler dev dist/server/entry.mjs --config dist/server/wrangler.json --port 8787",
         "astro": "astro",
         "clean": "rimraf .astro dist",
         "lint": "eslint src",

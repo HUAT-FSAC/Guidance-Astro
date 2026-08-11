@@ -7,6 +7,7 @@ import purgecss from 'vite-plugin-purgecss'
 
 // https://astro.build/config
 export default defineConfig({
+    output: 'server',
     adapter: cloudflare({ imageService: 'compile' }),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
@@ -79,6 +80,7 @@ export default defineConfig({
         filterKnownBuildWarnings(),
         starlight({
             title: '东风 HUAT 无人驾驶车队',
+            prerender: false,
             favicon: '/favicon.png',
             customCss: [
                 // 全局文档样式
@@ -346,7 +348,7 @@ export default defineConfig({
             sidebar,
             lastUpdated: true,
             pagination: false,
-            pagefind: true,
+            pagefind: false,
             defaultLocale: 'root',
             locales: {
                 root: { label: '简体中文', lang: 'zh-CN' },

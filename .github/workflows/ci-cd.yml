@@ -179,14 +179,15 @@ jobs:
           echo "Dist directory listing:"
           ls -la dist/client/ | head -n 20
           echo "---"
-          test -f dist/client/index.html && echo "dist/client/index.html exists" || echo "dist/client/index.html MISSING"
+          ls -la dist/server/ | head -n 10
+          test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
         shell: bash
 
       - name: Run deployment smoke tests
         env:
-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4321
-          PLAYWRIGHT_REUSE_SERVER: 'true'
-          PLAYWRIGHT_WEB_SERVER_COMMAND: 'python3 -m http.server 4321 --bind 127.0.0.1 --directory ${{ github.workspace }}/dist/client'
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
+          PLAYWRIGHT_REUSE_SERVER: 'false'
+          PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
         run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
@@ -231,7 +232,8 @@ jobs:
           echo "Dist directory contents:"
           ls -la dist/client/
           echo "---"
-          test -f dist/client/index.html || (echo "Missing dist/client/index.html" && exit 1)
-          test -f dist/client/404.html || (echo "Missing dist/client/404.html" && exit 1)
+          ls -la dist/server/
+          test -f dist/server/entry.mjs || (echo "Missing dist/server/entry.mjs" && exit 1)
+          test -f dist/server/wrangler.json || (echo "Missing dist/server/wrangler.json" && exit 1)
           echo "Build artifacts look good"
         shell: bash
