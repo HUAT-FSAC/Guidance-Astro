@@ -1,6 +1,6 @@
 /**
- * Patch Cloudflare Pages project for SSR deployment (worker + assets).
- * Reads OAuth token from wrangler config (same as local wrangler CLI).
+ * Patch Cloudflare Pages Git build to deploy SSR via Workers (wrangler deploy).
+ * Astro 7 + @astrojs/cloudflare targets Workers, not static Pages upload.
  */
 import { readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -19,8 +19,8 @@ function getToken() {
 
 const body = {
     build_config: {
-        build_command: 'pnpm build',
-        destination_dir: 'dist/server',
+        build_command: 'pnpm build && pnpm exec wrangler deploy --config dist/server/wrangler.json',
+        destination_dir: 'dist/client',
         build_caching: true,
         root_dir: '',
     },
@@ -58,7 +58,3 @@ if (!json.success) {
 console.log('PATCH success')
 console.log('build_command:', json.result.build_config.build_command)
 console.log('destination_dir:', json.result.build_config.destination_dir)
-console.log(
-    'production compatibility_date:',
-    json.result.deployment_configs.production.compatibility_date
-)
