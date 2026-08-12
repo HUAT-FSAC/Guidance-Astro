@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "astro dev",
         "start": "astro dev",
-        "build": "astro build",
+        "build": "astro build && node scripts/patch-wrangler-pages.mjs",
+        "deploy:pages": "pnpm build && wrangler pages deploy dist/server --project-name=huat-fsac --branch=main --commit-dirty=true",
+        "patch:cf-pages": "node scripts/patch-cf-pages.mjs",
         "preview": "astro preview",
         "preview:ssr": "wrangler dev dist/server/entry.mjs --config dist/server/wrangler.json --port 8787",
         "astro": "astro",
