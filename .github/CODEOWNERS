@@ -5,7 +5,7 @@
 # 关键目录责任边界
 /src/components/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 /src/content/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
-/docs-meta/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
+/docs/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 /.github/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 
 # 配置与基础设施（需要 DevOps 审核）

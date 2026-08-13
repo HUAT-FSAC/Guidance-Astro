@@ -198,3 +198,16 @@ src/content/docs/en/archive/
 .lighthouseci/
 
 .workbuddy/memory/
+
+# ------------------------------------------
+# 本地调试产物（不入库）
+# ------------------------------------------
+# Playwright / 手动跑测输出
+e2e-out.txt
+*-out.txt
+
+# PowerShell 把 `mkdir -p` 当成目录名时留下的空目录
+/-p/
+
+# 一次性诊断脚本（正式配置仍在 .config/ 根下：eslint、vitest、playwright 等）
+.config/scratch/

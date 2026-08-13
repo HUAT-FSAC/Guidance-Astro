@@ -49,7 +49,7 @@
 
 - [ ] `src/components`
 - [ ] `src/content`
-- [ ] `docs-meta`
+- [ ] `docs`
 - [ ] `.github/workflows`
 - [ ] 其他：
 

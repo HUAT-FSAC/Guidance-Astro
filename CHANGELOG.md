@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Performance monitoring with Web Vitals (FCP, LCP, CLS, TTFB)
 - Enhanced ErrorBoundary with error classification and Umami reporting
 - Theme transition animations for smoother dark/light mode switching
@@ -15,11 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-CDN image optimization support (Cloudinary, Imgix, Pexels)
 
 ### Changed
+
+- Merged `docs-meta/` into `docs/` and moved `CONTRIBUTING.md`, `SECURITY.md`, and `CHANGELOG.md` to the repository root
 - ESLint configuration now includes Astro plugin
 - Centralized ThemeOption type definition in home.ts
 - ErrorBoundary uses AbortController for proper cleanup
 
 ### Fixed
+
 - Memory leak in ErrorBoundary component
 - Unused variable warnings in ImageCompare component
 - Triple-slash reference error in env.d.ts
@@ -29,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-01-08
 
 ### Added
+
 - Initial Starlight documentation site
 - PWA support with offline access
 - Umami Analytics integration
@@ -40,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Component initialization manager
 
 ### Components
+
 - Hero section with animated background
 - Season showcase carousel
 - Achievement cards
@@ -52,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Image comparison slider
 
 ### Documentation
+
 - Getting started guide
 - MDX writing guidelines
 - Asset management guide
@@ -62,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-12-01
 
 ### Added
+
 - Project initialization with Astro + Starlight
 - Basic documentation structure
 - GitHub repository setup

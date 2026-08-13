@@ -46,8 +46,8 @@
 
 ### 环境要求
 
-- **Node.js** 18.0.0 或更高版本
-- **pnpm** 8.0.0 或更高版本
+- **Node.js** 22.0.0 或更高版本
+- **pnpm** 9.0.0 或更高版本
 - **Git** 2.0.0 或更高版本
 
 ### 安装步骤
@@ -66,17 +66,17 @@ pnpm dev
 
 ### 常用命令
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动开发服务器 |
-| `pnpm build` | 构建生产版本 |
-| `pnpm preview` | 预览构建结果 |
-| `pnpm lint` | 运行代码检查 |
-| `pnpm lint:fix` | 自动修复代码问题 |
-| `pnpm format` | 格式化代码 |
-| `pnpm test:run` | 执行单元测试 |
-| `pnpm test:coverage` | 生成测试覆盖率报告 |
-| `pnpm test:e2e` | 执行关键路径烟雾测试 |
+| 命令                  | 说明                 |
+| --------------------- | -------------------- |
+| `pnpm dev`            | 启动开发服务器       |
+| `pnpm build`          | 构建生产版本         |
+| `pnpm preview`        | 预览构建结果         |
+| `pnpm lint`           | 运行代码检查         |
+| `pnpm lint:fix`       | 自动修复代码问题     |
+| `pnpm format`         | 格式化代码           |
+| `pnpm test:run`       | 执行单元测试         |
+| `pnpm test:coverage`  | 生成测试覆盖率报告   |
+| `pnpm test:e2e`       | 执行关键路径烟雾测试 |
 | `pnpm quality:bundle` | 执行构建体积预算检查 |
 
 ---
@@ -101,10 +101,10 @@ function calculateSum(a: number, b: number): number {
 }
 
 // ❌ 错误
-const greeting = "Hello, World!";
+const greeting = 'Hello, World!'
 
 function calculateSum(a, b) {
-  return a + b;
+    return a + b
 }
 ```
 
@@ -179,16 +179,16 @@ const { title, description } = Astro.props
 
 ### 类型 (type)
 
-| 类型 | 说明 |
-|------|------|
-| `feat` | 新功能 |
-| `fix` | Bug 修复 |
-| `docs` | 文档更新 |
-| `style` | 代码格式（不影响功能） |
-| `refactor` | 代码重构 |
-| `perf` | 性能优化 |
-| `test` | 测试相关 |
-| `chore` | 构建/工具变更 |
+| 类型       | 说明                   |
+| ---------- | ---------------------- |
+| `feat`     | 新功能                 |
+| `fix`      | Bug 修复               |
+| `docs`     | 文档更新               |
+| `style`    | 代码格式（不影响功能） |
+| `refactor` | 代码重构               |
+| `perf`     | 性能优化               |
+| `test`     | 测试相关               |
+| `chore`    | 构建/工具变更          |
 
 ### 示例
 
@@ -216,7 +216,7 @@ git commit -m "style(hero): improve button hover animation"
 
 ## Pull Request 流程
 
-分支保护、评审门禁与发布策略请参见 `docs-meta/VERSION_CONTROL_POLICY.md`。
+分支保护、评审门禁与发布策略请参见 [`docs/VERSION_CONTROL_POLICY.md`](./docs/VERSION_CONTROL_POLICY.md)。
 
 ### 创建 PR 前
 
@@ -264,6 +264,8 @@ git commit -m "style(hero): improve button hover animation"
 ---
 
 ## 报告问题
+
+安全漏洞请**不要**开公开 Issue，按照 [SECURITY.md](./SECURITY.md) 私下上报。
 
 ### Issue 模板
 

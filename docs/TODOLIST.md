@@ -13,10 +13,12 @@
 项目中存在多处 `as any` 类型断言，破坏了 TypeScript 的类型检查，可能导致运行时错误。
 
 **涉及文件**：
+
 - `src/components/home/Hero.astro` (Line 70-71, 76, 80, 98-103, 129-137, 140)
 - `src/components/docs/ImageLightbox.astro` (Line 57-58, 63, 189-196, 200)
 
 **详细位置**：
+
 ```
 Hero.astro:70-71  - hero.dataset.huatInit 类型断言
 Hero.astro:76     - typewriters 数组类型断言
@@ -32,6 +34,7 @@ ImageLightbox.astro:200   - __huatCleanup 属性扩展
 ```
 
 **验收标准**：
+
 - [x] 移除所有不必要的 `as any` 断言
 - [x] 使用正确的 TypeScript 类型定义
 - [x] 组件类型使用 Astro 的 `type Props` 定义
@@ -40,18 +43,19 @@ ImageLightbox.astro:200   - __huatCleanup 属性扩展
 **完成状态**：✅ 已完成（2026-01-08）
 
 **解决方案示例**：
+
 ```typescript
 // Before
-(hero as any).dataset.huatInit = "1";
+;(hero as any).dataset.huatInit = '1'
 
 // After
 if (!('huatInit' in hero.dataset)) {
-  hero.dataset.huatInit = "1";
+    hero.dataset.huatInit = '1'
 }
 
 // 或者定义扩展接口
 interface HTMLElementWithCleanup extends HTMLElement {
-  __huatCleanup?: () => void;
+    __huatCleanup?: () => void
 }
 ```
 
@@ -63,6 +67,7 @@ interface HTMLElementWithCleanup extends HTMLElement {
 README 中已记录的已知问题，亮色主题下多个组件显示效果不佳。
 
 **涉及文件**：
+
 - `src/styles/docs-global.css` (Line 195-227)
 - `src/components/home/Hero.astro` (Line 196-203)
 - `src/components/home/Achievement.astro` (Line 150-164)
@@ -70,18 +75,19 @@ README 中已记录的已知问题，亮色主题下多个组件显示效果不�
 **详细问题**：
 
 1. **Hero 组件亮色主题** (`Hero.astro:196-203`)
-   - 背景遮罩使用白色半透明，在亮色主题下对比度不足
-   - 标题文字阴影在亮色主题下效果不佳
+    - 背景遮罩使用白色半透明，在亮色主题下对比度不足
+    - 标题文字阴影在亮色主题下效果不佳
 
 2. **Achievement 组件亮色主题** (`Achievement.astro:150-164`)
-   - 图片阴影过重，不适合亮色背景
-   - 边框颜色需要调整
+    - 图片阴影过重，不适合亮色背景
+    - 边框颜色需要调整
 
 3. **全局文档样式** (`docs-global.css:195-227`)
-   - 代码块背景在亮色主题下需要调整
-   - 链接颜色对比度需要优化
+    - 代码块背景在亮色主题下需要调整
+    - 链接颜色对比度需要优化
 
 **验收标准**：
+
 - [x] Hero 组件在亮色模式下文字清晰可读
 - [x] Achievement 图片在亮色模式下阴影自然
 - [x] 所有文本与背景的对比度符合 WCAG AA 标准
@@ -90,8 +96,9 @@ README 中已记录的已知问题，亮色主题下多个组件显示效果不�
 **完成状态**：✅ 已完成（2026-01-08）
 
 **解决方案示例**：
+
 ```css
-:global([data-theme="light"]) .hero-overlay {
+:global([data-theme='light']) .hero-overlay {
     /* 使用更合适的亮色遮罩 */
     background: linear-gradient(
         180deg,
@@ -110,9 +117,11 @@ README 中已记录的已知问题，亮色主题下多个组件显示效果不�
 README 中已记录的已知问题，成员卡片不随内容自适应缩放。
 
 **涉及文件**：
+
 - `src/components/home/Seasons.astro` (Line 278-282)
 
 **问题详情**：
+
 ```css
 .members-grid {
     display: grid;
@@ -120,9 +129,11 @@ README 中已记录的已知问题，成员卡片不随内容自适应缩放。
     gap: 1rem;
 }
 ```
+
 当某个组的成员过多时，可能导致卡片溢出或布局混乱。
 
 **验收标准**：
+
 - [x] 成员卡片在所有屏幕尺寸下都能正确显示
 - [x] 测试 2025 赛季数据（最多 11 名成员的组）
 - [x] 移动端布局正常（< 768px）
@@ -131,6 +142,7 @@ README 中已记录的已知问题，成员卡片不随内容自适应缩放。
 **完成状态**：✅ 已完成（2026-01-08）
 
 **解决方案**：
+
 - 添加 `overflow-wrap: break-word` 处理长名称
 - 限制 `grid-template-columns` 的最小值
 - 添加移动端断点优化
@@ -143,9 +155,11 @@ README 中已记录的已知问题，成员卡片不随内容自适应缩放。
 README 中已记录的已知问题，表格内容不能占据完整的父元素面积。
 
 **涉及文件**：
+
 - `src/styles/docs-global.css`
 
 **问题详情**：
+
 ```css
 /* 当前表格样式缺少响应式处理 */
 .sl-markdown-content table {
@@ -156,6 +170,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 ```
 
 **验收标准**：
+
 - [x] 所有 MDX 文档中的表格宽度正确
 - [x] 表格在移动端可横向滚动
 - [x] 表格内容不超出容器边界
@@ -173,14 +188,19 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 网站缺少 Open Graph 和 Twitter Cards 元数据，影响社交分享预览效果。
 
 **涉及文件**：
+
 - `astro.config.mjs`
 - 需要创建 `src/components/head/SEO.astro`
 
 **需要添加的配置**：
+
 ```html
 <!-- Open Graph -->
 <meta property="og:title" content="HUAT FSAC - 方程式赛车队" />
-<meta property="og:description" content="我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。" />
+<meta
+    property="og:description"
+    content="我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。"
+/>
 <meta property="og:image" content="https://huat-fsac.eu.org/og-image.jpg" />
 <meta property="og:type" content="website" />
 
@@ -192,6 +212,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 ```
 
 **验收标准**：
+
 - [ ] 添加完整的 Open Graph 元标签
 - [ ] 添加 Twitter Cards 配置
 - [ ] 为不同页面生成动态的 og:image
@@ -206,29 +227,32 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 图片优化方式不统一，部分使用外部链接，部分使用本地资源。
 
 **涉及文件**：
+
 - `src/data/home.ts` (Line 57, 77, 85, 95-111, 130-131, 143-167)
 - `src/components/home/Hero.astro` (Line 14-22)
 
 **详细问题**：
 
 1. **home.ts 中使用外部图片**
-   ```typescript
-   // Line 57 - Hero 背景
-   backgroundImage: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1920"
-   
-   // Line 77, 85, 95-111 - achievements 和 news
-   image: "https://images.unsplash.com/..."
-   ```
+
+    ```typescript
+    // Line 57 - Hero 背景
+    backgroundImage: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1920'
+
+    // Line 77, 85, 95-111 - achievements 和 news
+    image: 'https://images.unsplash.com/...'
+    ```
 
 2. **Hero 组件自定义优化函数**
-   ```typescript
-   // Hero.astro:14-22
-   function optimizeBgImage(url?: string): string {
-       // 自定义优化逻辑
-   }
-   ```
+    ```typescript
+    // Hero.astro:14-22
+    function optimizeBgImage(url?: string): string {
+        // 自定义优化逻辑
+    }
+    ```
 
 **验收标准**：
+
 - [x] 统一使用图片优化工具模块
 - [x] 为外部图片配置合适的尺寸参数
 - [x] 添加 `loading="lazy"` 到非首屏图片
@@ -240,6 +264,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 
 **解决方案**：
 创建了统一的图片优化工具模块 `src/utils/image-optimization.ts`，包含以下功能：
+
 - `optimizeExternalImage()` - 优化外部图片 URL（支持 Unsplash）
 - `generateSrcSet()` - 生成响应式 srcset
 - `getImageLoadingStrategy()` - 获取图片加载策略
@@ -247,6 +272,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 - `generateAltText()` - 生成描述性 alt 文本
 
 更新了以下组件：
+
 - `src/components/home/Hero.astro` - 首屏背景图片优化
 - `src/components/home/Achievement.astro` - 成就展示图片优化
 - `src/components/home/Seasons.astro` - 赛季图片优化
@@ -264,6 +290,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 多个组件缺少必要的 ARIA 属性，影响屏幕阅读器体验。
 
 **涉及文件**：
+
 - `src/components/home/Hero.astro`
 - `src/components/home/Seasons.astro`
 - `src/components/home/Achievement.astro`
@@ -272,23 +299,26 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 **详细检查项**：
 
 1. **Hero 组件** (`Hero.astro`)
-   - [ ] 按钮缺少 `aria-label`
-   - [ ] 装饰性图片需要 `role="presentation"`
-   - [ ] 打字机效果需要 `aria-live` 区域
+    - [ ] 按钮缺少 `aria-label`
+    - [ ] 装饰性图片需要 `role="presentation"`
+    - [ ] 打字机效果需要 `aria-live` 区域
 
 2. **Seasons 组件** (`Seasons.astro:21, 25`)
-   ```astro
-   <img src={season.teamImg} alt="Team" />  <!-- 需要更具体的描述 -->
-   <img src={season.carImg} alt="Car" />    <!-- 需要更具体的描述 -->
-   ```
-   - [ ] 为所有图片添加描述性 alt 文本
-   - [ ] 装饰性图片使用 `alt=""`
-   - [ ] Tab 组件需要确保键盘导航正常
+
+    ```astro
+    <img src={season.teamImg} alt="Team" />  <!-- 需要更具体的描述 -->
+    <img src={season.carImg} alt="Car" />    <!-- 需要更具体的描述 -->
+    ```
+
+    - [ ] 为所有图片添加描述性 alt 文本
+    - [ ] 装饰性图片使用 `alt=""`
+    - [ ] Tab 组件需要确保键盘导航正常
 
 3. **Features 组件** (`Features.astro`)
-   - [ ] 链接卡片需要适当的 ARIA 标签
+    - [ ] 链接卡片需要适当的 ARIA 标签
 
 **验收标准**：
+
 - [ ] 所有图片都有合适的 alt 描述
 - [ ] 所有交互元素可通过键盘访问
 - [ ] 颜色对比度符合 WCAG AA 标准（4.5:1）
@@ -302,9 +332,11 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 README 中记录的已知问题，主页底部「联系我们」超链接需更新。
 
 **涉及文件**：
+
 - 需要找到主页底部联系链接的具体位置
 
 **验收标准**：
+
 - [ ] 确认正确的联系链接（邮箱/微信/公众号等）
 - [ ] 链接在新标签页打开 (`target="_blank"`)
 - [ ] 添加 `rel="noopener noreferrer"` 安全属性
@@ -318,9 +350,11 @@ README 中记录的已知问题，主页底部「联系我们」超链接需更�
 README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所有情况。
 
 **涉及文件**：
+
 - `src/styles/docs-global.css` (Line 42-60)
 
 **问题详情**：
+
 ```css
 .sl-markdown-content h2::before {
     content: '';
@@ -335,12 +369,14 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 ```
 
 **验收标准**：
+
 - [ ] 装饰条只出现在主要章节标题
 - [ ] 子标题（如 h3, h4）不显示装饰条
 - [ ] 在页面侧边栏目录中不显示装饰条
 - [ ] 可通过 CSS 类控制装饰条的显示/隐藏
 
 **解决方案**：
+
 ```css
 /* 只在主要内容的 h2 上显示 */
 .sl-markdown-content > h2::before {
@@ -363,10 +399,12 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 当前使用 `dataset.huatInit` 来防止重复初始化，这种方式不够优雅。
 
 **涉及文件**：
+
 - `src/components/home/Hero.astro` (Line 63-142)
 - `src/components/docs/ImageLightbox.astro` (Line 41-204)
 
 **验收标准**：
+
 - [x] 组件不会在单页应用导航中重复初始化
 - [x] 使用更声明式的方式管理初始化状态
 - [x] 使用 WeakMap 避免内存泄漏
@@ -376,6 +414,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 
 **解决方案**：
 创建了统一的组件初始化管理器 `src/utils/component-initialization.ts`，提供以下功能：
+
 - `initComponent()` - 初始化组件（防止重复初始化）
 - `initElement()` - 初始化单个元素
 - `cleanupComponent()` - 清理组件
@@ -385,6 +424,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 - `setupComponentLifecycle()` - 设置组件生命周期（自动处理 Astro 页面导航）
 
 更新了以下组件：
+
 - `src/components/home/Hero.astro` - 使用新的初始化管理器
 - `src/components/docs/ImageLightbox.astro` - 使用新的初始化管理器
 
@@ -396,10 +436,12 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 组件缺少错误边界，某个组件加载失败可能影响整个页面。
 
 **涉及文件**：
+
 - `src/components/overrides/PageFrame.astro`
 - 所有包含 script 的组件
 
 **验收标准**：
+
 - [x] 页面加载失败时显示友好的错误信息
 - [x] 图片加载失败显示占位图
 - [x] 脚本错误不影响页面交互
@@ -409,6 +451,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 
 **解决方案**：
 创建了全局错误处理工具模块 `src/utils/error-handling.ts`，提供以下功能：
+
 - `ErrorType` - 错误类型枚举（COMPONENT_ERROR, IMAGE_ERROR, SCRIPT_ERROR, NETWORK_ERROR）
 - `ErrorInfo` - 错误信息接口
 - `registerErrorHandler()` - 注册错误处理器
@@ -420,6 +463,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 - `setupGlobalErrorHandlers()` - 设置全局错误处理器（window.onerror, unhandledrejection）
 
 创建了错误边界组件 `src/components/ErrorBoundary.astro`：
+
 - 捕获组件错误并显示友好的错误信息
 - 支持自定义错误消息
 - 可选显示错误详情（堆栈跟踪）
@@ -427,6 +471,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 - 响应式设计，支持移动端
 
 更新了以下组件：
+
 - `src/components/overrides/PageFrame.astro` - 集成错误边界组件
 - `src/components/home/Hero.astro` - 添加图片错误处理
 
@@ -438,9 +483,11 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 `src/data/home.ts` 文件过大，包含大量硬编码数据。
 
 **涉及文件**：
+
 - `src/data/home.ts` (205 行)
 
 **问题详情**：
+
 ```typescript
 // home.ts 包含：
 // - Hero 配置
@@ -452,6 +499,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 ```
 
 **验收标准**：
+
 - [x] 将赛季成员数据迁移到单独的 JSON 文件
 - [x] 将赞助商数据迁移到单独的 JSON 文件
 - [x] 便于非技术人员更新数据
@@ -464,19 +512,20 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 创建了以下数据文件结构：
 
 1. **赛季数据目录** (`src/data/seasons/`)
-   - `2025.json` - 2025 赛季数据
-   - `2024.json` - 2024 赛季数据
-   - `2023.json` - 2023 赛季数据
+    - `2025.json` - 2025 赛季数据
+    - `2024.json` - 2024 赛季数据
+    - `2023.json` - 2023 赛季数据
 
 2. **赞助商数据** (`src/data/sponsors.json`)
-   - 包含所有赞助商分组和项目
+    - 包含所有赞助商分组和项目
 
 3. **更新 home.ts**
-   - 从 JSON 文件导入赛季数据
-   - 从 JSON 文件导入赞助商数据
-   - 保留类型定义和其他配置
+    - 从 JSON 文件导入赛季数据
+    - 从 JSON 文件导入赞助商数据
+    - 保留类型定义和其他配置
 
 **数据结构示例**：
+
 ```json
 [
   {
@@ -506,23 +555,23 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 **优化项**：
 
 1. **字体优化**
-   - [x] 检查是否使用系统字体回退
-   - [x] 考虑使用 Fontsource 自托管字体
-   - [x] 添加 `font-display: swap`
+    - [x] 检查是否使用系统字体回退
+    - [x] 考虑使用 Fontsource 自托管字体
+    - [x] 添加 `font-display: swap`
 
 2. **资源预加载**
-   - [x] 为关键资源添加 preload
-   - [x] 首屏图片使用 priority loading
-   - [x] 考虑添加资源提示 (resource hints)
+    - [x] 为关键资源添加 preload
+    - [x] 首屏图片使用 priority loading
+    - [x] 考虑添加资源提示 (resource hints)
 
 3. **JavaScript 优化**
-   - [x] 检查是否有未使用的 JS 代码
-   - [x] 考虑将部分组件改为纯 CSS 实现
-   - [x] 分析 bundle 大小
+    - [x] 检查是否有未使用的 JS 代码
+    - [x] 考虑将部分组件改为纯 CSS 实现
+    - [x] 分析 bundle 大小
 
 4. **缓存策略**
-   - [x] 配置 Service Worker（如果需要离线支持）
-   - [x] 设置合适的缓存头
+    - [x] 配置 Service Worker（如果需要离线支持）
+    - [x] 设置合适的缓存头
 
 **完成状态**：✅ 已完成（2026-01-08）
 
@@ -530,23 +579,24 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 在 `astro.config.mjs` 中添加了以下性能优化：
 
 1. **DNS 预解析**
-   - 为 `https://images.unsplash.com` 添加 DNS 预解析
-   - 为 `https://cloud.umami.is` 添加 DNS 预解析
+    - 为 `https://images.unsplash.com` 添加 DNS 预解析
+    - 为 `https://cloud.umami.is` 添加 DNS 预解析
 
 2. **预连接**
-   - 为 `https://images.unsplash.com` 添加预连接
-   - 为 `https://cloud.umami.is` 添加预连接
+    - 为 `https://images.unsplash.com` 添加预连接
+    - 为 `https://cloud.umami.is` 添加预连接
 
 3. **预加载关键资源**
-   - 预加载 favicon.png
-   - 预加载 JetBrains Mono 字体（如果使用 Google Fonts）
-   - 添加 `font-display: swap` 属性
+    - 预加载 favicon.png
+    - 预加载 JetBrains Mono 字体（如果使用 Google Fonts）
+    - 添加 `font-display: swap` 属性
 
 4. **JavaScript 优化**
-   - 为分析脚本添加 `defer` 属性
-   - 确保非阻塞脚本加载
+    - 为分析脚本添加 `defer` 属性
+    - 确保非阻塞脚本加载
 
 **添加的配置**：
+
 ```javascript
 // DNS 预解析
 {
@@ -612,6 +662,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 ```
 
 **验收标准**：
+
 - [x] 添加 DNS 预解析和预连接
 - [x] 预加载关键资源（favicon、字体）
 - [x] 为分析脚本添加 defer 属性
@@ -625,11 +676,13 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 项目缺少 ESLint/Prettier 配置和 Git Hooks。
 
 **涉及文件**：
+
 - 需要创建 `eslint.config.mjs`
 - 需要创建 `.prettierrc`
 - 需要配置 husky/lint-staged
 
 **验收标准**：
+
 - [x] 添加 ESLint 配置并修复所有错误
 - [x] 添加 Prettier 配置
 - [x] 配置 Git Hooks 自动格式化
@@ -642,40 +695,40 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 创建了以下配置文件：
 
 1. **ESLint 配置** (`eslint.config.mjs`)
-   - 使用 @astrojs/eslint-plugin 和 typescript-eslint
-   - 配置 Astro、TypeScript 和 TSX 文件的 lint 规则
-   - 忽略 dist、node_modules、.astro 等目录
-   - 规则包括：no-explicit-any（警告）、no-unused-vars（警告）
+    - 使用 @astrojs/eslint-plugin 和 typescript-eslint
+    - 配置 Astro、TypeScript 和 TSX 文件的 lint 规则
+    - 忽略 dist、node_modules、.astro 等目录
+    - 规则包括：no-explicit-any（警告）、no-unused-vars（警告）
 
 2. **Prettier 配置** (`.prettierrc`)
-   - 无分号、单引号、4 空格缩进
-   - 尾随逗号、打印宽度 100
-   - 箭头函数总是带括号
-   - 换行符 LF、括号间距
-   - 支持 Astro、JSON 文件
+    - 无分号、单引号、4 空格缩进
+    - 尾随逗号、打印宽度 100
+    - 箭头函数总是带括号
+    - 换行符 LF、括号间距
+    - 支持 Astro、JSON 文件
 
 3. **lint-staged 配置** (`lint-staged.config.mjs`)
-   - Git 暂存文件自动运行 ESLint 和 Prettier
-   - 对 .ts, .tsx, .astro 文件运行 eslint --fix
-   - 对 .css, .md, .json 文件运行 prettier --write
+    - Git 暂存文件自动运行 ESLint 和 Prettier
+    - 对 .ts, .tsx, .astro 文件运行 eslint --fix
+    - 对 .css, .md, .json 文件运行 prettier --write
 
 4. **package.json 脚本**
-   - `lint` - 运行 ESLint 检查
-   - `lint:fix` - 自动修复 ESLint 错误
-   - `format` - 运行 Prettier 格式化
-   - `format:check` - 检查格式（不修改）
-   - `prepare` - husky install
+    - `lint` - 运行 ESLint 检查
+    - `lint:fix` - 自动修复 ESLint 错误
+    - `format` - 运行 Prettier 格式化
+    - `format:check` - 检查格式（不修改）
+    - `prepare` - husky install
 
 5. **依赖包**
-   - @typescript-eslint/eslint-plugin
-   - @typescript-eslint/parser
-   - eslint
-   - eslint-config-prettier
-   - eslint-plugin-astro
-   - husky
-   - lint-staged
-   - prettier
-   - typescript-eslint
+    - @typescript-eslint/eslint-plugin
+    - @typescript-eslint/parser
+    - eslint
+    - eslint-config-prettier
+    - eslint-plugin-astro
+    - husky
+    - lint-staged
+    - prettier
+    - typescript-eslint
 
 ---
 
@@ -687,10 +740,12 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 项目已预留 i18n 配置（`src/content/i18n/`），但未完整实现。
 
 **涉及文件**：
+
 - `src/content/i18n/en.json`
 - `src/content/i18n/zh.json`
 
 **验收标准**：
+
 - [ ] 完成中英文翻译对照
 - [ ] 添加语言切换器组件
 - [ ] URL 支持多语言路径
@@ -704,6 +759,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 Starlight 内置搜索可能需要优化或替换。
 
 **验收标准**：
+
 - [ ] 评估内置 Algolia 搜索的必要性
 - [ ] 配置中文分词（如果使用 Algolia）
 - [ ] 添加搜索快捷键提示
@@ -716,18 +772,22 @@ Starlight 内置搜索可能需要优化或替换。
 已集成 Umami Analytics，可以进一步增强。
 
 **当前配置**：
+
 ```javascript
 // astro.config.mjs
-head: [{
-    tag: "script",
-    attrs: {
-        src: "https://cloud.umami.is/script.js",
-        "data-website-id": "e25fd750-bde4-4599-a440-99ed5a381af0",
+head: [
+    {
+        tag: 'script',
+        attrs: {
+            src: 'https://cloud.umami.is/script.js',
+            'data-website-id': 'e25fd750-bde4-4599-a440-99ed5a381af0',
+        },
     },
-}]
+]
 ```
 
 **验收标准**：
+
 - [ ] 配置隐私合规的数据收集
 - [ ] 添加自定义事件跟踪（如文档阅读完成率）
 - [ ] 设置关键指标的告警
@@ -740,6 +800,7 @@ head: [{
 考虑添加 PWA 支持以便离线访问。
 
 **验收标准**：
+
 - [ ] 添加 PWA 配置文件
 - [ ] 配置 Service Worker
 - [ ] 添加离线页面
@@ -755,6 +816,7 @@ head: [{
 README 中记录的 TODO 需要在完成后移除或移至本文档。
 
 **验收标准**：
+
 - [ ] 移除已完成的 TODO 项
 - [ ] 添加开发贡献指南
 - [ ] 添加部署流程说明
@@ -763,6 +825,7 @@ README 中记录的 TODO 需要在完成后移除或移至本文档。
 ### P4.2 创建 CONTRIBUTING.md
 
 **验收标准**：
+
 - [ ] 编写代码风格指南
 - [ ] 编写提交信息规范（Conventional Commits）
 - [ ] 编写 Pull Request 模板
@@ -787,6 +850,7 @@ README 中记录的 TODO 需要在完成后移除或移至本文档。
 ## 📝 任务完成记录
 
 ### 已完成任务
+
 > 请在此处记录已完成的任务
 
 | 编号 | 完成日期   | 完成人       | 备注                                                       |
@@ -812,6 +876,6 @@ README 中记录的 TODO 需要在完成后移除或移至本文档。
 
 - [Astro 文档](https://docs.astro.build/)
 - [Starlight 文档](https://starlight.astro.build/)
-- [TypeScript  handbook](https://www.typescriptlang.org/docs/)
+- [TypeScript handbook](https://www.typescriptlang.org/docs/)
 - [WCAG 2.1 指南](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Lighthouse 性能测试](https://developers.google.com/web/tools/lighthouse)

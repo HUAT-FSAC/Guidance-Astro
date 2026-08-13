@@ -25,7 +25,7 @@ Push to main → Cloudflare Build → Deploy to Production
 | Framework preset       | Astro        |
 | Build command          | `pnpm build` |
 | Build output directory | `dist`       |
-| Node.js version        | 18.x         |
+| Node.js version        | 22.x         |
 
 ---
 

@@ -18,12 +18,12 @@
 - 必须通过 Pull Request 合并。
 - 至少 `1` 名评审通过（关键改动建议 `2` 名）。
 - 必须通过 Required checks（按工作流演进维护）：
-  - `Lint and Format`
-  - `Type Check`
-  - `Tests`
-  - `Build`
-  - `Quality Gate (E2E/LHCI/Budget)`
-  - `Preview Build`
+    - `Lint and Format`
+    - `Type Check`
+    - `Tests`
+    - `Build`
+    - `Quality Gate (E2E/LHCI/Budget)`
+    - `Preview Build`
 
 ## 3) CODEOWNERS 审阅策略
 
@@ -41,9 +41,9 @@
 
 - 版本号遵循 SemVer：`MAJOR.MINOR.PATCH`。
 - 每次发布需：
-  1. 更新 `docs-meta/CHANGELOG.md`（至少记录 Added/Changed/Fixed）。
-  2. 创建标签：`vX.Y.Z`。
-  3. 记录部署环境与回滚点。
+    1. 更新根目录 `CHANGELOG.md`（至少记录 Added/Changed/Fixed）。
+    2. 创建标签：`vX.Y.Z`。
+    3. 记录部署环境与回滚点。
 
 ## 6) 回滚策略
 

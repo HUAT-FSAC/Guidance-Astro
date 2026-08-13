@@ -1,77 +1,41 @@
-# 📊 技术报告索引
+# 技术报告索引
 
-本目录包含 HUAT FSAC Guidance-Astro 项目的所有技术报告。
+本目录存放开发过程中的技术报告。新报告请先看 [文档管理指南](../guides/document-management.md)。
 
-## 📂 报告分类
+## 完成报告
 
-### [完成报告](./completion/) - 2 份
+| 报告                                                               | 日期       | 说明              |
+| ------------------------------------------------------------------ | ---------- | ----------------- |
+| [COMPLETION_SUMMARY](./completion/COMPLETION_SUMMARY.md)           | 2026-01-08 | TODOLIST 完成总结 |
+| [TASK_COMPLETION_SUMMARY](./completion/TASK_COMPLETION_SUMMARY.md) | 2026-01-08 | 任务完成汇总      |
+| [FIX_SUMMARY](./completion/FIX_SUMMARY.md)                         | 2026-04-06 | 功能修复完成报告  |
 
-记录项目任务完成情况和验收结果。
+## 实施报告
 
-| 报告名称 | 日期 | 状态 | 描述 |
-|---------|------|------|------|
-| [COMPLETION_SUMMARY](./completion/COMPLETION_SUMMARY.md) | 2026-01-08 | ✅ 已完成 | TODOLIST 完成总结报告 |
-| [TASK_COMPLETION_SUMMARY](./completion/TASK_COMPLETION_SUMMARY.md) | 2026-01-08 | ✅ 已完成 | 任务完成汇总 |
+| 报告                                                                                   | 日期       | 说明                     |
+| -------------------------------------------------------------------------------------- | ---------- | ------------------------ |
+| [MIGRATION_REPORT](./implementation/MIGRATION_REPORT.md)                               | —          | Astro 6 / Starlight 升级 |
+| [FEATURES_IMPLEMENTATION_REPORT](./implementation/FEATURES_IMPLEMENTATION_REPORT.md)   | 2026-04-06 | 未实现功能补齐           |
+| [COMPONENT_INITIALIZATION_REPORT](./implementation/COMPONENT_INITIALIZATION_REPORT.md) | 2026-01-08 | 组件重复初始化防护       |
+| [DATA_REFACTORING_REPORT](./implementation/DATA_REFACTORING_REPORT.md)                 | —          | 数据重构                 |
+| [ERROR_HANDLING_REPORT](./implementation/ERROR_HANDLING_REPORT.md)                     | —          | 错误处理                 |
+| [IMAGE_OPTIMIZATION_REPORT](./implementation/IMAGE_OPTIMIZATION_REPORT.md)             | —          | 图片优化                 |
+| [LINT_CONFIG_REPORT](./implementation/LINT_CONFIG_REPORT.md)                           | —          | Lint 配置                |
+| [NEW_FIXES_REPORT](./implementation/NEW_FIXES_REPORT.md)                               | —          | 功能与修复               |
+| [PERFORMANCE_OPTIMIZATION_REPORT](./implementation/PERFORMANCE_OPTIMIZATION_REPORT.md) | —          | 性能优化                 |
 
-### [实施报告](./implementation/) - 7 份
+## 历史归档
 
-记录具体功能实施过程、技术细节和实现方案。
+过期或一次性的审查/交付记录。
 
-| 报告名称 | 日期 | 状态 | 描述 |
-|---------|------|------|------|
-| [COMPONENT_INITIALIZATION_REPORT](./implementation/COMPONENT_INITIALIZATION_REPORT.md) | 2026-01-08 | ✅ 已完成 | P2.1 组件重复初始化防护 |
-| [DATA_REFACTORING_REPORT](./implementation/DATA_REFACTORING_REPORT.md) | - | ✅ 已完成 | 数据重构实施报告 |
-| [ERROR_HANDLING_REPORT](./implementation/ERROR_HANDLING_REPORT.md) | - | ✅ 已完成 | 错误处理机制实施 |
-| [IMAGE_OPTIMIZATION_REPORT](./implementation/IMAGE_OPTIMIZATION_REPORT.md) | - | ✅ 已完成 | 图片优化策略实施 |
-| [LINT_CONFIG_REPORT](./implementation/LINT_CONFIG_REPORT.md) | - | ✅ 已完成 | Lint 配置优化 |
-| [NEW_FIXES_REPORT](./implementation/NEW_FIXES_REPORT.md) | - | ✅ 已完成 | 新功能和修复报告 |
-| [PERFORMANCE_OPTIMIZATION_REPORT](./implementation/PERFORMANCE_OPTIMIZATION_REPORT.md) | - | ✅ 已完成 | 性能优化实施报告 |
+| 报告                                                                              | 日期       | 说明              |
+| --------------------------------------------------------------------------------- | ---------- | ----------------- |
+| [FUNCTIONAL_REVIEW_REPORT](./archive/FUNCTIONAL_REVIEW_REPORT.md)                 | 2026-04-06 | 全站功能审查快照  |
+| [2026-03-18-showcase-lab-delivery](./archive/2026-03-18-showcase-lab-delivery.md) | 2026-03-18 | Showcase Lab 交付 |
+| [FIXES_REPORT_2026-03-19](./archive/FIXES_REPORT_2026-03-19.md)                   | 2026-03-19 | 修复记录          |
 
-### [历史归档](./archive/)
+## 添加新报告
 
-存放已过期或不再活跃的历史文档。
-
----
-
-## 🔍 按类型查找
-
-- **组件相关**: [COMPONENT_INITIALIZATION_REPORT](./implementation/COMPONENT_INITIALIZATION_REPORT.md)
-- **数据处理**: [DATA_REFACTORING_REPORT](./implementation/DATA_REFACTORING_REPORT.md)
-- **错误处理**: [ERROR_HANDLING_REPORT](./implementation/ERROR_HANDLING_REPORT.md)
-- **性能优化**: [PERFORMANCE_OPTIMIZATION_REPORT](./implementation/PERFORMANCE_OPTIMIZATION_REPORT.md), [IMAGE_OPTIMIZATION_REPORT](./implementation/IMAGE_OPTIMIZATION_REPORT.md)
-- **代码质量**: [LINT_CONFIG_REPORT](./implementation/LINT_CONFIG_REPORT.md)
-
----
-
-## 📝 添加新报告
-
-添加新报告时，请遵循以下步骤：
-
-1. **选择合适的分类目录**
-   - 完成报告 → `completion/`
-   - 实施报告 → `implementation/`
-   - 历史文档 → `archive/`
-
-2. **使用标准文件名格式**
-   - 格式: `[主题]_[类型]_REPORT.md`
-   - 示例: `API_INTEGRATION_REPORT.md`
-
-3. **添加 YAML Front Matter**
-   ```yaml
-   ---
-   title: "报告标题"
-   type: "implementation-report"
-   date: 2026-01-10
-   status: completed
-   tags: [tag1, tag2]
-   ---
-   ```
-
-4. **更新本索引文件**
-   - 在对应表格中添加新行
-   - 更新统计数字
-
----
-
-**报告总数**: 9 份  
-**最后更新**: 2026-01-10
+1. 完成报告 → `completion/`，实施过程 → `implementation/`，过期文档 → `archive/`
+2. 文件名：`[主题]_[类型]_REPORT.md` 或 `YYYY-MM-DD-主题.md`
+3. 在本索引对应表格中补一行

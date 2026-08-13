@@ -26,8 +26,8 @@ Page was deployed @ Cloudflare Pages on behalf of @nekorectifier
 
 ### 环境要求
 
-- Node.js 18+
-- pnpm 8+
+- Node.js 22+
+- pnpm 9+
 
 ### 本地开发
 
@@ -58,41 +58,26 @@ pnpm preview
 
 ```text
 Guidance-Astro/
-├── .config/             # 集中配置目录
-│   ├── astro.config.mjs # Astro 主配置
-│   ├── sidebar.mjs      # 侧边栏配置
-│   ├── eslint.config.mjs
-│   ├── vitest.config.ts
-│   └── playwright.config.ts
-├── public/              # 静态资源
-│   ├── _headers         # Cloudflare Pages 安全头
-│   ├── _redirects       # Cloudflare Pages 重定向
-│   ├── favicon.png
-│   ├── manifest.json    # PWA 配置
-│   ├── sw.js            # Service Worker
-│   └── offline.html     # 离线页面
-├── src/
-│   ├── assets/          # 可优化的资源
-│   │   └── docs/        # 文档图片（含 avif/webp 优化格式）
+├── README.md            # 本文件
+├── LICENSE              # MIT
+├── CONTRIBUTING.md      # 贡献指南
+├── SECURITY.md          # 安全漏洞上报
+├── CHANGELOG.md         # 版本记录
+├── .config/             # 集中配置（ESLint / Vitest / Playwright / sidebar）
+├── .github/             # Issue / PR 模板与 CI
+├── public/              # 静态资源（PWA、favicon、_headers）
+├── src/                 # 站点源码与发布内容
+│   ├── assets/          # 可优化的图片资源
 │   ├── components/      # Astro 组件
-│   │   ├── home/        # 主页组件
-│   │   ├── docs/        # 文档组件
-│   │   ├── contributing/# 贡献指南组件
-│   │   └── navigation/  # 导航组件（锚点导航、侧边栏状态）
-│   ├── config/          # 安全与缓存配置
-│   ├── content/         # 内容集合
-│   │   ├── docs/        # MDX 文档（中英文）
-│   │   └── docs-center/ # 文档中心
-│   ├── data/            # 数据配置（展示实验室等）
-│   ├── integrations/    # Astro 集成（关键 CSS、构建警告过滤等）
-│   ├── styles/          # 全局样式（含移动端响应式）
-│   └── utils/           # 工具函数（搜索、懒加载、错误处理等）
-├── scripts/             # 构建/优化脚本
-├── tests/               # 测试文件
-│   ├── unit/            # Vitest 单元测试
-│   └── e2e/             # Playwright E2E 测试
-└── docs-meta/           # 项目文档（贡献指南、变更日志等）
+│   ├── content/docs/    # 站点上发布的 MDX（中英文）
+│   ├── data/            # 主页、车辆、Showcase Lab 等数据
+│   └── pages/           # 路由页面
+├── scripts/             # 构建与质量脚本
+├── tests/               # Vitest 单元测试 + Playwright E2E
+└── docs/                # 仓库文档（部署、ADR、计划、报告）
 ```
+
+站点正文在 `src/content/docs/`。仓库自身的开发文档在 [`docs/`](./docs/)。`openwiki/` 由定时工作流生成，请不要手改。
 
 ---
 
@@ -178,13 +163,25 @@ pnpm format
 
 ## 🤝 贡献指南
 
-欢迎贡献！请查看 [CONTRIBUTING.md](./docs-meta/CONTRIBUTING.md) 了解详情。
+欢迎贡献！请查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解详情。
 
 1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
 3. 提交更改 (`git commit -m 'feat: add amazing feature'`)
 4. 推送到分支 (`git push origin feature/amazing-feature`)
 5. 创建 Pull Request
+
+---
+
+## 📚 文档
+
+| 文件                                       | 说明                          |
+| ------------------------------------------ | ----------------------------- |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)       | 如何搭建环境、提交代码与开 PR |
+| [SECURITY.md](./SECURITY.md)               | 安全漏洞的私下上报方式        |
+| [CHANGELOG.md](./CHANGELOG.md)             | 版本变更记录                  |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | 部署说明                      |
+| [docs/](./docs/)                           | ADR、计划、报告与其它仓库文档 |
 
 ---
 
