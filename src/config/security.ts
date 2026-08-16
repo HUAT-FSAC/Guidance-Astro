@@ -105,7 +105,6 @@ export const securityHeaders: SecurityHeader[] = [
 const CACHE_CONTROL_DEFAULT = 'public, max-age=3600, must-revalidate' // 1小时
 const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable' // 1年
 const CACHE_CONTROL_SERVICE_WORKER = 'no-cache, no-store, must-revalidate'
-const CACHE_CONTROL_PRIVATE = 'private, no-store'
 const CACHE_CONTROL_STATIC = 'public, max-age=604800, must-revalidate' // 7天
 const CACHE_CONTROL_IMAGES = 'public, max-age=2592000, must-revalidate' // 30天
 const CACHE_CONTROL_FONTS = 'public, max-age=31536000, immutable' // 1年
@@ -160,16 +159,6 @@ export function getCacheControlHeader(pathname: string | undefined): string {
 
     if (pathname === '/sw.js') {
         return CACHE_CONTROL_SERVICE_WORKER
-    }
-
-    if (
-        pathname.startsWith('/admin/') ||
-        pathname.startsWith('/api/') ||
-        pathname === '/login/' ||
-        pathname === '/register/' ||
-        pathname === '/profile/'
-    ) {
-        return CACHE_CONTROL_PRIVATE
     }
 
     if (pathname.startsWith('/_astro/') || pathname.startsWith('/pagefind/')) {

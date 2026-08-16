@@ -34,13 +34,6 @@ describe('security headers', () => {
         expect(getCacheControlHeader('/sw.js')).toBe('no-cache, no-store, must-revalidate')
     })
 
-    it('returns a private no-store policy for auth and admin routes', () => {
-        expect(getCacheControlHeader('/login/')).toBe('private, no-store')
-        expect(getCacheControlHeader('/profile/')).toBe('private, no-store')
-        expect(getCacheControlHeader('/admin/users/')).toBe('private, no-store')
-        expect(getCacheControlHeader('/api/auth/me/')).toBe('private, no-store')
-    })
-
     it('returns an immutable cache policy for fingerprinted build assets', () => {
         expect(getCacheControlHeader('/_astro/app.12345.js')).toBe(
             'public, max-age=31536000, immutable'
