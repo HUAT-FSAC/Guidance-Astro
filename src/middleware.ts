@@ -27,10 +27,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
             new Response(body, {
                 status: response.status,
                 statusText: response.statusText,
+                headers: response.headers,
             }),
             pathname,
             nonce
         )
+        secureResponse.headers.set('Content-Type', 'text/html;charset=UTF-8')
         secureResponse.headers.set('Cache-Control', 'private, no-cache, must-revalidate')
         return secureResponse
     }
