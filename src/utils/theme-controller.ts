@@ -11,7 +11,7 @@ export interface ThemeColor {
 }
 
 export const THEME_COLORS: ThemeColor[] = [
-    { key: 'classicOrange', color: '#f39c12', accent: '#e67e22' },
+    { key: 'classicBlue', color: '#3b82f6', accent: '#2563eb' },
     { key: 'gamingBlue', color: '#3498db', accent: '#2980b9' },
     { key: 'racingRed', color: '#e74c3c', accent: '#c0392b' },
     { key: 'techPurple', color: '#9b59b6', accent: '#8e44ad' },

@@ -36,7 +36,7 @@ const themeMarkup = `
             <span class="icon-moon"></span>
         </button>
         <div class="theme-dropdown" aria-hidden="true">
-            <button class="color-option" data-color="#f39c12" data-accent="#e67e22"></button>
+            <button class="color-option" data-color="#3b82f6" data-accent="#2563eb"></button>
             <button class="color-option" data-color="#2ecc71" data-accent="#27ae60"></button>
         </div>
     </div>
