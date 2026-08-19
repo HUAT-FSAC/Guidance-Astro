@@ -248,7 +248,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
         border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 6px;
         background: transparent;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--fs-color-text-muted);
         font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
         font-size: 0.95rem;
         font-weight: 500;
@@ -307,7 +307,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
         border: none;
         border-radius: 5px;
         background: transparent;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--fs-color-text);
         font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
         font-size: 0.95rem;
         text-align: left;
@@ -316,8 +316,8 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
     }
 
     .language-option:hover {
-        color: var(--sl-color-white, #ffffff);
-        background: rgba(255, 255, 255, 0.08);
+        color: var(--fs-color-heading);
+        background: var(--fs-color-surface-hover);
     }
 
     .language-option[aria-current='true'] {
@@ -326,7 +326,6 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
     }
 
     :global([data-theme='light']) .language-toggle {
-        color: var(--fs-color-text, #1f2937);
         border-color: rgba(0, 0, 0, 0.25);
     }
 
@@ -340,10 +339,6 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
         background: var(--fs-bg-surface, #ffffff);
         border-color: rgba(0, 0, 0, 0.12);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    :global([data-theme='light']) .language-option {
-        color: var(--fs-color-text, #1f2937);
     }
 
     :global([data-theme='light']) .language-option:hover {

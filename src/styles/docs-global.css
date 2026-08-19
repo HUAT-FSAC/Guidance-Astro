@@ -59,8 +59,9 @@ starlight-theme-select {
     /* 图片遮罩层：始终为半透明黑（不分主题，用于压暗背景图保证文字可读性） */
     --fs-color-overlay-soft: rgba(0, 0, 0, 0.4);
     --fs-color-overlay-strong: rgba(0, 0, 0, 0.85);
-    /* 图片上的文字：始终为白色（用于压暗遮罩上的文字，不分主题） */
+    /* 照片叠字 / 强调色按钮上的字：始终为白，不随主题翻转 */
     --fs-color-on-image: #ffffff;
+    --fs-color-on-accent: #ffffff;
     --radius-xs: 2px;
     --radius-xl: 16px;
     --radius-full: 50%;
@@ -267,7 +268,7 @@ html.theme-transitioning * {
     margin-top: 0;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--fs-border-subtle);
-    color: var(--sl-color-white);
+    color: var(--fs-color-heading);
 }
 
 .sl-markdown-content h2 {
@@ -319,7 +320,7 @@ nav.sidebar h2::before {
 .sl-markdown-content h3 {
     font-size: 1.35rem;
     font-weight: 600;
-    color: var(--sl-color-white);
+    color: var(--fs-color-heading);
     margin-top: 2rem;
     border-left: 3px solid var(--sl-color-accent);
     padding-left: 0.75rem;
@@ -329,7 +330,7 @@ nav.sidebar h2::before {
     font-size: 1.15rem;
     font-weight: 600;
     margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--fs-color-text-muted);
 }
 
 /* ==================== 段落和文本 ==================== */
@@ -391,7 +392,7 @@ nav.sidebar h2::before {
     border: 1px solid var(--fs-border-subtle);
     border-left: 3px solid var(--sl-color-accent);
     border-radius: var(--radius-sm);
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--fs-color-text);
 }
 
 .sl-markdown-content blockquote p:last-child {
@@ -420,7 +421,7 @@ nav.sidebar h2::before {
 .sl-markdown-content p:has(img) + p {
     text-align: center;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--fs-color-text-dimmed);
     margin-top: -0.5rem;
 }
 

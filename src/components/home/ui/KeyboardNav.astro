@@ -135,33 +135,21 @@ const labels =
     .keyboard-header h3 {
         margin: 0;
         font-size: 1.2rem;
-        color: white;
-    }
-
-    :global([data-theme='light']) .keyboard-header h3 {
-        color: var(--sl-color-text);
+        color: var(--fs-color-heading);
     }
 
     .close-btn {
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--fs-color-text-dimmed);
         font-size: 1.5rem;
         cursor: pointer;
         padding: 0;
         line-height: 1;
     }
 
-    :global([data-theme='light']) .close-btn {
-        color: rgba(0, 0, 0, 0.5);
-    }
-
     .close-btn:hover {
-        color: #fff;
-    }
-
-    :global([data-theme='light']) .close-btn:hover {
-        color: #000;
+        color: var(--fs-color-heading);
     }
 
     .keyboard-content {
@@ -196,12 +184,8 @@ const labels =
     }
 
     .shortcut span {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--fs-color-text);
         font-size: 0.9rem;
-    }
-
-    :global([data-theme='light']) .shortcut span {
-        color: var(--sl-color-text);
     }
 
     @media (max-width: 768px) {

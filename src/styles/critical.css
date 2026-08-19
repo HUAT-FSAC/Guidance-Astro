@@ -9,7 +9,10 @@
     --sl-color-accent: #3b82f6;
     --fs-accent-glow: rgba(59, 130, 246, 0.25);
 
-    /* 语义令牌 - 深色 */
+    /* 语义令牌 - 深色
+     * 页面/卡片文字用 heading|text|muted|dimmed（随主题翻转）。
+     * 照片叠字用 --fs-color-on-image，实心强调按钮用 --fs-color-on-accent（始终为白）。
+     * 不要把 color 写成 #fff / white / rgba(255,255,255,...)，quality:theme 会拦。 */
     --fs-color-text: #ececec;
     --fs-color-text-muted: rgba(255, 255, 255, 0.85);
     --fs-color-text-dimmed: rgba(255, 255, 255, 0.6);
@@ -26,7 +29,9 @@
     --fs-color-table-header-bg: rgba(255, 255, 255, 0.05);
     --fs-color-overlay-soft: rgba(0, 0, 0, 0.4);
     --fs-color-overlay-strong: rgba(0, 0, 0, 0.85);
+    /* 照片叠字 / 强调色按钮上的字：始终为白，不随主题翻转 */
     --fs-color-on-image: #ffffff;
+    --fs-color-on-accent: #ffffff;
     --fs-border-subtle: rgba(255, 255, 255, 0.08);
     --fs-border-focus: rgba(59, 130, 246, 0.5);
 
@@ -190,7 +195,7 @@ nav.sidebar a[aria-current='page'] {
     margin-top: 0;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--fs-border-subtle);
-    color: var(--sl-color-white);
+    color: var(--fs-color-heading);
 }
 
 .sl-markdown-content h2 {

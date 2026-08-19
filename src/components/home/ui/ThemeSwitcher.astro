@@ -102,7 +102,7 @@ const themeNames = THEME_COLORS.map(
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #fff;
+        color: var(--fs-color-heading);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -162,7 +162,6 @@ const themeNames = THEME_COLORS.map(
     :global([data-theme='light']) .theme-toggle {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 247, 0.9));
         border-color: rgba(0, 0, 0, 0.1);
-        color: #1a1a1a;
         box-shadow: 
             0 4px 20px rgba(0, 0, 0, 0.1),
             0 0 0 0 rgba(0, 0, 0, 0);
@@ -262,11 +261,7 @@ const themeNames = THEME_COLORS.map(
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    :global([data-theme='light']) .header-text {
-        color: rgba(0, 0, 0, 0.5);
+        color: var(--fs-color-text-dimmed);
     }
 
     .color-grid {
@@ -284,18 +279,14 @@ const themeNames = THEME_COLORS.map(
         background: transparent;
         border: none;
         border-radius: 10px;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--fs-color-text);
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: left;
     }
 
-    :global([data-theme='light']) .color-option {
-        color: rgba(0, 0, 0, 0.85);
-    }
-
     .color-option:hover {
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--fs-color-surface-hover);
     }
 
     :global([data-theme='light']) .color-option:hover {

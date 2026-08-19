@@ -56,18 +56,18 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   /* ======== Starlight 搜索按钮适配黑色 header ======== */
   .header-search {
     --sl-color-search-button-bg: transparent;
-    --sl-color-search-button-border: rgba(255, 255, 255, 0.25);
-    --sl-color-search-button-text: rgba(255, 255, 255, 0.85);
+    --sl-color-search-button-border: var(--fs-color-border-strong);
+    --sl-color-search-button-text: var(--fs-color-text-muted);
   }
 
   .header-search button {
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.85);
+    border-color: var(--fs-color-border-strong);
+    color: var(--fs-color-text-muted);
   }
 
   .header-search button:hover {
-    border-color: rgba(255, 255, 255, 0.5);
-    color: var(--sl-color-white, #ffffff);
+    border-color: var(--sl-color-accent);
+    color: var(--fs-color-heading);
   }
 
   .header-search kbd {
@@ -134,7 +134,7 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
     font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--sl-color-white, #ffffff);
+    color: var(--fs-color-heading);
     white-space: nowrap;
     overflow: hidden;
     letter-spacing: 2px;
@@ -153,7 +153,7 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   }
 
   .header-nav a {
-    color: rgba(255,255,255,0.75);
+    color: var(--fs-color-text-muted);
     text-decoration: none;
     font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     font-size: 1.1rem;
@@ -191,7 +191,7 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   .nav-github {
     display: flex;
     align-items: center;
-    color: rgba(255,255,255,0.75);
+    color: var(--fs-color-text-muted);
   }
 
   .nav-github:hover {
@@ -237,5 +237,35 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   /* ======== 浅色模式 ======== */
   :global([data-theme='light']) .custom-header {
     background: var(--fs-bg-surface);
+  }
+
+  :global([data-theme='light']) .header-title {
+    text-shadow: none;
+  }
+
+  :global([data-theme='light']) .header-nav a:hover,
+  :global([data-theme='light']) .header-nav a[aria-current='page'],
+  :global([data-theme='light']) .nav-github:hover {
+    color: var(--sl-color-accent);
+  }
+
+  :global([data-theme='light']) .header-search button:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--fs-color-heading);
+  }
+
+  :global([data-theme='light']) .header-logo {
+    filter: none;
+  }
+
+  :global([data-theme='light']) .header-scanline {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.06) 20%,
+      rgba(59, 130, 246, 0.35) 50%,
+      rgba(0, 0, 0, 0.06) 80%,
+      transparent 100%
+    );
   }
 </style>

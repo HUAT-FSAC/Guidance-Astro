@@ -50,6 +50,9 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
 
+      - name: Check theme text contrast tokens
+        run: pnpm quality:theme
+
       - name: Check formatting
         run: pnpm format:check
 

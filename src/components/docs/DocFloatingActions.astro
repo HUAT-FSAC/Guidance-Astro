@@ -186,7 +186,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         border-radius: var(--radius-sm);
         background: linear-gradient(180deg, var(--fs-bg-elevated) 0%, var(--fs-bg-surface) 100%);
         border: 1px solid var(--fs-border-subtle);
-        color: var(--sl-color-text, white);
+        color: var(--fs-color-heading);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -273,11 +273,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    :global([data-theme='light']) .header-text {
-        color: rgba(0, 0, 0, 0.5);
+        color: var(--fs-color-text-dimmed);
     }
 
     .color-grid {
@@ -295,14 +291,10 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         background: transparent;
         border: none;
         border-radius: 10px;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--fs-color-text);
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: left;
-    }
-
-    :global([data-theme='light']) .color-option {
-        color: rgba(0, 0, 0, 0.85);
     }
 
     .color-option:hover {
@@ -507,7 +499,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         left: 50%;
         transform: translateX(-50%) translateY(20px);
         background: #333;
-        color: #fff;
+        color: var(--fs-color-on-accent);
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
         font-size: 0.9rem;

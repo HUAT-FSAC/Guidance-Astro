@@ -85,7 +85,7 @@
         font-weight: 800;
         text-align: center;
         margin-bottom: 0;
-        color: var(--sl-color-text);
+        color: var(--fs-color-heading);
         border-bottom: 3px solid var(--sl-color-accent);
         padding-bottom: 0.5rem;
         display: inline-block;
@@ -104,7 +104,7 @@
 
     .ack-content {
         line-height: 1.9;
-        color: var(--sl-color-gray-2);
+        color: var(--fs-color-text);
         font-size: 1.05rem;
     }
 
@@ -118,7 +118,8 @@
         font-weight: 600;
     }
 
-    .ack-quote {
+    .ack-quote,
+    :global(.sl-markdown-content) .ack-quote {
         font-size: 1.5rem;
         font-weight: 700;
         text-align: center;

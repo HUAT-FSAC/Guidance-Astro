@@ -89,11 +89,7 @@ const { items, ariaLabel = 'Feature navigation' } = Astro.props
         font-size: 1.5rem;
         font-weight: 800;
         letter-spacing: 0.5px;
-        color: #fff;
-    }
-
-    :global([data-theme='light']) .feature-card h3 {
-        color: #000;
+        color: var(--fs-color-heading);
     }
 
     .feature-card p {

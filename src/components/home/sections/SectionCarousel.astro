@@ -94,7 +94,7 @@ const { labels } = Astro.props
     .sc-dot {
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.35);
+        color: var(--fs-color-text-dimmed);
         font-size: 0.75rem;
         cursor: pointer;
         padding: 0.25rem;
@@ -103,7 +103,7 @@ const { labels } = Astro.props
     }
 
     .sc-dot:hover {
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--fs-color-text-muted);
         transform: scale(1.3);
     }
 
