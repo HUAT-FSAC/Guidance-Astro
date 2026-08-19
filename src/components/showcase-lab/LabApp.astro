@@ -1,0 +1,181 @@
+---
+import LanguageSwitcher from '../overrides/LanguageSwitcher.astro'
+import ThemeSwitcher from '../home/ui/ThemeSwitcher.astro'
+import LabPipeline from './LabPipeline.astro'
+import LabTrack from './LabTrack.astro'
+import LabTelemetry from './LabTelemetry.astro'
+import LabReplayBar from './LabReplayBar.astro'
+import LabTools from './LabTools.astro'
+import {
+    getLocalizedShowcaseReplaySnapshot,
+    getLocalizedShowcaseScenarios,
+    getLocalizedShowcaseScripts,
+    showcaseUiLabels,
+    type ShowcaseLocale,
+} from '../../data/showcase-lab-i18n'
+import {
+    SHOWCASE_SELECTION_STORAGE_KEY,
+    buildTrendCursor,
+    buildTrendPolyline,
+    getShowcaseReplaySnapshot,
+} from '../../utils/showcase-lab'
+import '../../styles/critical.css'
+import '../../styles/docs-global.css'
+import '../../styles/showcase-lab.css'
+
+interface Props {
+    locale?: ShowcaseLocale
+}
+
+const { locale = 'zh' } = Astro.props
+const ui = showcaseUiLabels[locale]
+const scenarios = getLocalizedShowcaseScenarios(locale)
+const scripts = getLocalizedShowcaseScripts(locale)
+const initialReplay = getLocalizedShowcaseReplaySnapshot(getShowcaseReplaySnapshot(), locale)
+const {
+    frame: initialFrame,
+    frameIndex: initialFrameIndex,
+    metrics: initialMetrics,
+    scenario: initialScenario,
+    stages: initialStages,
+    subsystem: initialSubsystem,
+    track: initialTrack,
+    trendCursorIndex: initialTrendCursorIndex,
+} = initialReplay
+const initialTrendCursor = buildTrendCursor(initialScenario.trend.values, initialTrendCursorIndex, 320, 110, 14)
+const trendPoints = buildTrendPolyline(initialScenario.trend.values, 320, 110, 14)
+const homeHref = locale === 'en' ? '/en/' : '/'
+const teamHref = locale === 'en' ? '/en/team/' : '/team/'
+const carsHref = locale === 'en' ? '/en/cars/' : '/cars/'
+const docsHref = locale === 'en' ? '/en/docs-center/' : '/docs-center/'
+const joinHref = locale === 'en' ? '/en/join/' : '/join/'
+---
+
+<!DOCTYPE html>
+<html lang={locale === 'en' ? 'en' : 'zh-CN'}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{ui.title} | FSAC</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <script is:inline>
+            ;(function () {
+                try {
+                    var scheme = localStorage.getItem('huat-color-scheme')
+                    var starlightScheme = localStorage.getItem('starlight-theme')
+                    var color = localStorage.getItem('huat-theme-color')
+                    var accent = localStorage.getItem('huat-theme-accent')
+                    if (scheme === 'light' || scheme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', scheme)
+                    } else if (starlightScheme === 'light' || starlightScheme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', starlightScheme)
+                    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                        document.documentElement.setAttribute('data-theme', 'light')
+                    }
+                    if (color && accent) {
+                        document.documentElement.style.setProperty('--sl-color-accent', color)
+                        document.documentElement.style.setProperty('--sl-color-accent-high', accent)
+                    }
+                } catch (e) {}
+            })()
+        </script>
+    </head>
+    <body>
+        <header class="lab-site-header">
+            <div class="lab-site-header-inner">
+                <a href={homeHref} class="lab-site-brand">
+                    <img src="/assets/logo.jpg" alt="HUAT FSAC" class="lab-site-logo" />
+                    <span>东风 HUAT 无人驾驶车队</span>
+                </a>
+                <nav class="lab-site-nav" aria-label="Site">
+                    <a href={homeHref}>{locale === 'en' ? 'Home' : '首页'}</a>
+                    <a href={teamHref}>{locale === 'en' ? 'Team' : '关于我们'}</a>
+                    <a href={carsHref}>{locale === 'en' ? 'Cars' : '关于赛车'}</a>
+                    <a href={docsHref}>{locale === 'en' ? 'Docs' : '学习模块'}</a>
+                    <a href={joinHref}>{locale === 'en' ? 'Join' : '加入我们'}</a>
+                    <LanguageSwitcher />
+                </nav>
+            </div>
+        </header>
+
+        <div
+            class="lab"
+            data-showcase-lab
+            data-locale={locale}
+            data-storage-key={SHOWCASE_SELECTION_STORAGE_KEY}
+        >
+            <div class="lab-masthead">
+                <div>
+                    <h1 class="lab-title">{ui.title}</h1>
+                    <p class="lab-lead" data-showcase-scenario-name>{initialScenario.name}</p>
+                    <p id="showcase-tagline">{initialScenario.tagline}</p>
+                    <p id="showcase-description">{initialScenario.description}</p>
+                    <div id="showcase-badges" class="lab-badges">
+                        {initialScenario.badges.map((badge) => (
+                            <span class="showcase-badge">{badge}</span>
+                        ))}
+                    </div>
+                </div>
+                <div class="lab-scenes" role="group" aria-label={ui.scenarioInfo}>
+                    {scenarios.map((scenario) => (
+                        <button
+                            class:list={['lab-scene-chip', { 'is-active': scenario.id === initialScenario.id }]}
+                            type="button"
+                            data-scenario-id={scenario.id}
+                            aria-pressed={scenario.id === initialScenario.id ? 'true' : 'false'}
+                        >
+                            {scenario.name}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <LabPipeline
+                subsystems={initialScenario.subsystems}
+                activeId={initialSubsystem.id}
+                closedLoopLabel={ui.closedLoop}
+            />
+
+            <div class="lab-workspace">
+                <LabTrack track={initialTrack} />
+                <LabTelemetry
+                    metrics={initialMetrics}
+                    stages={initialStages}
+                    trend={initialScenario.trend}
+                    trendPoints={trendPoints}
+                    trendCursor={initialTrendCursor}
+                    metricsLabel={ui.metrics}
+                    stagesLabel={ui.stages}
+                    telemetryLabel={ui.telemetry}
+                />
+            </div>
+
+            <LabReplayBar
+                title={initialFrame.title}
+                summary={initialFrame.summary}
+                frameIndex={initialFrameIndex}
+                frameCount={initialScenario.replay.frames.length}
+                strategyTitle={initialScenario.strategy.title}
+                strategyCopy={initialScenario.strategy.copy}
+                strategyLabel={ui.currentStrategy}
+            />
+
+            <LabTools locale={locale} scenarios={scenarios} scripts={scripts} />
+        </div>
+
+        <ThemeSwitcher locale={locale === 'en' ? 'en' : 'zh'} />
+
+        <script>
+            import { initShowcaseLabs } from '../../utils/showcase-lab-client'
+
+            initShowcaseLabs()
+            document.addEventListener('astro:page-load', initShowcaseLabs)
+        </script>
+    </body>
+</html>

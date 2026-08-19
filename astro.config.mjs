@@ -26,6 +26,7 @@ export default defineConfig({
                 dynamicAttributes: ['class'],
                 safelist: {
                     standard: [
+                        /^lab-/,
                         /^sl-/,
                         /^starlight/,
                         /^is-/,

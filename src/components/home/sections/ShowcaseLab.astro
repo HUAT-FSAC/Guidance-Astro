@@ -37,7 +37,7 @@ const { content = fallbackContent } = Astro.props
                     </div>
                 ))}
             </div>
-            <a href={content.href} class="showcase-entry-cta">
+            <a href={content.href} class="fs-cta-clip">
                 <span>{content.cta}</span>
                 <span class="cta-arrow">→</span>
             </a>
@@ -81,18 +81,8 @@ const { content = fallbackContent } = Astro.props
         max-width: none;
         margin: 0;
         padding: 6rem 2rem;
-        background:
-            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245, 158, 11, 0.12), transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 100%, rgba(251, 113, 133, 0.08), transparent 50%),
-            linear-gradient(180deg, rgba(7, 10, 18, 0.98), rgba(9, 12, 20, 0.95));
-        border-top: 1px solid rgba(245, 158, 11, 0.15);
-    }
-
-    :global([data-theme='light']) .showcase-entry {
-        background:
-            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245, 158, 11, 0.08), transparent 60%),
-            linear-gradient(180deg, rgba(255, 248, 240, 0.98), rgba(255, 255, 255, 0.96));
-        border-color: rgba(224, 113, 38, 0.12);
+        background: var(--fs-bg-base);
+        border-top: 1px solid var(--fs-border-subtle);
     }
 
     .showcase-entry-shell {
@@ -108,6 +98,7 @@ const { content = fallbackContent } = Astro.props
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
+        align-items: flex-start;
     }
 
     .showcase-entry-heading {
@@ -116,7 +107,7 @@ const { content = fallbackContent } = Astro.props
         font-weight: 800;
         line-height: 1.1;
         margin: 0;
-        color: var(--sl-color-text);
+        color: var(--fs-color-heading);
         border-bottom: 3px solid var(--sl-color-accent);
         padding-bottom: 0.5rem;
         display: inline-block;
@@ -124,24 +115,18 @@ const { content = fallbackContent } = Astro.props
 
     .showcase-entry-subtitle {
         display: block;
-        margin-top: 0.75rem;
         font-size: 0.85rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        opacity: 0.5;
         font-weight: 600;
-        color: var(--sl-color-text);
+        color: var(--sl-color-accent);
     }
 
     .showcase-entry-description {
         font-size: 1.1rem;
         line-height: 1.7;
-        color: rgba(255, 255, 255, 0.65);
+        color: var(--fs-color-text-muted);
         margin: 0;
-    }
-
-    :global([data-theme='light']) .showcase-entry-description {
-        color: rgba(15, 23, 42, 0.7);
     }
 
     .showcase-entry-features {
@@ -155,45 +140,19 @@ const { content = fallbackContent } = Astro.props
         align-items: center;
         gap: 0.5rem;
         font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    :global([data-theme='light']) .feature-item {
-        color: rgba(15, 23, 42, 0.6);
+        color: var(--fs-color-text-dimmed);
     }
 
     .feature-icon {
-        color: var(--sl-color-accent, #3b82f6);
+        color: var(--sl-color-accent);
         font-size: 0.6rem;
     }
 
-    .showcase-entry-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 2rem;
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 113, 133, 0.15));
-        border: 1px solid rgba(245, 158, 11, 0.5);
-        border-radius: 999px;
-            color: #3b82f6;
-        font-weight: 700;
-        font-size: 1rem;
-        text-decoration: none;
-        transition: all 0.25s ease;
-        width: fit-content;
-    }
-
-    .showcase-entry-cta:hover {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(251, 113, 133, 0.25));
-        transform: translateX(4px);
-        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
-    }
-
     .cta-arrow {
-        transition: transform 0.25s ease;
+        transition: transform 0.25s var(--fs-ease-out);
     }
 
-    .showcase-entry-cta:hover .cta-arrow {
+    .showcase-entry-content :global(.fs-cta-clip:hover) .cta-arrow {
         transform: translateX(4px);
     }
 
@@ -206,26 +165,15 @@ const { content = fallbackContent } = Astro.props
     .preview-card {
         width: 100%;
         max-width: 400px;
-        background: linear-gradient(180deg, rgba(14, 18, 28, 0.9), rgba(9, 12, 20, 0.85));
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 1.5rem;
+        background: var(--fs-bg-surface);
+        border: 1px solid var(--fs-border-subtle);
         overflow: hidden;
-        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
-    }
-
-    :global([data-theme='light']) .preview-card {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 250, 248, 0.95));
-        border-color: rgba(15, 23, 42, 0.08);
-        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
+        box-shadow: var(--card-shadow);
     }
 
     .preview-track {
         padding: 1.5rem;
-        background: rgba(0, 0, 0, 0.2);
-    }
-
-    :global([data-theme='light']) .preview-track {
-        background: rgba(15, 23, 42, 0.03);
+        background: var(--fs-color-aside-bg);
     }
 
     .track-svg {
@@ -235,7 +183,7 @@ const { content = fallbackContent } = Astro.props
 
     .track-path {
         fill: none;
-        stroke: rgba(148, 163, 184, 0.3);
+        stroke: var(--fs-color-border-strong);
         stroke-width: 16;
         stroke-linecap: round;
         stroke-linejoin: round;
@@ -250,18 +198,23 @@ const { content = fallbackContent } = Astro.props
     }
 
     .track-car {
-        fill: #f8fafc;
-        stroke: #818cf8;
+        fill: var(--fs-color-heading);
+        stroke: var(--sl-color-accent);
         stroke-width: 2.5;
     }
 
     .marker {
-        stroke: rgba(15, 23, 42, 0.6);
+        stroke: var(--fs-bg-base);
         stroke-width: 1.5;
     }
 
-        .marker.cone { fill: #3b82f6; }
-    .marker.gate { fill: #38bdf8; }
+    .marker.cone {
+        fill: var(--sl-color-accent);
+    }
+
+    .marker.gate {
+        fill: color-mix(in srgb, var(--sl-color-accent) 70%, white);
+    }
 
     .preview-info {
         padding: 1.25rem 1.5rem;
@@ -274,15 +227,12 @@ const { content = fallbackContent } = Astro.props
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-size: 1.1rem;
         font-weight: 600;
+        color: var(--fs-color-heading);
     }
 
     .preview-tagline {
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    :global([data-theme='light']) .preview-tagline {
-        color: rgba(15, 23, 42, 0.6);
+        color: var(--fs-color-text-dimmed);
     }
 
     @media (max-width: 900px) {

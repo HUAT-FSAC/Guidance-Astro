@@ -1,0 +1,88 @@
+---
+import type { ShowcaseScenario, ShowcaseScript } from '../../data/showcase-lab'
+import type { ShowcaseLocale } from '../../data/showcase-lab-i18n'
+import { showcaseUiLabels } from '../../data/showcase-lab-i18n'
+
+interface Props {
+    locale: ShowcaseLocale
+    scenarios: ShowcaseScenario[]
+    scripts: ShowcaseScript[]
+}
+
+const { locale, scenarios, scripts } = Astro.props
+const ui = showcaseUiLabels[locale]
+---
+
+<details class="lab-tools" data-lab-tools>
+    <summary class="lab-tools-toggle" data-lab-tools-toggle data-tab="console">{ui.demoTools}</summary>
+    <div class="lab-tools-body" data-presentation-console>
+        <section class="lab-tool" data-compare-mode>
+            <div class="lab-tool-head">
+                <h4>Compare Mode</h4>
+                <label class="lab-toggle">
+                    <input type="checkbox" data-compare-toggle />
+                    <span class="lab-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="lab-tool-panel" data-compare-panel style="display: none;">
+                <select data-compare-scenario-select>
+                    {scenarios.map((scenario) => (
+                        <option value={scenario.id}>{scenario.name}</option>
+                    ))}
+                </select>
+                <div class="lab-compare-delta" data-compare-delta>
+                    <strong>{ui.compareSummary}</strong>
+                    <ul data-compare-highlights></ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-tool" data-demo-script>
+            <div class="lab-tool-head">
+                <h4>Demo Script</h4>
+                <span data-script-status>{ui.scriptReady}</span>
+            </div>
+            <select data-script-select>
+                <option value="">{ui.scriptPlaceholder}</option>
+                {scripts.map((script) => (
+                    <option value={script.id}>{script.name}</option>
+                ))}
+            </select>
+            <div class="lab-script-step" data-script-step-info style="display: none;">
+                <div class="lab-script-step-head">
+                    <span data-script-step-counter>Step 1 / 4</span>
+                    <strong data-script-step-title></strong>
+                </div>
+                <p data-script-step-narration></p>
+                <div class="lab-script-controls">
+                    <button type="button" data-script-prev>Prev</button>
+                    <button type="button" class="is-primary" data-script-auto-narrate>Auto</button>
+                    <button type="button" data-script-next>Next</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-tool" data-cache-simulator>
+            <div class="lab-tool-head">
+                <h4>Cache</h4>
+                <span data-cache-status>{ui.cacheCold}</span>
+            </div>
+            <div class="lab-cache-stats">
+                <div>
+                    <strong data-cache-packs>0</strong>
+                    <span>Packs</span>
+                </div>
+                <div>
+                    <strong data-cache-hit-rate>0%</strong>
+                    <span>Hit Rate</span>
+                </div>
+            </div>
+            <div class="lab-script-controls">
+                <button type="button" data-cache-warm>Warm</button>
+                <button type="button" data-cache-drift>Drift</button>
+                <button type="button" data-cache-reset>Reset</button>
+            </div>
+            <div data-cache-last-sync style="display: none;">{ui.lastSyncNever}</div>
+        </section>
+    </div>
+</details>

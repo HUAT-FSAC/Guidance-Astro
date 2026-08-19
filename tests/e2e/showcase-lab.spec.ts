@@ -171,8 +171,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const console = lab.locator('[data-presentation-console]')
         await expect(console).toBeVisible()
@@ -186,8 +188,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const compareToggle = lab.locator('[data-compare-toggle]')
         const comparePanel = lab.locator('[data-compare-panel]')
@@ -208,8 +212,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const scriptSelect = lab.locator('[data-script-select]')
 
@@ -237,8 +243,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const scriptSelect = lab.locator('[data-script-select]')
         const autoNarrateBtn = lab.locator('[data-script-auto-narrate]')
@@ -268,8 +276,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const warmCacheBtn = lab.locator('[data-cache-warm]')
         const cacheStatus = lab.locator('[data-cache-status]')
@@ -292,8 +302,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const warmCacheBtn = lab.locator('[data-cache-warm]')
         const driftBtn = lab.locator('[data-cache-drift]')
@@ -315,8 +327,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const warmCacheBtn = lab.locator('[data-cache-warm]')
         const resetBtn = lab.locator('[data-cache-reset]')
@@ -342,8 +356,10 @@ test.describe('智能驾驶交互实验室', () => {
 
         const lab = page.locator('[data-showcase-lab]')
 
-        // 点击控制台标签
-        await lab.locator('[data-tab="console"]').click()
+        // 展开演示工具
+        await lab.locator('[data-lab-tools]').evaluate((el: HTMLDetailsElement) => {
+            el.open = true
+        })
 
         const warmCacheBtn = lab.locator('[data-cache-warm]')
         const compareToggle = lab.locator('[data-compare-toggle]')

@@ -180,14 +180,10 @@ function renderMarkers(root: HTMLElement, snapshot: ShowcaseReplaySnapshot): voi
     const container = getRequiredElement<SVGGElement>(root, '#showcase-track-markers')
     const document = root.ownerDocument
     const circles = snapshot.track.markers.map((marker) => {
-        const circle = createSvgElement(
-            document,
-            'circle',
-            `track-marker track-marker--${marker.type}`
-        )
+        const circle = createSvgElement(document, 'circle', `marker marker--${marker.type}`)
         circle.setAttribute('cx', String(marker.x))
         circle.setAttribute('cy', String(marker.y))
-        circle.setAttribute('r', '6')
+        circle.setAttribute('r', '7')
         return circle
     })
 
@@ -209,15 +205,29 @@ function renderSubsystemTabs(
 ): void {
     const container = getRequiredElement<HTMLElement>(root, '#showcase-subsystem-tabs')
     const document = root.ownerDocument
-    const tabs = subsystems.map((subsystem) => {
+    const tabs = subsystems.map((subsystem, index) => {
         const isActive = subsystem.id === activeSubsystemId
         const button = document.createElement('button')
         button.type = 'button'
-        button.className = `subsystem-card${isActive ? ' is-active' : ''}`
+        button.className = `lab-pipeline-step${isActive ? ' is-active' : ''}`
         button.dataset.subsystemId = subsystem.id
         button.setAttribute('aria-pressed', String(isActive))
         button.setAttribute('aria-label', subsystem.label)
-        button.innerHTML = `<span class="subsystem-card-icon">${SUBSYSTEM_ICONS[subsystem.id] || ''}</span><span class="subsystem-card-label">${subsystem.label}</span><span class="subsystem-card-desc">${subsystem.eyebrow}</span>`
+
+        const indexEl = createHtmlElement(
+            document,
+            'span',
+            'lab-pipeline-index',
+            String(index + 1).padStart(2, '0')
+        )
+        indexEl.setAttribute('aria-hidden', 'true')
+
+        const icon = createHtmlElement(document, 'span', 'lab-pipeline-icon')
+        icon.setAttribute('aria-hidden', 'true')
+        icon.innerHTML = SUBSYSTEM_ICONS[subsystem.id] || ''
+
+        const label = createHtmlElement(document, 'span', 'lab-pipeline-label', subsystem.label)
+        button.append(indexEl, icon, label)
         return button
     })
 

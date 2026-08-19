@@ -1,0 +1,35 @@
+---
+import type { ShowcaseTrackMap } from '../../data/showcase-lab'
+
+interface Props {
+    track: ShowcaseTrackMap
+}
+
+const { track } = Astro.props
+---
+
+<section class="lab-track" aria-label={track.label}>
+    <div class="lab-panel-head">
+        <div>
+            <span class="lab-kicker">Track</span>
+            <h3 class="lab-panel-title" id="showcase-track-label">{track.label}</h3>
+        </div>
+        <p class="lab-panel-copy" id="showcase-track-objective">{track.objective}</p>
+    </div>
+    <svg class="lab-track-map" viewBox="0 0 480 280" role="img" aria-labelledby="showcase-track-label">
+        <defs>
+            <linearGradient id="track-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--sl-color-accent)"></stop>
+                <stop offset="100%" stop-color="var(--sl-color-accent-high, var(--sl-color-accent))"></stop>
+            </linearGradient>
+        </defs>
+        <path class="track-outline" id="showcase-track-path" d={track.path}></path>
+        <path class="track-progress" id="showcase-track-progress" d={track.progressPath}></path>
+        <g id="showcase-track-markers">
+            {track.markers.map((marker) => (
+                <circle class={`marker marker--${marker.type}`} cx={marker.x} cy={marker.y} r="7"></circle>
+            ))}
+        </g>
+        <circle class="track-car" id="showcase-track-car" cx={track.car.x} cy={track.car.y} r="10"></circle>
+    </svg>
+</section>

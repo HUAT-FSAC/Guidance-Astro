@@ -1,0 +1,72 @@
+---
+import type { ShowcaseMetric, ShowcaseStage, ShowcaseTrend } from '../../data/showcase-lab'
+
+interface Props {
+    metrics: ShowcaseMetric[]
+    stages: ShowcaseStage[]
+    trend: ShowcaseTrend
+    trendPoints: string
+    trendCursor: { x: number; y: number }
+    metricsLabel: string
+    stagesLabel: string
+    telemetryLabel: string
+}
+
+const { metrics, stages, trend, trendPoints, trendCursor, metricsLabel, stagesLabel, telemetryLabel } = Astro.props
+
+const toneBadge = {
+    optimal: 'READY',
+    tracking: 'TRACK',
+    watch: 'GUARD',
+}
+---
+
+<section class="lab-telemetry" aria-label={telemetryLabel}>
+    <div class="lab-panel-head">
+        <span class="lab-kicker">{telemetryLabel}</span>
+        <h3 class="lab-panel-title">{metricsLabel}</h3>
+    </div>
+    <div id="showcase-metrics-grid" class="lab-metrics">
+        {metrics.map((metric) => (
+            <article class={`metric-card metric-card--${metric.tone ?? 'accent'}`} data-showcase-metric={metric.id}>
+                <span class="metric-label">{metric.label}</span>
+                <div class="metric-value-row">
+                    <strong class="metric-value">{metric.value}</strong>
+                    <span class="metric-unit">{metric.unit}</span>
+                </div>
+                <p class="metric-note">{metric.note}</p>
+            </article>
+        ))}
+    </div>
+
+    <div class="lab-trend">
+        <div class="lab-panel-head">
+            <span class="lab-kicker">Trend</span>
+            <h3 class="lab-panel-title" id="showcase-trend-label">{trend.label}</h3>
+        </div>
+        <svg class="lab-trend-chart" viewBox="0 0 320 110" role="img" aria-labelledby="showcase-trend-label">
+            <polyline class="trend-line" id="showcase-trend-line" points={trendPoints}></polyline>
+            <circle class="trend-cursor" id="showcase-trend-cursor" cx={trendCursor.x} cy={trendCursor.y} r="6"></circle>
+        </svg>
+        <div class="lab-trend-footer">
+            <span id="showcase-trend-start">{trend.startLabel}</span>
+            <span id="showcase-trend-end">{trend.endLabel}</span>
+        </div>
+    </div>
+
+    <div class="lab-stages">
+        <span class="lab-kicker">{stagesLabel}</span>
+        <div id="showcase-stage-list" class="lab-stage-list">
+            {stages.map((stage) => (
+                <article class={`stage-card tone-${stage.tone}`}>
+                    <div class="stage-head">
+                        <strong>{stage.label}</strong>
+                        <span class="stage-badge">{toneBadge[stage.tone]}</span>
+                    </div>
+                    <p class="stage-state">{stage.state}</p>
+                    <p class="stage-detail">{stage.detail}</p>
+                </article>
+            ))}
+        </div>
+    </div>
+</section>

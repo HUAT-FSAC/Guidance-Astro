@@ -1,0 +1,36 @@
+---
+interface Props {
+    title: string
+    summary: string
+    frameIndex: number
+    frameCount: number
+    strategyTitle: string
+    strategyCopy: string
+    strategyLabel: string
+}
+
+const { title, summary, frameIndex, frameCount, strategyTitle, strategyCopy, strategyLabel } = Astro.props
+---
+
+<section class="lab-replay" aria-label="Replay">
+    <div class="lab-replay-copy">
+        <strong class="lab-replay-title" id="showcase-replay-title">{title}</strong>
+        <p class="lab-replay-summary" id="showcase-replay-summary">{summary}</p>
+        <p class="lab-replay-strategy">
+            <span class="lab-kicker">{strategyLabel}</span>
+            <strong id="showcase-strategy-title">{strategyTitle}</strong>
+            <span id="showcase-strategy-copy">{strategyCopy}</span>
+        </p>
+    </div>
+    <div class="lab-replay-controls">
+        <button class="lab-icon-btn" type="button" data-showcase-replay-prev aria-label="Previous frame">◀</button>
+        <button class="lab-icon-btn lab-icon-btn--primary" type="button" data-showcase-replay-play aria-pressed="false">▶</button>
+        <button class="lab-icon-btn" type="button" data-showcase-replay-next aria-label="Next frame">▶</button>
+    </div>
+    <div class="lab-replay-scrubber">
+        <span id="showcase-replay-frame-label">Frame {frameIndex + 1} / {frameCount}</span>
+        <input id="showcase-replay-range" class="lab-replay-range" type="range" min="0" max={frameCount - 1} value={frameIndex} />
+        <span id="showcase-replay-status">Paused</span>
+        <span id="showcase-replay-autoplay" class="lab-replay-mode">Manual Control</span>
+    </div>
+</section>
