@@ -67,10 +67,10 @@ const joinHref = locale === 'en' ? '/en/join/' : '/join/'
         <script is:inline>
             ;(function () {
                 try {
-                    var scheme = localStorage.getItem('huat-color-scheme')
-                    var starlightScheme = localStorage.getItem('starlight-theme')
-                    var color = localStorage.getItem('huat-theme-color')
-                    var accent = localStorage.getItem('huat-theme-accent')
+                    const scheme = localStorage.getItem('huat-color-scheme')
+                    const starlightScheme = localStorage.getItem('starlight-theme')
+                    const color = localStorage.getItem('huat-theme-color')
+                    const accent = localStorage.getItem('huat-theme-accent')
                     if (scheme === 'light' || scheme === 'dark') {
                         document.documentElement.setAttribute('data-theme', scheme)
                     } else if (starlightScheme === 'light' || starlightScheme === 'dark') {
@@ -82,7 +82,7 @@ const joinHref = locale === 'en' ? '/en/join/' : '/join/'
                         document.documentElement.style.setProperty('--sl-color-accent', color)
                         document.documentElement.style.setProperty('--sl-color-accent-high', accent)
                     }
-                } catch (e) {}
+                } catch (_) {}
             })()
         </script>
     </head>
