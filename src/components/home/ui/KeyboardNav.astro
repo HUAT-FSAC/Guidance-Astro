@@ -6,7 +6,6 @@ interface Props {
 }
 
 const { locale = 'zh' } = Astro.props
-const basePath = locale === 'en' ? '/en' : ''
 const labels =
     locale === 'en'
         ? {
@@ -31,7 +30,7 @@ const labels =
           }
 ---
 
-<div class="keyboard-help" data-keyboard-nav>
+<div class="keyboard-help" data-keyboard-nav data-keyboard-nav-locale={locale}>
     <div class="keyboard-modal">
         <div class="keyboard-header">
             <h3>{labels.title}</h3>
@@ -73,10 +72,14 @@ const labels =
     </div>
 </div>
 
-<script define:vars={{ basePath }}>
+<script>
     import { setupKeyboardNavLifecycle } from '../../../utils/keyboard-nav-controller'
 
-    setupKeyboardNavLifecycle('[data-keyboard-nav]', { basePath })
+    const root = document.querySelector<HTMLElement>('[data-keyboard-nav]')
+    if (root) {
+        const basePath = root.dataset.keyboardNavLocale === 'en' ? '/en' : ''
+        setupKeyboardNavLifecycle('[data-keyboard-nav]', { basePath })
+    }
 </script>
 
 <style>
@@ -91,7 +94,9 @@ const labels =
         z-index: 99999;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition:
+            opacity 0.3s ease,
+            visibility 0.3s ease;
     }
 
     .keyboard-help.visible {

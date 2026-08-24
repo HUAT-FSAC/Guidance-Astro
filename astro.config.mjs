@@ -90,22 +90,8 @@ export default defineConfig({
                 './src/styles/code-blocks.css',
             ],
             head: [
-                // 安全头部由 security.ts 统一管理，通过中间件注入
-                // 此处保留不依赖中间件的客户端配置
-                {
-                    tag: 'script',
-                    content: `
-                  function updateFavicon(theme) {
-                    const link = document.querySelector('link[rel="icon"]');
-                    link.href = theme === 'dark' ? '/favicon-dark.png' : '/favicon-light.png';
-                  }
-                  const observer = new MutationObserver(() => {
-                    updateFavicon(document.documentElement.getAttribute('data-theme'));
-                  });
-                  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-                  updateFavicon(document.documentElement.getAttribute('data-theme'));
-                `,
-                },
+                // 注意：Starlight 渲染的是 rel="shortcut icon"；如需主题化 favicon，
+                // 需先补充 /favicon-dark.png 与 /favicon-light.png 资源
                 // SEO 元数据
                 {
                     tag: 'meta',
