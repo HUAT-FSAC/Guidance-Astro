@@ -171,16 +171,26 @@ const items = manualItems || (autoGenerate ? generateAnchors() : []);
         const anchors = generateAnchors();
         renderAnchors(anchors);
         
-        // 监听滚动，高亮当前锚点
+        // 监听滚动，高亮当前锚点（rAF 节流，避免滚动路径上强制布局）
+        let rafPending = false;
         function highlightCurrentAnchor() {
+            if (rafPending) return;
+            rafPending = true;
+            requestAnimationFrame(() => {
+                rafPending = false;
+                highlightNow();
+            });
+        }
+
+        function highlightNow() {
             const links = navigation.querySelectorAll('.anchor-navigation-link');
             const sections = Array.from(links).map(link => {
                 const id = link.getAttribute('href')?.substring(1);
                 return document.getElementById(id);
             }).filter(Boolean);
-            
+
             let currentSection = null;
-            
+
             for (const section of sections) {
                 const rect = section.getBoundingClientRect();
                 if (rect.top <= 100) {
@@ -189,7 +199,7 @@ const items = manualItems || (autoGenerate ? generateAnchors() : []);
                     break;
                 }
             }
-            
+
             links.forEach(link => {
                 link.classList.remove('active');
                 if (currentSection && link.getAttribute('href') === `#${currentSection.id}`) {
@@ -197,9 +207,9 @@ const items = manualItems || (autoGenerate ? generateAnchors() : []);
                 }
             });
         }
-        
-        window.addEventListener('scroll', highlightCurrentAnchor);
-        highlightCurrentAnchor(); // 初始高亮
+
+        window.addEventListener('scroll', highlightCurrentAnchor, { passive: true });
+        highlightNow(); // 初始高亮
     });
 </script>
 
