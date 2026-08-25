@@ -3,6 +3,7 @@ import cloudflare from '@astrojs/cloudflare'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
+import dedupeCss from './src/integrations/dedupe-css'
 import purgecss from 'vite-plugin-purgecss'
 
 // https://astro.build/config
@@ -79,6 +80,7 @@ export default defineConfig({
     },
     integrations: [
         filterKnownBuildWarnings(),
+        dedupeCss(),
         starlight({
             title: '东风 HUAT 无人驾驶车队',
             prerender: false,
