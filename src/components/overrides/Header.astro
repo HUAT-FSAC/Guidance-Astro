@@ -71,7 +71,18 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   }
 
   .header-search kbd {
-    display: none !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding: 0.15rem 0.35rem;
+    font-size: 0.7rem;
+    font-family: ui-monospace, monospace;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: var(--fs-color-text-muted);
+    line-height: 1;
   }
 
   /* ======== 背景噪点层 ======== */
