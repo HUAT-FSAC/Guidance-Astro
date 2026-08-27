@@ -24,16 +24,29 @@ const isEnglish = locale === "en";
         <span class="seasons-subtitle">{labels.subtitle}</span>
     </div>
 
-    <div class="seasons-carousel" data-seasons-carousel>
+    <div
+        class="seasons-carousel"
+        data-seasons-carousel
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={isEnglish ? "Race car seasons" : "赛车赛季轮播"}
+    >
         {/* 左箭头 */}
         <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={isEnglish ? "Previous season" : "上一组"}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
         {/* 轨道 */}
-        <div class="seasons-track">
+        <div class="seasons-track" aria-live="polite" aria-atomic="true">
             {seasons.map((season, index) => (
-                <div class={`seasons-slide ${index === 0 ? 'is-active' : ''}`} data-index={index}>
+                <div
+                    class={`seasons-slide ${index === 0 ? 'is-active' : ''}`}
+                    data-index={index}
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`${index + 1} / ${seasons.length}`}
+                    aria-hidden={index === 0 ? undefined : 'true'}
+                >
                     <div class="seasons-pair">
                         <div class="seasons-img seasons-img--left">
                             <img
@@ -42,7 +55,7 @@ const isEnglish = locale === "en";
                                 loading="lazy"
                                 decoding="async"
                             />
-                            <span class="seasons-year">{season.year}</span>
+                            <span class="seasons-year" aria-hidden="true">{season.year}</span>
                         </div>
                         <div class="seasons-img seasons-img--right">
                             <img
@@ -51,7 +64,7 @@ const isEnglish = locale === "en";
                                 loading="lazy"
                                 decoding="async"
                             />
-                            <span class="seasons-tag">EXPLAIN</span>
+                            <span class="seasons-tag" aria-hidden="true">EXPLAIN</span>
                         </div>
                     </div>
                 </div>
@@ -60,13 +73,19 @@ const isEnglish = locale === "en";
 
         {/* 右箭头 */}
         <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={isEnglish ? "Next season" : "下一组"}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
         {/* 指示器 */}
-        <div class="seasons-dots">
+        <div class="seasons-dots" role="tablist" aria-label={isEnglish ? "Season navigation" : "赛季导航"}>
             {seasons.map((_, index) => (
-                <button class={`seasons-dot ${index === 0 ? 'is-active' : ''}`} data-dot={index} aria-label={isEnglish ? `Season ${index + 1}` : `第 ${index + 1} 组`}></button>
+                <button
+                    class={`seasons-dot ${index === 0 ? 'is-active' : ''}`}
+                    data-dot={index}
+                    role="tab"
+                    aria-label={isEnglish ? `Season ${index + 1}` : `第 ${index + 1} 组`}
+                    aria-selected={index === 0 ? 'true' : 'false'}
+                ></button>
             ))}
         </div>
     </div>
@@ -288,10 +307,14 @@ const isEnglish = locale === "en";
 
             function goTo(index: number) {
                 slides[current].classList.remove('is-active');
+                slides[current].setAttribute('aria-hidden', 'true');
                 dots[current].classList.remove('is-active');
+                dots[current].setAttribute('aria-selected', 'false');
                 current = (index + slides.length) % slides.length;
                 slides[current].classList.add('is-active');
+                slides[current].removeAttribute('aria-hidden');
                 dots[current].classList.add('is-active');
+                dots[current].setAttribute('aria-selected', 'true');
             }
 
             prevBtn?.addEventListener('click', () => goTo(current - 1));
@@ -301,6 +324,23 @@ const isEnglish = locale === "en";
                     goTo(Number(dot.getAttribute('data-dot')));
                 });
             });
+
+            carousel.addEventListener('keydown', (event: KeyboardEvent) => {
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    goTo(current - 1);
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    goTo(current + 1);
+                } else if (event.key === 'Home') {
+                    event.preventDefault();
+                    goTo(0);
+                } else if (event.key === 'End') {
+                    event.preventDefault();
+                    goTo(slides.length - 1);
+                }
+            });
+            if (!carousel.hasAttribute('tabindex')) carousel.setAttribute('tabindex', '0');
         });
     });
 </script>

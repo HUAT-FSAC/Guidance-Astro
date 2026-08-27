@@ -34,7 +34,7 @@ const altText = generateAltText(title, "成就展示");
             {badge && <span class="achievement-badge">{badge}</span>}
             <h2 class="achievement-title">{title}</h2>
             <p class="achievement-description">{description}</p>
-            <a href={ctaLink} class="achievement-cta">
+            <a href={ctaLink} class="achievement-cta" aria-label={`${title} — ${ctaText}`}>
                 {ctaText}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +46,7 @@ const altText = generateAltText(title, "成就展示");
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
+                    aria-hidden="true"
                 >
                     <path d="M5 12h14M12 5l7 7-7 7"></path>
                 </svg>

@@ -12,8 +12,13 @@ const { items, ariaLabel = 'Feature navigation' } = Astro.props
 
 <div class="feature-grid reveal-upon-scroll" role="navigation" aria-label={ariaLabel}>
     {items.map((item, index) => (
-        <a href={item.href} class="feature-card reveal-upon-scroll" style={`transition-delay: ${index * 0.1 + 0.1}s;`}>
-            <Icon name={item.icon} size="2rem" color="var(--sl-color-accent)" />
+        <a
+            href={item.href}
+            class="feature-card reveal-upon-scroll"
+            style={`transition-delay: ${index * 0.1 + 0.1}s;`}
+            aria-label={`${item.title} — ${item.description}`}
+        >
+            <Icon name={item.icon} size="2rem" color="var(--sl-color-accent)" aria-hidden="true" />
             <div>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
