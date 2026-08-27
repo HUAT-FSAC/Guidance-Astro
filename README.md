@@ -5,7 +5,7 @@
 [![Deploy Status](https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange)](https://huat-fsac.eu.org)
 [![Analytics](https://img.shields.io/badge/Analytics-Umami-blue)](https://cloud.umami.is/share/ADsMBsz2WVJPbqjO)
 
-Page was deployed @ Cloudflare Pages on behalf of @nekorectifier
+Page is served via Cloudflare Workers (SSR) — see `docs/PROJECT_MANAGEMENT_MODEL.md` for release flow
 
 ---
 
@@ -18,7 +18,7 @@ Page was deployed @ Cloudflare Pages on behalf of @nekorectifier
 - ♿ **可访问性** - 符合 WCAG AA 标准，移动端触摸目标优化
 - 📊 **分析集成** - Umami Analytics 事件跟踪
 - 🔍 **全文搜索** - Pagefind 驱动的站内搜索，搜索建议与高亮
-- 🔒 **安全加固** - CSP、安全响应头、Cloudflare Pages 安全配置
+- 🔒 **安全加固** - CSP（Worker nonce）、安全响应头、Cloudflare 边缘配置
 
 ---
 
