@@ -6,6 +6,16 @@ function injectNonceIntoHtml(html: string, nonce: string): string {
     return html.replace(/<script(?=[\s>])(?![^>]*\bnonce=)/g, `<script nonce="${nonce}"`)
 }
 
+// 按路由裁剪无用 CSS（例如中文页不加载英文专属样式，避免 18KB 浪费）
+function pruneRouteCss(html: string, pathname: string): string {
+    // 英文 locale 样式仅在 /en/* 下需要（兼容有无尾斜杠）
+    const isEn = pathname === '/en' || pathname.startsWith('/en/')
+    if (!isEn) {
+        html = html.replace(/<link[^>]*href="\/_astro\/en\.[^"]*\.css"[^>]*>\n?/g, '')
+    }
+    return html
+}
+
 export const onRequest = defineMiddleware(async (context, next) => {
     const { pathname } = context.url
 
@@ -22,7 +32,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // 页面 HTML 注入 nonce 才能通过严格 CSP；nonce 每请求不同，禁止 CDN/共享缓存
     if (contentType.includes('text/html')) {
         const html = await response.text()
-        const body = injectNonceIntoHtml(html, nonce)
+        const body = pruneRouteCss(injectNonceIntoHtml(html, nonce), pathname)
         const secureResponse = applyStandardHeaders(
             new Response(body, {
                 status: response.status,
