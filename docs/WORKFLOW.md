@@ -58,12 +58,12 @@
 > **规则：** 新增任务在此表追加一行；认领时填 `负责人` 并切 `进行中`；完成后切 `已完成` 并补 `产出/验证`。
 > 对应 GitHub Projects 看板 `https://github.com/orgs/HUAT-FSAC/projects/1`，两者需保持一致（以本表为准，定期同步到 Projects）。
 
-| 编号           | 任务                                         | 优先级 | 状态   | 负责人              | 前置  | 产出/验证                                                                  |
-| -------------- | -------------------------------------------- | ------ | ------ | ------------------- | ----- | -------------------------------------------------------------------------- |
-| T-001          | 恢复自动部署（Token+环境变量+域名切 Worker） | P0     | 已完成 | opencode/muse-spark | -     | PR#20 合并 568f6fb `curl` CSP nonce ✅ CI deploy 需 Secrets 配置（见风险） |
-| T-002          | 示例：3 篇核心文档更新（按需）               | P1     | 待办   | -                   | T-001 | `pnpm build` 通过                                                          |
-| T-003          | 示例：动态 og:image 延期方案文档化           | P2     | 待办   | -                   | -     | 方案写入 `docs/WORKFLOW.md:§7`                                             |
-| _在此追加新行_ |                                              |        |        |                     |       |                                                                            |
+| 编号           | 任务                                                                     | 优先级 | 状态   | 负责人              | 前置  | 产出/验证                                                                  |
+| -------------- | ------------------------------------------------------------------------ | ------ | ------ | ------------------- | ----- | -------------------------------------------------------------------------- |
+| T-001          | 恢复自动部署（Token+环境变量+域名切 Worker）                             | P0     | 已完成 | opencode/muse-spark | -     | PR#20 合并 568f6fb `curl` CSP nonce ✅ CI deploy 需 Secrets 配置（见风险） |
+| T-002          | 3 篇核心文档更新（README/ARCHITECTURE/CONTRIBUTING 按需对齐 Worker SSR） | P1     | 进行中 | opencode/muse-spark | T-001 | `pnpm build` 通过 + 文档与 DEPLOYMENT.md 一致                              |
+| T-003          | 示例：动态 og:image 延期方案文档化                                       | P2     | 待办   | -                   | -     | 方案写入 `docs/WORKFLOW.md:§7`                                             |
+| _在此追加新行_ |                                                                          |        |        |                     |       |                                                                            |
 
 **优先级定义：** `P0 阻塞上线 / P1 本迭代必做 / P2 有空做 / P3 下迭代`
 
@@ -130,6 +130,7 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-08-28 | opencode/muse-spark | 完成 T-001 阶段3 待 Review | Handoff: 分支 feat/worker/auto-deploy 改动 ci-cd.yml deploy + DEPLOYMENT.md + PROJECT_MANAGEMENT_MODEL.md 验证 lint/format/test:run/build/bundle/theme/e2e ✅ curl CSP nonce ✅ 风险 需 Secrets 未配则 deploy 失败 下一步 Reviewer 看 .github/workflows/ci-cd.yml:243 |
 | 2026-08-28 | opencode/muse-spark | PR#20 已合并 main 568f6fb  | 自动部署代码侧已完成，线上 CSP nonce 已验证                                                                                                                                                                                                                           |
 | 2026-08-28 | opencode/muse-spark | 更新 T-001 已完成          | Handoff: T-001 已完成 代码PR合并 下一步 需在 GitHub Settings 配置 CLOUDFLARE_API_TOKEN/ACCOUNT_ID 后触发 deploy；curl -sI 已含 nonce，验证通过 风险 risk:blocker 若 Secrets 未配则 main push 的 deploy job 失败（已在 33145531003 复现）                              |
+| 2026-08-28 | opencode/muse-spark | 认领 T-002                 | 直接在 main 开发（单人项目，无分支；偏离 WORKFLOW §5，经用户确认）                                                                                                                                                                                                    |
 | _在此追加_ |                     |                            |                                                                                                                                                                                                                                                                       |
 
 ### 7.5 handoff 格式
