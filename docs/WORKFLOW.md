@@ -62,7 +62,7 @@
 | -------------- | ------------------------------------------------------------------------ | ------ | ------ | ------------------- | ----- | -------------------------------------------------------------------------- |
 | T-001          | 恢复自动部署（Token+环境变量+域名切 Worker）                             | P0     | 已完成 | opencode/muse-spark | -     | PR#20 合并 568f6fb `curl` CSP nonce ✅ CI deploy 需 Secrets 配置（见风险） |
 | T-002          | 3 篇核心文档更新（README/ARCHITECTURE/CONTRIBUTING 按需对齐 Worker SSR） | P1     | 已完成 | opencode/muse-spark | T-001 | 9a237ff 3 docs updated `pnpm build` ✅                                     |
-| T-003          | 示例：动态 og:image 延期方案文档化                                       | P2     | 待办   | -                   | -     | 方案写入 `docs/WORKFLOW.md:§7`                                             |
+| T-003          | 动态 og:image 延期方案文档化                                             | P2     | 进行中 | opencode/muse-spark | -     | 方案写入 `docs/WORKFLOW.md:§7` + `docs/adr/002-og-image-deferral.md`       |
 | _在此追加新行_ |                                                                          |        |        |                     |       |                                                                            |
 
 **优先级定义：** `P0 阻塞上线 / P1 本迭代必做 / P2 有空做 / P3 下迭代`
@@ -132,6 +132,7 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-08-28 | opencode/muse-spark | 更新 T-001 已完成          | Handoff: T-001 已完成 代码PR合并 下一步 需在 GitHub Settings 配置 CLOUDFLARE_API_TOKEN/ACCOUNT_ID 后触发 deploy；curl -sI 已含 nonce，验证通过 风险 risk:blocker 若 Secrets 未配则 main push 的 deploy job 失败（已在 33145531003 复现）                              |
 | 2026-08-28 | opencode/muse-spark | 认领 T-002                 | 直接在 main 开发（单人项目，无分支；偏离 WORKFLOW §5，经用户确认）                                                                                                                                                                                                    |
 | 2026-08-28 | opencode/muse-spark | 完成 T-002 已完成          | Handoff: T-002 已完成 直接在 main 提交 9a237ff 改动 README/ADR-001/CONTRIBUTING 对齐 Worker SSR 验证 lint/build/test:run/bundle/theme ✅ pnpm build 无 MDX 警告 风险 低 下一步 可领 T-003                                                                             |
+| 2026-08-28 | opencode/muse-spark | 认领 T-003                 | 直接在 main 开发（单人项目，无分支）                                                                                                                                                                                                                                  |
 | _在此追加_ |                     |                            |                                                                                                                                                                                                                                                                       |
 
 ### 7.5 handoff 格式
