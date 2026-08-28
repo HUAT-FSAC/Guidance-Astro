@@ -16,7 +16,13 @@ export interface SecurityHeader {
 export function generateNonce(): string {
     const array = new Uint8Array(16)
     crypto.getRandomValues(array)
-    return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('')
+    // base64url without padding (22 chars for 16 bytes), OWASP ≥128-bit
+    const bin = Array.from(array, (b) => String.fromCharCode(b)).join('')
+    if (typeof btoa === 'function') {
+        return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    }
+    // Node fallback (Vitest jsdom may lack btoa in some envs)
+    return Buffer.from(bin, 'binary').toString('base64url')
 }
 
 /**
@@ -48,7 +54,9 @@ export function getCSPDirectives(nonce?: string) {
         'manifest-src': ["'self'"],
         'base-uri': ["'self'"],
         'form-action': ["'self'"],
-        // 不升级不安全请求（允许 HTTP 开发环境）
+        'object-src': ["'none'"],
+        'frame-ancestors': ["'self'"],
+        // 不升级不安全请求（允许 HTTP 开发环境，生产建议启用）
         // 'upgrade-insecure-requests': [],
     }
 }
@@ -100,6 +108,10 @@ export const securityHeaders: SecurityHeader[] = [
         name: 'Cross-Origin-Resource-Policy',
         value: 'same-origin',
     },
+    {
+        name: 'Strict-Transport-Security',
+        value: 'max-age=31536000; includeSubDomains; preload',
+    },
 ]
 
 const CACHE_CONTROL_DEFAULT = 'public, max-age=3600, must-revalidate' // 1小时
@@ -134,9 +146,12 @@ export function isCSPValid(csp: string): boolean {
         return false
     }
 
-    // unsafe-inline 允许内联脚本，生产环境不应出现
-    if (csp.includes("'unsafe-inline'")) {
-        return false
+    // unsafe-inline 仅在 style-src 允许（Starlight 需要），script-src 不应出现
+    const directives = csp.split(';').map((d) => d.trim())
+    for (const dir of directives) {
+        if (dir.startsWith('script-src') && dir.includes("'unsafe-inline'")) {
+            return false
+        }
     }
 
     return true

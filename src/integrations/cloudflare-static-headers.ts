@@ -10,7 +10,6 @@ function renderHeaderBlock(pathname: string, headerLines: string[]) {
 export function renderCloudflareStaticHeaders() {
     const defaultHeaders = [
         ...securityHeaders.map(({ name, value }) => `${name}: ${value}`),
-        'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload',
         `Cache-Control: ${getCacheControlHeader('/')}`,
     ]
     const cacheOverrideBlocks = [

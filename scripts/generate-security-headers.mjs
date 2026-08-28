@@ -131,6 +131,7 @@ function buildCsp(hashes) {
         'manifest-src': ["'self'"],
         'base-uri': ["'self'"],
         'form-action': ["'self'"],
+        'object-src': ["'none'"],
         'frame-ancestors': ["'self'"],
     }
     return Object.entries(directives)
@@ -170,7 +171,8 @@ function buildHeadersFile(csp) {
   Permissions-Policy: accelerometer=(), gyroscope=(), magnetometer=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
-${cspLine}`
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+ ${cspLine}`
 }
 
 function injectCspMeta(csp) {
