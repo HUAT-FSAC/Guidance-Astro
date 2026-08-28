@@ -7,45 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  setup:
-    name: Setup and Install
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
   lint:
     name: Lint and Format
     runs-on: ubuntu-latest
-    needs: setup
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Run ESLint
         run: pnpm lint
@@ -59,23 +27,10 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
-    needs: setup
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Run type check
         run: pnpm exec tsc --noEmit
@@ -83,23 +38,10 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
-    needs: setup
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Run tests
         run: pnpm test:coverage
@@ -118,20 +60,8 @@ jobs:
     needs: [lint, test, typecheck]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Build project
         run: pnpm build
@@ -149,20 +79,8 @@ jobs:
     needs: build
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -186,12 +104,12 @@ jobs:
           test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
         shell: bash
 
-      - name: Run deployment smoke tests
+      - name: Run E2E tests (full suite)
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
           PLAYWRIGHT_REUSE_SERVER: 'false'
           PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
-        run: pnpm exec playwright test tests/e2e/smoke.spec.ts --config=.config/playwright.config.ts
+        run: pnpm exec playwright test --config=.config/playwright.config.ts
 
       - name: Run Lighthouse CI
         run: |
@@ -209,20 +127,8 @@ jobs:
       name: production
       url: https://huat-fsac.eu.org
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -259,20 +165,8 @@ jobs:
     needs: [build, quality-gate]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
