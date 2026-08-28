@@ -147,6 +147,13 @@ Handoff: T-xxx 已完成阶段3，分支 feat/xxx，待 Review
 - 下一步：Reviewer 请重点看 src/middleware.ts:12
 ```
 
+### 7.6 决策留痕（T-003 动态 og:image 延期）
+
+- **决策**：保留 `public/og-image.png` 全站静态 `og:image`（`astro.config.mjs:147`），延期动态按页生成，见 `docs/adr/002-og-image-deferral.md:7`
+- **原因**：当前社交分享以固定品牌图已可用（`TODOLIST.md:218`），动态需 `satori+sharp` 增加构建/运行时成本，`pnpm build` 需保持 7s 级
+- **触发**：分享点击率阈值 / 日 PV >5k / 品牌模板就绪 任一即重议
+- **验证**：静态图 `curl -s https://huat-fsac.eu.org/og-image.png | file -` 为 PNG，`pnpm build` 无 MDX 警告
+
 ---
 
 ## 8. 更新规则
