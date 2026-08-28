@@ -23,15 +23,15 @@
 
 ## 2. 项目快照（给 Agent 的上下文压缩）
 
-| 维度         | 事实                                                                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.1.3 + Starlight 0.41 + TypeScript 5.9` 的文档站                                               |
-| **线上**     | `https://huat-fsac.eu.org` 由 **Cloudflare Worker SSR** 提供（`wrangler.json:1`），`*.pages.dev` 404 为预期                            |
-| **部署**     | 自动部署**已断**：`push main` 仅跑 CI，需手动 `pnpm deploy:worker`（需 `wrangler login`）                                              | 恢复自动部署需 `CLOUDFLARE_API_TOKEN + ACCOUNT_ID`（见 `docs/plans/2026-08-13-cloudflare-worker-ssr-deploy-plan.md:30`） |
-| **技术栈**   | `Astro / Starlight / Cloudflare Workers / pnpm 11 / Node 22 / Vitest / Playwright / ESLint+Prettier+Husky`                             |
-| **内容源**   | `src/content/docs/**`（MDX）、`src/data/seasons/*.json`、`src/data/sponsors.json`                                                      |
-| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 暂无开放任务；CI 含 `lint / typecheck / test / build / quality-gate` |
-| **约束**     | 单人开发（35h/周假设），无硬性截止时间（迭代制），无额外预算                                                                           |
+| 维度         | 事实                                                                                                                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.1.3 + Starlight 0.41 + TypeScript 5.9` 的文档站                                                                                                                   |
+| **线上**     | `https://huat-fsac.eu.org` 由 **Cloudflare Worker SSR** 提供（`wrangler.json:1`），`*.pages.dev` 404 为预期                                                                                                |
+| **部署**     | 自动部署**已恢复(T-001)**：`push main` → GitHub Actions `deploy` → `wrangler deploy --config dist/server/wrangler.json`（需 Secrets `CLOUDFLARE_API_TOKEN`+`ACCOUNT_ID`），未配时回退 `pnpm deploy:worker` |
+| **技术栈**   | `Astro / Starlight / Cloudflare Workers / pnpm 11 / Node 22 / Vitest / Playwright / ESLint+Prettier+Husky`                                                                                                 |
+| **内容源**   | `src/content/docs/**`（MDX）、`src/data/seasons/*.json`、`src/data/sponsors.json`                                                                                                                          |
+| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 暂无开放任务；CI 含 `lint / typecheck / test / build / quality-gate`                                                                     |
+| **约束**     | 单人开发（35h/周假设），无硬性截止时间（迭代制），无额外预算                                                                                                                                               |
 
 ---
 
@@ -58,12 +58,12 @@
 > **规则：** 新增任务在此表追加一行；认领时填 `负责人` 并切 `进行中`；完成后切 `已完成` 并补 `产出/验证`。
 > 对应 GitHub Projects 看板 `https://github.com/orgs/HUAT-FSAC/projects/1`，两者需保持一致（以本表为准，定期同步到 Projects）。
 
-| 编号           | 任务                                         | 优先级 | 状态   | 负责人              | 前置  | 产出/验证                      |
-| -------------- | -------------------------------------------- | ------ | ------ | ------------------- | ----- | ------------------------------ |
-| T-001          | 恢复自动部署（Token+环境变量+域名切 Worker） | P0     | 进行中 | opencode/muse-spark | -     | `curl` 验证 CSP nonce          |
-| T-002          | 示例：3 篇核心文档更新（按需）               | P1     | 待办   | -                   | T-001 | `pnpm build` 通过              |
-| T-003          | 示例：动态 og:image 延期方案文档化           | P2     | 待办   | -                   | -     | 方案写入 `docs/WORKFLOW.md:§7` |
-| _在此追加新行_ |                                              |        |        |                     |       |                                |
+| 编号           | 任务                                         | 优先级 | 状态      | 负责人              | 前置  | 产出/验证                                                                               |
+| -------------- | -------------------------------------------- | ------ | --------- | ------------------- | ----- | --------------------------------------------------------------------------------------- |
+| T-001          | 恢复自动部署（Token+环境变量+域名切 Worker） | P0     | 待 Review | opencode/muse-spark | -     | `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-` ✅ 2026-08-28 |
+| T-002          | 示例：3 篇核心文档更新（按需）               | P1     | 待办      | -                   | T-001 | `pnpm build` 通过                                                                       |
+| T-003          | 示例：动态 og:image 延期方案文档化           | P2     | 待办      | -                   | -     | 方案写入 `docs/WORKFLOW.md:§7`                                                          |
+| _在此追加新行_ |                                              |        |           |                     |       |                                                                                         |
 
 **优先级定义：** `P0 阻塞上线 / P1 本迭代必做 / P2 有空做 / P3 下迭代`
 
@@ -123,11 +123,12 @@ pnpm quality:theme     # 主题对比度通过
 
 ### 7.4 协作日志（追加式，不删历史）
 
-| 时间       | Agent               | 动作       | 备注                           |
-| ---------- | ------------------- | ---------- | ------------------------------ |
-| 2026-08-28 | human               | 创建本文档 | 锚定生效                       |
-| 2026-08-28 | opencode/muse-spark | 认领 T-001 | 分支 `feat/worker/auto-deploy` |
-| _在此追加_ |                     |            |                                |
+| 时间       | Agent               | 动作                       | 备注                                                                                                                                                                                                                                                                  |
+| ---------- | ------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-28 | human               | 创建本文档                 | 锚定生效                                                                                                                                                                                                                                                              |
+| 2026-08-28 | opencode/muse-spark | 认领 T-001                 | 分支 `feat/worker/auto-deploy`                                                                                                                                                                                                                                        |
+| 2026-08-28 | opencode/muse-spark | 完成 T-001 阶段3 待 Review | Handoff: 分支 feat/worker/auto-deploy 改动 ci-cd.yml deploy + DEPLOYMENT.md + PROJECT_MANAGEMENT_MODEL.md 验证 lint/format/test:run/build/bundle/theme/e2e ✅ curl CSP nonce ✅ 风险 需 Secrets 未配则 deploy 失败 下一步 Reviewer 看 .github/workflows/ci-cd.yml:243 |
+| _在此追加_ |                     |                            |                                                                                                                                                                                                                                                                       |
 
 ### 7.5 handoff 格式
 
