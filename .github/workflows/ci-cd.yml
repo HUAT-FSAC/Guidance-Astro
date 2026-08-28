@@ -54,10 +54,21 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  audit:
+    name: Audit Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
+
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate
+
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint, test, typecheck]
+    needs: [lint, test, typecheck, audit]
 
     steps:
       - name: Setup Node & pnpm
