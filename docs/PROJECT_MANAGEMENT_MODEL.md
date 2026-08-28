@@ -186,26 +186,35 @@ Backlog → Ready → In Progress → Review → Done
 
 ---
 
-## 发布与部署流程（2026-08 现状）
+## 发布与部署流程（2026-08-28 更新，T-001 恢复自动部署后）
 
-> ⚠️ **自动部署目前是断的**：push 到 main 不会更新线上，必须手动执行一次部署命令。
-> 原因：Pages 构建命令里的 `wrangler deploy` 依赖 `CLOUDFLARE_API_TOKEN` 环境变量，Pages 项目里尚未配置。
+> ✅ **自动部署已恢复（T-001）**：`push main` → GitHub Actions `.github/workflows/ci-cd.yml:deploy` → `wrangler deploy --config dist/server/wrangler.json` → `https://huat-fsac.eu.org`。
+> 前提：仓库 **Settings → Secrets and variables → Actions** 已配置 `CLOUDFLARE_API_TOKEN`（Workers Scripts/KV/Pages Edit）+ `CLOUDFLARE_ACCOUNT_ID=bfdcbff6cfe16d2b9bd657593ba88f5f`。未配置时 deploy 作业会以 `Authentication error` 失败，回退为手动部署。
 
-### 发版步骤
+### 发版步骤（自动，首选）
 
-1. `git push origin main` → 等 GitHub Actions CI 全绿
-2. 手动部署 Worker：`pnpm deploy:worker`（本机需已完成过 `wrangler login`）
-3. 验证：`curl -sI https://huat-fsac.eu.org/` 应返回 200，且响应头含 `content-security-policy`（带 nonce）
+1. `git push origin main` → 等 GitHub Actions CI 全绿（`lint / typecheck / test / build / quality-gate / deploy`）
+2. 自动校验：`curl -sI https://huat-fsac.eu.org/` 应返回 200 且含 `content-security-policy: … 'nonce-…'`
+
+### 手动兜底（Secrets 未配或本地验证）
+
+```bash
+wrangler login            # 首次
+pnpm deploy:worker        # = pnpm build && wrangler deploy --config dist/server/wrangler.json
+curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy
+```
 
 ### 架构现状（务必了解）
 
 - 线上 https://huat-fsac.eu.org 由 **Cloudflare Worker SSR** 提供服务：zone 路由 `huat-fsac.eu.org/*` → Worker `huat-fsac`
-- Pages 项目仅承担构建触发职责；`*.pages.dev` 与 Pages 静态产物**不含 HTML**（SSR 架构下 HTML 由 Worker 运行时生成），404 是预期现象
+- Pages 项目仅承担构建触发职责（Build Command 已改为 `pnpm build && pnpm exec wrangler deploy --config dist/server/wrangler.json`，见 `scripts/patch-cf-pages.mjs:22`）；`*.pages.dev` 与 Pages 静态产物**不含 HTML**（SSR 架构下 HTML 由 Worker 运行时生成），404 是预期现象
 - ⚠️ **不要删除** zone 里 `huat-fsac.eu.org` 的既有 DNS 记录——Worker Route 方案依赖它把流量引到 Cloudflare 边缘
 
-### 恢复全自动部署（可选，待办）
+### 恢复全自动部署（T-001 已完成）
 
-创建 API Token（权限：Workers Scripts / Cloudflare Pages / Workers KV 均 Edit）→ 写入 Pages 项目环境变量 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`（Production + Preview 都要）。详细步骤见 [Worker SSR 部署计划](plans/2026-08-13-cloudflare-worker-ssr-deploy-plan.md) Task 1–2。
+- GitHub Actions 方案：按 `docs/DEPLOYMENT.md:22` 在仓库 Secrets 写入 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`，`push main` 即自动部署。
+- Pages Build 兜底：Pages 项目 → Settings → Environment variables 写入同名变量（Production + Preview 均勾选），`Retry deployment` 也会触发 `wrangler deploy`。
+- 详细切流与验 Mas: 见 [Worker SSR 部署计划](plans/2026-08-13-cloudflare-worker-ssr-deploy-plan.md) Task 1–5，验 收以 `curl -sI https://huat-fsac.eu.org/` 含 `nonce-` 为准。
 
 ---
 
