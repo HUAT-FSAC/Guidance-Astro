@@ -349,6 +349,7 @@ export default defineConfig({
             // 自定义组件覆盖
             components: {
                 Header: './src/components/overrides/Header.astro',
+                Hero: './src/components/overrides/Hero.astro',
                 // 添加图片灯箱等全局功能
                 PageFrame: './src/components/overrides/PageFrame.astro',
                 // 自定义内容区域，添加阅读进度和编辑链接

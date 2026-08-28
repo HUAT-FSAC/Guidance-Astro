@@ -9,10 +9,13 @@ import Breadcrumbs from "../docs/Breadcrumbs.astro";
 // 检查是否是首页（不显示面包屑与多余 h1）
 // Starlight 的 PageTitle 会渲染 <h1 id="_top">，首页已由 Hero 提供唯一 h1，需彻底不渲染而非 display:none
 const rawPath = Astro.url.pathname;
-const isHomePage = rawPath === '/' || rawPath === '' || rawPath === '/en/' || rawPath === '/en';
-const isSplash =
-    (Astro.props as { entry?: { data?: { template?: string } } })?.entry?.data?.template ===
-        'splash' || isHomePage;
+const normalized = rawPath.replace(/\/+$/, '') || '/';
+const isHomePage = normalized === '/' || normalized === '/en';
+const entryTemplate = (Astro.props as { entry?: { data?: { template?: string } } })?.entry?.data
+    ?.template;
+const starlightTemplate = (Astro.props as unknown as { starlightRoute?: { entry?: { data?: { template?: string } } } })
+    ?.starlightRoute?.entry?.data?.template;
+const isSplash = entryTemplate === 'splash' || starlightTemplate === 'splash' || isHomePage;
 ---
 
 {/* 面包屑导航 - 仅文档页面显示 */}
