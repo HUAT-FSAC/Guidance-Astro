@@ -47,7 +47,7 @@
 | **2. 设计定稿**     | 需求已冻结             | UI 走查截图 / 技术方案（≤1页）             | `docs/WORKFLOW.md:§4` 任务状态切 `In Progress`                            |
 | **3. 开发实现**     | 设计已确认             | 分支 + 代码 + 单元测试                     | `pnpm lint && pnpm build` 无错误                                          |
 | **4. 联调测试**     | 代码 PR 已提           | PR + Vitest + Playwright 报告              | `§6 门禁` 全绿，PR 获 Review                                              |
-| **5. 预发布与上线** | 测试通过               | 预发验证 + `pnpm deploy:worker` + 线上验收 | `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-` |
+| **5. 预发布与上线** | 测试通过               | 预发验证 + `pnpm deploy:worker`（Agent 自动执行，无需用户指令） + 线上验收 | `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-` 且 `cache-control` 符合 `docs/DEPLOYMENT.md` |
 
 > 单人串行时，同一时间只做一个阶段；多 Agent 时，**阶段3可并行**（要求任务无文件重叠），阶段4/5必须串行。
 

@@ -64,7 +64,18 @@ This path also requires **Pages → Settings → Environment variables** `CLOUDF
 
 ---
 
-## Manual Deployment (fallback)
+## Manual Deployment (fallback) / Agent Auto-Deploy
+
+Agent 已通过 `wrangler whoami`（OAuth `zcw85590@gmail.com` / `Iridite`）登录时，**`push main` 后无需人工指令**：
+
+```bash
+# Agent 自动执行（已写入 AGENTS.md 发布与部署）
+pnpm deploy:worker
+# ≡ pnpm build && wrangler deploy --config dist/server/wrangler.json
+curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy # 必须含 nonce-
+```
+
+人工兜底（Agent 未登录或 CI Secrets 缺失）：
 
 ```bash
 # once per machine
@@ -72,7 +83,6 @@ wrangler login
 
 # deploy current checkout
 pnpm deploy:worker
-# ≡ pnpm build && wrangler deploy --config dist/server/wrangler.json
 ```
 
 Verify locally without touching production:

@@ -19,6 +19,7 @@ The scheduled OpenWiki GitHub Actions workflow refreshes the repository wiki. Do
 ## 发布与部署（2026-08 现状，改动前必读）
 
 - 线上 https://huat-fsac.eu.org 由 **Cloudflare Worker SSR** 提供服务：zone 路由 `huat-fsac.eu.org/*` → Worker `huat-fsac`。`*.pages.dev` 与 Pages 静态产物不含 HTML（SSR 架构下 HTML 由 Worker 运行时生成），访问 404 是预期现象，不要试图"修复"Pages。
-- **自动部署是断的**：push 到 main 只触发 CI，不更新线上。发版 = push 后手动跑 `pnpm deploy:worker`（本机需已 `wrangler login`）。
+- **自动部署已恢复（Agent 托管）**：`push main` → CI `deploy`（需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID` Secrets）为首选；**Agent 本地已通过 `wrangler whoami` OAuth 登录**，完成任意影响线上站点的改动并 `push main` 后，**必须自动执行 `pnpm deploy:worker`（`pnpm build && wrangler deploy --config dist/server/wrangler.json`）并以 `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-` 为验**，无需等待用户显式指令；若部署失败则重试一次并回写 `docs/WORKFLOW.md:§7.4`。
+- **手动兜底**：若 Agent 未登录（`wrangler whoami` 失败）或 CI Secrets 缺失，则回退为 `pnpm deploy:worker` 手动执行（`wrangler login` 后）。
 - ⚠️ 不要删除 zone 里 `huat-fsac.eu.org` 的既有 DNS 记录，Worker Route 方案依赖它。
 - 完整说明与恢复全自动部署的方法见 `docs/PROJECT_MANAGEMENT_MODEL.md` 的「发布与部署流程」与 `docs/DEPLOYMENT.md`。
