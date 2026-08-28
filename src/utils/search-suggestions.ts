@@ -112,7 +112,7 @@ export function getSearchSuggestions(query: string, limit: number = 10): SearchS
  * @param suggestion 建议文本
  * @param query 搜索查询
  */
-function getRelevanceScore(suggestion: string, query: string): number {
+export function getRelevanceScore(suggestion: string, query: string): number {
     const lowerSuggestion = suggestion.toLowerCase()
     const lowerQuery = query.toLowerCase()
 
@@ -203,7 +203,7 @@ export function renderSearchSuggestions(
  * @param text 原始文本
  * @param query 搜索查询
  */
-function highlightMatch(text: string, query: string): string {
+export function highlightMatch(text: string, query: string): string {
     if (!query || query.trim().length === 0) {
         return escapeHtml(text)
     }
@@ -226,7 +226,7 @@ function highlightMatch(text: string, query: string): string {
 /**
  * HTML 转义
  */
-function escapeHtml(text: string): string {
+export function escapeHtml(text: string): string {
     const div = document.createElement('div')
     div.textContent = text
     return div.innerHTML
