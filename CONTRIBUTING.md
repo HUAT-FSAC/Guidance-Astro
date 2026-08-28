@@ -34,11 +34,11 @@
 
 ### 贡献流程
 
-1. Fork 本仓库
-2. 创建功能分支
-3. 进行更改
-4. 提交 Pull Request
-5. 等待审核
+1. Fork 本仓库（单人项目可直接在 `main` 开发，经 `docs/WORKFLOW.md:5` 确认偏离分支规范）
+2. 创建功能分支（团队协作时 `type/area/desc`，如 `feat/worker/auto-deploy`；单人可跳过）
+3. 进行更改（遵循 `docs/WORKFLOW.md:6` 质量门禁：`pnpm lint` / `format:check` / `test:run` / `build` / `quality:bundle` / `quality:theme`）
+4. 提交 Pull Request（团队协作）或直接 `git push origin main` 后由 `CI/CD` 验证（单人，见 `docs/PROJECT_MANAGEMENT_MODEL.md:189`）
+5. 等待审核（单人可自审，`curl -sI https://huat-fsac.eu.org/` 验 `content-security-policy: nonce-`）
 
 ---
 
@@ -46,8 +46,8 @@
 
 ### 环境要求
 
-- **Node.js** 22.0.0 或更高版本
-- **pnpm** 9.0.0 或更高版本
+- **Node.js** 22.23.2（`package.json:engines` 要求 `>=22.0.0`）
+- **pnpm** 11.22.0（`packageManager: pnpm@11.22.0`，见 `pnpm-lock.yaml`）
 - **Git** 2.0.0 或更高版本
 
 ### 安装步骤

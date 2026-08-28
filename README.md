@@ -2,10 +2,10 @@
 
 基于 Astro 的 Starlight 模版构建的 HUAT 方程式赛车队文档站点。
 
-[![Deploy Status](https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange)](https://huat-fsac.eu.org)
+[![Deploy Status](https://img.shields.io/badge/Deploy-Cloudflare%20Workers-blue)](https://huat-fsac.eu.org)
 [![Analytics](https://img.shields.io/badge/Analytics-Umami-blue)](https://cloud.umami.is/share/ADsMBsz2WVJPbqjO)
 
-Page is served via Cloudflare Workers (SSR) — see `docs/PROJECT_MANAGEMENT_MODEL.md` for release flow
+Page is served via **Cloudflare Workers SSR** (`output: server` + `@astrojs/cloudflare`) — `wrangler deploy --config dist/server/wrangler.json` via GitHub Actions (`push main` → `deploy` job, see `docs/DEPLOYMENT.md:22`); `*.pages.dev` 404 is expected, do not delete zone DNS for `huat-fsac.eu.org`
 
 ---
 
@@ -26,8 +26,8 @@ Page is served via Cloudflare Workers (SSR) — see `docs/PROJECT_MANAGEMENT_MOD
 
 ### 环境要求
 
-- Node.js 22+
-- pnpm 9+
+- Node.js 22.23.2+ (`engines: >=22.0.0`)
+- pnpm 11.22.0+ (`packageManager: pnpm@11.22.0`)
 
 ### 本地开发
 
