@@ -5,9 +5,10 @@ const distDir = path.join('dist', 'client', '_astro')
 
 const budgets = {
     maxTotalJsKB: Number(process.env.BUNDLE_BUDGET_TOTAL_JS_KB ?? 380),
-    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 180),
+    // 自托管字体（@fontsource）增加约 50KB CSS（font-face 声明与 woff2 预载），放宽阈值避免误报
+    maxTotalCssKB: Number(process.env.BUNDLE_BUDGET_TOTAL_CSS_KB ?? 260),
     maxSingleJsKB: Number(process.env.BUNDLE_BUDGET_SINGLE_JS_KB ?? 100),
-    maxSingleCssKB: Number(process.env.BUNDLE_BUDGET_SINGLE_CSS_KB ?? 95),
+    maxSingleCssKB: Number(process.env.BUNDLE_BUDGET_SINGLE_CSS_KB ?? 130),
     maxOgImageKB: Number(process.env.BUNDLE_BUDGET_OG_IMAGE_KB ?? 300),
     maxSingleImageKB: Number(process.env.BUNDLE_BUDGET_SINGLE_IMAGE_KB ?? 300),
 }

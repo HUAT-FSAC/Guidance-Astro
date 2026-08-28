@@ -4,6 +4,8 @@ export interface StatItem {
     value: string
     label: string
     icon?: string
+    /** 年份类静态展示，不做计数动画（避免 2015 从 0 滚动） */
+    static?: boolean
 }
 
 export interface RaceEvent {
@@ -80,10 +82,11 @@ export const heroConfig = {
 }
 
 // ==================== 统计数据 ====================
+// 2015 为成立年份（静态展示，不作计数动画）；赛事经验自 2019 首次参赛至 2026 约 7 个赛季
 export const stats: StatItem[] = [
-    { value: '2015', label: '成立年份' },
+    { value: '2015', label: '成立年份', static: true },
     { value: '50+', label: '团队成员' },
-    { value: '10+', label: '年赛事经验' },
+    { value: '7+', label: '年赛事经验' },
 ]
 
 // ==================== 成就展示 ====================
@@ -364,9 +367,9 @@ const enHomeContentData: HomeContent = {
         backgroundImages: heroConfig.backgroundImages,
     },
     stats: [
-        { value: '2015', label: 'Founded' },
+        { value: '2015', label: 'Founded', static: true },
         { value: '50+', label: 'Team Members' },
-        { value: '10+', label: 'Years of Experience' },
+        { value: '7+', label: 'Years of Experience' },
     ],
     showcase: enShowcaseContent,
     achievements: enAchievements,

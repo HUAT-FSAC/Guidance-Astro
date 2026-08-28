@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="120" viewBox="0 0 300 120">
+  <rect width="300" height="120" rx="8" fill="#ffffff"/>
+  <text x="150" y="55" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700" fill="#1d4ed8">东风商用车</text>
+  <text x="150" y="80" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="10" fill="#64748b" letter-spacing="2">DONGFENG CV</text>
+</svg>

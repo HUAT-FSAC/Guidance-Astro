@@ -44,8 +44,9 @@ export function getCSPDirectives(nonce?: string) {
     return {
         'default-src': ["'self'"],
         'script-src': scriptSrc,
-        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
+        // 字体已自托管至 /fonts/（@fontsource），移除 Google Fonts 外链，消除大陆网络 RTT 与 CSP 白名单
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'font-src': ["'self'", 'data:'],
         'img-src': ["'self'", 'data:', 'https:', 'blob:'],
         'media-src': ["'self'", 'data:', 'https:'],
         'frame-src': ["'self'", 'https://www.youtube.com', 'https://player.vimeo.com'],
@@ -115,11 +116,14 @@ export const securityHeaders: SecurityHeader[] = [
 ]
 
 const CACHE_CONTROL_DEFAULT = 'public, max-age=3600, must-revalidate' // 1小时
-const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable' // 1年
+const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable' // 1年，仅用于带哈希的 /_astro /pagefind
 const CACHE_CONTROL_SERVICE_WORKER = 'no-cache, no-store, must-revalidate'
 const CACHE_CONTROL_STATIC = 'public, max-age=604800, must-revalidate' // 7天
-const CACHE_CONTROL_IMAGES = 'public, max-age=2592000, must-revalidate' // 30天
-const CACHE_CONTROL_FONTS = 'public, max-age=31536000, immutable' // 1年
+// 图片：长期缓存但未哈希命名时用 must-revalidate 避免永久 stale（_headers 对 /assets 也同步此策略）
+// 原错误：所有 /assets 图片返回 max-age=0, must-revalidate，导致每次重校验，LCP 重复下载
+// 注意：此值与 public/_headers 中 /assets/* 需保持一致（Shotgun Surgery 但因 Cloudflare 静态资源不经 Worker，需双处配置）
+const CACHE_CONTROL_IMAGES = 'public, max-age=31536000, must-revalidate' // 1年 must-revalidate（未哈希，immutable 风险）
+const CACHE_CONTROL_FONTS = 'public, max-age=31536000, immutable' // 1年，带哈希的字体文件
 
 function withHeaders(response: Response, apply: (headers: Headers) => void): Response {
     const headers = new Headers(response.headers)

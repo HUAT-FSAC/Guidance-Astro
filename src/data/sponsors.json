@@ -6,6 +6,19 @@
                 {
                     "title": "湖北汽车工业学院",
                     "logo": "/assets/huat.jpg"
+                },
+                {
+                    "title": "东风商用车",
+                    "logo": "/assets/dongfeng.svg"
+                }
+            ]
+        },
+        {
+            "name": "合作伙伴",
+            "items": [
+                {
+                    "title": "智能网联汽车学院",
+                    "logo": "/assets/huat.jpg"
                 }
             ]
         }

@@ -21,10 +21,11 @@ function parseValue(value: string) {
     {
         stats.map((stat, index) => {
             const { num, suffix } = parseValue(stat.value);
+            const isStatic = stat.static === true;
             return (
                 <div class="stat-item reveal-upon-scroll" style={`transition-delay: ${index * 0.15 + 0.1}s;`}>
-                    <div class="value" data-target={num} data-suffix={suffix}>
-                        0{suffix}
+                    <div class={isStatic ? 'value is-static' : 'value'} data-target={isStatic ? undefined : num} data-suffix={suffix}>
+                        {isStatic ? `${num}${suffix}` : `0${suffix}`}
                     </div>
                     <div class="label">{stat.label}</div>
                 </div>

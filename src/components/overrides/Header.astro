@@ -1,6 +1,12 @@
 ---
 import Search from 'virtual:starlight/components/Search';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import { getNavItems, isEnglishPath } from '../../utils/navigation';
+
+const isEn = isEnglishPath(Astro.url.pathname);
+const navItems = getNavItems(isEn ? 'en' : 'zh');
+const homeHref = isEn ? '/en/' : '/';
+const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
 ---
 
 <div class="custom-header">
@@ -11,17 +17,15 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
   <div class="header-scanline" aria-hidden="true"></div>
 
   <div class="header-inner">
-    <a href="/" class="header-left">
-      <img src="/assets/logo.jpg" alt="HUAT FSAC" class="header-logo" />
-      <span class="header-title">东风 HUAT 无人驾驶车队</span>
+    <a href={homeHref} class="header-left">
+      <img src="/assets/logo.jpg" alt="HUAT FSAC" class="header-logo" width="48" height="48" />
+      <span class="header-title">{titleText}</span>
     </a>
 
-    <nav class="header-nav">
-      <a href="/">首页</a>
-      <a href="/team/">关于我们</a>
-      <a href="/cars/">关于赛车</a>
-      <a href="/docs-center/">学习模块</a>
-      <a href="/join/">加入我们</a>
+    <nav class="header-nav" aria-label={isEn ? 'Main navigation' : '主导航'}>
+      {navItems.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
       <a href="https://github.com/HUAT-FSAC" target="_blank" class="nav-github">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
@@ -217,31 +221,41 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
     background-color: var(--fs-bg-base) !important;
   }
 
-  /* ======== 响应式 ======== */
-  @media (max-width: 768px) {
+  /* ======== 响应式：移动端隐藏桌面导航，避免与 MobileNavigation 双重显示 ========
+     使用 Starlight 的 50rem 断点（800px），与框架一致，避免介于 768-800px 的闪烁 */
+  @media (max-width: 50rem) {
     .custom-header {
-      padding: 0 1.25rem;
+      padding: 0 1rem;
     }
 
     .header-left {
-      gap: 1.5rem;
+      gap: 0.75rem;
     }
 
     .header-logo {
-      height: 36px;
+      height: 32px;
     }
 
     .header-title {
-      font-size: 1rem;
-      letter-spacing: 1px;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      max-width: 42vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    /* 关键修复：桌面导航在移动端完全隐藏，由 MobileNavigation 接管 */
     .header-nav {
-      gap: 1.5em;
+      display: none !important;
     }
+  }
 
-    .header-nav a {
-      font-size: 0.9rem;
+  @media (max-width: 480px) {
+    .header-title {
+      font-size: 0.85rem;
+    }
+    .custom-header {
+      padding: 0 0.75rem;
     }
   }
 

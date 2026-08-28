@@ -6,13 +6,11 @@
 const CACHE_NAME = 'huat-fsac-v4';
 const OFFLINE_URL = '/offline.html';
 
-// 需要预缓存的关键资源
+// 需要预缓存的关键资源（移除大体积 favicon/og-image，避免首屏关键路径浪费与 SW 存储膨胀）
 const PRECACHE_ASSETS = [
     '/',
-    '/favicon.png',
     '/favicon.svg',
     '/manifest.json',
-    '/og-image.png',
     OFFLINE_URL
 ];
 

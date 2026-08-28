@@ -3,29 +3,24 @@
  * 移动端导航组件
  * 仅在移动端显示，提供汉堡菜单和侧滑抽屉导航
  */
-interface NavItem {
-    label: string;
-    link: string;
+interface Props {
+    locale?: 'zh' | 'en'
 }
+const { locale = 'zh' } = Astro.props as Props
+const isEn = locale === 'en'
+import { getMobileNavItems } from '../../../utils/navigation';
 
-const navItems: NavItem[] = [
-    { label: "🏠 首页", link: "/" },
-    { label: "🤝 加入我们", link: "/join/" },
-    { label: "👥 团队", link: "/team/" },
-    { label: "🚗 赛车", link: "/cars/" },
-    { label: "ℹ️ 关于 Formula Student", link: "/about-fs/" },
-    { label: "📚 2024 学习指南", link: "/2024-learning-roadmap/" },
-];
+const navItems = getMobileNavItems(isEn ? 'en' : 'zh');
 ---
 
 <div class="mobile-nav" id="mobileNav">
     <!-- 导航栏 -->
     <nav class="mobile-nav-bar">
-        <a href="/" class="mobile-nav-logo">
+        <a href={isEn ? '/en/' : '/'} class="mobile-nav-logo">
             <span class="logo-text">HUAT</span>
             <span class="logo-accent">FSAC</span>
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label={isEn ? 'Open menu' : '打开菜单'}>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -38,8 +33,8 @@ const navItems: NavItem[] = [
     <!-- 抽屉菜单 -->
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
         <div class="drawer-header">
-            <span class="drawer-title">导航菜单</span>
-            <button class="drawer-close" id="drawerClose" aria-label="关闭菜单">
+            <span class="drawer-title">{isEn ? 'Menu' : '导航菜单'}</span>
+            <button class="drawer-close" id="drawerClose" aria-label={isEn ? 'Close menu' : '关闭菜单'}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"></path>
                 </svg>
@@ -134,7 +129,7 @@ const navItems: NavItem[] = [
         transform: none !important;
     }
     
-    @media (max-width: 768px) {
+    @media (max-width: 50rem) {
         .mobile-nav {
             display: block;
         }

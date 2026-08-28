@@ -49,7 +49,7 @@ describe('security config', () => {
 
         it('returns image cache for image files', () => {
             expect(getCacheControlHeader('/logo.png')).toBe(
-                'public, max-age=2592000, must-revalidate'
+                'public, max-age=31536000, must-revalidate'
             )
         })
 

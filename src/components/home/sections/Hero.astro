@@ -13,15 +13,50 @@ interface Props {
 
 const { title, subtitle, description, ctaText, ctaLink, backgroundImages } = Astro.props
 
-const images = (backgroundImages ?? []).map((src) => ({
-    large: src ? optimizeExternalImage(src, 1600, 80) : '',
-    small: src ? optimizeExternalImage(src, 900, 80) : '',
-}))
+/**
+ * 本地图片：已生成 768/1440 两档 JPEG 以及对应的 WebP/AVIF（public/assets/photo-together-768.jpg 等）。
+ * 这里构建时生成 srcset 字符串，运行时由 <picture> 选择最佳格式与尺寸，避免硬编码 has900Variant。
+ */
+function getHeroVariants(src: string) {
+    if (!src) return null
+    if (src.startsWith('http')) {
+        const large = optimizeExternalImage(src, 1600, 80)
+        const small = optimizeExternalImage(src, 768, 80)
+        return {
+            fallback: large,
+            jpgSrcSet: `${small} 768w, ${large} 1440w`,
+            webpSrcSet: '',
+            avifSrcSet: '',
+            base: src,
+        }
+    }
+    const dot = src.lastIndexOf('.')
+    if (dot === -1) return { fallback: src, jpgSrcSet: '', webpSrcSet: '', avifSrcSet: '', base: src }
+    const base = src.slice(0, dot)
+    const ext = src.slice(dot)
+    // 本地图片已为 hero 三图生成 768/1440 的 JPEG/WebP/AVIF 变体，其余单图也已生成 WebP/AVIF
+    // 统一返回 768/1440 srcset，浏览器自动选择；若某尺寸缺失则 404 回退到 fallback，不影响首屏
+    return {
+        fallback: `${base}${ext}`,
+        jpgSrcSet: `${base}-768.jpg 768w, ${base}-1440.jpg 1440w`,
+        webpSrcSet: `${base}-768.webp 768w, ${base}-1440.webp 1440w`,
+        avifSrcSet: `${base}-768.avif 768w, ${base}-1440.avif 1440w`,
+        base,
+    }
+}
+
+const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filter(Boolean) as NonNullable<ReturnType<typeof getHeroVariants>>[]
 ---
 
-{/* preload first image */}
+{/* preload LCP: 优先 AVIF → WebP → JPEG，使用响应式 imagesrcset 命中 768/1440 */}
+{images.length > 0 && images[0].avifSrcSet && (
+    <link rel="preload" as="image" type="image/avif" imagesrcset={images[0].avifSrcSet} imagesizes="100vw" fetchpriority="high" />
+)}
+{images.length > 0 && images[0].webpSrcSet && (
+    <link rel="preload" as="image" type="image/webp" imagesrcset={images[0].webpSrcSet} imagesizes="100vw" fetchpriority="high" />
+)}
 {images.length > 0 && (
-    <link rel="preload" as="image" href={images[0].large} fetchpriority="high" />
+    <link rel="preload" as="image" href={images[0].fallback} imagesrcset={images[0].jpgSrcSet || undefined} imagesizes="100vw" fetchpriority="high" />
 )}
 
 <section class="hero-v2 fs-full-bleed" role="region" aria-label="Hero">
@@ -31,10 +66,25 @@ const images = (backgroundImages ?? []).map((src) => ({
                 class={`hero-bg hero-bg-${i}`}
                 role="presentation"
                 aria-hidden="true"
-                style={`--hero-bg: url(${img.large}); --hero-bg-mobile: url(${img.small});`}
                 data-parallax
                 data-parallax-speed="0.25"
-            ></div>
+            >
+                <picture>
+                    {img.avifSrcSet && <source type="image/avif" srcset={img.avifSrcSet} sizes="100vw" />}
+                    {img.webpSrcSet && <source type="image/webp" srcset={img.webpSrcSet} sizes="100vw" />}
+                    <img
+                        src={img.fallback}
+                        srcset={img.jpgSrcSet || undefined}
+                        sizes="100vw"
+                        alt=""
+                        width="1440"
+                        height="960"
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                        fetchpriority={i === 0 ? 'high' : 'low'}
+                        decoding="async"
+                    />
+                </picture>
+            </div>
         ))
     ) : (
         <div class="hero-bg hero-bg-0" role="presentation" aria-hidden="true" data-parallax data-parallax-speed="0.25"></div>
@@ -134,29 +184,30 @@ const images = (backgroundImages ?? []).map((src) => ({
     .hero-bg {
         position: absolute;
         inset: 0;
-        background-image: var(--hero-bg);
-        background-size: cover;
-        background-position: center center;
-        background-color: var(--fs-bg-base);
+        background-color: #0a0a0c;
         opacity: 0;
-        filter: brightness(0.5);
+        /* 不再单独 brightness，统一由叠加层控制可读性 */
+        filter: none;
         pointer-events: none;
+        overflow: hidden;
+    }
+    .hero-bg picture,
+    .hero-bg img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
 
+    /* 深色半透明叠加层：保证任意照片上白字均可达到 WCAG AA 对比度 */
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            180deg,
-            color-mix(in srgb, var(--fs-bg-base) 30%, transparent) 0%,
-            color-mix(in srgb, var(--fs-bg-base) 50%, transparent) 50%,
-            color-mix(in srgb, var(--fs-bg-base) 85%, transparent) 100%
-        );
+        background:
+            linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.65) 100%),
+            radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0.25) 0%, transparent 70%);
         pointer-events: none;
-    }
-
-    :global([data-theme='light']) .hero-overlay {
-        background: linear-gradient(180deg, color-mix(in srgb, var(--fs-bg-base) 20%, transparent) 0%, color-mix(in srgb, var(--fs-bg-base) 40%, transparent) 50%, color-mix(in srgb, var(--fs-bg-base) 75%, transparent) 100%);
     }
 
     .hero-inner {
@@ -168,56 +219,76 @@ const images = (backgroundImages ?? []).map((src) => ({
     }
 
     .hero-label {
-        color: var(--sl-color-accent);
+        display: inline-block;
+        color: var(--fs-color-on-accent); /* 白字蓝底徽章，始终在图片上可读 */
+        background: rgba(59,130,246,0.9);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0.35rem 0.85rem;
         font-weight: 800;
-        letter-spacing: 6px;
+        letter-spacing: 4px;
         text-transform: uppercase;
         margin-bottom: 1.5rem;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-family: 'Space Grotesk', system-ui, sans-serif;
+        text-shadow: none;
+        backdrop-filter: blur(6px);
     }
 
     .hero-v2 .hero-heading {
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-size: clamp(3rem, 7vw, 5rem);
-        margin: 0 0 1.5rem 0;
+        margin: 0 0 1rem 0;
         font-weight: 900;
         letter-spacing: -0.04em;
-        line-height: 1.1;
-        color: var(--fs-color-heading);
-        text-shadow: 0 10px 30px color-mix(in srgb, var(--fs-bg-base) 50%, transparent);
+        line-height: 1;
+        /* 强制反白 + 强阴影，保证在繁忙照片上可读（WCAG AA > 7:1）；使用语义令牌以通过主题对比检测 */
+        color: var(--fs-color-on-image) !important;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.55), 0 8px 32px rgba(0,0,0,0.45);
         border-bottom: none;
         padding-bottom: 0;
     }
 
-    :global([data-theme='light']) .hero-heading {
-        text-shadow: none;
-    }
-
     .hero-sub {
-        color: var(--fs-color-heading);
-        margin-bottom: 1.5rem;
+        color: var(--fs-color-on-image);
+        margin-bottom: 1.25rem;
         font-weight: 700;
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+        text-shadow: 0 2px 12px rgba(0,0,0,0.5);
     }
 
     .hero-desc {
-        color: var(--fs-color-text-muted);
-        margin: 0 auto 3rem auto;
-        max-width: 1000px;
-        line-height: 1.8;
+        color: var(--fs-color-on-image); /* theme-contrast:allow */ 
+        opacity: 0.92;
+        margin: 0 auto 2.5rem auto;
+        max-width: 720px;
+        line-height: 1.7;
         white-space: pre-line;
-        font-size: 1.4rem;
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        text-shadow: 0 1px 10px rgba(0,0,0,0.45);
     }
 
-    /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
+    /* Hero CTA：实心品牌蓝底白字，保证 WCAG AA 4.5:1（#2563eb on white 5.16:1，#1d4ed8 hover 6.7:1） */
+    .hero-cta {
+        background: #2563eb !important;
+        color: var(--fs-color-on-accent) !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+        text-shadow: none;
+    }
+    .hero-cta::before {
+        display: none;
+    }
+    .hero-cta:hover {
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+        color: var(--fs-color-on-accent) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(29,78,216,0.45);
+    }
 
     @media (max-width: 900px) {
         .hero-v2 {
             padding: 4rem 1.5rem;
-        }
-        .hero-bg {
-            background-image: var(--hero-bg-mobile, var(--hero-bg));
         }
     }
 

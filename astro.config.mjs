@@ -142,6 +142,8 @@ export default defineConfig({
             prerender: false,
             favicon: '/favicon.png',
             customCss: [
+                // 自托管字体（替代 Google Fonts 外链）
+                './src/styles/fonts.css',
                 // 全局文档样式
                 './src/styles/docs-global.css',
                 // 代码块样式增强
@@ -200,7 +202,7 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: {
                         property: 'og:image',
-                        content: 'https://huat-fsac.eu.org/og-image.png',
+                        content: 'https://huat-fsac.eu.org/og-image.jpg',
                     },
                 },
                 {
@@ -229,7 +231,7 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: {
                         name: 'twitter:image',
-                        content: 'https://huat-fsac.eu.org/og-image.png',
+                        content: 'https://huat-fsac.eu.org/og-image.jpg',
                     },
                 },
                 // 性能优化：DNS 预解析
@@ -262,57 +264,21 @@ export default defineConfig({
                         href: 'https://cloud.umami.is',
                     },
                 },
-                // 性能优化：预加载关键资源
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preload',
-                        href: '/favicon.png',
-                        as: 'image',
-                        type: 'image/png',
-                    },
-                },
-                // 性能优化：字体加载
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preconnect',
-                        href: 'https://fonts.googleapis.com',
-                    },
-                },
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'preconnect',
-                        href: 'https://fonts.gstatic.com',
-                        crossorigin: 'anonymous',
-                    },
-                },
-                // 标题主字体（Space Grotesk）
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'stylesheet',
-                        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&display=swap',
-                    },
-                },
-                // 代码字体（JetBrains Mono）
-                {
-                    tag: 'link',
-                    attrs: {
-                        rel: 'stylesheet',
-                        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap',
-                    },
-                },
-                // 分析脚本
-                {
-                    tag: 'script',
-                    attrs: {
-                        src: 'https://cloud.umami.is/script.js',
-                        'data-website-id': import.meta.env.UMAMI_WEBSITE_ID || '',
-                        defer: true,
-                    },
-                },
+                // 性能优化：移除 favicon 预加载（32px 图标无需关键路径优先；原 475KB 预加载触发警告）
+                // 字体：已迁移至 @fontsource 自托管（src/styles/fonts.css），移除 Google Fonts 外链，避免大陆网络 RTT 与 FOUT
+                // 分析脚本：仅当配置真实 ID 时注入，避免空 data-website-id 导致无效请求
+                ...(import.meta.env.UMAMI_WEBSITE_ID
+                    ? [
+                          {
+                              tag: 'script',
+                              attrs: {
+                                  src: 'https://cloud.umami.is/script.js',
+                                  'data-website-id': import.meta.env.UMAMI_WEBSITE_ID,
+                                  defer: true,
+                              },
+                          },
+                      ]
+                    : []),
                 // PWA Manifest
                 {
                     tag: 'link',

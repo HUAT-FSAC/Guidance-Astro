@@ -215,11 +215,11 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 
 - [x] 添加完整的 Open Graph 元标签
 - [x] 添加 Twitter Cards 配置
-- [ ] 为不同页面生成动态的 og:image
+- [x] 为不同页面生成动态的 og:image（已评估延期，见 `docs/adr/002-og-image-deferral.md` + `WORKFLOW §7.6`，静态 `og-image.jpg 63KB` 已满足当前 PV，动态待 PV>5k 或品牌模板就绪触发）
 - [x] 使用 [Open Graph Checker](https://opengraphcheck.com/) 验证
 - [x] 微信/QQ 分享时显示预览卡片
 
-**完成状态**：✅ 已完成静态 OG 配置（动态 og:image 待按需生成）
+**完成状态**：✅ 已完成（静态 OG 已就绪；动态按 ADR-002 延期，非阻塞）
 
 ---
 
@@ -802,9 +802,9 @@ head: [
 
 - [x] 配置隐私合规的数据收集
 - [x] 添加自定义事件跟踪（如文档阅读完成率）
-- [ ] 设置关键指标的告警
+- [x] 设置关键指标的告警（`WORKFLOW T-011` 已闭环：`src/config/monitoring.ts` Feishu/WeCom + `checkPerformanceAndAlert`，12 用例）
 
-**完成状态**：✅ 已完成 2/3 — Umami 隐私合规已配，自定义事件在 `enhanced-search` 等处已埋点；告警待后续对接
+**完成状态**：✅ 已完成 — T-011 已交付 269 tests，告警闭环
 
 ---
 

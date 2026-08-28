@@ -15,6 +15,10 @@ const id = 'carousel-' + Math.random().toString(36).slice(2, 8);
             class="carousel-image"
             data-index={i}
             style={{ display: i === 0 ? 'block' : 'none' }}
+            width="800"
+            height="450"
+            loading="lazy"
+            decoding="async"
         />
     ))}
     <div class="carousel-dots">
