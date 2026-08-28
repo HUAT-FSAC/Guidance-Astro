@@ -33,6 +33,12 @@ export interface MonitorConfig {
             webhookUrl: string
             channel: string
         }
+        feishu?: {
+            webhookUrl: string
+        }
+        wecom?: {
+            webhookUrl: string
+        }
     }
 }
 
@@ -68,6 +74,12 @@ export const defaultConfig: MonitorConfig = {
                   channel: process.env.SLACK_CHANNEL || '#dev-alerts',
               }
             : undefined,
+        feishu: process.env.FEISHU_WEBHOOK_URL
+            ? { webhookUrl: process.env.FEISHU_WEBHOOK_URL }
+            : undefined,
+        wecom: process.env.WECOM_WEBHOOK_URL
+            ? { webhookUrl: process.env.WECOM_WEBHOOK_URL }
+            : undefined,
     },
 }
 
@@ -96,6 +108,12 @@ export function getMonitorConfig(): MonitorConfig {
                       webhookUrl: process.env.SLACK_WEBHOOK_URL,
                       channel: process.env.SLACK_CHANNEL || '#dev-alerts',
                   }
+                : undefined,
+            feishu: process.env.FEISHU_WEBHOOK_URL
+                ? { webhookUrl: process.env.FEISHU_WEBHOOK_URL }
+                : undefined,
+            wecom: process.env.WECOM_WEBHOOK_URL
+                ? { webhookUrl: process.env.WECOM_WEBHOOK_URL }
                 : undefined,
         },
     }
@@ -135,6 +153,23 @@ export function checkPerformanceThresholds(metrics: {
         passed: failed.length === 0,
         failed,
     }
+}
+
+export async function checkPerformanceAndAlert(metrics: {
+    fcp?: number
+    lcp?: number
+    cls?: number
+    fid?: number
+    ttfb?: number
+}): Promise<{ passed: boolean; failed: string[] }> {
+    const result = checkPerformanceThresholds(metrics)
+    if (!result.passed) {
+        await sendAlert('performance', `性能阈值告警: ${result.failed.join('; ')}`, {
+            ...metrics,
+            failed: result.failed.join('; '),
+        })
+    }
+    return result
 }
 
 export async function sendAlert(
@@ -179,6 +214,54 @@ export async function sendAlert(
             })
         } catch (error) {
             console.error('Failed to send Slack alert:', error)
+        }
+    }
+
+    // Send to Feishu if configured
+    if (config.alerts.feishu) {
+        try {
+            await fetch(config.alerts.feishu.webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    msg_type: 'text',
+                    content: {
+                        text: `🚨 [${type.toUpperCase()} 告警] ${message}\n${Object.entries(
+                            details || {}
+                        )
+                            .map(([k, v]) => `${k}: ${v}`)
+                            .join(
+                                '\n'
+                            )}\n时间: ${alertData.timestamp}\n链接: ${alertData.url || 'N/A'}`,
+                    },
+                }),
+            })
+        } catch (error) {
+            console.error('Failed to send Feishu alert:', error)
+        }
+    }
+
+    // Send to WeCom if configured
+    if (config.alerts.wecom) {
+        try {
+            await fetch(config.alerts.wecom.webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    msgtype: 'text',
+                    text: {
+                        content: `🚨 [${type.toUpperCase()} 告警] ${message}\n${Object.entries(
+                            details || {}
+                        )
+                            .map(([k, v]) => `${k}: ${v}`)
+                            .join(
+                                '\n'
+                            )}\n时间: ${alertData.timestamp}\n链接: ${alertData.url || 'N/A'}`,
+                    },
+                }),
+            })
+        } catch (error) {
+            console.error('Failed to send WeCom alert:', error)
         }
     }
 
