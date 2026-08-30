@@ -81,12 +81,15 @@
                 lightboxCaption.textContent = img.alt || "";
             }
 
+            const prevButton = prevBtn as HTMLButtonElement | null;
+            const nextButton = nextBtn as HTMLButtonElement | null;
+
             // 更新导航按钮显示状态
-            if (prevBtn) {
-                prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
+            if (prevButton) {
+                prevButton.style.display = currentIndex > 0 ? "flex" : "none";
             }
-            if (nextBtn) {
-                nextBtn.style.display = currentIndex < images.length - 1 ? "flex" : "none";
+            if (nextButton) {
+                nextButton.style.display = currentIndex < images.length - 1 ? "flex" : "none";
             }
         }
 
