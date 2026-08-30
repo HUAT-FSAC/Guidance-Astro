@@ -31,6 +31,7 @@ jobs:
         run: npm install --global openwiki@0.3.1 mermaid@11.16.0 jsdom@29.1.1
 
       - name: Run OpenWiki
+        if: ${{ secrets.OPENROUTER_API_KEY != '' }}
         run: openwiki code --update --print
         env:
           OPENWIKI_PROVIDER: openrouter
@@ -44,6 +45,10 @@ jobs:
           LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
           LANGCHAIN_PROJECT: openwiki
           LANGCHAIN_TRACING_V2: "true"
+
+      - name: Skip OpenWiki when secrets are absent
+        if: ${{ secrets.OPENROUTER_API_KEY == '' }}
+        run: echo "Skipping OpenWiki update because OPENROUTER_API_KEY is not configured."
 
       - name: Create OpenWiki update pull request
         uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
