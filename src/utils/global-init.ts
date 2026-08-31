@@ -6,6 +6,25 @@
 let searchShortcutCleanup: (() => void) | undefined
 
 /**
+ * 初始化卡片鼠标追踪光效
+ * Emil Kowalski: 卡片悬停时显示跟随鼠标的光晕效果
+ */
+function initCardGlowEffect(): void {
+    if (typeof document === 'undefined') return
+
+    const cards = document.querySelectorAll<HTMLElement>('.sl-link-card, .card')
+    cards.forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect()
+            const x = ((e.clientX - rect.left) / rect.width) * 100
+            const y = ((e.clientY - rect.top) / rect.height) * 100
+            card.style.setProperty('--mouse-x', `${x}%`)
+            card.style.setProperty('--mouse-y', `${y}%`)
+        })
+    })
+}
+
+/**
  * 初始化所有全局功能
  */
 export function initGlobalFeatures(): void {
@@ -17,6 +36,9 @@ export function initGlobalFeatures(): void {
         searchShortcutCleanup?.()
         searchShortcutCleanup = initSearchShortcut()
     })
+
+    // 初始化卡片光效
+    initCardGlowEffect()
 
     // 延迟加载非关键功能
     setTimeout(() => {

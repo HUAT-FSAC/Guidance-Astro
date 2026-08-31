@@ -60,15 +60,62 @@ const isEnglish = locale === "en";
                             <span class="seasons-year" aria-hidden="true">{season.year}</span>
                         </div>
                         <div class="seasons-img seasons-img--right">
-                            <img
-                                src={season.explainImg}
-                                alt={isEnglish ? `${season.year} explanation` : `${season.year} 解说`}
-                                width="600"
-                                height="380"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                            <span class="seasons-tag" aria-hidden="true">EXPLAIN</span>
+                            {season.specs && season.specs.length > 0 ? (
+                                <div class="seasons-specs">
+                                    <table class="seasons-specs-table">
+                                        <tbody>
+                                            {(() => {
+                                                const rows = []
+                                                const specs = season.specs
+                                                let i = 0
+                                                while (i < specs.length) {
+                                                    const spec = specs[i]
+                                                    if (spec.fullWidth) {
+                                                        rows.push(
+                                                            <tr class="seasons-specs-row seasons-specs-row--full">
+                                                                <th class="seasons-specs-th">{spec.label}</th>
+                                                                <td class="seasons-specs-td seasons-specs-td--full" colspan="3" set:html={spec.value.replace(/\n/g, '<br/>')} />
+                                                            </tr>
+                                                        )
+                                                        i++
+                                                    } else {
+                                                        const left = spec
+                                                        const right = specs[i + 1]
+                                                        rows.push(
+                                                            <tr class="seasons-specs-row">
+                                                                <th class="seasons-specs-th">{left.label}</th>
+                                                                <td class="seasons-specs-td">{left.value}</td>
+                                                                {right && !right.fullWidth ? (
+                                                                    <>
+                                                                        <th class="seasons-specs-th">{right.label}</th>
+                                                                        <td class="seasons-specs-td">{right.value}</td>
+                                                                    </>
+                                                                ) : (
+                                                                    <td class="seasons-specs-td seasons-specs-td--empty" colspan="2"></td>
+                                                                )}
+                                                            </tr>
+                                                        )
+                                                        i += (right && !right.fullWidth) ? 2 : 1
+                                                    }
+                                                }
+                                                return rows
+                                            })()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : season.explainImg ? (
+                                <>
+                                    <img
+                                        src={season.explainImg}
+                                        alt={isEnglish ? `${season.year} explanation` : `${season.year} 解说`}
+                                        width="600"
+                                        height="380"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                    <span class="seasons-tag" aria-hidden="true">EXPLAIN</span>
+                                </>
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -147,22 +194,22 @@ const isEnglish = locale === "en";
 
     .seasons-slide {
         display: none;
-        animation: fadeSlide 0.5s var(--fs-ease-out);
     }
 
     .seasons-slide.is-active {
         display: block;
+        animation: fadeSlide 0.3s var(--ease-out);
     }
 
     @keyframes fadeSlide {
-        from { opacity: 0; transform: scale(0.97); }
+        from { opacity: 0; transform: scale(0.98); }
         to { opacity: 1; transform: scale(1); }
     }
 
     .seasons-pair {
         display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 2rem;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 2.5rem;
         padding: 0 4rem;
         align-items: start;
     }
@@ -171,6 +218,11 @@ const isEnglish = locale === "en";
         position: relative;
         border-radius: 4px;
         overflow: hidden;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+    }
+
+    .seasons-img--left {
         aspect-ratio: 16 / 10;
     }
 
@@ -213,14 +265,70 @@ const isEnglish = locale === "en";
         backdrop-filter: blur(4px);
     }
 
+    .seasons-specs {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: stretch;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 1.25rem;
+        box-sizing: border-box;
+    }
+
+    .seasons-specs-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .seasons-specs-row {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background-color var(--transition-fast);
+    }
+
+    .seasons-specs-row:last-child {
+        border-bottom: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .seasons-specs-row:hover {
+            background-color: #f9fafb;
+        }
+    }
+
+    .seasons-specs-th {
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        padding: 0.7rem 0.9rem;
+        white-space: nowrap;
+        width: 1%;
+    }
+
+    .seasons-specs-td {
+        text-align: left;
+        color: #6b7280;
+        padding: 0.7rem 0.9rem;
+        width: auto;
+    }
+
+    .seasons-specs-td--full {
+        white-space: pre-line;
+        line-height: 1.6;
+    }
+
+    .seasons-specs-td--empty {
+        background: transparent;
+    }
+
     /* 箭头 */
     .seasons-arrow {
         flex-shrink: 0;
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        /* 浮于媒体之上的控件：始终为半透明深色背景 + 白色描边/图标，
-           不随主题变化（保证在任意图片上都可读） */
         border: 1px solid rgba(255, 255, 255, 0.2);
         background: var(--fs-color-overlay-soft);
         color: var(--fs-color-on-image);
@@ -228,18 +336,21 @@ const isEnglish = locale === "en";
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
+        transition: transform var(--transition-fast), background var(--transition-fast);
         backdrop-filter: blur(8px);
     }
 
-    .seasons-arrow:hover {
-        background: var(--sl-color-accent);
-        border-color: var(--sl-color-accent);
-        transform: scale(1.1);
+    /* 触摸设备不显示 hover 效果 */
+    @media (hover: hover) and (pointer: fine) {
+        .seasons-arrow:hover {
+            background: var(--sl-color-accent);
+            border-color: var(--sl-color-accent);
+            transform: scale(1.08);
+        }
     }
 
     .seasons-arrow:active {
-        transform: scale(0.95);
+        transform: scale(0.97);
     }
 
     /* 指示器 */
@@ -259,18 +370,21 @@ const isEnglish = locale === "en";
         border: 1px solid rgba(255,255,255,0.3);
         background: transparent;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
         padding: 0;
     }
 
     .seasons-dot.is-active {
         background: var(--sl-color-accent);
         border-color: var(--sl-color-accent);
-        transform: scale(1.3);
+        transform: scale(1.2);
     }
 
-    .seasons-dot:hover {
-        border-color: var(--sl-color-accent);
+    @media (hover: hover) and (pointer: fine) {
+        .seasons-dot:hover {
+            border-color: var(--sl-color-accent);
+            transform: scale(1.1);
+        }
     }
 
     @media (max-width: 768px) {
@@ -284,8 +398,18 @@ const isEnglish = locale === "en";
 
         .seasons-pair {
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.25rem;
             padding: 0 1rem;
+        }
+
+        .seasons-specs {
+            padding: 1rem;
+        }
+
+        .seasons-specs-th,
+        .seasons-specs-td {
+            padding: 0.5rem 0.6rem;
+            font-size: 0.8rem;
         }
 
         .seasons-arrow {
