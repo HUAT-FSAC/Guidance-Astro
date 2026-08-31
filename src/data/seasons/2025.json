@@ -2,7 +2,23 @@
     {
         "year": "2025",
         "carImg": "/assets/2025-car.jpg",
-        "explainImg": "/assets/2025-explain.jpg",
+        "specs": [
+            { "label": "质量", "value": "248 kg", "col": "left" },
+            { "label": "驱动形式", "value": "四电机四驱", "col": "right" },
+            { "label": "车架结构", "value": "单体壳承载式一体化", "col": "left" },
+            { "label": "峰值功率", "value": "80 kW", "col": "right" },
+            { "label": "前后轮距", "value": "1260 mm / 1240 mm", "col": "left" },
+            { "label": "动力电池材料", "value": "钴酸锂", "col": "right" },
+            { "label": "轴距", "value": "1605 mm", "col": "left" },
+            { "label": "最大电压/能量", "value": "579.6 V / 5.8 kWh", "col": "right" },
+            { "label": "冷却方式", "value": "水冷", "col": "left" },
+            { "label": "主传动形式", "value": "链传动", "col": "right" },
+            {
+                "label": "传感器",
+                "value": "128线激光雷达、单目摄像头、组合导航、非接触式光学传感器",
+                "fullWidth": true
+            }
+        ],
         "advisor": "金湘遂",
         "captain": "潘世泉",
         "members": [
@@ -52,10 +68,7 @@
                     "黄昭然"
                 ]
             },
-            {
-                "group": "项管部",
-                "names": ["房静琳", "熊傲然", "王颂扬"]
-            }
+            { "group": "项管部", "names": ["房静琳", "熊傲然", "王颂扬"] }
         ]
     }
 ]

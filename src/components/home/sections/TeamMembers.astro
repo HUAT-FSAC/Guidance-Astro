@@ -74,6 +74,11 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     }
 
     /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
+    @media (hover: hover) and (pointer: fine) {
+        .team-cta:hover {
+            color: #ffffff !important;
+        }
+    }
 
     @media (max-width: 480px) {
         .team-content { padding: 1.5rem 0; }
