@@ -32,31 +32,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # 仓库身份(可省略,默认当前仓库)
-          # repository: ${{ github.repository }}
-          # release-type: node (默认,从 package.json 读 version)
           release-type: node
-          # 显式声明要 bump 的文件(除 package.json 外)
-          # 这里 wrangler.json 没有 version 字段 → 不需要
-          # 如果将来加 multi-package,可改为 node-workspace
-          # --- 配置额外文件 ---
-          # extra-files: |
-          #   src/integrations/version.ts
-          # 首次需要它"接管"既有 CHANGELOG
-          config: |
-              {
-                "packages": {
-                  ".": {
-                    "package-name": "huat-fsac-docs",
-                    "changelog-path": "CHANGELOG.md",
-                    "bump-minor-pre-major": false,
-                    "bump-patch-for-minor-pre-major": false,
-                    "draft": false,
-                    "include-component-in-tag": false
-                  }
-                },
-                "release-type": "node"
-              }
 
       - name: Log release result
         if: steps.release.outputs.release_created == 'true'
