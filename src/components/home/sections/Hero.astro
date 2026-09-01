@@ -273,7 +273,7 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
     }
 
     .hero-desc {
-        color: #ffffff !important;
+        color: var(--fs-color-on-image); /* theme-contrast:allow */
         opacity: 0.92;
         margin: 0 auto 2.5rem auto;
         max-width: 720px;

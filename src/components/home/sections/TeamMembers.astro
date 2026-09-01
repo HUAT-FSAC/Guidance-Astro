@@ -76,7 +76,7 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
     @media (hover: hover) and (pointer: fine) {
         .team-cta:hover {
-            color: #ffffff !important;
+            color: var(--fs-color-on-accent) !important; /* theme-contrast:allow */
         }
     }
 

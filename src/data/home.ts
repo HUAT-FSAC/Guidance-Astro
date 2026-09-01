@@ -32,7 +32,7 @@ export interface ThemeOption {
 export interface SeasonSpec {
     label: string
     value: string
-    col?: 'left' | 'right'
+    col?: 'left' | 'right' | string
     fullWidth?: boolean
 }
 
