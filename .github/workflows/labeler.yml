@@ -1,0 +1,25 @@
+name: PR Labeler
+
+# 自动按改动路径打 area / size / 特殊 标签
+# 配置:.github/labeler.yml
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply labels from .github/labeler.yml
+        uses: actions/labeler@v5
+        with:
+          sync-labels: true
+          dot: true

@@ -68,6 +68,7 @@ pnpm dev                 # http://localhost:4321
 | `pnpm quality:theme`                | 主题对比度                                                        |
 | `pnpm quality:lighthouse`           | Lighthouse CI 断言                                                |
 | `pnpm deploy:worker`                | `build` + `wrangler deploy`(需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |
+| `make help`                         | 列出所有 `make` 快捷命令(`make dev/build/ci/deploy/secret-scan`)  |
 
 ---
 

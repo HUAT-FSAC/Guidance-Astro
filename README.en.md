@@ -55,7 +55,7 @@ pnpm dev                 # http://localhost:4321
 ### Common commands
 
 | Command                             | Description                                                           |
-| ----------------------------------- | --------------------------------------------------------------------- |
+| ----------------------------------- | --------------------------------------------------------------------- | --- | ----------- | ------------------------------------------------------------------ |
 | `pnpm dev`                          | Start dev server                                                      |
 | `pnpm build`                        | Production build (output in `dist/`)                                  |
 | `pnpm preview`                      | Preview the static build locally                                      |
@@ -68,7 +68,7 @@ pnpm dev                 # http://localhost:4321
 | `pnpm quality:bundle`               | Bundle budget check                                                   |
 | `pnpm quality:theme`                | Theme contrast check                                                  |
 | `pnpm quality:lighthouse`           | Lighthouse CI assertions                                              |
-| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |
+| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |     | `make help` | List all `make` shortcuts (`make dev/build/ci/deploy/secret-scan`) |
 
 ---
 

@@ -1,0 +1,99 @@
+# gitleaks 配置
+# 文档:https://github.com/gitleaks/gitleaks/blob/master/config/reference.md
+# 本文件只覆盖"仓库级扩展规则",基础规则集 [extend] useDefault 已包含 200+ 内置 pattern
+
+title = "HUAT FSAC Guidance-Astro"
+
+# 继承 gitleaks 默认规则(高置信度 API key / token / cloud creds)
+[extend]
+useDefault = true
+
+# ──────────────────────────────────────────────────────────────────────
+# 仓库级自定义规则 — 覆盖本仓常见的"假阳性"和"必须拦截"的模式
+# ──────────────────────────────────────────────────────────────────────
+
+# 1) Cloudflare API Token(必备,本仓 CI 部署依赖)
+[[rules]]
+id = "cloudflare-api-token"
+description = "Cloudflare API Token"
+regex = '''(?i)(?:cloudflare[_-]?(?:api[_-]?token|cf[_-]?token))\s*[:=]\s*['"]?([A-Za-z0-9_-]{40,})['"]?'''
+keywords = ["cloudflare_api_token", "cloudflare-api-token", "CLOUDFLARE_API_TOKEN"]
+tags = ["secret", "cloudflare"]
+
+# 2) Cloudflare Account ID(必备)
+[[rules]]
+id = "cloudflare-account-id"
+description = "Cloudflare Account ID"
+regex = '''(?i)(?:cloudflare[_-]?account[_-]?id)\s*[:=]\s*['"]?([a-f0-9]{32})['"]?'''
+keywords = ["cloudflare_account_id", "CLOUDFLARE_ACCOUNT_ID"]
+tags = ["secret", "cloudflare"]
+
+# 3) Feishu / WeCom Webhook(本仓 PR 通知用)
+[[rules]]
+id = "feishu-webhook"
+description = "Feishu webhook URL with secret token"
+regex = '''https://open\.feishu\.cn/open-apis/bot/v2/hook/[a-f0-9-]{20,}'''
+keywords = ["open.feishu.cn"]
+tags = ["webhook", "feishu"]
+
+[[rules]]
+id = "wecom-webhook"
+description = "WeCom (企业微信) webhook with key"
+regex = '''https://qyapi\.weixin\.qq\.com/cgi-bin/webhook/send\?key=[a-f0-9-]{20,}'''
+keywords = ["qyapi.weixin.qq.com"]
+tags = ["webhook", "wecom"]
+
+# 4) Umami Analytics 共享 URL / Website ID
+[[rules]]
+id = "umami-share-id"
+description = "Umami share URL (contains access token in path)"
+regex = '''https://cloud\.umami\.is/share/[A-Za-z0-9_-]{10,}'''
+keywords = ["cloud.umami.is/share"]
+tags = ["analytics", "umami"]
+# 允许在 README / docs 中保留(非 secret,只读 share link)
+# 触发等级 → info,仅记录
+
+# 5) 通用私人 token(JWT / PAT)
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token (ghp_/gho_/ghu_/ghs_/ghr_)"
+regex = '''gh[pousr]_[A-Za-z0-9]{36,}'''
+keywords = ["ghp_", "gho_", "ghu_", "ghs_", "ghr_"]
+tags = ["secret", "github"]
+
+# ──────────────────────────────────────────────────────────────────────
+# 允许列表(避免误报)
+# ──────────────────────────────────────────────────────────────────────
+[allowlist]
+paths = [
+    '''\.md$''',                  # 文档里的示例 / 占位 token
+    '''\.mdx$''',
+    '''README\.md$''',
+    '''CHANGELOG\.md$''',
+    '''\.example$''',
+    '''\.dev\.vars\.example$''',
+    '''docs/guides/.*\.md$''',    # 教程里出现的 webhook URL
+    '''coverage/.*''',
+    '''dist/.*''',
+    '''node_modules/.*''',
+    '''openwiki/.*''',
+]
+# 已知公开的 webhook(可在 docs/guides/ 出现)
+regexes = [
+    '''https://open\.feishu\.cn/open-apis/bot/v2/hook/00000000-0000-0000-0000-000000000000''',
+]
+stopwords = [
+    "your_token_here",
+    "your-secret",
+    "xxx",
+    "XXXX",
+    "placeholder",
+    "TODO_REPLACE",
+    "REPLACE_ME",
+    "EXAMPLE_TOKEN",
+    "<your-token>",
+    "CLOUDFLARE_API_TOKEN=__SET_ME__",
+    "CLOUDFLARE_ACCOUNT_ID=__SET_ME__",
+    "FEISHU_WEBHOOK_URL=__SET_ME__",
+    "WECOM_WEBHOOK_URL=__SET_ME__",
+]
