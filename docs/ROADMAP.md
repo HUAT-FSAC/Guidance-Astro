@@ -25,17 +25,14 @@
 | **告警闭环**          | Feishu/WeCom Webhook + Web Vitals 阈值告警                                                              | `checkPerformanceAndAlert` 12 用例 |
 | **官网评审整改**      | Hero 9MB→294KB、移动端双导航、SEO h1 唯一、@fontsource                                                  | 269 unit + 95 e2e                  |
 | **开源合规基线**      | MIT+HUAT FSAC、CODEOWNERS、CODE_OF_CONDUCT、SUPPORT、editorconfig、nvmrc、中英 README、Discussions 入口 | `pnpm install/lint/build`          |
+| **文档与架构梳理**    | ARCHITECTURE / CONTRIBUTING-content / ROADMAP / social-preview / welcome / stale / doc issue 模板       | `pnpm build` ✅ docs 可读          |
+| **自动化与发布**      | release-please / labeler / gitleaks + pre-commit / Makefile 22 targets                                  | `pnpm lint/build` + YAML/TOML OK   |
 
 ---
 
 ## 2. 当前在做 / 已规划
 
-任务由 [`docs/WORKFLOW.md §4`](./WORKFLOW.md#4-任务看板唯一任务表agent-读写此处) 滚动维护,本表只列**正在**或**已规划**且**未完成**的项。
-
-| 编号  | 任务                                                                                                                   | 优先级 | 状态   | 备注                       |
-| ----- | ---------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------------------------- |
-| T-014 | 文档与架构梳理(批 2):ARCHITECTURE / CONTRIBUTING-content / ROADMAP / social-preview / welcome / stale / doc issue 模板 | P1     | 进行中 | 详见 `docs/WORKFLOW.md §4` |
-| T-015 | 自动化与发布(批 3):release-please / labeler / secret scan / Makefile                                                   | P2     | 待办   | 依赖 T-014                 |
+> 暂无 — T-013~015 已于 2026-09-01 完成。新增需求请在 `docs/WORKFLOW.md §4` 追加后同步至此。
 
 ---
 

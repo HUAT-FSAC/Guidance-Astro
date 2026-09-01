@@ -55,9 +55,7 @@ jobs:
                     "include-component-in-tag": false
                   }
                 },
-                "release-type": "node",
-                "bootstrap-sha": "",
-                "last-release-sha": ""
+                "release-type": "node"
               }
 
       - name: Log release result

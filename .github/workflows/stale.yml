@@ -6,7 +6,7 @@ name: Close Stale Issues / PRs
 
 on:
   schedule:
-    - cron: '0 3 * * *' # 每天 UTC 11:00(亚洲时间晚 7 点)
+    - cron: '0 3 * * *' # 每天 UTC 03:00 / 北京时间 11:00
   workflow_dispatch:
 
 permissions:

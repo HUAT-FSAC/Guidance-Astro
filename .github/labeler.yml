@@ -81,13 +81,9 @@
         - max-changed-lines: 50
 
 'size:s':
-    - changed-files:
-        - all-globs-to-all-files: false
     - max-changed-lines: 100
 
 'size:m':
-    - changed-files:
-        - all-globs-to-all-files: false
     - max-changed-lines: 300
 
 # 不打 size:l/ xl — 留给维护者手动评估
