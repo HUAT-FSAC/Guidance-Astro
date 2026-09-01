@@ -147,16 +147,19 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) first.
 
 ## 📚 Documentation
 
-| File                                       | Description                      |
-| ------------------------------------------ | -------------------------------- |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)       | Dev setup, commits and PRs       |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | Community code of conduct        |
-| [SUPPORT.md](./SUPPORT.md)                 | Where to ask, discuss, contact   |
-| [SECURITY.md](./SECURITY.md)               | Private vulnerability disclosure |
-| [CHANGELOG.md](./CHANGELOG.md)             | Release history                  |
-| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Deployment guide                 |
-| [docs/WORKFLOW.md](./docs/WORKFLOW.md)     | Development flow & quality gates |
-| [docs/adr/](./docs/adr/)                   | Architecture Decision Records    |
+| File                                                           | Description                            |
+| -------------------------------------------------------------- | -------------------------------------- |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)                           | Dev setup, commits and PRs             |
+| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                     | Community code of conduct              |
+| [SUPPORT.md](./SUPPORT.md)                                     | Where to ask, discuss, contact         |
+| [SECURITY.md](./SECURITY.md)                                   | Private vulnerability disclosure       |
+| [CHANGELOG.md](./CHANGELOG.md)                                 | Release history                        |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                     | Deployment guide                       |
+| [docs/WORKFLOW.md](./docs/WORKFLOW.md)                         | Development flow & quality gates       |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                           | System architecture & layout           |
+| [docs/ROADMAP.md](./docs/ROADMAP.md)                           | Roadmap & directional TODOs            |
+| [docs/adr/](./docs/adr/)                                       | Architecture Decision Records          |
+| [docs/CONTRIBUTING-content.md](./docs/CONTRIBUTING-content.md) | MDX / assets / sidebar authoring guide |
 
 ---
 

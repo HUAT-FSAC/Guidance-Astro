@@ -1,0 +1,68 @@
+name: 文档 / Documentation
+description: 报告文档错误、缺漏、过期,或建议改进内容组织
+title: '[Docs] <页面/章节>: '
+labels: 'type:improvement, area:docs, area:content, priority:p2, risk:low, status:backlog'
+body:
+    - type: markdown
+      attributes:
+          value: |
+              👋 感谢帮助改进文档!请尽量提供**具体页面**与**期望 vs 实际**的差异。
+              > 安全相关请用 [私有 Advisory](https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new),不要在此提。
+
+    - type: input
+      id: page
+      attributes:
+          label: 涉及页面或章节
+          description: 例如 `docs/DEPLOYMENT.md` / `src/content/docs/zh/team.mdx` / 首页 Hero
+          placeholder: docs/...
+      validations:
+          required: true
+
+    - type: dropdown
+      id: type
+      attributes:
+          label: 类别
+          description: 选择最贴近的一项
+          options:
+              - 错别字 / 语法
+              - 链接失效
+              - 内容过期(代码、版本、数据)
+              - 缺少说明 / 解释不清
+              - 排版 / 格式
+              - 翻译缺失或不一致
+              - 其他
+      validations:
+          required: true
+
+    - type: textarea
+      id: current
+      attributes:
+          label: 当前内容
+          description: 引用或描述现在的样子
+          placeholder: 当前写的是...
+      validations:
+          required: true
+
+    - type: textarea
+      id: expected
+      attributes:
+          label: 期望内容 / 建议改法
+          description: 你觉得应该怎么写
+          placeholder: 建议改成...
+      validations:
+          required: true
+
+    - type: input
+      id: screenshots
+      attributes:
+          label: 截图链接(可选)
+          description: 拖拽或粘贴图片 URL,辅以说明
+
+    - type: checkboxes
+      id: checks
+      attributes:
+          label: 自检
+          options:
+              - label: 我已搜索重复 Issue / PR
+              - label: 我已阅读 [CONTRIBUTING.md](../../blob/main/CONTRIBUTING.md) 与 [docs/CONTRIBUTING-content.md](../../blob/main/docs/CONTRIBUTING-content.md)
+              - label: 我愿意直接提 PR 修复(勾选后,维护者可能直接把本 Issue 转给你)

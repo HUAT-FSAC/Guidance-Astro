@@ -149,16 +149,19 @@ import myImage from '../../assets/docs/2025/感知/lidar-setup.png'
 
 ## 📚 文档
 
-| 文件                                       | 说明                          |
-| ------------------------------------------ | ----------------------------- |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)       | 如何搭建环境、提交代码与开 PR |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | 社区行为准则                  |
-| [SUPPORT.md](./SUPPORT.md)                 | 提问、讨论、联系方式          |
-| [SECURITY.md](./SECURITY.md)               | 安全漏洞的私下上报方式        |
-| [CHANGELOG.md](./CHANGELOG.md)             | 版本变更记录                  |
-| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | 部署说明                      |
-| [docs/WORKFLOW.md](./docs/WORKFLOW.md)     | 开发流程与质量门禁            |
-| [docs/adr/](./docs/adr/)                   | 架构决策记录(ADR)             |
+| 文件                                                           | 说明                          |
+| -------------------------------------------------------------- | ----------------------------- |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)                           | 如何搭建环境、提交代码与开 PR |
+| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                     | 社区行为准则                  |
+| [SUPPORT.md](./SUPPORT.md)                                     | 提问、讨论、联系方式          |
+| [SECURITY.md](./SECURITY.md)                                   | 安全漏洞的私下上报方式        |
+| [CHANGELOG.md](./CHANGELOG.md)                                 | 版本变更记录                  |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                     | 部署说明                      |
+| [docs/WORKFLOW.md](./docs/WORKFLOW.md)                         | 开发流程与质量门禁            |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                           | 系统架构与目录职责            |
+| [docs/ROADMAP.md](./docs/ROADMAP.md)                           | 路线图与方向性 TODO           |
+| [docs/adr/](./docs/adr/)                                       | 架构决策记录(ADR)             |
+| [docs/CONTRIBUTING-content.md](./docs/CONTRIBUTING-content.md) | MDX/资产/侧边栏 编写规范      |
 
 ---
 
