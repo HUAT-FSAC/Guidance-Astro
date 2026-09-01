@@ -89,16 +89,19 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
     ) : (
         <div class="hero-bg hero-bg-0" role="presentation" aria-hidden="true" data-parallax data-parallax-speed="0.25"></div>
     )}
+    <noscript>
+        <style>.hero-bg { opacity: 1 !important; }</style>
+    </noscript>
     <div class="hero-overlay" role="presentation" aria-hidden="true"></div>
 
     <div class="hero-inner">
-        <div class="hero-label">FORMULA STUDENT</div>
-        <h1 class="hero-heading">{title}</h1>
-        {subtitle && <div class="hero-sub">{subtitle}</div>}
-        {description && <p class="hero-desc">{description}</p>}
+        <div class="hero-label stagger-item">FORMULA STUDENT</div>
+        <h1 class="hero-heading stagger-item">{title}</h1>
+        {subtitle && <div class="hero-sub stagger-item">{subtitle}</div>}
+        {description && <p class="hero-desc stagger-item">{description}</p>}
 
         <a
-            class="hero-cta fs-cta-clip"
+            class="hero-cta fs-cta-clip stagger-item"
             href={ctaLink}
             role="button"
             data-astro-prefetch="hover"
@@ -191,6 +194,9 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         pointer-events: none;
         overflow: hidden;
     }
+    .hero-bg-0 {
+        opacity: 1;
+    }
     .hero-bg picture,
     .hero-bg img {
         display: block;
@@ -241,11 +247,21 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         font-weight: 900;
         letter-spacing: -0.04em;
         line-height: 1;
-        /* 强制反白 + 强阴影，保证在繁忙照片上可读（WCAG AA > 7:1）；使用语义令牌以通过主题对比检测 */
         color: var(--fs-color-on-image) !important;
         text-shadow: 0 2px 20px rgba(0,0,0,0.55), 0 8px 32px rgba(0,0,0,0.45);
         border-bottom: none;
         padding-bottom: 0;
+        /* 文字发光效果 */
+        animation: textGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+        from {
+            text-shadow: 0 2px 20px rgba(0,0,0,0.55), 0 8px 32px rgba(0,0,0,0.45);
+        }
+        to {
+            text-shadow: 0 2px 20px rgba(0,0,0,0.55), 0 8px 32px rgba(0,0,0,0.45), 0 0 40px rgba(59, 130, 246, 0.3);
+        }
     }
 
     .hero-sub {
@@ -257,7 +273,7 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
     }
 
     .hero-desc {
-        color: var(--fs-color-on-image); /* theme-contrast:allow */ 
+        color: var(--fs-color-on-image); /* theme-contrast:allow */
         opacity: 0.92;
         margin: 0 auto 2.5rem auto;
         max-width: 720px;
@@ -274,16 +290,31 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         border-color: #2563eb !important;
         box-shadow: 0 8px 24px rgba(37,99,235,0.35);
         text-shadow: none;
+        /* 微妙的脉冲动画吸引注意 */
+        animation: ctaPulse 2s ease-in-out infinite;
     }
     .hero-cta::before {
         display: none;
     }
-    .hero-cta:hover {
-        background: #1d4ed8 !important;
-        border-color: #1d4ed8 !important;
-        color: var(--fs-color-on-accent) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgba(29,78,216,0.45);
+
+    @keyframes ctaPulse {
+        0%, 100% {
+            box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+        }
+        50% {
+            box-shadow: 0 8px 32px rgba(37,99,235,0.5), 0 0 0 4px rgba(37,99,235,0.1);
+        }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .hero-cta:hover {
+            background: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
+            color: var(--fs-color-on-accent) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(29,78,216,0.45);
+            animation: none;
+        }
     }
 
     @media (max-width: 900px) {

@@ -15,7 +15,6 @@ describe('monitoring', () => {
     beforeEach(() => {
         vi.resetModules()
         process.env = { ...originalEnv }
-        // @ts-expect-error: mock
         global.fetch = vi.fn(() => Promise.resolve({ ok: true } as Response))
         vi.spyOn(console, 'error').mockImplementation(() => {})
         vi.spyOn(console, 'log').mockImplementation(() => {})
@@ -79,7 +78,6 @@ describe('monitoring', () => {
 
     it('sendAlert handles fetch failure', async () => {
         process.env.SLACK_WEBHOOK_URL = 'https://slack.example.com/hook'
-        // @ts-expect-error: mock
         global.fetch = vi.fn(() => Promise.reject(new Error('network fail')))
         await sendAlert('error', 'fail test')
         expect(console.error).toHaveBeenCalled()

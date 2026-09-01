@@ -1,0 +1,89 @@
+# actions/labeler 配置:按改动路径/分支自动打 PR 标签
+# 用法:PR 打开/同步时,.github/workflows/labeler.yml 调用本文件
+# 文档:https://github.com/actions/labeler
+
+# --- 改动区域 ---
+'area:frontend':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'src/components/**'
+              - 'src/pages/**'
+              - 'src/styles/**'
+              - 'src/assets/**'
+              - 'src/middleware.ts'
+
+'area:backend':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'src/integrations/**'
+              - 'src/config/**'
+              - 'src/utils/**'
+              - 'src/middleware.ts'
+
+'area:docs':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'src/content/docs/**'
+              - 'src/content/i18n/**'
+              - '.config/sidebar.mjs'
+
+'area:content':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'src/content/docs/**'
+              - 'src/content/i18n/**'
+              - 'src/data/**'
+              - 'src/content.config.ts'
+
+'area:devops':
+    - changed-files:
+        - any-glob-to-any-file:
+              - '.github/**'
+              - 'wrangler.json'
+              - 'astro.config.mjs'
+              - 'scripts/**'
+              - 'pnpm-workspace.yaml'
+
+'area:quality':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'tests/**'
+              - 'vitest.config.ts'
+              - 'playwright.config.ts'
+              - '.config/lighthouserc.json'
+              - '.config/lint-staged.config.mjs'
+              - '.config/commitlint.config.cjs'
+              - 'eslint.config.mjs'
+              - 'prettier.config.cjs'
+
+# --- 改动类型(按文件名/路径前缀推断) ---
+'area:docs-content':
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'src/content/docs/**'
+              - 'src/content/i18n/**'
+
+# --- 特殊标记 ---
+'breaking-change':
+    - base-branch: 'main'
+    - changed-files:
+        - any-glob-to-any-file:
+              - 'astro.config.mjs'
+              - 'src/middleware.ts'
+              - 'wrangler.json'
+
+# --- 体量提示 ---
+'size:xs':
+    - changed-files:
+        - all-globs-to-all-files:
+              - '**/*.md'
+              - '**/*.mdx'
+        - max-changed-lines: 50
+
+'size:s':
+    - max-changed-lines: 100
+
+'size:m':
+    - max-changed-lines: 300
+
+# 不打 size:l/ xl — 留给维护者手动评估

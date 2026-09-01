@@ -1,0 +1,33 @@
+# EditorConfig: https://editorconfig.org
+# 统一编辑器行为,避免不同 IDE 引入风格差异
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+# Markdown 文档不强制 max_line_length(中文换行点不固定)
+[*.{md,mdx}]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Astro / Vue / Svelte 单文件组件
+[*.{astro,vue,svelte}]
+indent_size = 4
+
+# 前端样式 / 标记语言
+[*.{html,css,scss,less,json,yml,yaml,toml}]
+indent_size = 2
+
+# 脚本类
+[*.{sh,bash}]
+indent_size = 4
+
+# Makefile 必须用 Tab
+[Makefile]
+indent_style = tab

@@ -2,7 +2,63 @@
     {
         "year": "2024",
         "carImg": "/assets/2024-car.jpg",
-        "explainImg": "/assets/2024-explain.jpg",
+        "specs": [
+            {
+                "label": "车架结构",
+                "value": "钢管桁架结构",
+                "col": "left"
+            },
+            {
+                "label": "车身材料",
+                "value": "碳纤维复合材料",
+                "col": "right"
+            },
+            {
+                "label": "悬架形式",
+                "value": "不等长双A臂推杆/拉杆悬挂",
+                "col": "left"
+            },
+            {
+                "label": "总长/总高",
+                "value": "2910mm / 1140mm",
+                "col": "right"
+            },
+            {
+                "label": "轴距",
+                "value": "1550mm",
+                "col": "left"
+            },
+            {
+                "label": "前后轮距",
+                "value": "1200mm / 1160mm",
+                "col": "right"
+            },
+            {
+                "label": "整备质量",
+                "value": "255 KG",
+                "col": "left"
+            },
+            {
+                "label": "电机型号",
+                "value": "EXRAX228",
+                "col": "right"
+            },
+            {
+                "label": "峰值功率",
+                "value": "100kW",
+                "col": "left"
+            },
+            {
+                "label": "电池类型",
+                "value": "钴酸锂",
+                "col": "right"
+            },
+            {
+                "label": "传感器",
+                "value": "激光雷达×1、单目摄像头×1、组合惯导×1",
+                "fullWidth": true
+            }
+        ],
         "advisor": "指导老师",
         "captain": "队长姓名",
         "members": [

@@ -1,0 +1,96 @@
+name: Release Please
+
+# release-please 由 googleapis 维护,基于 Conventional Commits 自动:
+# 1) 维护 CHANGELOG.md(已存在 → 追加,不存在 → 由它创建)
+# 2) bump package.json / wrangler.json / 任意 release-as 配置的版本号
+# 3) 创建一个 "Release PR",合入后自动打 tag + 写 GitHub Release
+#
+# 首次运行会创建一个 "chore(main): release 0.0.1" 的初始化 PR,
+# 接受它之后即开始按提交生成 Release。
+#
+# 前置(GitHub 仓库侧手动一次):
+#   Settings → Actions → General → Workflow permissions
+#   → "Allow GitHub Actions to create and approve pull requests" ✅
+# 详见 docs/ROADMAP.md / docs/PROJECT_MANAGEMENT_MODEL.md
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write # 用于 provenance 签名(可选)
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Please
+        uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # 仓库身份(可省略,默认当前仓库)
+          # repository: ${{ github.repository }}
+          # release-type: node (默认,从 package.json 读 version)
+          release-type: node
+          # 显式声明要 bump 的文件(除 package.json 外)
+          # 这里 wrangler.json 没有 version 字段 → 不需要
+          # 如果将来加 multi-package,可改为 node-workspace
+          # --- 配置额外文件 ---
+          # extra-files: |
+          #   src/integrations/version.ts
+          # 首次需要它"接管"既有 CHANGELOG
+          config: |
+              {
+                "packages": {
+                  ".": {
+                    "package-name": "huat-fsac-docs",
+                    "changelog-path": "CHANGELOG.md",
+                    "bump-minor-pre-major": false,
+                    "bump-patch-for-minor-pre-major": false,
+                    "draft": false,
+                    "include-component-in-tag": false
+                  }
+                },
+                "release-type": "node"
+              }
+
+      - name: Log release result
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          echo "✅ Release created: ${{ steps.release.outputs.tag_name }}"
+          echo "📦 Assets: ${{ steps.release.outputs.upload_url }}"
+
+  # ──────────────────────────────────────────────────────────────────────
+  # release-please 合入 tag 后,自动构建并发布 npm prerelease
+  # 当前仓库是 private,没有 publish 流程,只做镜像/通知
+  # 如未来要 publish,加 publish-npm job 即可
+  # ──────────────────────────────────────────────────────────────────────
+
+  # 失败/异常通过 GitHub Issue 报告
+  notify-failure:
+    name: Notify Release Failure
+    if: failure()
+    needs: release-please
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const title = `⚠️ release-please failed on ${context.sha.slice(0, 7)}`
+            const body = [
+              '`release-please` 工作流失败,可能影响 Release PR 正常生成。',
+              '',
+              `- Run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              `- Commit: ${context.sha}`,
+              '',
+              '请维护者检查日志。',
+            ].join('\n')
+            await github.rest.issues.create({ owner, repo, title, body, labels: ['area:devops', 'priority:p1'] })

@@ -29,10 +29,18 @@ export interface ThemeOption {
     accent: string
 }
 
+export interface SeasonSpec {
+    label: string
+    value: string
+    col?: 'left' | 'right' | string
+    fullWidth?: boolean
+}
+
 export interface SeasonItem {
     year: string
     carImg: string
-    explainImg: string
+    explainImg?: string
+    specs?: SeasonSpec[]
     advisor?: string // 指导老师
     captain?: string // 队长
     members?: {
