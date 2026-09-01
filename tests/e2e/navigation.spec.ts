@@ -88,7 +88,7 @@ test.describe('导航功能', () => {
 
     test('英文 2025 赛季文档入口可访问', async ({ page }) => {
         await page.goto('/en/archive/2025/')
-        await expect(page.locator('h1#_top')).toContainText('2025 Season Documentation Center')
+        await expect(page).toHaveTitle(/2025 Season Documentation Center/)
         await expect(page.locator('body')).toContainText('Department Guide')
     })
 

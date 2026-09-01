@@ -14,14 +14,14 @@ interface Frontmatter {
 }
 
 // 获取当前页面的数据
-const { entry } = Astro.props as { entry?: { data?: Frontmatter } };
+const { entry } = Astro.props;
 const frontmatter = (entry?.data as unknown as Frontmatter) || { title: "" };
 
 // 可以在 frontmatter 中设置 comments: false 来禁用评论
 const showComments = entry && frontmatter.comments !== false;
 ---
 
-<StarlightPage frontmatter={frontmatter}>
+<StarlightPage frontmatter={frontmatter} {...Astro.props}>
     <slot />
     {showComments && <Giscus theme="dark" />}
 </StarlightPage>
