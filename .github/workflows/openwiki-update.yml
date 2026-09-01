@@ -2,9 +2,8 @@ name: OpenWiki Update
 
 on:
   workflow_dispatch:
-  # 定时触发已禁用(分支 fix/disable-openwiki)：需手动触发或恢复 schedule
-  # schedule:
-  #   - cron: "0 8 * * *"
+  schedule:
+    - cron: "0 8 * * *"
 
 permissions:
   contents: write
