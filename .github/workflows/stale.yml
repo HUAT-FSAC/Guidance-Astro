@@ -52,6 +52,4 @@ jobs:
             status:review
             area:devops
             work-in-progress
-          # 不去戳锁定的、里程碑里的
-          only: issues
           operations-per-run: 50
