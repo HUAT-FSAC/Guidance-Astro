@@ -1121,3 +1121,92 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         transform: none;
     }
 }
+
+/* ==================== 前端美化层（2026-09 前端美学迭代） ==================== */
+
+/* 品牌选区：蓝底白字，两主题一致，呼应「极速蓝」识别色 */
+::selection {
+    background: rgba(37, 99, 235, 0.85);
+    color: #ffffff; /* theme-contrast:allow */
+}
+
+/* 细滚动条：中性灰隐入界面，悬停提亮为 accent */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 140, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 140, 0.35);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.55);
+}
+
+/* 键盘焦点环：accent 外描边，替代浏览器默认蓝圈 */
+:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* 正文链接：下划线从左扫入（Emil Kowalski 式入场），替代瞬变 border */
+.sl-markdown-content a {
+    border-bottom-color: transparent;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    padding-bottom: 1px;
+    transition: background-size var(--transition-normal);
+}
+
+.sl-markdown-content a:hover {
+    border-bottom-color: transparent;
+    background-size: 100% 1px;
+}
+
+/* 修复：亮色模式卡片 hover 误用深色渐变，补浅色等价态 */
+:root[data-theme='light'] .sl-link-card:hover,
+:root[data-theme='light'] .card:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%) !important;
+}
+
+/* LinkCard 箭头微交互：悬停右滑点亮，暗示「可前往」 */
+.sl-link-card .icon {
+    transition:
+        transform var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.sl-link-card:hover .icon {
+    transform: translateX(4px);
+    color: var(--sl-color-accent);
+}
+
+/* TOC / 侧边栏当前项：颜色过渡与内容滚动节奏一致 */
+nav.sidebar a,
+starlight-toc a {
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+/* 文档锚点平滑滚动：reduced-motion 用户自动豁免 */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}

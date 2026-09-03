@@ -83,6 +83,10 @@ export default defineConfig({
                         /site-search/,
                         /pagefind/,
                         /dialog/,
+                        // 全局美化层：伪类/通用选择器无 class 锚点，会被 purgecss 误删
+                        /focus-visible/,
+                        /scrollbar/,
+                        /::selection/,
                     ],
                     greedy: [/sl-/, /starlight/, /site-search/, /pagefind/, /sidebar/, /main-pane/],
                 },

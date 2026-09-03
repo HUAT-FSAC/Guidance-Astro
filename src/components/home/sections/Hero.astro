@@ -216,6 +216,34 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         pointer-events: none;
     }
 
+    /* 滚动提示：底部居中下滑箭头，暗示首屏之下仍有内容 */
+    .hero-v2::after {
+        content: '';
+        position: absolute;
+        bottom: 1.5rem;
+        left: calc(50% - 6px);
+        width: 12px;
+        height: 12px;
+        border-left: 2px solid rgba(255, 255, 255, 0.75);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+        transform: rotate(-45deg);
+        animation: heroScrollHint 2.2s var(--ease-out) infinite;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    @keyframes heroScrollHint {
+        0%,
+        100% {
+            opacity: 0.35;
+            margin-top: 0;
+        }
+        50% {
+            opacity: 1;
+            margin-top: 6px;
+        }
+    }
+
     .hero-inner {
         position: relative;
         z-index: 3;
