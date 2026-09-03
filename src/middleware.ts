@@ -1,51 +1,12 @@
-import { defineMiddleware } from 'astro:middleware'
-import { applyStandardHeaders, generateNonce } from './config/security'
-
-// 给 HTML 中所有 <script> 标签注入 nonce 属性（跳过已带 nonce 的）
-function injectNonceIntoHtml(html: string, nonce: string): string {
-    return html.replace(/<script(?=[\s>])(?![^>]*\bnonce=)/g, `<script nonce="${nonce}"`)
-}
-
-// 按路由裁剪无用 CSS（例如中文页不加载英文专属样式，避免 18KB 浪费）
-function pruneRouteCss(html: string, pathname: string): string {
-    // 英文 locale 样式仅在 /en/* 下需要（兼容有无尾斜杠）
-    const isEn = pathname === '/en' || pathname.startsWith('/en/')
-    if (!isEn) {
-        html = html.replace(/<link[^>]*href="\/_astro\/en\.[^"]*\.css"[^>]*>\n?/g, '')
-    }
-    return html
-}
-
-export const onRequest = defineMiddleware(async (context, next) => {
-    const { pathname } = context.url
-
-    // 生成 CSP nonce（每个请求唯一）
-    const nonce = generateNonce()
-
-    // 将 nonce 存储在 locals 中，供页面内联脚本使用
-    ;(context.locals as Record<string, unknown>).cspNonce = nonce
-
-    const response = await next()
-
-    const contentType = response.headers.get('content-type') || ''
-
-    // 页面 HTML 注入 nonce 才能通过严格 CSP；nonce 每请求不同，禁止 CDN/共享缓存
-    if (contentType.includes('text/html')) {
-        const html = await response.text()
-        const body = pruneRouteCss(injectNonceIntoHtml(html, nonce), pathname)
-        const secureResponse = applyStandardHeaders(
-            new Response(body, {
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers,
-            }),
-            pathname,
-            nonce
-        )
-        secureResponse.headers.set('Content-Type', 'text/html;charset=UTF-8')
-        secureResponse.headers.set('Cache-Control', 'private, no-cache, must-revalidate')
-        return secureResponse
-    }
-
-    return applyStandardHeaders(response, pathname, nonce)
-})
+/**
+ * Middleware 入口
+ *
+ * 实现已拆分为 src/middleware/pipeline.ts 及以下 step：
+ * - src/middleware/nonce.ts
+ * - src/middleware/html-transform.ts
+ * - src/middleware/security-headers.ts
+ * - src/middleware/cache-policy.ts
+ *
+ * Astro 通过本文件的 `onRequest` 导出自动发现并运行 middleware。
+ */
+export { onRequest } from './middleware/pipeline'
