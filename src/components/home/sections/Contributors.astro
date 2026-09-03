@@ -1,0 +1,471 @@
+---
+/**
+ * 贡献者展示组件 (Contributors Component)
+ * 支持中英文双语模式，展示核心贡献者及其角色、提交与 GitHub 主页
+ */
+
+interface Props {
+    lang?: 'zh' | 'en'
+}
+
+const { lang = 'zh' } = Astro.props
+
+interface Contributor {
+    name: string
+    handle: string
+    avatar: string
+    fallbackAvatar: string
+    github: string
+    roleZh: string
+    roleEn: string
+    badgeZh: string
+    badgeEn: string
+    descZh: string
+    descEn: string
+}
+
+const contributors: Contributor[] = [
+    {
+        name: 'Kerwin',
+        handle: 'zhangjszs',
+        avatar: 'https://avatars.githubusercontent.com/u/122247373?v=4',
+        fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=zhangjszs&backgroundColor=transparent',
+        github: 'https://github.com/zhangjszs',
+        roleZh: '项目发起人 · 全栈架构',
+        roleEn: 'Project Lead · Full-Stack Architect',
+        badgeZh: '225+ Commits',
+        badgeEn: '225+ Commits',
+        descZh: 'Astro 7 + Cloudflare Workers SSR 重构、组件系统、自动化质量门禁与全栈基础设施。',
+        descEn: 'Astro 7 + Cloudflare SSR architecture, component system, CI/CD quality gates and core infrastructure.',
+    },
+    {
+        name: 'NekoRectifier',
+        handle: 'nekorect',
+        avatar: 'https://avatars.githubusercontent.com/u/167241872?v=4',
+        fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=nekorect&backgroundColor=transparent',
+        github: 'https://github.com/nekorect',
+        roleZh: '核心贡献者 · 文档与国际化',
+        roleEn: 'Core Contributor · Docs & i18n',
+        badgeZh: '116+ Commits',
+        badgeEn: '116+ Commits',
+        descZh: '早期项目奠基、文档中心基础设施搭建、中英双语 i18n 体系、学习路线图与资源优化。',
+        descEn: 'Early foundation, documentation center infrastructure, bilingual i18n architecture, and learning roadmaps.',
+    },
+    {
+        name: 'wsy-huat',
+        handle: 'wsyhuat',
+        avatar: 'https://avatars.githubusercontent.com/u/213669467?v=4',
+        fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=wsyhuat&backgroundColor=transparent',
+        github: 'https://github.com/wsyhuat',
+        roleZh: '贡献者 · 动效与交互哲学',
+        roleEn: 'Contributor · Motion & UX',
+        badgeZh: 'Motion & UX',
+        badgeEn: 'Motion & UX',
+        descZh: 'Emil Kowalski 动效哲学实践、自定义缓动曲线、按钮按压反馈、鼠标追踪光效与无障碍适配。',
+        descEn: 'Emil Kowalski motion philosophy, custom easing curves, tactile press feedback, and accessibility.',
+    },
+]
+
+const t = {
+    zh: {
+        title: '贡献者',
+        subtitle: 'CONTRIBUTORS',
+        intro: '感谢为 HUAT FSAC 数字化与技术文档建设倾注心血的每一位开发者。',
+        viewGraph: '在 GitHub 上查看完整图谱',
+        joinUs: '参与代码或文档贡献',
+    },
+    en: {
+        title: 'Contributors',
+        subtitle: 'CONTRIBUTORS',
+        intro: 'Heartfelt thanks to every developer building the digital foundations of HUAT FSAC.',
+        viewGraph: 'View Full Graph on GitHub',
+        joinUs: 'Contribute Code or Docs',
+    },
+}[lang]
+---
+
+<section class="contributors-section" aria-label={t.title}>
+    <div class="contributors-container">
+        <div class="contributors-header">
+            <h2 class="contributors-title">{t.title}</h2>
+            <span class="contributors-subtitle">{t.subtitle}</span>
+            <p class="contributors-intro">{t.intro}</p>
+        </div>
+
+        <div class="contributors-grid">
+            {
+                contributors.map((c) => (
+                    <div class="contributor-card reveal-upon-scroll">
+                        <div class="card-glow" aria-hidden="true" />
+                        <div class="contributor-avatar-wrapper">
+                            <img
+                                src={c.avatar}
+                                alt={c.name}
+                                class="contributor-avatar"
+                                loading="lazy"
+                                decoding="async"
+                                width="88"
+                                height="88"
+                                onerror={`this.onerror=null;this.src='${c.fallbackAvatar}';`}
+                            />
+                            <div class="avatar-ring" aria-hidden="true" />
+                        </div>
+
+                        <div class="contributor-info">
+                            <div class="name-row">
+                                <h3 class="contributor-name">{c.name}</h3>
+                                <span class="contributor-badge">{lang === 'zh' ? c.badgeZh : c.badgeEn}</span>
+                            </div>
+
+                            <a
+                                href={c.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="contributor-handle"
+                                aria-label={`${c.name} GitHub profile @${c.handle}`}
+                            >
+                                <svg class="github-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                                </svg>
+                                <span>@{c.handle}</span>
+                            </a>
+
+                            <div class="contributor-role">{lang === 'zh' ? c.roleZh : c.roleEn}</div>
+                            <p class="contributor-desc">{lang === 'zh' ? c.descZh : c.descEn}</p>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+
+        <div class="contributors-footer">
+            <a
+                href="https://github.com/HUAT-FSAC/Guidance-Astro/graphs/contributors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-contributors-graph"
+            >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>{t.viewGraph}</span>
+            </a>
+            <a
+                href="https://github.com/HUAT-FSAC/Guidance-Astro/blob/main/.github/CONTRIBUTING.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-contribute-cta"
+            >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                <span>{t.joinUs}</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .contributors-section {
+        position: relative;
+        padding: 5rem 2rem 4rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .contributors-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .contributors-header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+    }
+
+    .contributors-title {
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
+        font-weight: 800;
+        margin: 0;
+        color: var(--sl-color-text);
+        border-bottom: 3px solid var(--sl-color-accent);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+        letter-spacing: -0.02em;
+    }
+
+    .contributors-subtitle {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--sl-color-accent);
+    }
+
+    .contributors-intro {
+        margin-top: 1.25rem;
+        font-size: 1.1rem;
+        color: var(--fs-color-text, var(--sl-color-gray-2));
+        opacity: 0.85;
+        max-width: 680px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    .contributors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3.5rem;
+    }
+
+    .contributor-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2.5rem 2rem 2.25rem;
+        background: var(--fs-color-card-bg, rgba(255, 255, 255, 0.03));
+        border: 1px solid var(--fs-border-subtle, rgba(255, 255, 255, 0.08));
+        border-radius: 1.5rem;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    :global([data-theme='light']) .contributor-card {
+        background: rgba(255, 255, 255, 0.75);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .contributor-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--sl-color-accent);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25),
+                        0 0 20px rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.15);
+        }
+
+        .contributor-card:active {
+            transform: scale(0.98) translateY(-3px);
+        }
+    }
+
+    .card-glow {
+        position: absolute;
+        inset: -50%;
+        background: radial-gradient(circle at 50% 0%, var(--sl-color-accent), transparent 65%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+
+    .contributor-card:hover .card-glow {
+        opacity: 0.08;
+    }
+
+    .contributor-avatar-wrapper {
+        position: relative;
+        width: 96px;
+        height: 96px;
+        margin-bottom: 1.5rem;
+        z-index: 1;
+    }
+
+    .contributor-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--fs-bg-base, #111);
+        border: 3px solid var(--sl-color-accent);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .contributor-card:hover .contributor-avatar {
+        transform: scale(1.05);
+    }
+
+    .avatar-ring {
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        border: 2px dashed var(--sl-color-accent);
+        opacity: 0.4;
+        animation: spin 20s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .avatar-ring {
+            animation: none;
+        }
+    }
+
+    .contributor-info {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+    }
+
+    .name-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.35rem;
+    }
+
+    .contributor-name {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--sl-color-text);
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    .contributor-badge {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 9999px;
+        background: rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.12);
+        color: var(--sl-color-accent);
+        border: 1px solid rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.25);
+        letter-spacing: 0.02em;
+    }
+
+    .contributor-handle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        color: var(--sl-color-accent);
+        text-decoration: none;
+        margin-bottom: 0.85rem;
+        font-family: var(--sl-font-mono, monospace);
+        opacity: 0.9;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .contributor-handle:hover {
+        opacity: 1;
+        transform: translateX(2px);
+    }
+
+    .contributor-role {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--sl-color-text);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--fs-border-subtle, rgba(255, 255, 255, 0.08));
+    }
+
+    .contributor-desc {
+        font-size: 0.88rem;
+        color: var(--fs-color-text, var(--sl-color-gray-2));
+        opacity: 0.8;
+        line-height: 1.6;
+        margin: 0;
+        text-align: center;
+    }
+
+    .contributors-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-contributors-graph,
+    .btn-contribute-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.85rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                    background 0.2s ease,
+                    border-color 0.2s ease;
+    }
+
+    .btn-contributors-graph {
+        background: var(--fs-color-card-bg, rgba(255, 255, 255, 0.04));
+        border: 1px solid var(--fs-border-subtle, rgba(255, 255, 255, 0.12));
+        color: var(--sl-color-text);
+    }
+
+    .btn-contributors-graph:hover {
+        border-color: var(--sl-color-accent);
+        color: var(--sl-color-accent);
+        transform: translateY(-2px);
+    }
+
+    .btn-contribute-cta {
+        background: var(--sl-color-accent);
+        border: 1px solid var(--sl-color-accent);
+        color: var(--sl-color-black, #000);
+    }
+
+    :global([data-theme='dark']) .btn-contribute-cta {
+        color: #0b0b0f;
+    }
+
+    .btn-contribute-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.35);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .btn-contributors-graph:active,
+        .btn-contribute-cta:active {
+            transform: scale(0.97);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contributors-section {
+            padding: 3.5rem 1.25rem 2.5rem;
+        }
+
+        .contributors-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .contributors-footer {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-contributors-graph,
+        .btn-contribute-cta {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

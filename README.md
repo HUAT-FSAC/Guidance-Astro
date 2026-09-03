@@ -152,14 +152,14 @@ import myImage from '../../assets/docs/2025/感知/lidar-setup.png'
 
 | 文件                                                           | 说明                          |
 | -------------------------------------------------------------- | ----------------------------- |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)                           | 如何搭建环境、提交代码与开 PR |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                     | 社区行为准则                  |
-| [SUPPORT.md](./SUPPORT.md)                                     | 提问、讨论、联系方式          |
-| [SECURITY.md](./SECURITY.md)                                   | 安全漏洞的私下上报方式        |
+| [CONTRIBUTING.md](./.github/CONTRIBUTING.md)                   | 如何搭建环境、提交代码与开 PR |
+| [CODE_OF_CONDUCT.md](./.github/CODE_OF_CONDUCT.md)             | 社区行为准则                  |
+| [SUPPORT.md](./.github/SUPPORT.md)                             | 提问、讨论、联系方式          |
+| [SECURITY.md](./.github/SECURITY.md)                           | 安全漏洞的私下上报方式        |
 | [CHANGELOG.md](./CHANGELOG.md)                                 | 版本变更记录                  |
 | [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                     | 部署说明                      |
 | [docs/WORKFLOW.md](./docs/WORKFLOW.md)                         | 开发流程与质量门禁            |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                           | 系统架构与目录职责            |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)                 | 系统架构与目录职责            |
 | [docs/ROADMAP.md](./docs/ROADMAP.md)                           | 路线图与方向性 TODO           |
 | [docs/adr/](./docs/adr/)                                       | 架构决策记录(ADR)             |
 | [docs/CONTRIBUTING-content.md](./docs/CONTRIBUTING-content.md) | MDX/资产/侧边栏 编写规范      |
@@ -168,7 +168,7 @@ import myImage from '../../assets/docs/2025/感知/lidar-setup.png'
 
 ## 🔐 安全
 
-**请勿**在公开 Issue 提交安全漏洞。请用 [GitHub Private Vulnerability Reporting](https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new),详见 [SECURITY.md](./SECURITY.md)。
+**请勿**在公开 Issue 提交安全漏洞。请用 [GitHub Private Vulnerability Reporting](https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new),详见 [SECURITY.md](./.github/SECURITY.md)。
 
 ---
 

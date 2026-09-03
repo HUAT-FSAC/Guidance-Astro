@@ -75,7 +75,7 @@ function setDropdownState(
     onOpen?: () => void,
     onClose?: () => void
 ): void {
-    const dropdown = root.querySelector(dropdownSelector)
+    const dropdown = root.querySelector<HTMLElement>(dropdownSelector)
     const toggle = root.querySelector('button')
     const currentlyOpen = dropdown?.dataset.open === 'true'
 
@@ -93,7 +93,7 @@ function setDropdownState(
 }
 
 function isDropdownVisible(root: HTMLElement, dropdownSelector: string): boolean {
-    return root.querySelector(dropdownSelector)?.dataset.open === 'true' ?? false
+    return root.querySelector<HTMLElement>(dropdownSelector)?.dataset.open === 'true'
 }
 
 function getInitialScheme(): ThemeScheme {

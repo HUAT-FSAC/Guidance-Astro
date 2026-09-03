@@ -112,7 +112,7 @@ describe('floating controls', () => {
         toggle.dispatchEvent(new PointerEvent('pointerdown', { button: 0, bubbles: true }))
         vi.advanceTimersByTime(450)
 
-        expect(document.querySelector('.theme-dropdown')?.dataset.open).toBe('true')
+        expect(document.querySelector<HTMLElement>('.theme-dropdown')?.dataset.open).toBe('true')
 
         toggle.dispatchEvent(new PointerEvent('pointerup', { button: 0, bubbles: true }))
         ;(document.querySelector('[data-color="#2ecc71"]') as HTMLButtonElement).click()
@@ -122,7 +122,7 @@ describe('floating controls', () => {
         expect(document.documentElement.style.getPropertyValue('--sl-color-accent').trim()).toBe(
             '#2ecc71'
         )
-        expect(document.querySelector('.theme-dropdown')?.dataset.open).toBe('false')
+        expect(document.querySelector<HTMLElement>('.theme-dropdown')?.dataset.open).toBe('false')
 
         cleanup?.()
         vi.useRealTimers()

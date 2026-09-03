@@ -1,7 +1,7 @@
 # Content Authoring Guide / 内容编写指南
 
 > 本指南面向**写文档**的贡献者(技术组各模块、招新组、赛季归档)。
-> 通用贡献流程见根目录 [`CONTRIBUTING.md`](../CONTRIBUTING.md);
+> 通用贡献流程见 [`CONTRIBUTING.md`](../.github/CONTRIBUTING.md);
 > 开发与部署见 [`docs/WORKFLOW.md`](./WORKFLOW.md) 和 [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md)。
 
 ---

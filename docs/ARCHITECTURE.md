@@ -1,7 +1,7 @@
 # Architecture / 架构
 
 > 给贡献者的"系统地图" — 在动手改代码前,先了解数据从哪来、经过哪里、最后怎么呈现。
-> 详细信息散落在 [ADR](./docs/adr/)、[`docs/WORKFLOW.md`](./docs/WORKFLOW.md) 与 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)。
+> 详细信息散落在 [ADR](./adr/)、[`docs/WORKFLOW.md`](./WORKFLOW.md) 与 [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md)。
 
 ---
 
@@ -53,20 +53,20 @@
 
 ## 2. 技术栈快照
 
-| 层        | 选型                                                             | 关键文件                                                   | 备注                                        |
-| --------- | ---------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------- |
-| 框架      | **Astro 7.1.3** (`output: 'server'`)                             | [`astro.config.mjs:11`](./astro.config.mjs)                | SSR,默认零 JS                               |
-| 适配器    | `@astrojs/cloudflare`                                            | `astro.config.mjs:12`                                      | 编译期图片 (`imageService: 'compile'`)      |
-| 文档主题  | **Starlight 0.41**                                               | `src/content.config.ts`                                    | i18n/搜索/侧边栏/TOC                        |
-| 部署      | **Cloudflare Workers SSR**                                       | [`dist/server/wrangler.json`](./dist/server/wrangler.json) | `pnpm deploy:worker`                        |
-| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                           | `pnpm-workspace.yaml`                                      | 依赖白名单见 `onlyBuiltDependencies`        |
-| 测试      | **Vitest 4.1** + **Playwright 1.61**                             | `vitest.config.ts` / `playwright.config.ts`                | 覆盖率阈值 70/60/70/70                      |
-| 质量      | ESLint 9 + Prettier 3 + Husky 9 + commitlint 20 + lint-staged 15 | `.config/*`                                                | 提交时 ESLint + Prettier 走 lint-staged     |
-| 分析/告警 | Umami + Feishu/WeCom Webhook                                     | `src/config/monitoring.ts`                                 | `checkPerformanceAndAlert`                  |
-| 搜索      | Pagefind                                                         | 由 Starlight 自动集成                                      | `pnpm build` 后注入 `dist/client/pagefind/` |
-| PWA       | 手写 Service Worker + manifest                                   | `public/sw.js` / `public/manifest.json`                    | 智能缓存策略(见 `_headers`)                 |
+| 层        | 选型                                                             | 关键文件                                                    | 备注                                        |
+| --------- | ---------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------- |
+| 框架      | **Astro 7.1.3** (`output: 'server'`)                             | [`astro.config.mjs:11`](../astro.config.mjs)                | SSR,默认零 JS                               |
+| 适配器    | `@astrojs/cloudflare`                                            | `astro.config.mjs:12`                                       | 编译期图片 (`imageService: 'compile'`)      |
+| 文档主题  | **Starlight 0.41**                                               | `src/content.config.ts`                                     | i18n/搜索/侧边栏/TOC                        |
+| 部署      | **Cloudflare Workers SSR**                                       | [`dist/server/wrangler.json`](../dist/server/wrangler.json) | `pnpm deploy:worker`                        |
+| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                           | `pnpm-workspace.yaml`                                       | 依赖白名单见 `onlyBuiltDependencies`        |
+| 测试      | **Vitest 4.1** + **Playwright 1.61**                             | `vitest.config.ts` / `playwright.config.ts`                 | 覆盖率阈值 70/60/70/70                      |
+| 质量      | ESLint 9 + Prettier 3 + Husky 9 + commitlint 20 + lint-staged 15 | `.config/*`                                                 | 提交时 ESLint + Prettier 走 lint-staged     |
+| 分析/告警 | Umami + Feishu/WeCom Webhook                                     | `src/config/monitoring.ts`                                  | `checkPerformanceAndAlert`                  |
+| 搜索      | Pagefind                                                         | 由 Starlight 自动集成                                       | `pnpm build` 后注入 `dist/client/pagefind/` |
+| PWA       | 手写 Service Worker + manifest                                   | `public/sw.js` / `public/manifest.json`                     | 智能缓存策略(见 `_headers`)                 |
 
-> 详细选型理由:见 [`docs/adr/001-astro-starlight-tech-stack.md`](./docs/adr/001-astro-starlight-tech-stack.md)。
+> 详细选型理由:见 [`docs/adr/001-astro-starlight-tech-stack.md`](./adr/001-astro-starlight-tech-stack.md)。
 
 ---
 
@@ -125,14 +125,16 @@
 │       └── filter-known-build-warnings.ts
 ├── scripts/                  # 离线脚本(check-bundle-budget / check-theme-contrast / collect-metrics)
 ├── tests/                    # tests/unit (Vitest) + tests/e2e (Playwright)
-└── docs/                     # 仓库自身文档(ADR / 计划 / 报告)
+└── docs/                     # 仓库自身文档(ADR / 架构 / 计划 / 报告)
+    ├── ARCHITECTURE.md       # 系统架构与模块全景
     ├── WORKFLOW.md           # 开发流程 + 任务看板 SSOT
     ├── DEPLOYMENT.md         # 部署与回滚
+    ├── ROADMAP.md            # 路线图与演进方向
     ├── PROJECT_MANAGEMENT_MODEL.md
     ├── VERSION_CONTROL_POLICY.md
     ├── adr/                  # 架构决策记录
     ├── agents/               # Agent 子流程(domain / issue-tracker / triage)
-    ├── plans/                # 设计/计划
+    ├── plans/                # 设计/计划（历史归档见 archive/）
     └── reports/              # 报告与归档
 ```
 
@@ -209,7 +211,7 @@ pnpm build
 pnpm deploy:worker         # = pnpm build && wrangler deploy --config dist/server/wrangler.json
 ```
 
-详见 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)。
+详见 [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md)。
 
 ---
 
@@ -245,8 +247,8 @@ content collection
 | 视觉   | Lighthouse CI    | `.config/lighthouserc.json` | 性能 ≥ 0.85(可配),SEO/可访问性                |
 | 质量   | 自研脚本         | `scripts/quality/*`         | 包体积预算 / 主题对比度                       |
 
-> 覆盖率门禁见 [`docs/WORKFLOW.md §6`](./docs/WORKFLOW.md#6-质量门禁definition-of-done);CI 拓扑见
-> [`.github/workflows/ci-cd.yml`](./.github/workflows/ci-cd.yml)。
+> 覆盖率门禁见 [`docs/WORKFLOW.md §6`](./WORKFLOW.md#6-质量门禁definition-of-done);CI 拓扑见
+> [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml)。
 
 ---
 
@@ -260,7 +262,7 @@ content collection
 | 缓存     | HTML `private, no-cache`;`_astro/*` `immutable`                                        | `src/middleware.ts` · `_headers`               |
 | 依赖     | Dependabot weekly + `pnpm audit` + `pnpm-workspace.yaml overrides`                     | `.github/dependabot.yml`                       |
 | 凭据     | `.dev.vars.example` 模板,真实 `.dev.vars` 已 `.gitignore`;CI 用 GitHub Secrets         | `.gitignore`                                   |
-| 漏洞上报 | 私有 Advisory,见 [`SECURITY.md`](./SECURITY.md)                                        | `SECURITY.md`                                  |
+| 漏洞上报 | 私有 Advisory,见 [`SECURITY.md`](../.github/SECURITY.md)                               | `.github/SECURITY.md`                          |
 | CSP 自检 | `isCSPValid()` 单测覆盖                                                                | `src/config/security.test.ts`                  |
 
 ---
@@ -277,12 +279,12 @@ content collection
 
 ## 10. 演进方向
 
-参见 [`docs/ROADMAP.md`](./docs/ROADMAP.md) 与 [`docs/adr/`](./docs/adr/)。
+参见 [`docs/ROADMAP.md`](./ROADMAP.md) 与 [`docs/adr/`](./adr/)。
 新模块接入时,请:
 
 1. 在 `docs/adr/` 新增 ADR,说明决策/备选/影响。
 2. 在 `docs/WORKFLOW.md §4` 追加任务编号,登记负责人与状态。
-3. 同步 `ARCHITECTURE.md` 目录树 / 流程图(本文件)。
+3. 同步 `docs/ARCHITECTURE.md` 目录树 / 流程图(本文件)。
 
 > 本文档为"系统地图",不是"用户文档"。给最终用户看的内容放在 `src/content/docs/`,
-> 给贡献者看的内容放在 [`docs/`](./docs/) 与 [`CONTRIBUTING.md`](./CONTRIBUTING.md)。
+> 给贡献者看的内容放在 [`docs/`](./) 与 [`CONTRIBUTING.md`](../.github/CONTRIBUTING.md)。

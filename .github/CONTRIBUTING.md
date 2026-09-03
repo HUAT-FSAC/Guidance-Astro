@@ -216,7 +216,7 @@ git commit -m "style(hero): improve button hover animation"
 
 ## Pull Request 流程
 
-分支保护、评审门禁与发布策略请参见 [`docs/VERSION_CONTROL_POLICY.md`](./docs/VERSION_CONTROL_POLICY.md)。
+分支保护、评审门禁与发布策略请参见 [`docs/VERSION_CONTROL_POLICY.md`](../docs/VERSION_CONTROL_POLICY.md)。
 
 ### 创建 PR 前
 

@@ -149,14 +149,14 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) first.
 
 | File                                                           | Description                            |
 | -------------------------------------------------------------- | -------------------------------------- |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)                           | Dev setup, commits and PRs             |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                     | Community code of conduct              |
-| [SUPPORT.md](./SUPPORT.md)                                     | Where to ask, discuss, contact         |
-| [SECURITY.md](./SECURITY.md)                                   | Private vulnerability disclosure       |
+| [CONTRIBUTING.md](./.github/CONTRIBUTING.md)                   | Dev setup, commits and PRs             |
+| [CODE_OF_CONDUCT.md](./.github/CODE_OF_CONDUCT.md)             | Community code of conduct              |
+| [SUPPORT.md](./.github/SUPPORT.md)                             | Where to ask, discuss, contact         |
+| [SECURITY.md](./.github/SECURITY.md)                           | Private vulnerability disclosure       |
 | [CHANGELOG.md](./CHANGELOG.md)                                 | Release history                        |
 | [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                     | Deployment guide                       |
 | [docs/WORKFLOW.md](./docs/WORKFLOW.md)                         | Development flow & quality gates       |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                           | System architecture & layout           |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)                 | System architecture & layout           |
 | [docs/ROADMAP.md](./docs/ROADMAP.md)                           | Roadmap & directional TODOs            |
 | [docs/adr/](./docs/adr/)                                       | Architecture Decision Records          |
 | [docs/CONTRIBUTING-content.md](./docs/CONTRIBUTING-content.md) | MDX / assets / sidebar authoring guide |
@@ -167,7 +167,7 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) first.
 
 **Do not** file public Issues for security reports. Use
 [GitHub Private Vulnerability Reporting](https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new) —
-see [SECURITY.md](./SECURITY.md).
+see [SECURITY.md](./.github/SECURITY.md).
 
 ---
 

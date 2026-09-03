@@ -84,7 +84,7 @@
 
 - **提建议**:开 [Discussion](https://github.com/HUAT-FSAC/Guidance-Astro/discussions) → Ideas
 - **接任务**:看 [`docs/WORKFLOW.md §4`](./WORKFLOW.md) 待办行,自荐或评论
-- **修 bug / 提 PR**:见 [`CONTRIBUTING.md`](../CONTRIBUTING.md)
+- **修 bug / 提 PR**:见 [`CONTRIBUTING.md`](../.github/CONTRIBUTING.md)
 - **聊架构**:在 Discussion 引用 [本目录 ADR](./adr/) 编号
 
 > 路线图不是承诺,是当下共识。每季度评审一次,根据赛季节点/团队规模调整。

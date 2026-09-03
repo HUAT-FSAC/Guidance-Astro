@@ -64,5 +64,5 @@ body:
           label: 自检
           options:
               - label: 我已搜索重复 Issue / PR
-              - label: 我已阅读 [CONTRIBUTING.md](../../blob/main/CONTRIBUTING.md) 与 [docs/CONTRIBUTING-content.md](../../blob/main/docs/CONTRIBUTING-content.md)
+              - label: 我已阅读 [CONTRIBUTING.md](../../blob/main/.github/CONTRIBUTING.md) 与 [docs/CONTRIBUTING-content.md](../../blob/main/docs/CONTRIBUTING-content.md)
               - label: 我愿意直接提 PR 修复(勾选后,维护者可能直接把本 Issue 转给你)

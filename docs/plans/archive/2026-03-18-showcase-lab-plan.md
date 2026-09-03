@@ -13,6 +13,7 @@
 ### Task 1: 搭建数据与状态推导基础
 
 **Files:**
+
 - Create: `src/data/showcase-lab.ts`
 - Create: `src/utils/showcase-lab.ts`
 - Test: `tests/unit/showcase-lab.test.ts`
@@ -35,11 +36,11 @@ Expected: FAIL，因为 `showcase-lab` 工具尚不存在。
 
 1. 在 `src/data/showcase-lab.ts` 中定义场景、指标、链路状态、图表点和子系统详情。
 2. 在 `src/utils/showcase-lab.ts` 中实现：
-   - 默认场景选择
-   - 场景查找
-   - 子系统选择回退
-   - SVG 折线点字符串生成
-   - 本地存储状态标准化
+    - 默认场景选择
+    - 场景查找
+    - 子系统选择回退
+    - SVG 折线点字符串生成
+    - 本地存储状态标准化
 
 **Step 4: Run test to verify it passes**
 
@@ -56,6 +57,7 @@ git commit -m "feat: add showcase lab state model"
 ### Task 2: 实现首页展示组件
 
 **Files:**
+
 - Create: `src/components/home/sections/ShowcaseLab.astro`
 - Modify: `src/content/docs/index.mdx`
 
@@ -71,11 +73,11 @@ Expected: FAIL，因为组件未接入首页。
 **Step 3: Write minimal implementation**
 
 1. 新增 `ShowcaseLab.astro`，实现：
-   - 场景切换按钮
-   - 赛道概览和趋势图
-   - 遥测指标卡
-   - 系统链路状态
-   - 关注子系统选择与详情区
+    - 场景切换按钮
+    - 赛道概览和趋势图
+    - 遥测指标卡
+    - 系统链路状态
+    - 关注子系统选择与详情区
 2. 在 `src/content/docs/index.mdx` 中接入新组件，放在倒计时与成就区之间。
 
 **Step 4: Run test to verify it passes**
@@ -93,6 +95,7 @@ git commit -m "feat: add homepage showcase lab"
 ### Task 3: 完成本地持久化与交互完善
 
 **Files:**
+
 - Modify: `src/components/home/sections/ShowcaseLab.astro`
 - Modify: `tests/e2e/showcase-lab.spec.ts`
 
@@ -129,6 +132,7 @@ git commit -m "feat: persist showcase lab preferences"
 ### Task 4: 全量验证与收尾
 
 **Files:**
+
 - Review: `src/components/home/sections/ShowcaseLab.astro`
 - Review: `src/utils/showcase-lab.ts`
 - Review: `tests/unit/showcase-lab.test.ts`

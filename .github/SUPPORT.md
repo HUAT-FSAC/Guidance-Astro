@@ -4,14 +4,14 @@
 
 ## 📚 文档优先
 
-| 场景       | 入口                                                      |
-| ---------- | --------------------------------------------------------- |
-| 快速上手   | [README.md](./README.md) · [README.en.md](./README.en.md) |
-| 贡献流程   | [CONTRIBUTING.md](./CONTRIBUTING.md)                      |
-| 架构与开发 | [docs/](./docs/) · [docs/WORKFLOW.md](./docs/WORKFLOW.md) |
-| 部署与 CI  | [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                |
-| 安全漏洞   | [SECURITY.md](./SECURITY.md)(**不要**公开提 Issue)        |
-| 行为准则   | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                |
+| 场景       | 入口                                                        |
+| ---------- | ----------------------------------------------------------- |
+| 快速上手   | [README.md](../README.md) · [README.en.md](../README.en.md) |
+| 贡献流程   | [CONTRIBUTING.md](./CONTRIBUTING.md)                        |
+| 架构与开发 | [docs/](../docs/) · [docs/WORKFLOW.md](../docs/WORKFLOW.md) |
+| 部署与 CI  | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)                 |
+| 安全漏洞   | [SECURITY.md](./SECURITY.md)(**不要**公开提 Issue)          |
+| 行为准则   | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                  |
 
 ## 💬 提问 / 讨论
 
@@ -44,10 +44,10 @@
 
 | Scenario           | Entry                                                        |
 | ------------------ | ------------------------------------------------------------ |
-| Quick start        | [README.md](./README.md) · [README.en.md](./README.en.md)    |
+| Quick start        | [README.md](../README.md) · [README.en.md](../README.en.md)  |
 | Contributing       | [CONTRIBUTING.md](./CONTRIBUTING.md)                         |
-| Architecture & dev | [docs/](./docs/) · [docs/WORKFLOW.md](./docs/WORKFLOW.md)    |
-| Deployment & CI    | [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)                   |
+| Architecture & dev | [docs/](../docs/) · [docs/WORKFLOW.md](../docs/WORKFLOW.md)  |
+| Deployment & CI    | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)                  |
 | Security           | [SECURITY.md](./SECURITY.md) — **do not** open public issues |
 | Code of Conduct    | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)                   |
 
