@@ -49,13 +49,13 @@ describe('navigation controls', () => {
         const cleanup = initMobileNavigation(root)
 
         menuButton.click()
-        expect(drawer.classList.contains('active')).toBe(true)
-        expect(overlay.classList.contains('active')).toBe(true)
+        expect(drawer.dataset.open).toBe('true')
+        expect(overlay.dataset.open).toBe('true')
         expect(menuButton.getAttribute('aria-expanded')).toBe('true')
         expect(document.body.style.overflow).toBe('hidden')
 
         overlay.click()
-        expect(drawer.classList.contains('active')).toBe(false)
+        expect(drawer.dataset.open).toBe('false')
         expect(menuButton.getAttribute('aria-expanded')).toBe('false')
         expect(document.body.style.overflow).toBe('')
 

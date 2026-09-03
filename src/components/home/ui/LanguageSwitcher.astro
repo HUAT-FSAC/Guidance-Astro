@@ -132,7 +132,7 @@ const { currentLocale = defaultLocale } = Astro.props;
         z-index: 100;
     }
     
-    .language-menu.open {
+    .language-menu[data-open="true"] {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);

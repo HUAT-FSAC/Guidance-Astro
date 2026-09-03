@@ -43,16 +43,16 @@ export function initKeyboardNavigation(
         options.isSmallScreen ?? (() => window.matchMedia('(max-width: 768px)').matches)
 
     if (isSmallScreen()) {
-        helpModal.classList.remove('visible')
+        helpModal.dataset.visible = 'false'
         return
     }
 
     const showHelp = () => {
-        helpModal.classList.add('visible')
+        helpModal.dataset.visible = 'true'
     }
 
     const hideHelp = () => {
-        helpModal.classList.remove('visible')
+        helpModal.dataset.visible = 'false'
     }
 
     const handleOverlayClick = (event: Event) => {

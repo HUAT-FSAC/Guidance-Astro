@@ -77,14 +77,14 @@ const navItems = getMobileNavItems(isEn ? 'en' : 'zh');
         const navLinks = root.querySelectorAll('.drawer-nav-link');
         
         function openDrawer() {
-            drawer?.classList.add('active');
-            overlay?.classList.add('active');
+            if (drawer) drawer.dataset.open = 'true';
+            if (overlay) overlay.dataset.open = 'true';
             document.body.style.overflow = 'hidden';
         }
         
         function closeDrawer() {
-            drawer?.classList.remove('active');
-            overlay?.classList.remove('active');
+            if (drawer) drawer.dataset.open = 'false';
+            if (overlay) overlay.dataset.open = 'false';
             document.body.style.overflow = '';
         }
         
@@ -99,7 +99,7 @@ const navItems = getMobileNavItems(isEn ? 'en' : 'zh');
         
         // ESC 键关闭
         const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && drawer?.classList.contains('active')) {
+            if (e.key === 'Escape' && drawer?.dataset.open === 'true') {
                 closeDrawer();
             }
         };
@@ -210,7 +210,7 @@ const navItems = getMobileNavItems(isEn ? 'en' : 'zh');
         z-index: var(--z-navigation, 100);
     }
     
-    .mobile-nav-overlay.active {
+    .mobile-nav-overlay[data-open="true"] {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
@@ -237,7 +237,7 @@ const navItems = getMobileNavItems(isEn ? 'en' : 'zh');
         background: #fff;
     }
     
-    .mobile-nav-drawer.active {
+    .mobile-nav-drawer[data-open="true"] {
         transform: translateX(0);
         pointer-events: auto;
     }

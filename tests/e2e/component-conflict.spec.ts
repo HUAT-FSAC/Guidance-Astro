@@ -87,12 +87,12 @@ test.describe('主题切换组件', () => {
         await page.mouse.down()
         await page.waitForTimeout(450)
 
-        await expect(page.locator('.theme-dropdown.active')).toBeVisible()
+        await expect(page.locator('.theme-dropdown[data-open="true"]')).toBeVisible()
 
         await page.mouse.up()
         await page.click('.color-option[data-color="#2ecc71"]')
 
-        await expect(page.locator('.theme-dropdown.active')).toHaveCount(0)
+        await expect(page.locator('.theme-dropdown[data-open="true"]')).toHaveCount(0)
 
         const savedColor = await page.evaluate(() => localStorage.getItem('huat-theme-color'))
         expect(savedColor).toBe('#2ecc71')

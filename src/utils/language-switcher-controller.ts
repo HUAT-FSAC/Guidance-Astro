@@ -66,7 +66,7 @@ export function initLanguageSwitcher(
 
     const closeMenu = () => {
         toggle.setAttribute('aria-expanded', 'false')
-        menu.classList.remove('open')
+        menu.dataset.open = 'false'
         if (untrapFocus) {
             untrapFocus()
             untrapFocus = null
@@ -76,7 +76,7 @@ export function initLanguageSwitcher(
 
     const openMenu = () => {
         toggle.setAttribute('aria-expanded', 'true')
-        menu.classList.add('open')
+        menu.dataset.open = 'true'
         untrapFocus = trapFocus(menu)
     }
 
@@ -114,7 +114,7 @@ export function initLanguageSwitcher(
         if (!root.contains(event.target as Node)) {
             // No focus return on outside click to avoid jarring behavior
             toggle.setAttribute('aria-expanded', 'false')
-            menu.classList.remove('open')
+            menu.dataset.open = 'false'
             if (untrapFocus) {
                 untrapFocus()
                 untrapFocus = null
@@ -149,7 +149,7 @@ export function initLanguageSwitcher(
 
     // Initial state
     toggle.setAttribute('aria-expanded', 'false')
-    menu.classList.remove('open')
+    menu.dataset.open = 'false'
 
     return () => {
         toggle.removeEventListener('click', toggleMenu)

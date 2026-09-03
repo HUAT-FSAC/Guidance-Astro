@@ -20,13 +20,13 @@ test.describe('国际化切换功能', () => {
             const languageToggle = page.locator('.language-toggle')
             const languageMenu = page.locator('.language-menu')
 
-            await expect(languageMenu).not.toHaveClass(/open/)
+            await expect(languageMenu).not.toHaveAttribute('data-open', 'true')
 
             await languageToggle.click()
-            await expect(languageMenu).toHaveClass(/open/)
+            await expect(languageMenu).toHaveAttribute('data-open', 'true')
 
             await languageToggle.click()
-            await expect(languageMenu).not.toHaveClass(/open/)
+            await expect(languageMenu).not.toHaveAttribute('data-open', 'true')
         })
 
         test('语言菜单显示中文和英文两个选项', async ({ page }) => {
@@ -56,10 +56,10 @@ test.describe('国际化切换功能', () => {
             const languageMenu = page.locator('.language-menu')
 
             await languageToggle.click()
-            await expect(languageMenu).toHaveClass(/open/)
+            await expect(languageMenu).toHaveAttribute('data-open', 'true')
 
             await page.click('body', { position: { x: 10, y: 10 } })
-            await expect(languageMenu).not.toHaveClass(/open/)
+            await expect(languageMenu).not.toHaveAttribute('data-open', 'true')
         })
 
         test('按 ESC 键可以关闭语言菜单', async ({ page }) => {
@@ -70,10 +70,10 @@ test.describe('国际化切换功能', () => {
             const languageMenu = page.locator('.language-menu')
 
             await languageToggle.click()
-            await expect(languageMenu).toHaveClass(/open/)
+            await expect(languageMenu).toHaveAttribute('data-open', 'true')
 
             await page.keyboard.press('Escape')
-            await expect(languageMenu).not.toHaveClass(/open/)
+            await expect(languageMenu).not.toHaveAttribute('data-open', 'true')
         })
     })
 

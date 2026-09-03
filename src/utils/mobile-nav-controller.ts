@@ -20,21 +20,21 @@ export function initMobileNavigation(root: HTMLElement): (() => void) | void {
     }
 
     const closeDrawer = () => {
-        drawer.classList.remove('active')
-        overlay.classList.remove('active')
+        drawer.dataset.open = 'false'
+        overlay.dataset.open = 'false'
         menuBtn.setAttribute('aria-expanded', 'false')
         document.body.style.overflow = ''
     }
 
     const openDrawer = () => {
-        drawer.classList.add('active')
-        overlay.classList.add('active')
+        drawer.dataset.open = 'true'
+        overlay.dataset.open = 'true'
         menuBtn.setAttribute('aria-expanded', 'true')
         document.body.style.overflow = 'hidden'
     }
 
     const handleEsc = (event: KeyboardEvent) => {
-        if (event.key === 'Escape' && drawer.classList.contains('active')) {
+        if (event.key === 'Escape' && drawer.dataset.open === 'true') {
             closeDrawer()
         }
     }

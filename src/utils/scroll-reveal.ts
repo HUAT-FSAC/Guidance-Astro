@@ -23,14 +23,14 @@ export function initScrollReveal(): void {
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible')
+                entry.target.dataset.visible = 'true'
                 observer.unobserve(entry.target)
             }
         })
     }, observerOptions)
 
     revealElements.forEach((el) => {
-        el.classList.remove('is-visible')
+        el.dataset.visible = 'false'
         revealObserver.observe(el)
     })
 

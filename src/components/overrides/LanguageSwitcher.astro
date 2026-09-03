@@ -142,7 +142,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
 
             const closeMenu = () => {
                 toggle.setAttribute('aria-expanded', 'false')
-                menu.classList.remove('open')
+                menu.dataset.open = 'false'
                 if (untrapFocus) {
                     untrapFocus()
                     untrapFocus = null
@@ -152,7 +152,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
 
             const openMenu = () => {
                 toggle.setAttribute('aria-expanded', 'true')
-                menu.classList.add('open')
+                menu.dataset.open = 'true'
                 untrapFocus = trapFocus(menu)
             }
 
@@ -201,7 +201,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
             root.addEventListener('keydown', handleKeyDown)
 
             toggle.setAttribute('aria-expanded', 'false')
-            menu.classList.remove('open')
+            menu.dataset.open = 'false'
         }
 
         function initAll() {
@@ -216,7 +216,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
                     const menu = root.querySelector(SELECTORS.menu)
                     if (toggle && menu) {
                         toggle.setAttribute('aria-expanded', 'false')
-                        menu.classList.remove('open')
+                        menu.dataset.open = 'false'
                     }
                 })
             }
@@ -294,7 +294,7 @@ const currentLocale = Astro.url.pathname.startsWith('/en/') ? 'en' : 'zh'
         z-index: 50;
     }
 
-    .language-menu.open {
+    .language-menu[data-open="true"] {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);

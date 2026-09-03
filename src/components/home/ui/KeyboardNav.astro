@@ -99,7 +99,7 @@ const labels =
             visibility 0.3s ease;
     }
 
-    .keyboard-help.visible {
+    .keyboard-help[data-visible="true"] {
         opacity: 1;
         visibility: visible;
     }
@@ -120,7 +120,7 @@ const labels =
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
 
-    .keyboard-help.visible .keyboard-modal {
+    .keyboard-help[data-visible="true"] .keyboard-modal {
         transform: scale(1);
     }
 

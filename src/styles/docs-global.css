@@ -968,7 +968,7 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     will-change: opacity, transform;
 }
 
-.reveal-upon-scroll.is-visible {
+[data-visible='true'].reveal-upon-scroll {
     opacity: 1;
     transform: translateY(0);
 }
