@@ -39,6 +39,7 @@ interface ShowcaseRuntimeState {
     selection: ShowcaseSelection
     frameIndex: number
     isPlaying: boolean
+    locale?: ShowcaseLocale
     // Presentation Console state
     isCompareEnabled: boolean
     compareScenarioId: string | null
@@ -48,7 +49,11 @@ interface ShowcaseRuntimeState {
     cacheSimulationState: ShowcaseCacheSimulationState
 }
 
-function getShowcaseLocale(): ShowcaseLocale {
+function getShowcaseLocale(override?: ShowcaseLocale): ShowcaseLocale {
+    if (override) {
+        return override
+    }
+
     const root = document.querySelector<HTMLElement>('[data-showcase-lab]')
     return root?.dataset.locale === 'en' ? 'en' : 'zh'
 }
@@ -59,19 +64,27 @@ function getShowcaseLabels() {
 
 function getLocalizedReplaySnapshot(
     selection: ShowcaseSelection,
-    frameIndex: number
+    frameIndex: number,
+    locale?: ShowcaseLocale
 ): ShowcaseReplaySnapshot {
     return getLocalizedShowcaseReplaySnapshot(
         getRawShowcaseReplaySnapshot(selection, frameIndex),
-        getShowcaseLocale()
+        locale || getShowcaseLocale()
     )
 }
 
-function getLocalizedScriptSnapshot(scriptId: string | null, stepIndex: number) {
+function getLocalizedScriptSnapshot(
+    scriptId: string | null,
+    stepIndex: number,
+    locale?: ShowcaseLocale
+) {
     const snapshot = getRawShowcaseScriptSnapshot(scriptId, stepIndex)
     return {
         ...snapshot,
-        currentStep: getLocalizedShowcaseScriptStep(snapshot.currentStep, getShowcaseLocale()),
+        currentStep: getLocalizedShowcaseScriptStep(
+            snapshot.currentStep,
+            locale || getShowcaseLocale()
+        ),
     }
 }
 function getRequiredElement<T extends Element>(root: ParentNode, selector: string): T {
@@ -278,7 +291,7 @@ function syncScenarioChips(root: HTMLElement, scenarioId: string): void {
     })
 }
 
-function clearReplayTimer(root: HTMLElement): void {
+export function clearReplayTimer(root: HTMLElement): void {
     const timerId = Number(root.dataset.replayTimerId || '0')
 
     if (timerId) {
@@ -288,7 +301,7 @@ function clearReplayTimer(root: HTMLElement): void {
     delete root.dataset.replayTimerId
 }
 
-function clearScriptTimer(root: HTMLElement): void {
+export function clearScriptTimer(root: HTMLElement): void {
     const timerId = Number(root.dataset.scriptTimerId || '0')
 
     if (timerId) {
@@ -368,7 +381,8 @@ function renderScriptPanel(root: HTMLElement, runtimeState: ShowcaseRuntimeState
 
     const scriptSnapshot = getLocalizedScriptSnapshot(
         runtimeState.scriptId,
-        runtimeState.scriptStepIndex
+        runtimeState.scriptStepIndex,
+        runtimeState.locale
     )
 
     if (!scriptSnapshot.isValid) {
@@ -439,7 +453,11 @@ function renderShowcase(
     root: HTMLElement,
     runtimeState: ShowcaseRuntimeState
 ): ShowcaseRuntimeState {
-    const snapshot = getLocalizedReplaySnapshot(runtimeState.selection, runtimeState.frameIndex)
+    const snapshot = getLocalizedReplaySnapshot(
+        runtimeState.selection,
+        runtimeState.frameIndex,
+        runtimeState.locale
+    )
     const trendCursor = buildTrendCursor(
         snapshot.scenario.trend.values,
         snapshot.trendCursorIndex,
@@ -536,7 +554,11 @@ function scheduleReplay(
         return
     }
 
-    const snapshot = getLocalizedReplaySnapshot(runtimeState.selection, runtimeState.frameIndex)
+    const snapshot = getLocalizedReplaySnapshot(
+        runtimeState.selection,
+        runtimeState.frameIndex,
+        runtimeState.locale
+    )
     const timerId = window.setTimeout(() => {
         applyState((currentState) => ({
             ...currentState,
@@ -608,7 +630,8 @@ function scheduleScriptPlayback(
         )
         const nextSnapshot = getLocalizedScriptSnapshot(
             nextScriptState.scriptId,
-            nextScriptState.stepIndex
+            nextScriptState.stepIndex,
+            runtimeState.locale
         )
 
         if (nextSnapshot.isValid && nextSnapshot.currentStep) {
@@ -629,7 +652,7 @@ function scheduleScriptPlayback(
     root.dataset.scriptTimerId = String(timerId)
 }
 
-function bindShowcaseLab(root: HTMLElement): void {
+export function bindShowcaseLab(root: HTMLElement, locale?: ShowcaseLocale): void {
     if (root.dataset.showcaseReady === 'true') {
         return
     }
@@ -645,6 +668,7 @@ function bindShowcaseLab(root: HTMLElement): void {
         selection: getStoredSelection(root),
         frameIndex: 0,
         isPlaying: false,
+        locale: locale || getShowcaseLocale(),
         // Presentation Console state
         isCompareEnabled: storedConsoleState?.isCompareEnabled || false,
         compareScenarioId: initialCompareScenarioId,
@@ -715,7 +739,8 @@ function bindShowcaseLab(root: HTMLElement): void {
         if (trigger.hasAttribute('data-showcase-replay-prev')) {
             const snapshot = getLocalizedReplaySnapshot(
                 runtimeState.selection,
-                runtimeState.frameIndex
+                runtimeState.frameIndex,
+                runtimeState.locale
             )
             applyState({
                 ...runtimeState,
@@ -729,7 +754,8 @@ function bindShowcaseLab(root: HTMLElement): void {
         if (trigger.hasAttribute('data-showcase-replay-next')) {
             const snapshot = getLocalizedReplaySnapshot(
                 runtimeState.selection,
-                runtimeState.frameIndex
+                runtimeState.frameIndex,
+                runtimeState.locale
             )
             applyState({
                 ...runtimeState,
@@ -752,7 +778,11 @@ function bindShowcaseLab(root: HTMLElement): void {
         // Script controls
         if (trigger.hasAttribute('data-script-prev')) {
             const newStepIndex = Math.max(runtimeState.scriptStepIndex - 1, 0)
-            const snapshot = getLocalizedScriptSnapshot(runtimeState.scriptId, newStepIndex)
+            const snapshot = getLocalizedScriptSnapshot(
+                runtimeState.scriptId,
+                newStepIndex,
+                runtimeState.locale
+            )
             if (snapshot.isValid && snapshot.currentStep) {
                 applyState({
                     ...runtimeState,
@@ -774,7 +804,11 @@ function bindShowcaseLab(root: HTMLElement): void {
                 runtimeState.scriptId,
                 runtimeState.scriptStepIndex
             )
-            const snapshot = getLocalizedScriptSnapshot(nextState.scriptId, nextState.stepIndex)
+            const snapshot = getLocalizedScriptSnapshot(
+                nextState.scriptId,
+                nextState.stepIndex,
+                runtimeState.locale
+            )
             if (snapshot.isValid && snapshot.currentStep) {
                 applyState({
                     ...runtimeState,
@@ -837,7 +871,8 @@ function bindShowcaseLab(root: HTMLElement): void {
         if (target.id === 'showcase-replay-range') {
             const snapshot = getLocalizedReplaySnapshot(
                 runtimeState.selection,
-                runtimeState.frameIndex
+                runtimeState.frameIndex,
+                runtimeState.locale
             )
 
             applyState({
@@ -869,7 +904,7 @@ function bindShowcaseLab(root: HTMLElement): void {
         // Script selection
         if (target.hasAttribute('data-script-select')) {
             const scriptId = target.value || null
-            const snapshot = getLocalizedScriptSnapshot(scriptId, 0)
+            const snapshot = getLocalizedScriptSnapshot(scriptId, 0, runtimeState.locale)
 
             if (snapshot.isValid && snapshot.currentStep) {
                 applyState({

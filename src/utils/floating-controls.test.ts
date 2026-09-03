@@ -5,28 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { initShareMenu } from './share-controller'
 import { initThemeController, THEME_STORAGE_KEYS } from './theme-controller'
 
-// Mock localStorage for jsdom environment
-const localStorageMock = {
-    store: {} as Record<string, string>,
-    getItem(key: string) {
-        return this.store[key] ?? null
-    },
-    setItem(key: string, value: string) {
-        this.store[key] = value
-    },
-    removeItem(key: string) {
-        delete this.store[key]
-    },
-    clear() {
-        this.store = {}
-    },
-}
-
-Object.defineProperty(globalThis, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-    configurable: true,
-})
+const localStorageMock = globalThis.localStorage as typeof globalThis.localStorage
 
 const themeMarkup = `
     <div data-theme-switcher data-current-scheme="dark">
@@ -73,7 +52,7 @@ describe('floating controls', () => {
         document.documentElement.setAttribute('data-theme', 'dark')
         document.documentElement.removeAttribute('style')
         document.body.innerHTML = ''
-        localStorageMock.clear()
+        ;(globalThis as unknown as { localStorage: { clear: () => void } }).localStorage.clear()
         vi.restoreAllMocks()
         Object.defineProperty(window, 'StarlightThemeProvider', {
             configurable: true,
@@ -133,7 +112,7 @@ describe('floating controls', () => {
         toggle.dispatchEvent(new PointerEvent('pointerdown', { button: 0, bubbles: true }))
         vi.advanceTimersByTime(450)
 
-        expect(document.querySelector('.theme-dropdown')?.classList.contains('active')).toBe(true)
+        expect(document.querySelector('.theme-dropdown')?.dataset.open).toBe('true')
 
         toggle.dispatchEvent(new PointerEvent('pointerup', { button: 0, bubbles: true }))
         ;(document.querySelector('[data-color="#2ecc71"]') as HTMLButtonElement).click()
@@ -143,7 +122,7 @@ describe('floating controls', () => {
         expect(document.documentElement.style.getPropertyValue('--sl-color-accent').trim()).toBe(
             '#2ecc71'
         )
-        expect(document.querySelector('.theme-dropdown')?.classList.contains('active')).toBe(false)
+        expect(document.querySelector('.theme-dropdown')?.dataset.open).toBe('false')
 
         cleanup?.()
         vi.useRealTimers()

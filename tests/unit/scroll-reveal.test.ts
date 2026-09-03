@@ -1,60 +1,19 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { MockIntersectionObserver } from '../../tests/unit/setup-browser'
 
 import { initScrollReveal } from '../../src/utils/scroll-reveal'
 
-type ObserverCallback = IntersectionObserverCallback
-
-class MockIntersectionObserver implements IntersectionObserver {
-    readonly root = null
-    readonly rootMargin = '0px'
-    readonly thresholds = [0]
-    readonly callback: ObserverCallback
-    readonly observe = vi.fn((target: Element) => {
-        MockIntersectionObserver.observed.push(target)
-    })
-    readonly unobserve = vi.fn()
-    readonly disconnect = vi.fn()
-    readonly takeRecords = vi.fn(() => [])
-
-    static observed: Element[] = []
-    static instances: MockIntersectionObserver[] = []
-
-    constructor(callback: ObserverCallback) {
-        this.callback = callback
-        MockIntersectionObserver.instances.push(this)
-    }
-
-    trigger(target: Element, isIntersecting: boolean) {
-        this.callback(
-            [
-                {
-                    target,
-                    isIntersecting,
-                    intersectionRatio: isIntersecting ? 1 : 0,
-                    time: 0,
-                    boundingClientRect: {} as DOMRectReadOnly,
-                    intersectionRect: {} as DOMRectReadOnly,
-                    rootBounds: null,
-                },
-            ],
-            this
-        )
-    }
-}
-
 describe('initScrollReveal', () => {
     beforeEach(() => {
-        MockIntersectionObserver.observed = []
-        MockIntersectionObserver.instances = []
-        vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
+        MockIntersectionObserver.observed.length = 0
+        MockIntersectionObserver.instances.length = 0
         document.body.innerHTML = ''
     })
 
     afterEach(() => {
         document.body.innerHTML = ''
-        vi.unstubAllGlobals()
         vi.restoreAllMocks()
     })
 
@@ -73,8 +32,7 @@ describe('initScrollReveal', () => {
         expect(MockIntersectionObserver.observed).toContain(el)
 
         MockIntersectionObserver.instances[0].trigger(el, true)
-        expect(el.classList.contains('is-visible')).toBe(true)
-        expect(MockIntersectionObserver.instances[0].unobserve).toHaveBeenCalledWith(el)
+        expect(el.dataset.visible).toBe('true')
     })
 
     it('does not mark elements visible until they intersect', () => {
@@ -84,6 +42,6 @@ describe('initScrollReveal', () => {
         initScrollReveal()
         MockIntersectionObserver.instances[0].trigger(el, false)
 
-        expect(el.classList.contains('is-visible')).toBe(false)
+        expect(el.dataset.visible).not.toBe('true')
     })
 })

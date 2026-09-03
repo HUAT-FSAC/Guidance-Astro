@@ -9,37 +9,16 @@ import {
     safeSetJSON,
 } from '../../src/utils/storage'
 
-// Mock localStorage for jsdom environment
-const localStorageMock = {
-    store: {} as Record<string, string>,
-    getItem(key: string) {
-        return this.store[key] ?? null
-    },
-    setItem(key: string, value: string) {
-        this.store[key] = value
-    },
-    removeItem(key: string) {
-        delete this.store[key]
-    },
-    clear() {
-        this.store = {}
-    },
-}
-
-Object.defineProperty(globalThis, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-    configurable: true,
-})
+const localStorageMock = globalThis.localStorage as typeof globalThis.localStorage
 
 describe('storage', () => {
     beforeEach(() => {
-        localStorageMock.clear()
+        ;(globalThis as unknown as { localStorage: { clear: () => void } }).localStorage.clear()
         vi.spyOn(console, 'warn').mockImplementation(() => {})
     })
 
     afterEach(() => {
-        localStorageMock.clear()
+        ;(globalThis as unknown as { localStorage: { clear: () => void } }).localStorage.clear()
         vi.restoreAllMocks()
     })
 
