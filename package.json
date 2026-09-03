@@ -1,7 +1,7 @@
 {
     "name": "huat-fsac-docs",
     "type": "module",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "private": true,
     "description": "HUAT FSAC 方程式赛车队官方文档站点 — 基于 Astro 7 + Starlight + Cloudflare Workers SSR 的中英双语站点,含 PWA、多主题、Pagefind 搜索与安全加固。",
     "license": "MIT",
