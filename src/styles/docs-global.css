@@ -229,6 +229,14 @@ html {
     color: var(--sl-color-accent) !important;
 }
 
+/* 亮色 hover：::before 已填充为 accent 蓝，文字必须切回深色，
+   否则蓝字蓝底不可读（上层亮色覆盖的优先级与 :hover 相同且靠后，
+   必须用更高优先级显式覆盖）。暗色主题 hover 切 --fs-bg-base（近黑），
+   此处保持一致的「蓝底深字」观感，对比度 ≈5.5:1 过 AA。 */
+[data-theme='light'] .fs-cta-clip:hover {
+    color: var(--fs-color-heading) !important;
+}
+
 /* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */
 .sl-markdown-content,
 .sidebar-content,
