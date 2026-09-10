@@ -16,6 +16,8 @@ name: Release Please
 on:
   push:
     branches: [main]
+  # 手动验证通道(修 Issue#43~52 后用,无需空提交触发)
+  workflow_dispatch:
 
 permissions:
   contents: write
