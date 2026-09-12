@@ -120,6 +120,7 @@ describe('mobile-nav-controller', () => {
         if (typeof cleanup === 'function') cleanup()
 
         expect(document.body.style.overflow).toBe('')
+        drawer.dataset.open = 'false'
         menuBtn.click()
         // Listener should be removed so drawer state doesn't change
         expect(drawer.dataset.open).toBe('false')
