@@ -20,8 +20,8 @@ jobs:
       - name: Check first-time contributor & post welcome
         uses: actions/first-interaction@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
             👋 感谢第一次提 Issue!
 
             几个能帮你更快得到回复的小贴士:
@@ -32,7 +32,7 @@ jobs:
             - 💬 想法 / Q&A 优先走 [Discussions](https://github.com/HUAT-FSAC/Guidance-Astro/discussions),Issue 只留任务/缺陷
 
             我们是学生车队业余维护,尽量 7 天内回复,见谅。
-          pr-message: |
+          pr_message: |
             👋 感谢第一次提 PR!
 
             提 PR 前请确认:

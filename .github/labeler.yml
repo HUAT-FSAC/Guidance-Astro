@@ -72,18 +72,10 @@
               - 'src/middleware.ts'
               - 'wrangler.json'
 
-# --- 体量提示 ---
+# --- 体量提示（仅保留纯路径规则；actions/labeler 不支持 max-changed-lines，
+# 曾因此全红，见 T-022b。size:s/m/l/xl 留给维护者手动评估） ---
 'size:xs':
     - changed-files:
         - all-globs-to-all-files:
               - '**/*.md'
               - '**/*.mdx'
-        - max-changed-lines: 50
-
-'size:s':
-    - max-changed-lines: 100
-
-'size:m':
-    - max-changed-lines: 300
-
-# 不打 size:l/ xl — 留给维护者手动评估
