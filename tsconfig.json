@@ -1,14 +1,13 @@
 {
     "extends": "astro/tsconfigs/strict",
     "compilerOptions": {
-        "baseUrl": ".",
         "paths": {
-            "@assets/*": ["src/assets/*"],
-            "@components/*": ["src/components/*"],
-            "@utils/*": ["src/utils/*"],
-            "@content/*": ["src/content/*"],
-            "@data/*": ["src/data/*"],
-            "@lib/*": ["src/lib/*"]
+            "@assets/*": ["./src/assets/*"],
+            "@components/*": ["./src/components/*"],
+            "@utils/*": ["./src/utils/*"],
+            "@content/*": ["./src/content/*"],
+            "@data/*": ["./src/data/*"],
+            "@lib/*": ["./src/lib/*"]
         },
         "skipLibCheck": true,
         "strictNullChecks": true,
