@@ -54,6 +54,7 @@
         "test:coverage": "vitest run --coverage",
         "test:e2e": "playwright test",
         "quality:bundle": "node scripts/quality/check-bundle-budget.mjs",
+        "quality:routes": "node scripts/quality/check-route-budget.mjs",
         "quality:theme": "node scripts/quality/check-theme-contrast.mjs",
         "quality:lighthouse": "lhci collect --config=.config/lighthouserc.json && lhci assert --config=.config/lighthouserc.json",
         "metrics:collect": "node scripts/metrics/collect-github-metrics.mjs",

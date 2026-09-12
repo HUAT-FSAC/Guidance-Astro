@@ -120,6 +120,9 @@ jobs:
       - name: Run bundle budget check
         run: pnpm quality:bundle
 
+      - name: Run route-level budget check
+        run: pnpm quality:routes
+
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
 

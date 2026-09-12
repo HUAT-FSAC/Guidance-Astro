@@ -92,8 +92,9 @@ test-e2e: ## Playwright 端到端
 	@pnpm test:e2e
 
 .PHONY: quality
-quality: ## 跑质量门禁(bundle + theme)
+quality: ## 跑质量门禁(bundle + routes + theme)
 	@pnpm quality:bundle
+	@pnpm quality:routes
 	@pnpm quality:theme
 
 .PHONY: lighthouse

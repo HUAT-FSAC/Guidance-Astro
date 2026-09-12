@@ -1,0 +1,16 @@
+{
+    "routes": [
+        "/",
+        "/en/",
+        "/docs-center/",
+        "/en/docs-center/",
+        "/join/",
+        "/team/",
+        "/about-fs/",
+        "/showcase-dashboard/",
+        "/en/showcase-dashboard/",
+        "/en/news/new-car-development/",
+        "/en/archive/general/ros-installing/",
+        "/en/archive/2025/sensing/lidar/"
+    ]
+}
