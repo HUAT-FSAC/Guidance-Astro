@@ -86,6 +86,7 @@
         "news": "新闻动态",
         "team": "团队介绍",
         "contact": "联系我们",
+        "menu": "导航菜单",
         "login": "登录",
         "register": "注册",
         "profile": "个人资料",
@@ -149,7 +150,10 @@
         "openMenu": "打开菜单",
         "closeMenu": "关闭菜单",
         "toggleTheme": "切换主题",
-        "languageSelector": "选择语言"
+        "languageSelector": "选择语言",
+        "backToTop": "返回顶部",
+        "exploreTeamContent": "开始探索赛车队内容",
+        "achievementImage": "成就展示"
     },
     "news": {
         "title": "新闻动态",
@@ -218,5 +222,258 @@
             "passwordLength": "密码至少需要 8 个字符",
             "passwordMismatch": "两次输入的密码不一致"
         }
+    },
+    "about": {
+        "label": "关于我们",
+        "paragraphs": [
+            "东风 HUAT 无人驾驶方程式赛车队成立于 2015 年，是湖北汽车工业学院首支专注于无人驾驶方程式赛车的学生团队，由一群对自动驾驶技术充满热情的工程学子创建。团队由来自智能网联汽车学院的算法、电气、机械、项管等多个专业的本科生组成。",
+            "我们是湖北汽车工业学院智能网联汽车学院两级共同打造的学生科研团队。在学校、学院与东风商用车的大力支持下，每年自主设计并制造一辆全新的无人驾驶方程式赛车，参加中国大学生无人驾驶方程式大赛（FSAC）。我们的使命是结合工程实践，打造面向智能网联汽车的创新型人才培养平台。",
+            "\"力争上游，擎动未来\"是我们的口号。从 2019 年首次参赛至今，从电车到无人车，我们与赛车相伴，不断突破技术极限。2024 赛季更取得了历史最佳成绩。十年磨一剑，赛道见证了无数人的青春与汗水，而荣誉铭刻在每一个 HUAT 人的心中。"
+        ],
+        "teamPhotoAlt": "团队照片 1"
+    },
+    "ack": {
+        "title": "致谢",
+        "blocks": [
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "衷心感谢",
+                        "strong": false
+                    },
+                    {
+                        "text": "中国汽车工程协会",
+                        "strong": true
+                    },
+                    {
+                        "text": "和社会各界人士每年动用大量的人力物力去举办这个赛事，让很多热爱赛车的大学生拥有这个展示才能、相互学习、开拓眼界的平台。同时，感谢",
+                        "strong": false
+                    },
+                    {
+                        "text": "中国大学生方程式汽车大赛规则委员会",
+                        "strong": true
+                    },
+                    {
+                        "text": "悉心制定完善赛事规则，让整体比赛的过程中有规则可依，有条目可参考。感谢",
+                        "strong": false
+                    },
+                    {
+                        "text": "东风商用车",
+                        "strong": true
+                    },
+                    {
+                        "text": "等赞助商的支持。",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": true,
+                "parts": [
+                    {
+                        "text": "力争上游，擎动未来",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "在",
+                        "strong": false
+                    },
+                    {
+                        "text": "湖北汽车工业学院汽车工程师学院",
+                        "strong": true
+                    },
+                    {
+                        "text": "的大力支持、",
+                        "strong": false
+                    },
+                    {
+                        "text": "相关老师",
+                        "strong": true
+                    },
+                    {
+                        "text": "的悉心指导和车队全体队员的共同努力下，FSAC 赛车的设计、加工、制造和调试顺利完成。在这个过程中，我们仔细推敲每一个设计思路，严谨处理每一个数据，用心完成每一个细节。这数百个日日夜夜，是赛车最有力的证明，也是我们心底的那份感恩。",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": true,
+                "parts": [
+                    {
+                        "text": "做人、做事、做车",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "感谢每一位车队队员积极配合，认真工作，使得",
+                        "strong": false
+                    },
+                    {
+                        "text": "东风 HUAT 无人驾驶方程式赛车队",
+                        "strong": true
+                    },
+                    {
+                        "text": "的设计报告能够顺利完成。感谢每一位车队队员，放弃假期毅然选择留在车队，他们互相帮助，互相鼓励使得车队更加团结。",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "最后感谢每一个为中国大学生方程式汽车大赛默默付出的人，感谢",
+                        "strong": false
+                    },
+                    {
+                        "text": "湖北汽车工业学院",
+                        "strong": true
+                    },
+                    {
+                        "text": "各级领导对于车队的关注和支持。湖北汽车工程学院东风 HUAT 无人驾驶方程式赛车队一定会更加严格要求自己，用骄人的成绩回馈各界的付出！做最好的团队！",
+                        "strong": false
+                    }
+                ]
+            }
+        ],
+        "signature": "谨此，我代表湖北汽车工业学院 HUAT 无人驾驶方程式赛车队所有队员致上最诚挚的谢意。",
+        "thanks": "谢谢你们 ❤️"
+    },
+    "coreModules": {
+        "ariaLabel": "团队分组",
+        "groups": [
+            {
+                "name": "感知组",
+                "desc": "负责摄像头、激光雷达等传感器的数据采集与处理，构建环境感知系统。"
+            },
+            {
+                "name": "规划控制组",
+                "desc": "负责路径规划、运动控制和决策算法，实现赛车的自主行驶。"
+            },
+            {
+                "name": "定位建图组",
+                "desc": "负责高精度定位与地图构建，为赛车提供精确的自身位置信息。"
+            },
+            {
+                "name": "仿真组",
+                "desc": "搭建虚拟仿真环境，用于算法验证和系统测试，加速开发迭代。"
+            },
+            {
+                "name": "车身空套组",
+                "desc": "负责车身外壳设计和空气动力学优化，通过CFD和复合材料提升性能。"
+            },
+            {
+                "name": "车身底盘组",
+                "desc": "负责传动、悬架、转向和制动系统的设计与制造，确保操控性和稳定性。"
+            },
+            {
+                "name": "电气系统组",
+                "desc": "负责整车电气系统设计、布置和电机系统算法，确保三电系统高效稳定运行。"
+            },
+            {
+                "name": "市场运营部",
+                "desc": "负责团队品牌建设、平台运营和活动协调，确保团队可持续发展。"
+            },
+            {
+                "name": "电池组",
+                "desc": "负责电池包设计、BMS管理和热管理系统，保障动力系统安全可靠。"
+            }
+        ]
+    },
+    "showcase": {
+        "ariaLabel": "功能模块",
+        "modules": [
+            {
+                "title": "智能驾驶实验室",
+                "desc": "用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。"
+            },
+            {
+                "title": "征服赛道",
+                "desc": "欢迎来到 HUAT FSAC - 见证我们如何用前沿的电动和无人驾驶技术重新定义赛车运动。"
+            },
+            {
+                "title": "新闻动态",
+                "desc": "关注车队最新动态，了解赛事进展、团队活动和技术突破。"
+            },
+            {
+                "title": "Formula Student",
+                "desc": "Formula Student 是全球最顶尖的工程赛事之一，600多支队伍从零开始设计制造赛车。"
+            }
+        ]
+    },
+    "showcaseLab": {
+        "title": "智能驾驶交互实验室",
+        "subtitle": "AUTONOMOUS SHOWCASE",
+        "description": "用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。",
+        "features": ["多场景预设", "实时可视化", "离线演示"],
+        "cta": "进入实验室"
+    },
+    "teamMembers": {
+        "title": "指导老师与团队成员",
+        "cta": "查看完整团队"
+    },
+    "joinUs": {
+        "ariaLabel": "加入我们",
+        "heading": "加入我们",
+        "cta": "立即报名"
+    },
+    "keyboardNav": {
+        "title": "⌨️ 快捷键",
+        "close": "关闭",
+        "help": "显示快捷键帮助",
+        "home": "返回首页",
+        "top": "返回顶部",
+        "search": "搜索",
+        "join": "加入我们",
+        "dismiss": "关闭弹窗"
+    },
+    "contributors": {
+        "title": "贡献者",
+        "subtitle": "CONTRIBUTORS",
+        "intro": "感谢为 HUAT FSAC 数字化与技术文档建设倾注心血的每一位开发者。",
+        "viewGraph": "在 GitHub 上查看完整图谱",
+        "joinUs": "参与代码或文档贡献",
+        "members": [
+            {
+                "handle": "zhangjszs",
+                "badge": "225+ Commits",
+                "role": "项目发起人 · 全栈架构",
+                "desc": "Astro 7 + Cloudflare Workers SSR 重构、组件系统、自动化质量门禁与全栈基础设施。"
+            },
+            {
+                "handle": "nekorect",
+                "badge": "116+ Commits",
+                "role": "核心贡献者 · 文档与国际化",
+                "desc": "早期项目奠基、文档中心基础设施搭建、中英双语 i18n 体系、学习路线图与资源优化。"
+            },
+            {
+                "handle": "wsyhuat",
+                "badge": "Motion & UX",
+                "role": "贡献者 · 动效与交互哲学",
+                "desc": "Emil Kowalski 动效哲学实践、自定义缓动曲线、按钮按压反馈、鼠标追踪光效与无障碍适配。"
+            }
+        ]
+    },
+    "seasons": {
+        "label": "关于赛车",
+        "subtitle": "ABOUT THE RACE CAR",
+        "carouselLabel": "赛车赛季轮播",
+        "previous": "上一组",
+        "next": "下一组",
+        "navigation": "赛季导航",
+        "dotPrefix": "第",
+        "dotSuffix": "组",
+        "raceCarAlt": "赛车",
+        "explanationAlt": "解说"
     }
 }

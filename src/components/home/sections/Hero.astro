@@ -1,5 +1,7 @@
 ---
 import { optimizeExternalImage } from '../../../utils/image-optimization'
+import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
 import ArrowRight from '../../icons/ArrowRight.astro'
 
 interface Props {
@@ -9,9 +11,11 @@ interface Props {
     ctaText: string
     ctaLink: string
     backgroundImages?: string[]
+    locale?: Locale
 }
 
-const { title, subtitle, description, ctaText, ctaLink, backgroundImages } = Astro.props
+const { title, subtitle, description, ctaText, ctaLink, backgroundImages, locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
 
 /**
  * 本地图片：已生成 768/1440 两档 JPEG 以及对应的 WebP/AVIF（public/assets/photo-together-768.jpg 等）。
@@ -105,7 +109,7 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
             href={ctaLink}
             role="button"
             data-astro-prefetch="hover"
-            aria-label={`${ctaText} - 开始探索赛车队内容`}
+            aria-label={`${ctaText} - ${t.accessibility.exploreTeamContent}`}
         >
             <span class="hero-cta-text">{ctaText}</span>
             <ArrowRight size={18} aria-hidden="true" />

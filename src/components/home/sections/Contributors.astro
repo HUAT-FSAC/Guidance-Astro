@@ -3,40 +3,36 @@
  * 贡献者展示组件 (Contributors Component)
  * 支持中英文双语模式，展示核心贡献者及其角色、提交与 GitHub 主页
  */
+import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
 
 interface Props {
+    locale?: Locale
     lang?: 'zh' | 'en'
 }
 
-const { lang = 'zh' } = Astro.props
+const { locale: localeProp, lang } = Astro.props
 
-interface Contributor {
+const locale: Locale =
+    localeProp ??
+    (lang === 'en' ? 'en' : lang === 'zh' ? 'zh' : getLocaleFromPath(Astro.url.pathname))
+const t = getTranslations(locale)
+
+interface ContributorIdentity {
     name: string
     handle: string
     avatar: string
     fallbackAvatar: string
     github: string
-    roleZh: string
-    roleEn: string
-    badgeZh: string
-    badgeEn: string
-    descZh: string
-    descEn: string
 }
 
-const contributors: Contributor[] = [
+const identities: ContributorIdentity[] = [
     {
         name: 'Kerwin',
         handle: 'zhangjszs',
         avatar: 'https://avatars.githubusercontent.com/u/122247373?v=4',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=zhangjszs&backgroundColor=transparent',
         github: 'https://github.com/zhangjszs',
-        roleZh: '项目发起人 · 全栈架构',
-        roleEn: 'Project Lead · Full-Stack Architect',
-        badgeZh: '225+ Commits',
-        badgeEn: '225+ Commits',
-        descZh: 'Astro 7 + Cloudflare Workers SSR 重构、组件系统、自动化质量门禁与全栈基础设施。',
-        descEn: 'Astro 7 + Cloudflare SSR architecture, component system, CI/CD quality gates and core infrastructure.',
     },
     {
         name: 'NekoRectifier',
@@ -44,12 +40,6 @@ const contributors: Contributor[] = [
         avatar: 'https://avatars.githubusercontent.com/u/167241872?v=4',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=nekorect&backgroundColor=transparent',
         github: 'https://github.com/nekorect',
-        roleZh: '核心贡献者 · 文档与国际化',
-        roleEn: 'Core Contributor · Docs & i18n',
-        badgeZh: '116+ Commits',
-        badgeEn: '116+ Commits',
-        descZh: '早期项目奠基、文档中心基础设施搭建、中英双语 i18n 体系、学习路线图与资源优化。',
-        descEn: 'Early foundation, documentation center infrastructure, bilingual i18n architecture, and learning roadmaps.',
     },
     {
         name: 'wsy-huat',
@@ -57,39 +47,21 @@ const contributors: Contributor[] = [
         avatar: 'https://avatars.githubusercontent.com/u/213669467?v=4',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=wsyhuat&backgroundColor=transparent',
         github: 'https://github.com/wsyhuat',
-        roleZh: '贡献者 · 动效与交互哲学',
-        roleEn: 'Contributor · Motion & UX',
-        badgeZh: 'Motion & UX',
-        badgeEn: 'Motion & UX',
-        descZh: 'Emil Kowalski 动效哲学实践、自定义缓动曲线、按钮按压反馈、鼠标追踪光效与无障碍适配。',
-        descEn: 'Emil Kowalski motion philosophy, custom easing curves, tactile press feedback, and accessibility.',
     },
 ]
 
-const t = {
-    zh: {
-        title: '贡献者',
-        subtitle: 'CONTRIBUTORS',
-        intro: '感谢为 HUAT FSAC 数字化与技术文档建设倾注心血的每一位开发者。',
-        viewGraph: '在 GitHub 上查看完整图谱',
-        joinUs: '参与代码或文档贡献',
-    },
-    en: {
-        title: 'Contributors',
-        subtitle: 'CONTRIBUTORS',
-        intro: 'Heartfelt thanks to every developer building the digital foundations of HUAT FSAC.',
-        viewGraph: 'View Full Graph on GitHub',
-        joinUs: 'Contribute Code or Docs',
-    },
-}[lang]
+const contributors = identities.map((identity, index) => ({
+    ...identity,
+    ...t.contributors.members[index],
+}))
 ---
 
-<section class="contributors-section" aria-label={t.title}>
+<section class="contributors-section" aria-label={t.contributors.title}>
     <div class="contributors-container">
         <div class="contributors-header">
-            <h2 class="contributors-title">{t.title}</h2>
-            <span class="contributors-subtitle">{t.subtitle}</span>
-            <p class="contributors-intro">{t.intro}</p>
+            <h2 class="contributors-title">{t.contributors.title}</h2>
+            <span class="contributors-subtitle">{t.contributors.subtitle}</span>
+            <p class="contributors-intro">{t.contributors.intro}</p>
         </div>
 
         <div class="contributors-grid">
@@ -114,7 +86,7 @@ const t = {
                         <div class="contributor-info">
                             <div class="name-row">
                                 <h3 class="contributor-name">{c.name}</h3>
-                                <span class="contributor-badge">{lang === 'zh' ? c.badgeZh : c.badgeEn}</span>
+                                <span class="contributor-badge">{c.badge}</span>
                             </div>
 
                             <a
@@ -130,8 +102,8 @@ const t = {
                                 <span>@{c.handle}</span>
                             </a>
 
-                            <div class="contributor-role">{lang === 'zh' ? c.roleZh : c.roleEn}</div>
-                            <p class="contributor-desc">{lang === 'zh' ? c.descZh : c.descEn}</p>
+                            <div class="contributor-role">{c.role}</div>
+                            <p class="contributor-desc">{c.desc}</p>
                         </div>
                     </div>
                 ))
@@ -150,7 +122,7 @@ const t = {
                     <line x1="12" y1="20" x2="12" y2="4"></line>
                     <line x1="6" y1="20" x2="6" y2="14"></line>
                 </svg>
-                <span>{t.viewGraph}</span>
+                <span>{t.contributors.viewGraph}</span>
             </a>
             <a
                 href="https://github.com/HUAT-FSAC/Guidance-Astro/blob/main/.github/CONTRIBUTING.md"
@@ -161,7 +133,7 @@ const t = {
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14"></path>
                 </svg>
-                <span>{t.joinUs}</span>
+                <span>{t.contributors.joinUs}</span>
             </a>
         </div>
     </div>

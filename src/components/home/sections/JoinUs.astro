@@ -1,18 +1,23 @@
 ---
+import type { Locale } from '../../../utils/i18n';
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n';
+
 interface Props{
     backgroundImage?:string
+    locale?: Locale;
 }
-const { backgroundImage } = Astro.props
+const { backgroundImage, locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
 const bgStyle = backgroundImage ? `--join-bg: url(${backgroundImage});` : ''
 ---
 
-<section class="join-hero fs-full-bleed" role="region" aria-label="加入我们">
+<section class="join-hero fs-full-bleed" role="region" aria-label={t.joinUs.ariaLabel}>
     <div class="join-bg" role="presentation" aria-hidden="true" style={bgStyle}></div>
     <div class="join-overlay" role="presentation" aria-hidden="true"></div>
     <div class="join-content">
-        <h2 class="join-heading">加入我们</h2>
+        <h2 class="join-heading">{t.joinUs.heading}</h2>
         <span class="join-sub">JOIN US</span>
-        <a class="join-cta fs-cta-clip" href="/join/" role="button" data-astro-prefetch="hover">立即报名</a>
+        <a class="join-cta fs-cta-clip" href="/join/" role="button" data-astro-prefetch="hover">{t.joinUs.cta}</a>
     </div>
 </section>
 
