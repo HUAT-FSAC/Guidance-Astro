@@ -12,6 +12,10 @@ vi.mock('../../src/utils/search-history', () => ({
 }))
 
 describe('search-suggestions', () => {
+    beforeEach(() => {
+        vi.restoreAllMocks()
+    })
+
     describe('getSearchSuggestions', () => {
         it('returns popular searches when query is empty', () => {
             const suggestions = getSearchSuggestions('')
@@ -56,7 +60,7 @@ describe('search-suggestions', () => {
 
         it('sorts history suggestions first, then by timestamp, then by relevance', async () => {
             const searchHistoryModule = await import('../../src/utils/search-history')
-            vi.spyOn(searchHistoryModule, 'filterSearchHistory').mockReturnValue([
+            const spy = vi.spyOn(searchHistoryModule, 'filterSearchHistory').mockReturnValue([
                 { id: '1', query: 'ROS 定位', timestamp: 1000 },
                 { id: '2', query: 'ROS 高级', timestamp: 2000 },
             ])
@@ -65,6 +69,7 @@ describe('search-suggestions', () => {
             expect(suggestions[0].type).toBe('history')
             expect(suggestions[0].query).toBe('ROS 高级') // Higher timestamp
             expect(suggestions[1].query).toBe('ROS 定位')
+            spy.mockReturnValue([])
         })
     })
 
