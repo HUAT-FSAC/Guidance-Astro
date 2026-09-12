@@ -63,6 +63,17 @@ jobs:
           script: |
             const { owner, repo } = context.repo
             const title = `⚠️ release-please failed on ${context.sha.slice(0, 7)}`
+            const open = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            })
+            const existing = open.find((i) => i.title.startsWith('⚠️ release-please failed'))
+            if (existing) {
+              console.log(`Existing open failure issue #${existing.number}; skipping duplicate.`)
+              return
+            }
             const body = [
               '`release-please` 工作流失败,可能影响 Release PR 正常生成。',
               '',
