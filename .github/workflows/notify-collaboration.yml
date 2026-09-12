@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - name: Push notification
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
@@ -74,7 +74,7 @@ jobs:
       contents: read
     steps:
       - name: Push notification
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
@@ -129,7 +129,7 @@ jobs:
       contents: read
     steps:
       - name: Push notification
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
@@ -191,7 +191,7 @@ jobs:
           restore-keys: milestone-notified-
 
       - name: Scan and push notification
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}
