@@ -16,7 +16,7 @@ jobs:
     if: github.event_name == 'issues' && github.event.action == 'opened'
     steps:
       - name: Add to GitHub Project
-        uses: actions/add-to-project@v1
+        uses: actions/add-to-project@v2
         with:
           project-url: https://github.com/orgs/HUAT-FSAC/projects/1
           github-token: ${{ secrets.PROJECT_TOKEN }}
