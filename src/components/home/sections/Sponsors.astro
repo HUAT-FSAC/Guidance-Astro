@@ -1,45 +1,57 @@
 ---
 import type { SponsorGroup, SponsorItem } from "../../../data/home";
+import type { Locale } from "../../../utils/i18n";
+import { getLocaleFromPath } from "../../../utils/i18n";
 import { getImageLoadingStrategy, getImageFetchPriority } from "../../../utils/image-optimization";
 
 interface Props {
     groups: SponsorGroup[];
+    locale?: Locale;
 }
 
-const { groups } = Astro.props;
+const {
+    groups,
+    locale = getLocaleFromPath(Astro.url.pathname),
+} = Astro.props;
 
 const loading = getImageLoadingStrategy(false);
 const fetchPriority = getImageFetchPriority(false);
 ---
 
 {
-    groups.map((group: SponsorGroup) => (
-        <div class="sponsor-section reveal-upon-scroll">
-            <div class="sponsor-header" style="text-align: center; margin-bottom: 2rem;">
-                <h3 class="sponsor-title reveal-upon-scroll" style="transition-delay: 0.1s;">{group.name}</h3>
-                <span class="sponsor-subtitle">SPONSORS</span>
+    groups.map((group: SponsorGroup) => {
+        const groupName = locale === 'en' && group.nameEn ? group.nameEn : group.name;
+        return (
+            <div class="sponsor-section reveal-upon-scroll">
+                <div class="sponsor-header" style="text-align: center; margin-bottom: 2rem;">
+                    <h3 class="sponsor-title reveal-upon-scroll" style="transition-delay: 0.1s;">{groupName}</h3>
+                    <span class="sponsor-subtitle">SPONSORS</span>
+                </div>
+                <div class="sponsor-grid">
+                    {group.items.map((sponsor: SponsorItem, index: number) => {
+                        const sponsorTitle = locale === 'en' && sponsor.titleEn ? sponsor.titleEn : sponsor.title;
+                        return (
+                            <div class="sponsor-card reveal-upon-scroll" style={`transition-delay: ${index * 0.1 + 0.2}s;`}>
+                                <div class="sponsor-image-container">
+                                    <img
+                                        src={sponsor.logo}
+                                        alt={sponsorTitle}
+                                        class="sponsor-logo"
+                                        width="136"
+                                        height="76"
+                                        loading={loading}
+                                        fetchpriority={fetchPriority}
+                                        decoding="async"
+                                    />
+                                </div>
+                                <span class="sponsor-name">{sponsorTitle}</span>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-            <div class="sponsor-grid">
-                {group.items.map((sponsor: SponsorItem, index: number) => (
-                    <div class="sponsor-card reveal-upon-scroll" style={`transition-delay: ${index * 0.1 + 0.2}s;`}>
-                        <div class="sponsor-image-container">
-                            <img
-                                src={sponsor.logo}
-                                alt={sponsor.title}
-                                class="sponsor-logo"
-                                width="136"
-                                height="76"
-                                loading={loading}
-                                fetchpriority={fetchPriority}
-                                decoding="async"
-                            />
-                        </div>
-                        <span class="sponsor-name">{sponsor.title}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    ))
+        );
+    })
 }
 
 <style>

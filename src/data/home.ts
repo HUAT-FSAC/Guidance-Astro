@@ -11,10 +11,14 @@ export interface StatItem {
 export interface RaceEvent {
     /** 赛事全称 */
     name: string
+    /** 英文全称 */
+    nameEn?: string
     /** 简短标签 */
     abbr: string
     /** 赛事地点 */
     location: string
+    /** 英文赛事地点 */
+    locationEn?: string
     /** 赛事开始日期 ISO 8601，如 "2025-08-01" */
     startDate: string
     /** 赛事结束日期 */
@@ -52,12 +56,14 @@ export interface SeasonItem {
 
 export interface SponsorItem {
     title: string
+    titleEn?: string
     logo: string
     link?: string
 }
 
 export interface SponsorGroup {
     name: string
+    nameEn?: string
     items: SponsorItem[]
 }
 
@@ -171,17 +177,44 @@ import sponsorsData from './sponsors.json'
 
 export const sponsorGroups: SponsorGroup[] = sponsorsData.groups
 
+export function getSponsorGroups(locale: 'zh' | 'en' = 'zh'): SponsorGroup[] {
+    if (locale !== 'en') {
+        return sponsorGroups
+    }
+    return sponsorGroups.map((group) => ({
+        ...group,
+        name: group.nameEn ?? group.name,
+        items: group.items.map((item) => ({
+            ...item,
+            title: item.titleEn ?? item.title,
+        })),
+    }))
+}
+
 // ==================== 赛事配置 ====================
 export const raceEvents: RaceEvent[] = [
     {
         name: '中国大学生方程式系列赛 2025',
+        nameEn: 'Formula Student China 2025',
         abbr: 'FSC 2025',
         location: '上海国际赛车场',
+        locationEn: 'Shanghai International Circuit',
         startDate: '2025-09-01',
         endDate: '2025-09-05',
         isPrimary: true,
     },
 ]
+
+export function getRaceEvents(locale: 'zh' | 'en' = 'zh'): RaceEvent[] {
+    if (locale !== 'en') {
+        return raceEvents
+    }
+    return raceEvents.map((event) => ({
+        ...event,
+        name: event.nameEn ?? event.name,
+        location: event.locationEn ?? event.location,
+    }))
+}
 
 // ==================== 首页内容聚合层（i18n） ====================
 // 说明：src/content/docs/en/index.mdx 与 tests/unit/home-i18n.test.ts 依赖此聚合层。

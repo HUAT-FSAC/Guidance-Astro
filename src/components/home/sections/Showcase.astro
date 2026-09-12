@@ -34,6 +34,8 @@ const moduleMeta = [
 
 const modules = moduleMeta.map((meta, index) => ({
     ...meta,
+    link: locale === 'en' ? `/en${meta.link}` : meta.link,
+    title: t.showcase.modules[index].title,
     cn: t.showcase.modules[index].title,
     desc: t.showcase.modules[index].desc,
 }));

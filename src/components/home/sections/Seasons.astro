@@ -22,6 +22,50 @@ const labels = labelsProp ?? { label: t.seasons.label, subtitle: t.seasons.subti
 
 const dotLabel = (index: number) =>
     `${t.seasons.dotPrefix} ${index + 1}${t.seasons.dotSuffix ? ` ${t.seasons.dotSuffix}` : ""}`;
+
+const SPEC_LABEL_MAP_EN: Record<string, string> = {
+    '质量': 'Mass',
+    '驱动形式': 'Drivetrain',
+    '车架结构': 'Chassis',
+    '峰值功率': 'Peak Power',
+    '前后轮距': 'Track (F/R)',
+    '动力电池材料': 'Battery Type',
+    '轴距': 'Wheelbase',
+    '最大电压/能量': 'Max Voltage / Energy',
+    '冷却方式': 'Cooling',
+    '主传动形式': 'Final Drive',
+    '传感器': 'Sensors',
+    '车身材料': 'Bodywork',
+    '悬架形式': 'Suspension',
+    '总长/总高': 'Length / Height',
+    '整车质量': 'Total Mass',
+    '最高车速': 'Top Speed',
+    '百公里加速': '0-100 km/h',
+    '最大功率': 'Max Power',
+    '电机类型': 'Motor Type',
+    '电池容量': 'Battery Capacity',
+    '电芯类型': 'Cell Type',
+};
+
+const SPEC_VALUE_MAP_EN: Record<string, string> = {
+    '四电机四驱': '4-Motor AWD',
+    '单体壳承载式一体化': 'Monocoque Integrated',
+    '钴酸锂': 'LiCoO2',
+    '水冷': 'Liquid Cooling',
+    '链传动': 'Chain Drive',
+    '钢管桁架结构': 'Steel Tubular Spaceframe',
+    '碳纤维复合材料': 'Carbon Fiber Composite',
+    '不等长双A臂推杆/拉杆悬挂': 'Unequal-length Double Wishbone Push/Pull-rod',
+    '双电机后驱': 'Dual-Motor RWD',
+    '永磁同步电机': 'PMSM',
+    '128线激光雷达、单目摄像头、组合导航、非接触式光学传感器': '128-beam LiDAR, Monocular Camera, INS/GNSS, Optical Speed Sensor',
+};
+
+const formatSpecLabel = (label: string): string =>
+    locale === 'en' ? SPEC_LABEL_MAP_EN[label] ?? label : label;
+
+const formatSpecValue = (value: string): string =>
+    locale === 'en' ? SPEC_VALUE_MAP_EN[value] ?? value : value;
 ---
 
 <section class="seasons-section reveal-upon-scroll" role="region" aria-label={labels.label}>
@@ -79,8 +123,8 @@ const dotLabel = (index: number) =>
                                                     if (spec.fullWidth) {
                                                         rows.push(
                                                             <tr class="seasons-specs-row seasons-specs-row--full">
-                                                                <th class="seasons-specs-th">{spec.label}</th>
-                                                                <td class="seasons-specs-td seasons-specs-td--full" colspan="3" set:html={spec.value.replace(/\n/g, '<br/>')} />
+                                                                <th class="seasons-specs-th">{formatSpecLabel(spec.label)}</th>
+                                                                <td class="seasons-specs-td seasons-specs-td--full" colspan="3" set:html={formatSpecValue(spec.value).replace(/\n/g, '<br/>')} />
                                                             </tr>
                                                         )
                                                         i++
@@ -89,12 +133,12 @@ const dotLabel = (index: number) =>
                                                         const right = specs[i + 1]
                                                         rows.push(
                                                             <tr class="seasons-specs-row">
-                                                                <th class="seasons-specs-th">{left.label}</th>
-                                                                <td class="seasons-specs-td">{left.value}</td>
+                                                                <th class="seasons-specs-th">{formatSpecLabel(left.label)}</th>
+                                                                <td class="seasons-specs-td">{formatSpecValue(left.value)}</td>
                                                                 {right && !right.fullWidth ? (
                                                                     <>
-                                                                        <th class="seasons-specs-th">{right.label}</th>
-                                                                        <td class="seasons-specs-td">{right.value}</td>
+                                                                        <th class="seasons-specs-th">{formatSpecLabel(right.label)}</th>
+                                                                        <td class="seasons-specs-td">{formatSpecValue(right.value)}</td>
                                                                     </>
                                                                 ) : (
                                                                     <td class="seasons-specs-td seasons-specs-td--empty" colspan="2"></td>

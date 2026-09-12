@@ -14,6 +14,9 @@ interface Props {
 const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props;
 const t = getTranslations(locale);
 const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
+const eventName = locale === 'en' && primary.nameEn ? primary.nameEn : primary.name;
+const eventLocation = locale === 'en' && primary.locationEn ? primary.locationEn : primary.location;
+const ctaLink = locale === 'en' ? '/en/about-fs/' : '/about-fs/';
 ---
 
 <section class="countdown-section" data-start-date={primary.startDate}>
@@ -21,9 +24,9 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
         <div class="countdown-header">
             <span class="countdown-label">{t.countdown.label}</span>
             <span class="countdown-subtitle">COUNTDOWN</span>
-            <h2 class="countdown-event">{primary.name}</h2>
+            <h2 class="countdown-event">{eventName}</h2>
             <p class="countdown-meta">
-                <span class="meta-icon">📍</span>{primary.location}
+                <span class="meta-icon">📍</span>{eventLocation}
                 <span class="meta-sep">·</span>
                 <span class="meta-icon">📅</span>{primary.startDate} — {primary.endDate}
             </p>
@@ -56,7 +59,7 @@ const primary = raceEvents.find(e => e.isPrimary) ?? raceEvents[0];
             {t.countdown.ended}
         </p>
 
-        <a href="/about-fs/" class="countdown-cta">{t.countdown.cta}</a>
+        <a href={ctaLink} class="countdown-cta">{t.countdown.cta}</a>
     </div>
 </section>
 
