@@ -1,4 +1,7 @@
 ---
+import type { Locale } from '../../../utils/i18n';
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n';
+
 interface Props {
     title: string;
     subtitle: string;
@@ -6,10 +9,12 @@ interface Props {
     ctaText: string;
     ctaLink: string;
     backgroundImage?: string;
+    locale?: Locale;
 }
 
-const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
+const { title, subtitle, description, ctaText, ctaLink, backgroundImage, locale = getLocaleFromPath(Astro.url.pathname) } =
     Astro.props;
+const t = getTranslations(locale);
 ---
 
 <section class="fs-section reveal-upon-scroll">
@@ -19,7 +24,7 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         <span class="fs-label">{subtitle}</span>
         <p class="fs-description">{description}</p>
         <a href={ctaLink} class="fs-cta">
-            {ctaText || "了解更多"}
+            {ctaText || t.common.learnMore}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"

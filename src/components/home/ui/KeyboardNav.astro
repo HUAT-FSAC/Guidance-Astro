@@ -1,33 +1,14 @@
 ---
 import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
 
 interface Props {
     locale?: Locale
 }
 
-const { locale = 'zh' } = Astro.props
-const labels =
-    locale === 'en'
-        ? {
-              title: '⌨️ Shortcuts',
-              close: 'Close',
-              help: 'Show shortcut help',
-              home: 'Go home',
-              top: 'Scroll to top',
-              search: 'Search',
-              join: 'Go to join page',
-              dismiss: 'Close dialog',
-          }
-        : {
-              title: '⌨️ 快捷键',
-              close: '关闭',
-              help: '显示快捷键帮助',
-              home: '返回首页',
-              top: '返回顶部',
-              search: '搜索',
-              join: '加入我们',
-              dismiss: '关闭弹窗',
-          }
+const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
+const labels = t.keyboardNav
 ---
 
 <div class="keyboard-help" data-keyboard-nav data-keyboard-nav-locale={locale}>

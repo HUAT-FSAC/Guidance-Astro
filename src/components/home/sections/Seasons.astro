@@ -1,5 +1,7 @@
 ---
 import type { SeasonItem } from "../../../data/home";
+import type { Locale } from "../../../utils/i18n";
+import { getLocaleFromPath, getTranslations } from "../../../utils/i18n";
 
 interface Props {
     seasons: SeasonItem[];
@@ -7,15 +9,19 @@ interface Props {
         label: string;
         subtitle: string;
     };
-    locale?: "zh" | "en";
+    locale?: Locale;
 }
 
 const {
     seasons,
-    labels = { label: "关于赛车", subtitle: "ABOUT THE RACE CAR" },
-    locale = "zh",
+    labels: labelsProp,
+    locale = getLocaleFromPath(Astro.url.pathname),
 } = Astro.props;
-const isEnglish = locale === "en";
+const t = getTranslations(locale);
+const labels = labelsProp ?? { label: t.seasons.label, subtitle: t.seasons.subtitle };
+
+const dotLabel = (index: number) =>
+    `${t.seasons.dotPrefix} ${index + 1}${t.seasons.dotSuffix ? ` ${t.seasons.dotSuffix}` : ""}`;
 ---
 
 <section class="seasons-section reveal-upon-scroll" role="region" aria-label={labels.label}>
@@ -29,10 +35,10 @@ const isEnglish = locale === "en";
         data-seasons-carousel
         role="region"
         aria-roledescription="carousel"
-        aria-label={isEnglish ? "Race car seasons" : "赛车赛季轮播"}
+        aria-label={t.seasons.carouselLabel}
     >
         {/* 左箭头 */}
-        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={isEnglish ? "Previous season" : "上一组"}>
+        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={t.seasons.previous}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
@@ -51,7 +57,7 @@ const isEnglish = locale === "en";
                         <div class="seasons-img seasons-img--left">
                             <img
                                 src={season.carImg}
-                                alt={isEnglish ? `${season.year} race car` : `${season.year} 赛车`}
+                                alt={`${season.year} ${t.seasons.raceCarAlt}`}
                                 width="600"
                                 height="380"
                                 loading="lazy"
@@ -107,7 +113,7 @@ const isEnglish = locale === "en";
                                 <>
                                     <img
                                         src={season.explainImg}
-                                        alt={isEnglish ? `${season.year} explanation` : `${season.year} 解说`}
+                                        alt={`${season.year} ${t.seasons.explanationAlt}`}
                                         width="600"
                                         height="380"
                                         loading="lazy"
@@ -123,18 +129,18 @@ const isEnglish = locale === "en";
         </div>
 
         {/* 右箭头 */}
-        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={isEnglish ? "Next season" : "下一组"}>
+        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={t.seasons.next}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
         {/* 指示器 */}
-        <div class="seasons-dots" role="tablist" aria-label={isEnglish ? "Season navigation" : "赛季导航"}>
+        <div class="seasons-dots" role="tablist" aria-label={t.seasons.navigation}>
             {seasons.map((_, index) => (
                 <button
                     class={`seasons-dot ${index === 0 ? 'is-active' : ''}`}
                     data-dot={index}
                     role="tab"
-                    aria-label={isEnglish ? `Season ${index + 1}` : `第 ${index + 1} 组`}
+                    aria-label={dotLabel(index)}
                     aria-selected={index === 0 ? 'true' : 'false'}
                 ></button>
             ))}

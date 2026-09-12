@@ -1,5 +1,7 @@
 ---
 import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority, generateAltText } from "../../../utils/image-optimization";
+import type { Locale } from "../../../utils/i18n";
+import { getLocaleFromPath, getTranslations } from "../../../utils/i18n";
 
 interface Props {
     badge?: string;
@@ -9,6 +11,7 @@ interface Props {
     ctaLink: string;
     image: string;
     reverse?: boolean;
+    locale?: Locale;
 }
 
 const {
@@ -19,13 +22,15 @@ const {
     ctaLink,
     image,
     reverse = false,
+    locale = getLocaleFromPath(Astro.url.pathname),
 } = Astro.props;
+const t = getTranslations(locale);
 
 const optimizedImage = optimizeExternalImage(image, 900, 80);
 const srcSet = generateSrcSet(image, [450, 675, 900]);
 const loading = getImageLoadingStrategy(false);
 const fetchPriority = getImageFetchPriority(false);
-const altText = generateAltText(title, "成就展示");
+const altText = generateAltText(title, t.accessibility.achievementImage);
 ---
 
 <section class="achievement-section" role="region" aria-label={title}>

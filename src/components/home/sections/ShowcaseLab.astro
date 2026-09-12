@@ -1,26 +1,31 @@
 ---
 import { showcaseScenarios } from '../../../data/showcase-lab'
 import type { ShowcaseContent } from '../../../data/home'
+import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
 
 interface Props {
     content?: ShowcaseContent
+    locale?: Locale
 }
 
+const { content: contentProp, locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
 const defaultScenario = showcaseScenarios[0]
 const fallbackContent: ShowcaseContent = {
     href: '/showcase-dashboard/',
-    title: '智能驾驶交互实验室',
-    subtitle: 'AUTONOMOUS SHOWCASE',
-    description: '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
-    features: ['多场景预设', '实时可视化', '离线演示'],
-    cta: '进入实验室',
+    title: t.showcaseLab.title,
+    subtitle: t.showcaseLab.subtitle,
+    description: t.showcaseLab.description,
+    features: [...t.showcaseLab.features],
+    cta: t.showcaseLab.cta,
     preview: {
         title: defaultScenario.name,
         subtitle: defaultScenario.tagline,
     },
 }
 
-const { content = fallbackContent } = Astro.props
+const content = contentProp ?? fallbackContent
 ---
 
 <section class="showcase-entry home-block">

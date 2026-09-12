@@ -1,63 +1,60 @@
 ---
-const groups = [
+import type { Locale } from '../../../utils/i18n';
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n';
+
+interface Props {
+    locale?: Locale;
+}
+
+const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(locale);
+
+const groupLinks = [
     {
-        name: '感知组',
-        desc: '负责摄像头、激光雷达等传感器的数据采集与处理，构建环境感知系统。',
         icon: 'eye',
         link: '/archive/2025/sensing/',
     },
     {
-        name: '规划控制组',
-        desc: '负责路径规划、运动控制和决策算法，实现赛车的自主行驶。',
         icon: 'route',
         link: '/archive/2025/planning-control/',
     },
     {
-        name: '定位建图组',
-        desc: '负责高精度定位与地图构建，为赛车提供精确的自身位置信息。',
         icon: 'map',
         link: '/archive/2025/localization-mapping/',
     },
     {
-        name: '仿真组',
-        desc: '搭建虚拟仿真环境，用于算法验证和系统测试，加速开发迭代。',
         icon: 'simulation',
         link: '/archive/2025/simulation/',
     },
     {
-        name: '车身空套组',
-        desc: '负责车身外壳设计和空气动力学优化，通过CFD和复合材料提升性能。',
         icon: 'wind',
         link: '/archive/2025/mechanical/',
     },
     {
-        name: '车身底盘组',
-        desc: '负责传动、悬架、转向和制动系统的设计与制造，确保操控性和稳定性。',
         icon: 'chassis',
         link: '/archive/2025/mechanical/',
     },
     {
-        name: '电气系统组',
-        desc: '负责整车电气系统设计、布置和电机系统算法，确保三电系统高效稳定运行。',
         icon: 'bolt',
         link: '/archive/2025/electrical/',
     },
     {
-        name: '市场运营部',
-        desc: '负责团队品牌建设、平台运营和活动协调，确保团队可持续发展。',
         icon: 'chart',
         link: '/archive/2025/management/',
     },
     {
-        name: '电池组',
-        desc: '负责电池包设计、BMS管理和热管理系统，保障动力系统安全可靠。',
         icon: 'battery',
         link: '/archive/2025/electrical/',
     },
 ];
+
+const groups = groupLinks.map((group, index) => ({
+    ...group,
+    ...t.coreModules.groups[index],
+}));
 ---
 
-<section class="groups-section" aria-label="团队分组">
+<section class="groups-section" aria-label={t.coreModules.ariaLabel}>
     <div class="groups-grid">
         {groups.map((group, i) => (
             <a href={group.link} class="group-card reveal-upon-scroll" style={`transition-delay: ${i * 0.08}s;`}>

@@ -1,37 +1,45 @@
 ---
-const modules = [
+import type { Locale } from '../../../utils/i18n';
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n';
+
+interface Props {
+    locale?: Locale;
+}
+
+const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(locale);
+
+const moduleMeta = [
     {
-        cn: '智能驾驶实验室',
         en: 'SHOWCASE LAB',
         link: '/showcase-dashboard/',
         image: '/assets/huat.jpg',
-        desc: '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
     },
     {
-        cn: '征服赛道',
         en: 'CONQUER THE TRACK',
         link: '/cars/',
         image: '/assets/run.jpg',
-        desc: '欢迎来到 HUAT FSAC - 见证我们如何用前沿的电动和无人驾驶技术重新定义赛车运动。',
     },
     {
-        cn: '新闻动态',
         en: 'LATEST NEWS',
         link: '/news/',
         image: '/assets/about-us.jpg',
-        desc: '关注车队最新动态，了解赛事进展、团队活动和技术突破。',
     },
     {
-        cn: 'Formula Student',
         en: 'GLOBAL COMPETITION',
         link: '/about-fs/',
         image: '/assets/formula.jpg',
-        desc: 'Formula Student 是全球最顶尖的工程赛事之一，600多支队伍从零开始设计制造赛车。',
     },
 ];
+
+const modules = moduleMeta.map((meta, index) => ({
+    ...meta,
+    cn: t.showcase.modules[index].title,
+    desc: t.showcase.modules[index].desc,
+}));
 ---
 
-<section class="showcase-hero fs-full-bleed" role="region" aria-label="功能模块">
+<section class="showcase-hero fs-full-bleed" role="region" aria-label={t.showcase.ariaLabel}>
     {/* 模块数据：由打包后的 showcase-carousel.ts 读取，避免 define:vars 内联脚本 */}
     <script type="application/json" id="showcase-data" set:html={JSON.stringify(modules)}></script>
     {modules.map((mod, i) => (
@@ -46,15 +54,15 @@ const modules = [
         <h2 class="showcase-title" id="showcase-title">{modules[0].cn}</h2>
         <p class="showcase-desc" id="showcase-desc">{modules[0].desc}</p>
         <a class="showcase-cta fs-cta-clip" id="showcase-cta" href={modules[0].link}>
-            了解更多
+            {t.common.learnMore}
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
     </div>
 
-    <button class="showcase-arrow showcase-arrow-left" id="showcase-prev" aria-label="上一个">
+    <button class="showcase-arrow showcase-arrow-left" id="showcase-prev" aria-label={t.common.previous}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="showcase-arrow showcase-arrow-right" id="showcase-next" aria-label="下一个">
+    <button class="showcase-arrow showcase-arrow-right" id="showcase-next" aria-label={t.common.next}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
 
