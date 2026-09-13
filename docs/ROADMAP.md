@@ -76,7 +76,7 @@
 
 ### 3.4 社区侧
 
-- **GitHub Discussions 启用** — 想法/问答/Show & Tell 走 Discussions,Issue 只留任务/缺陷
+- **GitHub Discussions 分流** ✅ 已启用 — 问答/想法/展示走 [Discussions](https://github.com/HUAT-FSAC/Guidance-Astro/discussions),Issue 只留任务/缺陷;规则详见 [CONTRIBUTING](../.github/CONTRIBUTING.md) 的「讨论分流」一节
 - **Discord / 飞书外部群** — 招募与社区互动(独立决策,不影响本仓库)
 
 ---
