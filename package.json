@@ -62,7 +62,7 @@
         "prepare": "husky"
     },
     "dependencies": {
-        "@astrojs/check": "^0.9.9",
+        "@astrojs/check": "^0.9.10",
         "@astrojs/cloudflare": "^14.3.1",
         "@astrojs/starlight": "^0.41.11",
         "@fontsource/jetbrains-mono": "^5.3.0",
