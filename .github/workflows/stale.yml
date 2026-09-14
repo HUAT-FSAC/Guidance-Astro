@@ -19,7 +19,7 @@ jobs:
     steps:
       # --- Issues ---
       - name: Stale issues
-        uses: actions/stale@v9
+        uses: actions/stale@v11
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-stale: 30
