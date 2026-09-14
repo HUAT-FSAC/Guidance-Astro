@@ -149,32 +149,22 @@ html {
     margin-right: calc(50% - 50vw);
 }
 
-/* 切角 CTA：clip-path 工程切角 + ::before 横向填充 hover 动效 */
+/* 胶囊 CTA：圆角胶囊形状 + hover 填充动效 */
 .fs-cta-clip {
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
-    padding: 1rem 3rem;
-    color: var(--fs-color-heading) !important;
+    padding: 1rem 2.5rem;
+    color: #2563eb !important;
     background: transparent !important;
-    border: 1px solid var(--sl-color-accent) !important;
-    border-radius: 0 !important;
+    border: 2px solid #2563eb !important;
+    border-radius: 50px !important;
     font-family: 'Space Grotesk', system-ui, sans-serif;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     text-decoration: none;
     transition: all 0.3s var(--fs-ease-out);
-    clip-path: polygon(
-        15px 0,
-        100% 0,
-        100% calc(100% - 15px),
-        calc(100% - 15px) 100%,
-        0 100%,
-        0 15px
-    );
     overflow: hidden;
 }
 
@@ -191,7 +181,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--sl-color-accent);
+    background: #2563eb;
     z-index: -1;
     transform: scaleX(0);
     transform-origin: right;
@@ -199,9 +189,10 @@ html {
 }
 
 .fs-cta-clip:hover {
-    color: var(--fs-bg-base) !important;
-    border-color: transparent !important;
-    box-shadow: 0 0 20px var(--fs-accent-glow) !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3) !important;
+    transform: translateY(-2px);
 }
 
 .fs-cta-clip:hover::before {
@@ -209,7 +200,7 @@ html {
     transform-origin: left;
 }
 
-/* Emil Kowalski: 按钮按压反馈 - scale(0.97) 让界面感觉响应 */
+/* 按钮按压反馈 */
 .fs-cta-clip:active {
     transform: scale(0.97);
 }
@@ -217,16 +208,17 @@ html {
 /* 触摸设备不显示 hover 效果 */
 @media (hover: hover) and (pointer: fine) {
     .fs-cta-clip:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
     }
 }
 
-/* 亮色模式：CTA 文字改为强调色。
-   注意：本文件是全局样式表（经 Starlight customCss 引入），不需要 :global() 包装——
-   :global() 仅在 .astro 组件的 <style scoped> 中有意义，在普通 CSS 文件中会被
-   lightningcss 视为非法伪类并丢弃整条规则。 */
+/* 亮色模式：保持蓝色风格 */
 [data-theme='light'] .fs-cta-clip {
-    color: var(--sl-color-accent) !important;
+    color: #2563eb !important;
+}
+
+[data-theme='light'] .fs-cta-clip:hover {
+    color: #ffffff !important;
 }
 
 /* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */

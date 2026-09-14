@@ -44,8 +44,12 @@ const module = {
         left: 0;
         right: 0;
         height: 60px;
-        background: #ffffff;
+        background: #0a0a0c;
         z-index: 3;
+    }
+
+    :global([data-theme='light']) .showcase-hero::before {
+        background: #ffffff;
     }
 
     .showcase-slide-bg {
@@ -102,8 +106,22 @@ const module = {
         text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
+    .showcase-cta {
+        background: transparent !important;
+        color: #2563eb !important;
+        border: 2px solid #2563eb !important;
+        border-radius: 50px !important;
+    }
+    .showcase-cta::before {
+        display: none;
+    }
     .showcase-cta svg {
         transition: transform 0.3s ease;
+    }
+    .showcase-cta:hover {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #2563eb !important;
     }
     .showcase-cta:hover svg {
         transform: translateX(4px);

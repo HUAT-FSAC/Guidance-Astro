@@ -12,7 +12,10 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     <div class="team-content">
         <h2 class="team-heading">指导老师与团队成员</h2>
         <span class="team-sub">ADVISORS & TEAM MEMBERS</span>
-        <a class="team-cta fs-cta-clip" href="/team/" role="button" data-astro-prefetch="hover">查看完整团队</a>
+        <a class="team-cta fs-cta-clip" href="/team/" role="button" data-astro-prefetch="hover">
+            查看完整团队
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
     </div>
 </section>
 
@@ -72,9 +75,20 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     }
 
     /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
+    .team-cta {
+        background: transparent !important;
+        color: #2563eb !important;
+        border: 2px solid #2563eb !important;
+        border-radius: 50px !important;
+    }
+    .team-cta::before {
+        display: none;
+    }
     @media (hover: hover) and (pointer: fine) {
         .team-cta:hover {
+            background: #2563eb !important;
             color: #ffffff !important;
+            border-color: #2563eb !important;
         }
     }
 

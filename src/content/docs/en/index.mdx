@@ -18,6 +18,7 @@ import Seasons from '../../../components/home/sections/Seasons.astro'
 import Sponsors from '../../../components/home/sections/Sponsors.astro'
 import Acknowledgement from '../../../components/home/sections/Acknowledgement.astro'
 import Recruitment from '../../../components/home/sections/Recruitment.astro'
+import TeamNews from '../../../components/home/sections/TeamNews.astro'
 import PageLoader from '../../../components/home/PageLoader.astro'
 import ThemeSwitcher from '../../../components/home/ui/ThemeSwitcher.astro'
 import ScrollProgress from '../../../components/home/ui/ScrollProgress.astro'
@@ -150,6 +151,8 @@ import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/hom
 </section>
 
 <Recruitment content={home.recruitment} href="/en/join/" />
+
+<TeamNews />
 
 <FormulaStudentInfo
     title={home.formulaStudentInfo.title}

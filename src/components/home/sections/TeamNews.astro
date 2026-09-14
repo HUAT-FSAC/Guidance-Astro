@@ -1,0 +1,176 @@
+---
+const news = [
+    {
+        date: '2025-09-11',
+        title: '东风HUAT无人车队算法部纳新',
+        link: '#',
+    },
+    {
+        date: '2025-07-30',
+        title: '暑期第三次例会',
+        link: '#',
+    },
+    {
+        date: '2025-07-07',
+        title: '暑期车队安全与工作会议召开',
+        link: '#',
+    },
+    {
+        date: '2025-05-16',
+        title: '东风商用车公司领导视察无人车队',
+        link: '#',
+    },
+];
+---
+
+<section class="news-section" aria-label="车队动态">
+    <div class="news-container">
+        <div class="news-header">
+            <h2 class="news-title">车队动态</h2>
+            <div class="news-divider"></div>
+        </div>
+
+        <div class="news-list">
+            {news.map((item) => (
+                <a href={item.link} class="news-item">
+                    <span class="news-date">{item.date}</span>
+                    <span class="news-text">{item.title}</span>
+                </a>
+            ))}
+        </div>
+
+        <div class="news-more">
+            <a href="/news/" class="news-more-btn fs-cta-clip">
+                查看更多
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .news-section {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        padding: 6rem 0;
+        background: #ffffff;
+    }
+
+    :global([data-theme='dark']) .news-section {
+        background: #1a1a1e;
+    }
+
+    .news-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 4rem;
+    }
+
+    .news-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .news-title {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 4.5rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        margin: 0 0 1.5rem 0;
+    }
+
+    :global([data-theme='dark']) .news-title {
+        color: #ffffff;
+    }
+
+    .news-divider {
+        width: 100px;
+        height: 5px;
+        background: #2563eb;
+        margin: 0 auto;
+    }
+
+    .news-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .news-item {
+        display: block;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 2rem 2.5rem;
+        text-decoration: none !important;
+        border-left: 5px solid #2563eb;
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    :global([data-theme='dark']) .news-item {
+        background: #2a2a2e;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .news-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    }
+
+    .news-item:active {
+        transform: scale(0.99);
+    }
+
+    .news-date {
+        display: block;
+        font-size: 1rem;
+        color: #6b7280;
+        margin-bottom: 0.75rem;
+    }
+
+    :global([data-theme='dark']) .news-date {
+        color: #9ca3af;
+    }
+
+    .news-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    :global([data-theme='dark']) .news-text {
+        color: #ffffff;
+    }
+
+    .news-more {
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .news-more-btn {
+        border-radius: 50px !important;
+        overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .news-title {
+            font-size: 3rem;
+        }
+
+        .news-container {
+            padding: 0 1.5rem;
+        }
+
+        .news-item {
+            padding: 1.5rem 1.5rem;
+        }
+
+        .news-text {
+            font-size: 1.2rem;
+        }
+
+        .news-date {
+            font-size: 0.9rem;
+        }
+    }
+</style>

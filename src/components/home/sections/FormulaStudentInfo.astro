@@ -18,7 +18,7 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         <h2 class="fs-title">{title}</h2>
         <span class="fs-label">{subtitle}</span>
         <p class="fs-description">{description}</p>
-        <a href={ctaLink} class="fs-cta">
+        <a href={ctaLink} class="fs-cta-clip">
             {ctaText || "了解更多"}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -130,74 +130,6 @@ const { title, subtitle, description, ctaText, ctaLink, backgroundImage } =
         line-height: 1.8;
         color: var(--fs-color-text-muted);
         margin: 0 0 3rem;
-    }
-
-    .fs-cta {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 1.2rem 3rem;
-        color: var(--fs-color-heading) !important;
-        background: transparent !important;
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none !important;
-        transition: all 0.3s var(--fs-ease-out);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        overflow: visible;
-    }
-
-    :global([data-theme='light']) .fs-cta {
-        color: var(--sl-color-accent) !important;
-    }
-
-    /* 边框伪元素 */
-    .fs-cta::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border: 1px solid var(--sl-color-accent);
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        pointer-events: none;
-        transition: all 0.3s var(--fs-ease-out);
-    }
-
-    .fs-cta::before {
-        content: '';
-        position: absolute;
-        inset: 1px;
-        background: var(--sl-color-accent);
-        z-index: -1;
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.4s var(--fs-ease-out);
-        clip-path: polygon(calc(15px - 1px) 0, 100% 0, 100% calc(100% - calc(15px - 1px)), calc(100% - calc(15px - 1px)) 100%, 0 100%, 0 calc(15px - 1px));
-    }
-
-    .fs-cta:hover {
-        color: var(--fs-bg-base) !important;
-        box-shadow: 0 0 20px var(--fs-accent-glow) !important;
-    }
-
-    .fs-cta:hover::after {
-        border-color: transparent;
-    }
-
-    .fs-cta:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
-
-    .fs-cta svg {
-        transition: transform var(--transition-normal);
-    }
-
-    .fs-cta:hover svg {
-        transform: translateX(4px);
     }
 
     @media (max-width: 768px) {
