@@ -1,5 +1,7 @@
 ---
 import { optimizeExternalImage } from '../../../utils/image-optimization'
+import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
 import ArrowRight from '../../icons/ArrowRight.astro'
 
 interface Props {
@@ -9,9 +11,11 @@ interface Props {
     ctaText: string
     ctaLink: string
     backgroundImages?: string[]
+    locale?: Locale
 }
 
-const { title, subtitle, description, ctaText, ctaLink, backgroundImages } = Astro.props
+const { title, subtitle, description, ctaText, ctaLink, backgroundImages, locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
 
 /**
  * 本地图片：已生成 768/1440 两档 JPEG 以及对应的 WebP/AVIF（public/assets/photo-together-768.jpg 等）。
@@ -104,7 +108,7 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
             href={ctaLink}
             role="button"
             data-astro-prefetch="hover"
-            aria-label={`${ctaText} - 开始探索赛车队内容`}
+            aria-label={`${ctaText} - ${t.accessibility.exploreTeamContent}`}
         >
             <span class="hero-cta-text">{ctaText}</span>
             <ArrowRight size={18} aria-hidden="true" />
@@ -215,6 +219,34 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         pointer-events: none;
     }
 
+    /* 滚动提示：底部居中下滑箭头，暗示首屏之下仍有内容 */
+    .hero-v2::after {
+        content: '';
+        position: absolute;
+        bottom: 1.5rem;
+        left: calc(50% - 6px);
+        width: 12px;
+        height: 12px;
+        border-left: 2px solid rgba(255, 255, 255, 0.75);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+        transform: rotate(-45deg);
+        animation: heroScrollHint 2.2s var(--ease-out) infinite;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    @keyframes heroScrollHint {
+        0%,
+        100% {
+            opacity: 0.35;
+            margin-top: 0;
+        }
+        50% {
+            opacity: 1;
+            margin-top: 6px;
+        }
+    }
+
     .hero-inner {
         position: relative;
         z-index: 3;
@@ -256,7 +288,7 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
     }
 
     .hero-desc {
-        color: #ffffff !important;
+        color: var(--fs-color-on-image) !important; /* theme-contrast:allow */
         opacity: 0.92;
         margin: 0 auto 2.5rem auto;
         max-width: 720px;
@@ -275,16 +307,27 @@ const images = (backgroundImages ?? []).map((src) => getHeroVariants(src)).filte
         box-shadow: none;
         text-shadow: none;
         padding: 1rem 2.5rem !important;
+        /* 微妙的脉冲动画吸引注意 */
+        animation: ctaPulse 2s ease-in-out infinite;
     }
     .hero-cta::before {
         display: none;
+    }
+
+    @keyframes ctaPulse {
+        0%, 100% {
+            box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+        }
+        50% {
+            box-shadow: 0 8px 32px rgba(37,99,235,0.5), 0 0 0 4px rgba(37,99,235,0.1);
+        }
     }
 
     @media (hover: hover) and (pointer: fine) {
         .hero-cta:hover {
             background: #2563eb !important;
             border-color: #2563eb !important;
-            color: #ffffff !important;
+            color: var(--fs-color-on-accent) !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
             animation: none;

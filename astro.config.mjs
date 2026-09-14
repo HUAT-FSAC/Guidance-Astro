@@ -36,8 +36,6 @@ export default defineConfig({
                         /^starlight/,
                         /^is-/,
                         /^has-/,
-                        /^__/,
-                        /^lang-/,
                         /^_astro/,
                         'data-theme',
                         // Starlight 布局（无前缀，易被误删）
@@ -47,17 +45,12 @@ export default defineConfig({
                         /^page/,
                         /^content/,
                         /^header/,
-                        /^footer/,
                         /^pagination/,
                         /^hero/,
                         /^card/,
-                        /^markdown/,
                         /^not-content/,
                         /^admonition/,
-                        /^starlight-toc/,
                         /^starlight-aside/,
-                        /^starlight-tabs/,
-                        /^search/,
                         /^kudos/,
                         /^label-icon/,
                         /^caret/,
@@ -71,7 +64,6 @@ export default defineConfig({
                         /^error-/,
                         /^astro-/,
                         // Starlight Search
-                        /^site-search/,
                         'site-search',
                         /^pagefind/,
                         'pagefind-ui',
@@ -91,6 +83,10 @@ export default defineConfig({
                         /site-search/,
                         /pagefind/,
                         /dialog/,
+                        // 全局美化层：伪类/通用选择器无 class 锚点，会被 purgecss 误删
+                        /focus-visible/,
+                        /scrollbar/,
+                        /::selection/,
                     ],
                     greedy: [/sl-/, /starlight/, /site-search/, /pagefind/, /sidebar/, /main-pane/],
                 },
@@ -152,36 +148,13 @@ export default defineConfig({
             head: [
                 // 注意：Starlight 渲染的是 rel="shortcut icon"；如需主题化 favicon，
                 // 需先补充 /favicon-dark.png 与 /favicon-light.png 资源
-                // SEO 元数据
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'description',
-                        content:
-                            'HUAT FSAC - 湖北汽车工业学院方程式赛车队。我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。',
-                    },
-                },
+                // SEO 元数据（全局通用标签，各页面标题与描述由 frontmatter 与 Starlight i18n 自动驱动）
                 {
                     tag: 'meta',
                     attrs: {
                         name: 'keywords',
                         content:
                             'HUAT, FSAC, Formula Student, 方程式赛车, 无人驾驶, 赛车, 湖北汽车工业学院',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        property: 'og:title',
-                        content: 'HUAT FSAC - 方程式赛车队',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        property: 'og:description',
-                        content:
-                            '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。',
                     },
                 },
                 {
@@ -210,21 +183,6 @@ export default defineConfig({
                     attrs: {
                         name: 'twitter:card',
                         content: 'summary_large_image',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'twitter:title',
-                        content: 'HUAT FSAC - 方程式赛车队',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'twitter:description',
-                        content:
-                            '我们是一群充满激情的工程学子，致力于设计、制造并驾驶无人驾驶方程式赛车。在 Formula Student 赛场上，我们追求卓越，挑战极限。',
                     },
                 },
                 {

@@ -45,4 +45,12 @@ describe('renderCloudflareStaticHeaders', () => {
         expect(output).toContain('/*.ttf')
         expect(output).toContain('  Access-Control-Allow-Origin: *')
     })
+
+    it('creates AstroIntegration and exposes astro:build:done hook', async () => {
+        const cloudflareStaticHeaders = (await import('./cloudflare-static-headers')).default
+        const integration = cloudflareStaticHeaders()
+
+        expect(integration.name).toBe('cloudflare-static-headers')
+        expect(integration.hooks['astro:build:done']).toBeDefined()
+    })
 })

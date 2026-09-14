@@ -171,6 +171,7 @@ $RECYCLE.BIN/
 .mimocode/
 .trae/
 .workbuddy/
+.zcode/
 
 # 废弃的英文归档页面（乱码文件名 / .disabled 文件）
 src/content/docs/en/archive/
@@ -209,5 +210,5 @@ e2e-out.txt
 # PowerShell 把 `mkdir -p` 当成目录名时留下的空目录
 /-p/
 
-# 一次性诊断脚本（正式配置仍在 .config/ 根下：eslint、vitest、playwright 等）
-.config/scratch/
+# 一次性诊断脚本
+scripts/scratch/

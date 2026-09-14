@@ -14,6 +14,7 @@ import { createLogger } from './logger'
 const log = createLogger('Showcase')
 
 interface ShowcaseModule {
+    title?: string
     cn: string
     en: string
     link: string
@@ -108,7 +109,7 @@ function initCarousel(section: Element): void {
         current = ((index % total) + total) % total
         slides[current]?.classList.add('active')
         dots[current]?.classList.add('active')
-        titleEl!.textContent = data![current]!.cn
+        titleEl!.textContent = data![current]!.title ?? data![current]!.cn
         enEl!.textContent = data![current]!.en
         descEl!.textContent = data![current]!.desc
         ctaEl!.href = data![current]!.link

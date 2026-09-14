@@ -21,9 +21,10 @@ const { labels } = Astro.props
 
 <script>
     function initCarousel() {
-        const track = document.getElementById('scTrack')
-        const dots = document.querySelectorAll('.sc-dot')
-        if (!track || !dots.length) return
+        const trackElement = document.getElementById('scTrack') as HTMLElement | null
+        const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('.sc-dot'))
+        if (!trackElement || !dots.length) return
+        const track = trackElement
 
         const slides = Array.from(track.children).filter(function (el) {
             return el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE'
@@ -33,14 +34,15 @@ const { labels } = Astro.props
         let current = 0
 
         slides.forEach(el => {
-            el.style.flex = '0 0 100%'
-            el.style.minWidth = '0'
-            el.style.maxWidth = '100%'
-            el.style.boxSizing = 'border-box'
-            el.style.overflow = 'hidden'
+            const slide = el as HTMLElement
+            slide.style.flex = '0 0 100%'
+            slide.style.minWidth = '0'
+            slide.style.maxWidth = '100%'
+            slide.style.boxSizing = 'border-box'
+            slide.style.overflow = 'hidden'
         })
 
-        function showSlide(index) {
+        function showSlide(index: number) {
             current = index
             track.style.transform = 'translateX(-' + (current * 100) + '%)'
             dots.forEach(function (d, i) { d.classList.toggle('active', i === current) })
@@ -48,7 +50,7 @@ const { labels } = Astro.props
 
         dots.forEach(function (dot) {
             dot.addEventListener('click', function () {
-                const idx = parseInt(this.dataset.index || '0')
+                const idx = Number.parseInt(dot.dataset.index ?? '0', 10)
                 showSlide(idx)
             })
         })

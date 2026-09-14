@@ -1,5 +1,7 @@
 ---
 import type { SeasonItem } from "../../../data/home";
+import type { Locale } from "../../../utils/i18n";
+import { getLocaleFromPath, getTranslations } from "../../../utils/i18n";
 
 interface Props {
     seasons: SeasonItem[];
@@ -7,15 +9,63 @@ interface Props {
         label: string;
         subtitle: string;
     };
-    locale?: "zh" | "en";
+    locale?: Locale;
 }
 
 const {
     seasons,
-    labels = { label: "关于赛车", subtitle: "ABOUT THE RACE CAR" },
-    locale = "zh",
+    labels: labelsProp,
+    locale = getLocaleFromPath(Astro.url.pathname),
 } = Astro.props;
-const isEnglish = locale === "en";
+const t = getTranslations(locale);
+const labels = labelsProp ?? { label: t.seasons.label, subtitle: t.seasons.subtitle };
+
+const dotLabel = (index: number) =>
+    `${t.seasons.dotPrefix} ${index + 1}${t.seasons.dotSuffix ? ` ${t.seasons.dotSuffix}` : ""}`;
+
+const SPEC_LABEL_MAP_EN: Record<string, string> = {
+    '质量': 'Mass',
+    '驱动形式': 'Drivetrain',
+    '车架结构': 'Chassis',
+    '峰值功率': 'Peak Power',
+    '前后轮距': 'Track (F/R)',
+    '动力电池材料': 'Battery Type',
+    '轴距': 'Wheelbase',
+    '最大电压/能量': 'Max Voltage / Energy',
+    '冷却方式': 'Cooling',
+    '主传动形式': 'Final Drive',
+    '传感器': 'Sensors',
+    '车身材料': 'Bodywork',
+    '悬架形式': 'Suspension',
+    '总长/总高': 'Length / Height',
+    '整车质量': 'Total Mass',
+    '最高车速': 'Top Speed',
+    '百公里加速': '0-100 km/h',
+    '最大功率': 'Max Power',
+    '电机类型': 'Motor Type',
+    '电池容量': 'Battery Capacity',
+    '电芯类型': 'Cell Type',
+};
+
+const SPEC_VALUE_MAP_EN: Record<string, string> = {
+    '四电机四驱': '4-Motor AWD',
+    '单体壳承载式一体化': 'Monocoque Integrated',
+    '钴酸锂': 'LiCoO2',
+    '水冷': 'Liquid Cooling',
+    '链传动': 'Chain Drive',
+    '钢管桁架结构': 'Steel Tubular Spaceframe',
+    '碳纤维复合材料': 'Carbon Fiber Composite',
+    '不等长双A臂推杆/拉杆悬挂': 'Unequal-length Double Wishbone Push/Pull-rod',
+    '双电机后驱': 'Dual-Motor RWD',
+    '永磁同步电机': 'PMSM',
+    '128线激光雷达、单目摄像头、组合导航、非接触式光学传感器': '128-beam LiDAR, Monocular Camera, INS/GNSS, Optical Speed Sensor',
+};
+
+const formatSpecLabel = (label: string): string =>
+    locale === 'en' ? SPEC_LABEL_MAP_EN[label] ?? label : label;
+
+const formatSpecValue = (value: string): string =>
+    locale === 'en' ? SPEC_VALUE_MAP_EN[value] ?? value : value;
 ---
 
 <section class="seasons-section reveal-upon-scroll" role="region" aria-label={labels.label}>
@@ -29,10 +79,10 @@ const isEnglish = locale === "en";
         data-seasons-carousel
         role="region"
         aria-roledescription="carousel"
-        aria-label={isEnglish ? "Race car seasons" : "赛车赛季轮播"}
+        aria-label={t.seasons.carouselLabel}
     >
         {/* 左箭头 */}
-        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={isEnglish ? "Previous season" : "上一组"}>
+        <button class="seasons-arrow seasons-arrow--left" data-arrow="prev" aria-label={t.seasons.previous}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
@@ -51,7 +101,7 @@ const isEnglish = locale === "en";
                         <div class="seasons-img seasons-img--left">
                             <img
                                 src={season.carImg}
-                                alt={isEnglish ? `${season.year} race car` : `${season.year} 赛车`}
+                                alt={`${season.year} ${t.seasons.raceCarAlt}`}
                                 width="600"
                                 height="380"
                                 loading="lazy"
@@ -73,8 +123,8 @@ const isEnglish = locale === "en";
                                                     if (spec.fullWidth) {
                                                         rows.push(
                                                             <tr class="seasons-specs-row seasons-specs-row--full">
-                                                                <th class="seasons-specs-th">{spec.label}</th>
-                                                                <td class="seasons-specs-td seasons-specs-td--full" colspan="3" set:html={spec.value.replace(/\n/g, '<br/>')} />
+                                                                <th class="seasons-specs-th">{formatSpecLabel(spec.label)}</th>
+                                                                <td class="seasons-specs-td seasons-specs-td--full" colspan="3" set:html={formatSpecValue(spec.value).replace(/\n/g, '<br/>')} />
                                                             </tr>
                                                         )
                                                         i++
@@ -83,12 +133,12 @@ const isEnglish = locale === "en";
                                                         const right = specs[i + 1]
                                                         rows.push(
                                                             <tr class="seasons-specs-row">
-                                                                <th class="seasons-specs-th">{left.label}</th>
-                                                                <td class="seasons-specs-td">{left.value}</td>
+                                                                <th class="seasons-specs-th">{formatSpecLabel(left.label)}</th>
+                                                                <td class="seasons-specs-td">{formatSpecValue(left.value)}</td>
                                                                 {right && !right.fullWidth ? (
                                                                     <>
-                                                                        <th class="seasons-specs-th">{right.label}</th>
-                                                                        <td class="seasons-specs-td">{right.value}</td>
+                                                                        <th class="seasons-specs-th">{formatSpecLabel(right.label)}</th>
+                                                                        <td class="seasons-specs-td">{formatSpecValue(right.value)}</td>
                                                                     </>
                                                                 ) : (
                                                                     <td class="seasons-specs-td seasons-specs-td--empty" colspan="2"></td>
@@ -107,7 +157,7 @@ const isEnglish = locale === "en";
                                 <>
                                     <img
                                         src={season.explainImg}
-                                        alt={isEnglish ? `${season.year} explanation` : `${season.year} 解说`}
+                                        alt={`${season.year} ${t.seasons.explanationAlt}`}
                                         width="600"
                                         height="380"
                                         loading="lazy"
@@ -123,18 +173,18 @@ const isEnglish = locale === "en";
         </div>
 
         {/* 右箭头 */}
-        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={isEnglish ? "Next season" : "下一组"}>
+        <button class="seasons-arrow seasons-arrow--right" data-arrow="next" aria-label={t.seasons.next}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
         {/* 指示器 */}
-        <div class="seasons-dots" role="tablist" aria-label={isEnglish ? "Season navigation" : "赛季导航"}>
+        <div class="seasons-dots" role="tablist" aria-label={t.seasons.navigation}>
             {seasons.map((_, index) => (
                 <button
                     class={`seasons-dot ${index === 0 ? 'is-active' : ''}`}
                     data-dot={index}
                     role="tab"
-                    aria-label={isEnglish ? `Season ${index + 1}` : `第 ${index + 1} 组`}
+                    aria-label={dotLabel(index)}
                     aria-selected={index === 0 ? 'true' : 'false'}
                 ></button>
             ))}

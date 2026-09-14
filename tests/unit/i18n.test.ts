@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
     defaultLocale,
     getAlternateLocales,
+    getBrowserLocale,
     getLocaleFromPath,
     getTranslations,
     localePath,
@@ -111,6 +112,71 @@ describe('i18n', () => {
 
             const enAlternates = getAlternateLocales('/en/', 'en')
             expect(enAlternates[0].path).toBe('/')
+        })
+
+        it('should handle paths with no prefix', () => {
+            const alternates = getAlternateLocales('/custom-page', 'zh')
+            expect(alternates[0].path).toBe('/en/custom-page')
+        })
+    })
+
+    describe('getBrowserLocale', () => {
+        it('should return zh when browser language starts with zh', () => {
+            const originalNavigator = globalThis.navigator
+            Object.defineProperty(globalThis, 'navigator', {
+                value: { language: 'zh-CN' },
+                configurable: true,
+            })
+
+            expect(getBrowserLocale()).toBe('zh')
+
+            Object.defineProperty(globalThis, 'navigator', {
+                value: originalNavigator,
+                configurable: true,
+            })
+        })
+
+        it('should return en when browser language starts with en', () => {
+            const originalNavigator = globalThis.navigator
+            Object.defineProperty(globalThis, 'navigator', {
+                value: { language: 'en-US' },
+                configurable: true,
+            })
+
+            expect(getBrowserLocale()).toBe('en')
+
+            Object.defineProperty(globalThis, 'navigator', {
+                value: originalNavigator,
+                configurable: true,
+            })
+        })
+
+        it('should fallback to defaultLocale for unsupported language', () => {
+            const originalNavigator = globalThis.navigator
+            Object.defineProperty(globalThis, 'navigator', {
+                value: { language: 'ja-JP' },
+                configurable: true,
+            })
+
+            expect(getBrowserLocale()).toBe('zh')
+
+            Object.defineProperty(globalThis, 'navigator', {
+                value: originalNavigator,
+                configurable: true,
+            })
+        })
+
+        it('should return defaultLocale when navigator is undefined', () => {
+            const originalNavigator = globalThis.navigator
+            // @ts-expect-error test undefined navigator
+            delete globalThis.navigator
+
+            expect(getBrowserLocale()).toBe('zh')
+
+            Object.defineProperty(globalThis, 'navigator', {
+                value: originalNavigator,
+                configurable: true,
+            })
         })
     })
 })

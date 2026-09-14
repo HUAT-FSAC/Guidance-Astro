@@ -1,5 +1,13 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 安全问题上报
+  - name: 💬 一般讨论 / Q&A / Show & Tell
+    url: https://github.com/HUAT-FSAC/Guidance-Astro/discussions
+    about: 想法、提问、展示优先来这里,维护者会集中巡检。
+
+  - name: 🛡️ 安全问题上报(私密)
     url: https://github.com/HUAT-FSAC/Guidance-Astro/security/advisories/new
-    about: 请勿在公开 Issue 提交安全漏洞细节
+    about: 请勿在公开 Issue 提交安全漏洞细节。
+
+  - name: 📖 文档 & 支持
+    url: https://github.com/HUAT-FSAC/Guidance-Astro/blob/main/SUPPORT.md
+    about: 查阅 README / SUPPORT / docs 目录,先自助可能更快。

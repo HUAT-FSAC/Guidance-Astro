@@ -86,6 +86,7 @@
         "news": "News",
         "team": "Team",
         "contact": "Contact",
+        "menu": "Menu",
         "login": "Login",
         "register": "Register",
         "profile": "Profile",
@@ -149,7 +150,10 @@
         "openMenu": "Open menu",
         "closeMenu": "Close menu",
         "toggleTheme": "Toggle theme",
-        "languageSelector": "Select language"
+        "languageSelector": "Select language",
+        "backToTop": "Back to top",
+        "exploreTeamContent": "Explore the team",
+        "achievementImage": "achievement showcase"
     },
     "news": {
         "title": "Latest News",
@@ -218,5 +222,258 @@
             "passwordLength": "Password must be at least 8 characters",
             "passwordMismatch": "Passwords do not match"
         }
+    },
+    "about": {
+        "label": "About Us",
+        "paragraphs": [
+            "Dongfeng HUAT Autonomous Formula Racing Team was founded in 2015 as the first student team at Hubei University of Automotive Technology dedicated to autonomous formula race cars, created by a group of engineering students passionate about self-driving technology. The team brings together undergraduates from the School of Intelligent Connected Vehicles, spanning algorithm, electrical, mechanical, and project management disciplines.",
+            "We are a student research team jointly built at both the university and school levels. With strong support from the university, the school, and Dongfeng Commercial Vehicles, we design and build a brand-new autonomous formula car every year to compete in the China Formula Student Autonomous Competition (FSAC). Our mission is to combine engineering practice with a platform that cultivates innovative talent for the intelligent connected vehicle industry.",
+            "\"Aim high, power the future\" is our motto. From our first competition in 2019 to today, we have grown alongside our race cars — from electric to autonomous — constantly pushing technical limits. The 2024 season brought our best result yet. A decade of dedication: the track has witnessed countless hours of youth and sweat, and the honors are engraved in the heart of every HUAT member."
+        ],
+        "teamPhotoAlt": "Team photo 1"
+    },
+    "ack": {
+        "title": "Acknowledgements",
+        "blocks": [
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "We sincerely thank ",
+                        "strong": false
+                    },
+                    {
+                        "text": "the China Automotive Engineering Association",
+                        "strong": true
+                    },
+                    {
+                        "text": " and people from all walks of life who devote tremendous manpower and resources each year to organizing this competition, giving so many racing-loving university students a platform to showcase their talents, learn from one another, and broaden their horizons. We also thank ",
+                        "strong": false
+                    },
+                    {
+                        "text": "the Rules Committee of the China Formula Student Autonomous Competition",
+                        "strong": true
+                    },
+                    {
+                        "text": " for carefully developing and refining the rules, so that the entire competition has clear regulations to follow and clauses to consult. Our thanks also go to ",
+                        "strong": false
+                    },
+                    {
+                        "text": "Dongfeng Commercial Vehicles",
+                        "strong": true
+                    },
+                    {
+                        "text": " and other sponsors for their support.",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": true,
+                "parts": [
+                    {
+                        "text": "Aim high, power the future",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "With the strong support of ",
+                        "strong": false
+                    },
+                    {
+                        "text": "the School of Automotive Engineers at Hubei University of Automotive Technology",
+                        "strong": true
+                    },
+                    {
+                        "text": ", the dedicated guidance of ",
+                        "strong": false
+                    },
+                    {
+                        "text": "our faculty advisors",
+                        "strong": true
+                    },
+                    {
+                        "text": ", and the collective efforts of the entire team, the design, machining, manufacturing, and tuning of the FSAC race car were completed successfully. Throughout this process, we scrutinized every design concept, handled every piece of data with rigor, and refined every detail with care. Those hundreds of days and nights are the strongest testament to our race car, and the gratitude we hold deep in our hearts.",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": true,
+                "parts": [
+                    {
+                        "text": "Be a good person, do good work, build a good car",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "Thank you to every team member for your active cooperation and diligent work, which made it possible to complete the design report of ",
+                        "strong": false
+                    },
+                    {
+                        "text": "the Dongfeng HUAT Autonomous Formula Racing Team",
+                        "strong": true
+                    },
+                    {
+                        "text": ". Thank you to every team member who gave up their holidays and chose to stay with the team; your mutual help and encouragement have made us more united than ever.",
+                        "strong": false
+                    }
+                ]
+            },
+            {
+                "blockquote": false,
+                "parts": [
+                    {
+                        "text": "Finally, thank you to everyone who has quietly contributed to the China Formula Student Autonomous Competition, and to leaders at all levels of ",
+                        "strong": false
+                    },
+                    {
+                        "text": "Hubei University of Automotive Technology",
+                        "strong": true
+                    },
+                    {
+                        "text": " for your attention and support. The Dongfeng HUAT Autonomous Formula Racing Team of Hubei University of Automotive Technology will hold itself to even higher standards and repay the support of all sectors with outstanding results. We will be the best team we can be!",
+                        "strong": false
+                    }
+                ]
+            }
+        ],
+        "signature": "On behalf of all members of the HUAT Autonomous Formula Racing Team of Hubei University of Automotive Technology, I would like to express our most sincere gratitude.",
+        "thanks": "Thank you ❤️"
+    },
+    "coreModules": {
+        "ariaLabel": "Team Groups",
+        "groups": [
+            {
+                "name": "Perception",
+                "desc": "Acquires and processes data from cameras, LiDAR, and other sensors to build the environmental perception system."
+            },
+            {
+                "name": "Planning & Control",
+                "desc": "Develops path planning, motion control, and decision-making algorithms that enable the car to drive autonomously."
+            },
+            {
+                "name": "Localization & Mapping",
+                "desc": "Builds high-precision positioning and maps, giving the car accurate knowledge of its own position."
+            },
+            {
+                "name": "Simulation",
+                "desc": "Creates virtual simulation environments for algorithm validation and system testing, accelerating development iterations."
+            },
+            {
+                "name": "Body & Aero",
+                "desc": "Designs the body shell and optimizes aerodynamics, improving performance through CFD and composite materials."
+            },
+            {
+                "name": "Chassis",
+                "desc": "Designs and manufactures the drivetrain, suspension, steering, and braking systems to ensure handling and stability."
+            },
+            {
+                "name": "Electrical Systems",
+                "desc": "Designs and lays out the vehicle's electrical systems and motor control algorithms, keeping the powertrain running efficiently and reliably."
+            },
+            {
+                "name": "Marketing & Operations",
+                "desc": "Handles team branding, platform operations, and event coordination to keep the team growing sustainably."
+            },
+            {
+                "name": "Battery",
+                "desc": "Designs the battery pack, BMS, and thermal management system to keep the powertrain safe and dependable."
+            }
+        ]
+    },
+    "showcase": {
+        "ariaLabel": "Feature Modules",
+        "modules": [
+            {
+                "title": "Autonomous Driving Lab",
+                "desc": "An end-to-end look at the autonomous race car's closed loop from perception to actuation, built entirely with local data, SVG visualization, and browser state management."
+            },
+            {
+                "title": "Conquer the Track",
+                "desc": "Welcome to HUAT FSAC — see how we redefine motorsport with cutting-edge electric and autonomous driving technology."
+            },
+            {
+                "title": "Latest News",
+                "desc": "Follow the team's latest updates, race progress, team activities, and technical breakthroughs."
+            },
+            {
+                "title": "Formula Student",
+                "desc": "Formula Student is one of the world's leading engineering competitions, with more than 600 teams designing and building race cars from scratch."
+            }
+        ]
+    },
+    "showcaseLab": {
+        "title": "Autonomous Driving Interaction Lab",
+        "subtitle": "AUTONOMOUS SHOWCASE",
+        "description": "An intuitive walkthrough of the autonomous race car's full loop from perception to actuation, using entirely local data, SVG visualization, and browser state management.",
+        "features": ["Multiple scenario presets", "Real-time visualization", "Offline demos"],
+        "cta": "Enter the Lab"
+    },
+    "teamMembers": {
+        "title": "Advisors & Team Members",
+        "cta": "View Full Team"
+    },
+    "joinUs": {
+        "ariaLabel": "Join Us",
+        "heading": "Join Us",
+        "cta": "Sign Up Now"
+    },
+    "keyboardNav": {
+        "title": "⌨️ Shortcuts",
+        "close": "Close",
+        "help": "Show shortcut help",
+        "home": "Go home",
+        "top": "Scroll to top",
+        "search": "Search",
+        "join": "Go to join page",
+        "dismiss": "Close dialog"
+    },
+    "contributors": {
+        "title": "Contributors",
+        "subtitle": "CONTRIBUTORS",
+        "intro": "Heartfelt thanks to every developer building the digital foundations of HUAT FSAC.",
+        "viewGraph": "View Full Graph on GitHub",
+        "joinUs": "Contribute Code or Docs",
+        "members": [
+            {
+                "handle": "zhangjszs",
+                "badge": "225+ Commits",
+                "role": "Project Lead · Full-Stack Architect",
+                "desc": "Astro 7 + Cloudflare SSR architecture, component system, CI/CD quality gates and core infrastructure."
+            },
+            {
+                "handle": "nekorect",
+                "badge": "116+ Commits",
+                "role": "Core Contributor · Docs & i18n",
+                "desc": "Early foundation, documentation center infrastructure, bilingual i18n architecture, and learning roadmaps."
+            },
+            {
+                "handle": "wsyhuat",
+                "badge": "Motion & UX",
+                "role": "Contributor · Motion & UX",
+                "desc": "Emil Kowalski motion philosophy, custom easing curves, tactile press feedback, and accessibility."
+            }
+        ]
+    },
+    "seasons": {
+        "label": "About the Car",
+        "subtitle": "ABOUT THE RACE CAR",
+        "carouselLabel": "Race car seasons",
+        "previous": "Previous season",
+        "next": "Next season",
+        "navigation": "Season navigation",
+        "dotPrefix": "Season",
+        "dotSuffix": "",
+        "raceCarAlt": "race car",
+        "explanationAlt": "explanation"
     }
 }

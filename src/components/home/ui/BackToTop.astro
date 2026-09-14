@@ -1,8 +1,17 @@
 ---
 // 返回顶部按钮组件
+import type { Locale } from '../../../utils/i18n'
+import { getLocaleFromPath, getTranslations } from '../../../utils/i18n'
+
+interface Props {
+    locale?: Locale
+}
+
+const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props
+const t = getTranslations(locale)
 ---
 
-<button class="back-to-top" aria-label="返回顶部" title="返回顶部">
+<button class="back-to-top" aria-label={t.accessibility.backToTop} title={t.accessibility.backToTop}>
     <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

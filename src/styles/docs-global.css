@@ -189,7 +189,7 @@ html {
 }
 
 .fs-cta-clip:hover {
-    color: #ffffff !important;
+    color: var(--fs-color-on-accent) !important;
     border-color: #2563eb !important;
     box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3) !important;
     transform: translateY(-2px);
@@ -200,7 +200,7 @@ html {
     transform-origin: left;
 }
 
-/* 按钮按压反馈 */
+/* Emil Kowalski: 按钮按压反馈 - scale(0.97) 让界面感觉响应 */
 .fs-cta-clip:active {
     transform: scale(0.97);
 }
@@ -208,17 +208,28 @@ html {
 /* 触摸设备不显示 hover 效果 */
 @media (hover: hover) and (pointer: fine) {
     .fs-cta-clip:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
     }
 }
 
-/* 亮色模式：保持蓝色风格 */
+/* 亮色模式：CTA 文字改为强调色。
+   注意：本文件是全局样式表（经 Starlight customCss 引入），不需要 :global() 包装——
+   :global() 仅在 .astro 组件的 <style scoped> 中有意义，在普通 CSS 文件中会被
+   lightningcss 视为非法伪类并丢弃整条规则。 */
 [data-theme='light'] .fs-cta-clip {
     color: #2563eb !important;
 }
 
 [data-theme='light'] .fs-cta-clip:hover {
-    color: #ffffff !important;
+    color: var(--fs-color-on-accent) !important;
+}
+
+/* 亮色 hover：::before 已填充为 accent 蓝，文字必须切回深色，
+   否则蓝字蓝底不可读（上层亮色覆盖的优先级与 :hover 相同且靠后，
+   必须用更高优先级显式覆盖）。暗色主题 hover 切 --fs-bg-base（近黑），
+   此处保持一致的「蓝底深字」观感，对比度 ≈5.5:1 过 AA。 */
+[data-theme='light'] .fs-cta-clip:hover {
+    color: var(--fs-color-heading) !important;
 }
 
 /* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */
@@ -960,7 +971,7 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     will-change: opacity, transform;
 }
 
-.reveal-upon-scroll.is-visible {
+[data-visible='true'].reveal-upon-scroll {
     opacity: 1;
     transform: translateY(0);
 }
@@ -1111,5 +1122,94 @@ starlight-tabs [role='tab'][aria-selected='true'] {
         transition: none;
         opacity: 1;
         transform: none;
+    }
+}
+
+/* ==================== 前端美化层（2026-09 前端美学迭代） ==================== */
+
+/* 品牌选区：蓝底白字，两主题一致，呼应「极速蓝」识别色 */
+::selection {
+    background: rgba(37, 99, 235, 0.85);
+    color: #ffffff; /* theme-contrast:allow */
+}
+
+/* 细滚动条：中性灰隐入界面，悬停提亮为 accent */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 140, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 140, 0.35);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.55);
+}
+
+/* 键盘焦点环：accent 外描边，替代浏览器默认蓝圈 */
+:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* 正文链接：下划线从左扫入（Emil Kowalski 式入场），替代瞬变 border */
+.sl-markdown-content a {
+    border-bottom-color: transparent;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    padding-bottom: 1px;
+    transition: background-size var(--transition-normal);
+}
+
+.sl-markdown-content a:hover {
+    border-bottom-color: transparent;
+    background-size: 100% 1px;
+}
+
+/* 修复：亮色模式卡片 hover 误用深色渐变，补浅色等价态 */
+:root[data-theme='light'] .sl-link-card:hover,
+:root[data-theme='light'] .card:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%) !important;
+}
+
+/* LinkCard 箭头微交互：悬停右滑点亮，暗示「可前往」 */
+.sl-link-card .icon {
+    transition:
+        transform var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.sl-link-card:hover .icon {
+    transform: translateX(4px);
+    color: var(--sl-color-accent);
+}
+
+/* TOC / 侧边栏当前项：颜色过渡与内容滚动节奏一致 */
+nav.sidebar a,
+starlight-toc a {
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+/* 文档锚点平滑滚动：reduced-motion 用户自动豁免 */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
     }
 }

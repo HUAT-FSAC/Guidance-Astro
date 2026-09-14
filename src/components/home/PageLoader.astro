@@ -20,8 +20,9 @@
 <script>
     // 页面加载器 - 避免 FOUC (Flash of Unstyled Content)
     (function () {
-        const loader = document.getElementById("pageLoader");
-        if (!loader) return;
+        const loaderElement = document.getElementById("pageLoader");
+        if (!loaderElement) return;
+        const loader = loaderElement as HTMLElement;
 
         // 防重复初始化
         try {
@@ -39,8 +40,8 @@
         const MIN_VISIBLE_MS = 350;
         const MAX_WAIT_MS = 1500;
         const startTime = Date.now();
-        let revealTimeoutId = null;
-        let maxWaitId = null;
+        let revealTimeoutId: number | null = null;
+        let maxWaitId: number | null = null;
 
         function dispatchHidden() {
             requestAnimationFrame(function () {

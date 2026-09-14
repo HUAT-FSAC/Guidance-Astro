@@ -75,13 +75,13 @@ function setDropdownState(
     onOpen?: () => void,
     onClose?: () => void
 ): void {
-    const dropdown = root.querySelector(dropdownSelector)
+    const dropdown = root.querySelector<HTMLElement>(dropdownSelector)
     const toggle = root.querySelector('button')
-    const currentlyOpen = dropdown?.classList.contains('active') ?? false
+    const currentlyOpen = dropdown?.dataset.open === 'true'
 
     if (currentlyOpen === isOpen) return
 
-    dropdown?.classList.toggle('active', isOpen)
+    if (dropdown) dropdown.dataset.open = String(isOpen)
     dropdown?.setAttribute('aria-hidden', String(!isOpen))
     toggle?.setAttribute('aria-expanded', String(isOpen))
 
@@ -93,7 +93,7 @@ function setDropdownState(
 }
 
 function isDropdownVisible(root: HTMLElement, dropdownSelector: string): boolean {
-    return root.querySelector(dropdownSelector)?.classList.contains('active') ?? false
+    return root.querySelector<HTMLElement>(dropdownSelector)?.dataset.open === 'true'
 }
 
 function getInitialScheme(): ThemeScheme {
@@ -158,8 +158,9 @@ export function initThemeController(
         document.documentElement.style.setProperty('--sl-color-accent-high', accent)
 
         root.querySelectorAll<HTMLElement>(optionSelector).forEach((option) => {
-            option.classList.toggle('active', option.dataset.color === color)
-            option.setAttribute('aria-selected', String(option.dataset.color === color))
+            const isSelected = option.dataset.color === color
+            option.dataset.selected = String(isSelected)
+            option.setAttribute('aria-selected', String(isSelected))
         })
 
         if (indicator) {

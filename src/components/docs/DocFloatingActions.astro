@@ -236,7 +236,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
             0 0 1px rgba(255, 255, 255, 0.1);
     }
 
-    .theme-dropdown.active {
+    .theme-dropdown[data-open="true"] {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
@@ -305,11 +305,11 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         background: rgba(0, 0, 0, 0.05);
     }
 
-    .color-option.active {
+    .color-option[data-selected="true"] {
         background: rgba(255, 255, 255, 0.12);
     }
 
-    :global([data-theme='light']) .color-option.active {
+    :global([data-theme='light']) .color-option[data-selected="true"] {
         background: rgba(0, 0, 0, 0.08);
     }
 
@@ -328,7 +328,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-color) 50%, transparent);
     }
 
-    .color-option.active .color-dot {
+    .color-option[data-selected="true"] .color-dot {
         box-shadow: 
             0 2px 8px color-mix(in srgb, var(--theme-color) 40%, transparent),
             0 0 0 3px color-mix(in srgb, var(--theme-color) 30%, transparent);
@@ -348,7 +348,7 @@ const themeNames = THEME_COLORS.map((theme) => t.theme[theme.key as keyof typeof
         flex-shrink: 0;
     }
 
-    .color-option.active .color-check {
+    .color-option[data-selected="true"] .color-check {
         opacity: 1;
         transform: scale(1);
     }

@@ -1,13 +1,23 @@
-# 默认负责人（请按实际组织成员维护）
-# 建议至少保持两名 owner 以避免单点瓶颈
+# =====================================================
+# CODEOWNERS — 个人 + 团队 双层兜底
+# 个人句柄 = 主审,@HUAT-FSAC/core-team = 组织兜底
+# 推荐至少 2 名个人 + 1 个 team,避免单点瓶颈
+# 顺序: 越具体的行越靠前,命中后不再向下匹配
+# =====================================================
+
+# --- 兜底:全仓 ---
 * @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 
-# 关键目录责任边界
+# --- 关键目录:组件 / 内容 / 文档 / 工程配置 ---
 /src/components/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 /src/content/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 /docs/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 /.github/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
 
-# 配置与基础设施（需要 DevOps 审核）
-/scripts/ @nekorectifier @wsyhuat
-/src/config/ @nekorectifier @wsyhuat
+# --- 基础设施:需 DevOps 审核 ---
+/scripts/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
+/src/config/ @nekorectifier @wsyhuat @HUAT-FSAC/core-team
+
+# --- 部署相关 ---
+/wrangler.json @nekorectifier @wsyhuat @HUAT-FSAC/core-team
+/astro.config.mjs @nekorectifier @wsyhuat @HUAT-FSAC/core-team

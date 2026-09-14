@@ -11,7 +11,7 @@ export function initScrollReveal(): void {
         _scrollRevealCleanup = undefined
     }
 
-    const revealElements = document.querySelectorAll('.reveal-upon-scroll')
+    const revealElements = document.querySelectorAll<HTMLElement>('.reveal-upon-scroll')
     if (revealElements.length === 0) return
 
     const observerOptions: IntersectionObserverInit = {
@@ -23,14 +23,16 @@ export function initScrollReveal(): void {
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible')
+                if (entry.target instanceof HTMLElement) {
+                    entry.target.dataset.visible = 'true'
+                }
                 observer.unobserve(entry.target)
             }
         })
     }, observerOptions)
 
     revealElements.forEach((el) => {
-        el.classList.remove('is-visible')
+        el.dataset.visible = 'false'
         revealObserver.observe(el)
     })
 

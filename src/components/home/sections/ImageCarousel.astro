@@ -1,13 +1,15 @@
 ---
 interface Props {
     images: { src: string; alt: string }[];
+    interval?: number;
 }
 
 const { images } = Astro.props;
 const id = 'carousel-' + Math.random().toString(36).slice(2, 8);
+const interval = Astro.props.interval ?? 3000;
 ---
 
-<div class="carousel" id={id}>
+<div class="carousel" id={id} data-interval={interval}>
     {images.map((img, i) => (
         <img
             src={img.src}
@@ -30,31 +32,40 @@ const id = 'carousel-' + Math.random().toString(36).slice(2, 8);
 
 <script>
     (function () {
-        const container = document.getElementById('{id}');
+        const container = document.currentScript?.closest('.carousel') as HTMLElement | null;
         if (!container) return;
-        const images = container.querySelectorAll('.carousel-image');
-        const dots = container.querySelectorAll('.dot');
+        const images = Array.from(container.querySelectorAll<HTMLImageElement>('.carousel-image'));
+        const dots = Array.from(container.querySelectorAll<HTMLButtonElement>('.dot'));
+        if (!images.length || !dots.length) return;
+
+        const intervalMs = Number(container.dataset.interval ?? 3000);
         let current = 0;
-        let timer = setInterval(function () {
-            images[current].style.display = 'none';
-            dots[current].removeAttribute('data-active');
+        let timer = window.setInterval(function () {
+            const currentImage = images[current] as HTMLImageElement;
+            const currentDot = dots[current] as HTMLButtonElement;
+            currentImage.style.display = 'none';
+            currentDot.removeAttribute('data-active');
             current = (current + 1) % images.length;
             images[current].style.display = 'block';
             dots[current].setAttribute('data-active', '');
-        }, {interval});
-        container.addEventListener('mouseenter', function () { clearInterval(timer); });
+        }, intervalMs);
+
+        container.addEventListener('mouseenter', function () { window.clearInterval(timer); });
         container.addEventListener('mouseleave', function () {
-            timer = setInterval(function () {
-                images[current].style.display = 'none';
-                dots[current].removeAttribute('data-active');
+            timer = window.setInterval(function () {
+                const currentImage = images[current] as HTMLImageElement;
+                const currentDot = dots[current] as HTMLButtonElement;
+                currentImage.style.display = 'none';
+                currentDot.removeAttribute('data-active');
                 current = (current + 1) % images.length;
                 images[current].style.display = 'block';
                 dots[current].setAttribute('data-active', '');
-            }, {interval});
+            }, intervalMs);
         });
+
         dots.forEach(function (dot) {
             dot.addEventListener('click', function () {
-                const idx = parseInt(dot.getAttribute('data-index'));
+                const idx = Number.parseInt(dot.getAttribute('data-index') ?? '0', 10);
                 if (idx === current) return;
                 images[current].style.display = 'none';
                 dots[current].removeAttribute('data-active');

@@ -216,7 +216,7 @@ git commit -m "style(hero): improve button hover animation"
 
 ## Pull Request 流程
 
-分支保护、评审门禁与发布策略请参见 [`docs/VERSION_CONTROL_POLICY.md`](./docs/VERSION_CONTROL_POLICY.md)。
+分支保护、评审门禁与发布策略请参见 [`docs/VERSION_CONTROL_POLICY.md`](../docs/VERSION_CONTROL_POLICY.md)。
 
 ### 创建 PR 前
 
@@ -260,6 +260,19 @@ git commit -m "style(hero): improve button hover animation"
 - [ ] 已更新相关文档
 - [ ] 已测试更改功能
 ```
+
+---
+
+## 讨论分流（Issue vs Discussions）
+
+| 内容                                                | 去哪里                                                                     |
+| --------------------------------------------------- | -------------------------------------------------------------------------- |
+| 缺陷报告、任务卡、技术债、文档任务、 retrospectives | **Issues**（使用模板）                                                     |
+| 使用提问、想法酝酿、作品展示、投票                  | **[Discussions](https://github.com/HUAT-FSAC/Guidance-Astro/discussions)** |
+
+- 提问请发 **Q&A** 分类；功能点子先 **Ideas** 讨论；demo 录屏与技术探索发 **Show and tell**。
+- Ideas 中的点子成熟可执行后，由维护者立正式任务卡（Issue / `docs/WORKFLOW.md` 看板）并回链讨论串。
+- 维护者定期巡检 Discussions，答完的 Q&A 帖子应标记 Answer 便于沉淀。
 
 ---
 

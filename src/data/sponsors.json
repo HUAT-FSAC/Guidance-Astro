@@ -2,22 +2,27 @@
     "groups": [
         {
             "name": "核心赞助",
+            "nameEn": "Core Sponsors",
             "items": [
                 {
                     "title": "湖北汽车工业学院",
+                    "titleEn": "Hubei University of Automotive Technology",
                     "logo": "/assets/huat.jpg"
                 },
                 {
                     "title": "东风商用车",
+                    "titleEn": "Dongfeng Commercial Vehicle",
                     "logo": "/assets/dongfeng.svg"
                 }
             ]
         },
         {
             "name": "合作伙伴",
+            "nameEn": "Partners",
             "items": [
                 {
                     "title": "智能网联汽车学院",
+                    "titleEn": "School of Intelligent Connected Vehicles",
                     "logo": "/assets/huat.jpg"
                 }
             ]
