@@ -169,6 +169,11 @@ const contributors = identities.map((identity, index) => ({
         letter-spacing: -0.02em;
     }
 
+    :global([data-theme='light']) .contributors-title {
+        color: var(--fs-color-heading, #050505);
+        border-bottom-color: #2563eb;
+    }
+
     .contributors-subtitle {
         display: block;
         margin-top: 0.75rem;
@@ -177,6 +182,10 @@ const contributors = identities.map((identity, index) => ({
         text-transform: uppercase;
         font-weight: 700;
         color: var(--sl-color-accent);
+    }
+
+    :global([data-theme='light']) .contributors-subtitle {
+        color: #2563eb;
     }
 
     .contributors-intro {
@@ -214,10 +223,31 @@ const contributors = identities.map((identity, index) => ({
         overflow: hidden;
     }
 
+    .contributor-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--sl-color-accent), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+
+    .contributor-card:hover::before {
+        opacity: 1;
+    }
+
     :global([data-theme='light']) .contributor-card {
         background: #ffffff;
         border-color: rgba(0, 0, 0, 0.08);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    :global([data-theme='light']) .contributor-card::before {
+        background: linear-gradient(90deg, transparent, #2563eb, transparent);
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -229,7 +259,7 @@ const contributors = identities.map((identity, index) => ({
         }
 
         :global([data-theme='light']) .contributor-card:hover {
-            border-color: var(--sl-color-accent);
+            border-color: #2563eb;
             box-shadow: 0 14px 32px rgba(37, 99, 235, 0.12),
                         0 4px 12px rgba(0, 0, 0, 0.04);
         }
@@ -272,6 +302,11 @@ const contributors = identities.map((identity, index) => ({
         transition: transform 0.3s ease;
     }
 
+    :global([data-theme='light']) .contributor-avatar {
+        border-color: #2563eb;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.16);
+    }
+
     .contributor-card:hover .contributor-avatar {
         transform: scale(1.05);
     }
@@ -284,6 +319,11 @@ const contributors = identities.map((identity, index) => ({
         opacity: 0.4;
         animation: spin 20s linear infinite;
         pointer-events: none;
+    }
+
+    :global([data-theme='light']) .avatar-ring {
+        border-color: #2563eb;
+        opacity: 0.65;
     }
 
     @keyframes spin {
@@ -417,6 +457,19 @@ const contributors = identities.map((identity, index) => ({
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
+    :global([data-theme='light']) .btn-contributors-graph {
+        background: #ffffff !important;
+        border-color: rgba(0, 0, 0, 0.14) !important;
+        color: #1a1a2e !important;
+    }
+
+    :global([data-theme='light']) .btn-contributors-graph:hover {
+        border-color: #2563eb !important;
+        color: #2563eb !important;
+        background: rgba(37, 99, 235, 0.06) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.16);
+    }
+
     :global([data-theme='dark']) .btn-contributors-graph {
         background: rgba(255, 255, 255, 0.04);
         border-color: rgba(255, 255, 255, 0.15);
@@ -455,6 +508,12 @@ const contributors = identities.map((identity, index) => ({
         box-shadow: 0 8px 24px rgba(37, 99, 235, 0.42);
         background-image: none !important;
         text-decoration: none !important;
+    }
+
+    .btn-contribute-cta:hover span,
+    .btn-contribute-cta:hover svg {
+        color: var(--fs-color-on-accent) !important;
+        stroke: var(--fs-color-on-accent) !important;
     }
 
     @media (hover: hover) and (pointer: fine) {

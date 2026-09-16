@@ -363,7 +363,9 @@ nav.sidebar h2::before {
 }
 
 .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']) {
     color: var(--sl-color-accent);
     text-decoration: none;
     border-bottom: 1px solid transparent;
@@ -371,19 +373,25 @@ nav.sidebar h2::before {
 }
 
 .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']):hover {
     border-bottom-color: var(--sl-color-accent);
 }
 
 :root[data-theme='light']
     .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']) {
     color: #2563eb;
 }
 
 :root[data-theme='light']
     .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']):hover {
     color: #1d4ed8;
 }
 
@@ -1164,7 +1172,9 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 
 /* 正文链接：下划线从左扫入（Emil Kowalski 式入场），替代瞬变 border */
 .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']) {
     border-bottom-color: transparent;
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
@@ -1175,7 +1185,9 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 }
 
 .sl-markdown-content
-    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):not(
+        [class*='footer']
+    ):not([class*='link']):not([class*='badge']):not([role='button']):hover {
     border-bottom-color: transparent;
     background-size: 100% 1px;
 }
