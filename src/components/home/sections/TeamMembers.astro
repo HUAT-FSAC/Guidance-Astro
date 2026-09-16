@@ -17,7 +17,10 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
     <div class="team-content">
         <h2 class="team-heading">{t.teamMembers.title}</h2>
         <span class="team-sub">ADVISORS & TEAM MEMBERS</span>
-        <a class="team-cta fs-cta-clip" href="/team/" role="button" data-astro-prefetch="hover">{t.teamMembers.cta}</a>
+        <a class="team-cta fs-cta-clip" href={locale === 'en' ? '/en/team/' : '/team/'} role="button" data-astro-prefetch="hover">
+            {t.teamMembers.cta}
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
     </div>
 </section>
 
@@ -55,8 +58,6 @@ const bgStyle = backgroundImage ? `--team-bg: url(${backgroundImage});` : ''
         text-align: center;
         padding: 4rem 2rem;
         max-width: 900px;
-        border: 1px solid var(--fs-color-border-strong);
-        border-radius: 4px;
     }
 
     .team-content .team-heading {

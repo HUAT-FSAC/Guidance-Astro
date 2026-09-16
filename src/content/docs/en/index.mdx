@@ -13,12 +13,12 @@ import NewsSection from '../../../components/home/sections/NewsSection.astro'
 import FormulaStudentInfo from '../../../components/home/sections/FormulaStudentInfo.astro'
 import Stats from '../../../components/home/sections/Stats.astro'
 import Countdown from '../../../components/home/sections/Countdown.astro'
-import ShowcaseLab from '../../../components/home/sections/ShowcaseLab.astro'
 import Features from '../../../components/home/sections/Features.astro'
 import Seasons from '../../../components/home/sections/Seasons.astro'
 import Sponsors from '../../../components/home/sections/Sponsors.astro'
 import Acknowledgement from '../../../components/home/sections/Acknowledgement.astro'
 import Recruitment from '../../../components/home/sections/Recruitment.astro'
+import TeamNews from '../../../components/home/sections/TeamNews.astro'
 import Contributors from '../../../components/home/sections/Contributors.astro'
 import PageLoader from '../../../components/home/PageLoader.astro'
 import ThemeSwitcher from '../../../components/home/ui/ThemeSwitcher.astro'
@@ -123,7 +123,6 @@ import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/hom
 />
 <Stats stats={home.stats} />
 <Countdown locale="en" />
-<ShowcaseLab content={home.showcase} />
 
 {home.achievements.map((achievement, index) => (
 
@@ -153,6 +152,8 @@ import { enHomeContent as home, seasons, sponsorGroups } from '../../../data/hom
 </section>
 
 <Recruitment content={home.recruitment} href="/en/join/" />
+
+<TeamNews />
 
 <FormulaStudentInfo
     title={home.formulaStudentInfo.title}

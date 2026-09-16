@@ -59,7 +59,7 @@ const ctaLink = locale === 'en' ? '/en/about-fs/' : '/about-fs/';
             {t.countdown.ended}
         </p>
 
-        <a href={ctaLink} class="countdown-cta">{t.countdown.cta}</a>
+        <a href={ctaLink} class="fs-cta-clip">{t.countdown.cta}</a>
     </div>
 </section>
 
@@ -211,26 +211,6 @@ const ctaLink = locale === 'en' ? '/en/about-fs/' : '/about-fs/';
     }
 
     .hidden { display: none !important; }
-
-    /* ── CTA ── */
-    .countdown-cta {
-        display: inline-block;
-        padding: 0.75rem 2rem;
-        border-radius: 99px;
-        border: 1.5px solid var(--sl-color-accent);
-        color: var(--sl-color-accent);
-        font-weight: 600;
-        font-size: 0.9rem;
-        text-decoration: none;
-        transition: all 0.25s ease;
-    }
-
-    .countdown-cta:hover {
-        background: var(--sl-color-accent);
-        color: var(--fs-bg-base);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px var(--fs-accent-glow);
-    }
 
     @media (max-width: 480px) {
         .cd-unit { min-width: 68px; padding: 1rem 0.75rem; }

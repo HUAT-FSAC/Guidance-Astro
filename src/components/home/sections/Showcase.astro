@@ -9,79 +9,29 @@ interface Props {
 const { locale = getLocaleFromPath(Astro.url.pathname) } = Astro.props;
 const t = getTranslations(locale);
 
-const moduleMeta = [
-    {
-        en: 'SHOWCASE LAB',
-        link: '/showcase-dashboard/',
-        image: '/assets/huat.jpg',
-    },
-    {
-        en: 'CONQUER THE TRACK',
-        link: '/cars/',
-        image: '/assets/run.jpg',
-    },
-    {
-        en: 'LATEST NEWS',
-        link: '/news/',
-        image: '/assets/about-us.jpg',
-    },
-    {
-        en: 'GLOBAL COMPETITION',
-        link: '/about-fs/',
-        image: '/assets/formula.jpg',
-    },
-];
-
-const modules = moduleMeta.map((meta, index) => ({
-    ...meta,
-    link: locale === 'en' ? `/en${meta.link}` : meta.link,
-    title: t.showcase.modules[index].title,
-    cn: t.showcase.modules[index].title,
-    desc: t.showcase.modules[index].desc,
-}));
+const module = {
+    cn: t.showcase?.modules?.[0]?.title ?? '智能驾驶实验室',
+    en: 'SHOWCASE LAB',
+    link: locale === 'en' ? '/en/showcase-dashboard/' : '/showcase-dashboard/',
+    image: '/assets/huat.jpg',
+    desc: t.showcase?.modules?.[0]?.desc ?? '用完全本地的数据、SVG 可视化和浏览器状态管理，直观展示无人驾驶赛车从感知到执行器的整条闭环。',
+};
 ---
 
-<section class="showcase-hero fs-full-bleed" role="region" aria-label={t.showcase.ariaLabel}>
-    {/* 模块数据：由打包后的 showcase-carousel.ts 读取，避免 define:vars 内联脚本 */}
-    <script type="application/json" id="showcase-data" set:html={JSON.stringify(modules)}></script>
-    {modules.map((mod, i) => (
-        <div class={`showcase-slide ${i === 0 ? 'active' : ''}`} data-index={i}>
-            <div class="showcase-slide-bg" style={`background-image: url(${mod.image});`}></div>
-        </div>
-    ))}
+<section class="showcase-hero fs-full-bleed" role="region" aria-label={t.showcase?.ariaLabel ?? '功能模块'}>
+    <div class="showcase-slide-bg" style={`background-image: url(${module.image});`}></div>
     <div class="showcase-overlay"></div>
 
     <div class="showcase-content">
-        <span class="showcase-en" id="showcase-en">{modules[0].en}</span>
-        <h2 class="showcase-title" id="showcase-title">{modules[0].cn}</h2>
-        <p class="showcase-desc" id="showcase-desc">{modules[0].desc}</p>
-        <a class="showcase-cta fs-cta-clip" id="showcase-cta" href={modules[0].link}>
+        <span class="showcase-en">{module.en}</span>
+        <h2 class="showcase-title">{module.cn}</h2>
+        <p class="showcase-desc">{module.desc}</p>
+        <a class="showcase-cta fs-cta-clip" href={module.link}>
             {t.common.learnMore}
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
     </div>
-
-    <button class="showcase-arrow showcase-arrow-left" id="showcase-prev" aria-label={t.common.previous}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <button class="showcase-arrow showcase-arrow-right" id="showcase-next" aria-label={t.common.next}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-
-    <div class="showcase-dots" id="showcase-dots">
-        {modules.map((_, i) => (
-            <button class={`showcase-dot ${i === 0 ? 'active' : ''}`} data-index={i}></button>
-        ))}
-    </div>
 </section>
-
-<script>
-    import { destroyShowcaseCarousels, initShowcaseCarousel } from '../../../utils/showcase-carousel';
-
-    initShowcaseCarousel();
-    document.addEventListener('astro:page-load', initShowcaseCarousel);
-    document.addEventListener('astro:before-swap', destroyShowcaseCarousels);
-</script>
 
 <style>
     .showcase-hero {
@@ -91,41 +41,45 @@ const modules = moduleMeta.map((meta, index) => ({
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background-color: var(--fs-bg-base);
+        background-color: #0a0a0c;
+        margin-top: -60px;
+        padding-top: 60px;
+        z-index: 5;
     }
 
-    /* 幻灯片 */
-    .showcase-slide {
+    .showcase-hero::before {
+        content: '';
         position: absolute;
-        inset: 0;
-        opacity: 0;
-        transition: opacity 0.8s ease;
-        pointer-events: none;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #0a0a0c;
+        z-index: 3;
     }
-    .showcase-slide.active {
-        opacity: 1;
+
+    :global([data-theme='light']) .showcase-hero::before {
+        background: #ffffff;
     }
+
     .showcase-slide-bg {
         position: absolute;
         inset: 0;
         background-size: cover;
         background-position: center;
-        opacity: 0.7;
     }
 
-    /* 遮罩 */
     .showcase-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0.55);
+        background: rgba(0,0,0,0.7);
         pointer-events: none;
         z-index: 1;
     }
 
-    /* 内容 */
     .showcase-content {
         position: relative;
-        z-index: 2;
+        z-index: 4;
         text-align: center;
         padding: 4rem 2rem;
         max-width: 800px;
@@ -162,77 +116,28 @@ const modules = moduleMeta.map((meta, index) => ({
         text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    /* CTA 基础样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
+    .showcase-cta {
+        background: transparent !important;
+        color: #2563eb !important;
+        border: 2px solid #2563eb !important;
+        border-radius: 50px !important;
+    }
+    .showcase-cta::before {
+        display: none;
+    }
     .showcase-cta svg {
         transition: transform 0.3s ease;
+    }
+    .showcase-cta:hover {
+        background: #2563eb !important;
+        color: var(--fs-color-on-accent) !important;
+        border-color: #2563eb !important;
     }
     .showcase-cta:hover svg {
         transform: translateX(4px);
     }
 
-    /* 左右箭头 */
-    .showcase-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 3;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50%;
-        width: 52px;
-        height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--fs-color-on-image);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(8px);
-    }
-    .showcase-arrow:hover {
-        background: var(--sl-color-accent);
-        border-color: var(--sl-color-accent);
-        color: var(--fs-bg-base);
-        box-shadow: 0 0 20px var(--fs-accent-glow);
-    }
-    .showcase-arrow-left { left: 3rem; }
-    .showcase-arrow-right { right: 3rem; }
-
-    /* 底部圆点 */
-    .showcase-dots {
-        position: absolute;
-        bottom: 2.5rem;
-        left: 0;
-        right: 0;
-        z-index: 3;
-        display: flex;
-        justify-content: center;
-        gap: 0.75rem;
-    }
-    .showcase-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        border: 2px solid rgba(255,255,255,0.4);
-        background: transparent;
-        cursor: pointer;
-        padding: 0;
-        transition: all 0.3s ease;
-    }
-    .showcase-dot.active {
-        background: var(--sl-color-accent);
-        border-color: var(--sl-color-accent);
-        box-shadow: 0 0 10px var(--fs-accent-glow);
-    }
-    .showcase-dot:hover {
-        border-color: var(--sl-color-accent);
-    }
-
-    /* 响应式 */
     @media (max-width: 768px) {
         .showcase-content { padding: 2rem 1.5rem; }
-        .showcase-arrow { width: 40px; height: 40px; }
-        .showcase-arrow-left { left: 1rem; }
-        .showcase-arrow-right { right: 1rem; }
     }
 </style>

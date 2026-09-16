@@ -55,8 +55,6 @@ const bgStyle = backgroundImage ? `--join-bg: url(${backgroundImage});` : ''
         text-align: center;
         padding: 4rem 2rem;
         max-width: 900px;
-        border: 1px solid var(--fs-color-border-strong);
-        border-radius: 4px;
     }
 
     .join-content .join-heading {
@@ -79,6 +77,22 @@ const bgStyle = backgroundImage ? `--join-bg: url(${backgroundImage});` : ''
     }
 
     /* CTA 样式由共享工具类 .fs-cta-clip 提供（见 docs-global.css） */
+    .join-cta {
+        background: transparent !important;
+        color: #2563eb !important;
+        border: 2px solid #2563eb !important;
+        border-radius: 50px !important;
+    }
+    .join-cta::before {
+        display: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        .join-cta:hover {
+            background: #2563eb !important;
+            color: var(--fs-color-on-accent) !important;
+            border-color: #2563eb !important;
+        }
+    }
 
     @media (max-width: 480px) {
         .join-content { padding: 1.5rem 0; }

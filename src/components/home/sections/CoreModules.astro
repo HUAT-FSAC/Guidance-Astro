@@ -57,7 +57,7 @@ const groups = groupLinks.map((group, index) => ({
 <section class="groups-section" aria-label={t.coreModules.ariaLabel}>
     <div class="groups-grid">
         {groups.map((group, i) => (
-            <a href={group.link} class="group-card reveal-upon-scroll" style={`transition-delay: ${i * 0.08}s;`}>
+            <a href={group.link} class="group-card reveal-upon-scroll stagger-item" style={`transition-delay: ${i * 0.08}s;`}>
                 <div class="group-icon">
                     {group.icon === 'eye' && (
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -110,18 +110,26 @@ const groups = groupLinks.map((group, index) => ({
     .group-card {
         display: block;
         text-decoration: none !important;
-        background: var(--fs-color-card-bg);
-        border: 1px solid var(--fs-border-subtle);
+        background: #f0f0f0;
+        border: 1px solid #e0e0e0;
         border-radius: 12px;
         padding: 2.5rem 1.5rem 2rem;
         text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .group-card::before {
+        display: none;
     }
 
     .group-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 30px rgba(59,130,246,0.12);
         border-color: var(--sl-color-accent);
+    }
+
+    .group-card:active {
+        transform: scale(0.98);
     }
 
     .group-icon {
@@ -142,24 +150,38 @@ const groups = groupLinks.map((group, index) => ({
         font-weight: 700;
         margin: 0 0 0.75rem;
         color: var(--fs-color-heading);
+        border-left: none !important;
+        padding-left: 0 !important;
+        margin-top: 0 !important;
     }
 
     .group-desc {
         font-size: 0.9rem;
+        font-weight: 500;
         line-height: 1.7;
-        color: var(--fs-color-text-dimmed);
+        color: var(--fs-color-text);
         margin: 0;
-        opacity: 0.7;
+        opacity: 0.85;
     }
 
     :global([data-theme='light']) .group-card {
-        background: var(--fs-color-card-bg);
-        border-color: var(--fs-border-subtle);
-        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        background: #f1f3f5;
+        border-color: #dee2e6;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     :global([data-theme='light']) .group-card:hover {
-        box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+        background: #e9ecef;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    :global([data-theme='dark']) .group-card {
+        background: #2a2a2e;
+        border-color: #3a3a3e;
+    }
+
+    :global([data-theme='dark']) .group-card:hover {
+        background: #3a3a3e;
     }
 
     @media (max-width: 900px) {
