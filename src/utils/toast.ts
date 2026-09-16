@@ -16,12 +16,7 @@ export interface ToastOptions {
     duration?: number
     /** 位置 */
     position?:
-        | 'top-right'
-        | 'top-left'
-        | 'bottom-right'
-        | 'bottom-left'
-        | 'top-center'
-        | 'bottom-center'
+        'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center'
     /** 是否可关闭 */
     closable?: boolean
     /** 动画 */

@@ -18,13 +18,7 @@
  * 分享平台类型
  */
 export type SharePlatform =
-    | 'twitter'
-    | 'weibo'
-    | 'wechat'
-    | 'linkedin'
-    | 'facebook'
-    | 'telegram'
-    | 'email'
+    'twitter' | 'weibo' | 'wechat' | 'linkedin' | 'facebook' | 'telegram' | 'email'
 
 /**
  * 分享数据接口
