@@ -65,12 +65,20 @@ function startPreviewServer() {
             '--port',
             String(port),
         ],
-        { stdio: 'ignore', detached: true }
+        {
+            stdio: 'ignore',
+            detached: process.platform !== 'win32',
+            shell: process.platform === 'win32',
+        }
     )
     return {
         async stop() {
             try {
-                process.kill(-child.pid, 'SIGTERM')
+                if (process.platform !== 'win32' && child.pid) {
+                    process.kill(-child.pid, 'SIGTERM')
+                } else {
+                    child.kill('SIGTERM')
+                }
             } catch {
                 try {
                     child.kill('SIGTERM')

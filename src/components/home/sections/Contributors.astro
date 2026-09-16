@@ -182,8 +182,7 @@ const contributors = identities.map((identity, index) => ({
     .contributors-intro {
         margin-top: 1.25rem;
         font-size: 1.1rem;
-        color: var(--fs-color-text, var(--sl-color-gray-2));
-        opacity: 0.85;
+        color: var(--fs-color-text-muted);
         max-width: 680px;
         margin-left: auto;
         margin-right: auto;
@@ -216,7 +215,7 @@ const contributors = identities.map((identity, index) => ({
     }
 
     :global([data-theme='light']) .contributor-card {
-        background: rgba(255, 255, 255, 0.75);
+        background: #ffffff;
         border-color: rgba(0, 0, 0, 0.08);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
@@ -227,6 +226,12 @@ const contributors = identities.map((identity, index) => ({
             border-color: var(--sl-color-accent);
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25),
                         0 0 20px rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.15);
+        }
+
+        :global([data-theme='light']) .contributor-card:hover {
+            border-color: var(--sl-color-accent);
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.12),
+                        0 4px 12px rgba(0, 0, 0, 0.04);
         }
 
         .contributor-card:active {
@@ -326,22 +331,40 @@ const contributors = identities.map((identity, index) => ({
         letter-spacing: 0.02em;
     }
 
+    :global([data-theme='light']) .contributor-badge {
+        background: rgba(37, 99, 235, 0.08);
+        color: #1d4ed8;
+        border-color: rgba(37, 99, 235, 0.2);
+    }
+
     .contributor-handle {
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
         font-size: 0.85rem;
         color: var(--sl-color-accent);
-        text-decoration: none;
+        text-decoration: none !important;
+        background-image: none !important;
+        border-bottom: none !important;
         margin-bottom: 0.85rem;
         font-family: var(--sl-font-mono, monospace);
         opacity: 0.9;
-        transition: opacity 0.2s ease, transform 0.2s ease;
+        transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
     }
 
     .contributor-handle:hover {
         opacity: 1;
         transform: translateX(2px);
+        background-image: none !important;
+        text-decoration: none !important;
+    }
+
+    :global([data-theme='light']) .contributor-handle {
+        color: #2563eb;
+    }
+
+    :global([data-theme='light']) .contributor-handle:hover {
+        color: #1d4ed8;
     }
 
     .contributor-role {
@@ -355,8 +378,7 @@ const contributors = identities.map((identity, index) => ({
 
     .contributor-desc {
         font-size: 0.88rem;
-        color: var(--fs-color-text, var(--sl-color-gray-2));
-        opacity: 0.8;
+        color: var(--fs-color-text-muted);
         line-height: 1.6;
         margin: 0;
         text-align: center;
@@ -375,41 +397,64 @@ const contributors = identities.map((identity, index) => ({
         display: inline-flex;
         align-items: center;
         gap: 0.6rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.85rem;
+        padding: 0.8rem 1.75rem;
+        border-radius: 50px;
         font-size: 0.95rem;
         font-weight: 600;
-        text-decoration: none;
+        text-decoration: none !important;
+        background-image: none !important;
         transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
                     background 0.2s ease,
-                    border-color 0.2s ease;
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease,
+                    color 0.2s ease;
     }
 
     .btn-contributors-graph {
-        background: var(--fs-color-card-bg, rgba(255, 255, 255, 0.04));
-        border: 1px solid var(--fs-border-subtle, rgba(255, 255, 255, 0.12));
-        color: var(--sl-color-text);
+        background: var(--fs-color-card-bg, #ffffff);
+        border: 2px solid var(--fs-border-subtle, rgba(0, 0, 0, 0.12));
+        color: var(--fs-color-heading, #1a1a2e);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    :global([data-theme='dark']) .btn-contributors-graph {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: #f1f5f9;
+        box-shadow: none;
     }
 
     .btn-contributors-graph:hover {
         border-color: var(--sl-color-accent);
         color: var(--sl-color-accent);
+        background: rgba(37, 99, 235, 0.05);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
         transform: translateY(-2px);
+        background-image: none !important;
+        text-decoration: none !important;
     }
 
     .btn-contribute-cta {
-        background: var(--sl-color-accent);
-        border: 1px solid var(--sl-color-accent);
-        color: var(--sl-color-black, #000);
+        background: #2563eb !important;
+        border: 2px solid #2563eb !important;
+        color: var(--fs-color-on-accent) !important;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.28);
     }
 
-    :global([data-theme='dark']) .btn-contribute-cta {
-        color: #0b0b0f;
+    .btn-contribute-cta span,
+    .btn-contribute-cta svg {
+        color: var(--fs-color-on-accent) !important;
+        stroke: var(--fs-color-on-accent) !important;
     }
 
     .btn-contribute-cta:hover {
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+        color: var(--fs-color-on-accent) !important;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(var(--sl-color-accent-rgb, 59, 130, 246), 0.35);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.42);
+        background-image: none !important;
+        text-decoration: none !important;
     }
 
     @media (hover: hover) and (pointer: fine) {

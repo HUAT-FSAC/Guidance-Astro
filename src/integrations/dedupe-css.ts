@@ -1,6 +1,7 @@
 import type { AstroIntegration } from 'astro'
 import { readdir, readFile, unlink, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 /**
  * 构建后 CSS 去重
@@ -40,7 +41,8 @@ export default function dedupeCss(): AstroIntegration {
         name: 'dedupe-css',
         hooks: {
             'astro:build:done': async ({ dir, logger }) => {
-                const assetsDir = join(dir.pathname, '_astro')
+                const clientDir = fileURLToPath(dir)
+                const assetsDir = join(clientDir, '_astro')
                 let cssFiles: string[]
                 try {
                     cssFiles = (await readdir(assetsDir))
@@ -87,10 +89,8 @@ export default function dedupeCss(): AstroIntegration {
                 }
 
                 // 引用可能出现在 SSR 入口、chunks 以及 HTML 里；统一做精确文件名替换
-                const serverDir = join(dir.pathname, '../server')
-                const redirectedNames = new Set(
-                    [...redirect.keys()].map((file) => file.split('/').pop()!)
-                )
+                const serverDir = join(clientDir, '../server')
+                const redirectedNames = new Set([...redirect.keys()].map((file) => basename(file)))
                 const referenceFiles = (
                     await Promise.all([
                         listFilesRecursively(serverDir),
@@ -99,11 +99,10 @@ export default function dedupeCss(): AstroIntegration {
                 ).flat()
                 let savedBytes = 0
                 for (const [redundant, target] of redirect) {
-                    const redundantName = redundant.split('/').pop()!
-                    const targetName = target.split('/').pop()!
+                    const redundantName = basename(redundant)
+                    const targetName = basename(target)
                     for (const file of referenceFiles) {
-                        if (file === redundant || redirectedNames.has(file.split('/').pop()!))
-                            continue
+                        if (file === redundant || redirectedNames.has(basename(file))) continue
                         const text = await readFile(file, 'utf8')
                         if (!text.includes(redundantName)) continue
                         await writeFile(file, text.replaceAll(redundantName, targetName), 'utf8')

@@ -224,22 +224,6 @@ html {
     color: var(--fs-color-on-accent) !important;
 }
 
-/* 亮色 hover：::before 已填充为 accent 蓝，文字必须切回深色，
-   否则蓝字蓝底不可读（上层亮色覆盖的优先级与 :hover 相同且靠后，
-   必须用更高优先级显式覆盖）。暗色主题 hover 切 --fs-bg-base（近黑），
-   此处保持一致的「蓝底深字」观感，对比度 ≈5.5:1 过 AA。 */
-[data-theme='light'] .fs-cta-clip:hover {
-    color: var(--fs-color-heading) !important;
-}
-
-/* 亮色 hover：::before 已填充为 accent 蓝，文字必须切回深色，
-   否则蓝字蓝底不可读（上层亮色覆盖的优先级与 :hover 相同且靠后，
-   必须用更高优先级显式覆盖）。暗色主题 hover 切 --fs-bg-base（近黑），
-   此处保持一致的「蓝底深字」观感，对比度 ≈5.5:1 过 AA。 */
-[data-theme='light'] .fs-cta-clip:hover {
-    color: var(--fs-color-heading) !important;
-}
-
 /* 所有带颜色的元素也应用过渡 - 使用更精确的选择器提升性能 */
 .sl-markdown-content,
 .sidebar-content,
@@ -378,22 +362,28 @@ nav.sidebar h2::before {
     font-weight: 600;
 }
 
-.sl-markdown-content a {
+.sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
     color: var(--sl-color-accent);
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: border-color var(--transition-fast);
 }
 
-.sl-markdown-content a:hover {
+.sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
     border-bottom-color: var(--sl-color-accent);
 }
 
-:root[data-theme='light'] .sl-markdown-content a {
+:root[data-theme='light']
+    .sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
     color: #2563eb;
 }
 
-:root[data-theme='light'] .sl-markdown-content a:hover {
+:root[data-theme='light']
+    .sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
     color: #1d4ed8;
 }
 
@@ -1173,7 +1163,8 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 }
 
 /* 正文链接：下划线从左扫入（Emil Kowalski 式入场），替代瞬变 border */
-.sl-markdown-content a {
+.sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']) {
     border-bottom-color: transparent;
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
@@ -1183,7 +1174,8 @@ starlight-tabs [role='tab'][aria-selected='true'] {
     transition: background-size var(--transition-normal);
 }
 
-.sl-markdown-content a:hover {
+.sl-markdown-content
+    a:not([class*='btn']):not([class*='cta']):not([class*='card']):not([class*='handle']):hover {
     border-bottom-color: transparent;
     background-size: 100% 1px;
 }
