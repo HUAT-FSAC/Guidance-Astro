@@ -97,6 +97,10 @@ quality: ## 跑质量门禁(bundle + routes + theme)
 	@pnpm quality:routes
 	@pnpm quality:theme
 
+.PHONY: assets-logo
+assets-logo: ## 由母版重新生成 logo.avif/webp/png(母版 src/assets/logo-master.png)
+	@pnpm assets:logo
+
 .PHONY: lighthouse
 lighthouse: ## Lighthouse CI 断言
 	@pnpm quality:lighthouse

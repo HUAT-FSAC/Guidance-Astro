@@ -46,7 +46,6 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
-  id-token: write # 用于 provenance 签名(可选)
 
 jobs:
   release-please:
