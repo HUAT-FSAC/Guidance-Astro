@@ -30,6 +30,12 @@
     white-space: nowrap;
 }
 
+/* <picture> 包装层：占位为 flex item，line-height:0 消除行内图片基线空隙 */
+.lab-site-logo-picture {
+    display: inline-flex;
+    line-height: 0;
+}
+
 .lab-site-logo {
     height: 40px;
     width: auto;

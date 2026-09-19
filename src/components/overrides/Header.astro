@@ -19,7 +19,19 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
 
   <div class="header-inner">
     <a href={homeHref} class="header-left">
-      <img src="/assets/logo.jpg" alt="HUAT FSAC" class="header-logo" width="64" height="64" />
+      <picture class="header-logo-picture">
+        <source srcset="/assets/logo.avif" type="image/avif" />
+        <source srcset="/assets/logo.webp" type="image/webp" />
+        <img
+          src="/assets/logo.png"
+          alt="HUAT FSAC"
+          class="header-logo"
+          width="512"
+          height="201"
+          loading="eager"
+          decoding="async"
+        />
+      </picture>
       <span class="header-title">{titleText}</span>
     </a>
 
@@ -138,6 +150,12 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     min-width: 0;
     position: relative;
     z-index: 1;
+  }
+
+  /* <picture> 包装层：占位为 flex item，line-height:0 消除行内图片基线空隙 */
+  .header-logo-picture {
+    display: inline-flex;
+    line-height: 0;
   }
 
   .header-logo {
