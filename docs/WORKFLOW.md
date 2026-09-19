@@ -23,15 +23,15 @@
 
 ## 2. 项目快照（给 Agent 的上下文压缩）
 
-| 维度         | 事实                                                                                                                                                                                                       |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.1.3 + Starlight 0.41 + TypeScript 5.9` 的文档站                                                                                                                   |
-| **线上**     | `https://huat-fsac.eu.org` 由 **Cloudflare Worker SSR** 提供（`wrangler.json:1`），`*.pages.dev` 404 为预期                                                                                                |
-| **部署**     | 自动部署**已恢复(T-001)**：`push main` → GitHub Actions `deploy` → `wrangler deploy --config dist/server/wrangler.json`（需 Secrets `CLOUDFLARE_API_TOKEN`+`ACCOUNT_ID`），未配时回退 `pnpm deploy:worker` |
-| **技术栈**   | `Astro / Starlight / Cloudflare Workers / pnpm 11 / Node 22 / Vitest / Playwright / ESLint+Prettier+Husky`                                                                                                 |
-| **内容源**   | `src/content/docs/**`（MDX）、`src/data/seasons/*.json`、`src/data/sponsors.json`                                                                                                                          |
-| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 暂无开放任务；CI 含 `lint / typecheck / test / build / quality-gate`                                                                     |
-| **约束**     | 单人开发（35h/周假设），无硬性截止时间（迭代制），无额外预算                                                                                                                                               |
+| 维度         | 事实                                                                                                                                                                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.1.3 + Starlight 0.41 + TypeScript 5.9` 的文档站                                                                                                                                                                                                   |
+| **线上**     | `https://huat-fsac.eu.org` 由 **Cloudflare Worker SSR** 提供（`wrangler.json:1`），`*.pages.dev` 404 为预期                                                                                                                                                                                |
+| **部署**     | **Agent 本地部署**（2026-09-19 起）：`push main` → Agent 执行 `pnpm deploy:worker`（`pnpm build && wrangler deploy --config dist/server/wrangler.json`，wrangler OAuth）+ `curl` 验 CSP nonce。CI 已移除 `deploy` job（缺 `CLOUDFLARE_API_TOKEN` Secret，恢复方法见 `docs/DEPLOYMENT.md`） |
+| **技术栈**   | `Astro / Starlight / Cloudflare Workers / pnpm 11 / Node 22 / Vitest / Playwright / ESLint+Prettier+Husky`                                                                                                                                                                                 |
+| **内容源**   | `src/content/docs/**`（MDX）、`src/data/seasons/*.json`、`src/data/sponsors.json`                                                                                                                                                                                                          |
+| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 暂无开放任务；CI 含 `lint / typecheck / test / build / quality-gate`                                                                                                                                                     |
+| **约束**     | 单人开发（35h/周假设），无硬性截止时间（迭代制），无额外预算                                                                                                                                                                                                                               |
 
 ---
 

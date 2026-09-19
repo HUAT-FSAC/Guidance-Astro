@@ -15,40 +15,32 @@ Production: [https://huat-fsac.eu.org](https://huat-fsac.eu.org) — zone route 
 
 ---
 
-## Automatic Deployment (GitHub Actions → Workers)
+## Deployment Path (current: Agent-local wrangler)
 
-`push → main` runs `.github/workflows/ci-cd.yml:deploy` after `build + quality-gate`.
+自 2026-09-19 起 `ci-cd.yml` **不再包含 `deploy` job**：Cloudflare API Token Secret 未配置，留着只会让 `main` 每次 push 长红。线上部署由 Agent / 维护者在本机执行（wrangler 走 OAuth 登录，不需要 Secret）：
 
+```bash
+pnpm deploy:worker   # ≡ pnpm build && wrangler deploy --config dist/server/wrangler.json
+curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy   # 必须含 nonce-
 ```
-push main → lint / typecheck / test / build → quality-gate (bundle + Playwright smoke + LHCI) → deploy (wrangler deploy)
-```
 
-### Workflow `deploy` job
+### Restoring GitHub Actions auto-deploy
+
+1. Create a custom token at <https://dash.cloudflare.com/profile/api-tokens> with:
+    - `Workers Scripts — Edit`
+    - `Workers KV Storage — Edit`（`SESSION` KV namespace）
+    - `Cloudflare Pages — Edit`（仅下方 Pages 兜底路径需要）
+2. `gh secret set CLOUDFLARE_API_TOKEN --repo HUAT-FSAC/Guidance-Astro`
+3. Put the `deploy` job back: `git show 8475f88:.github/workflows/ci-cd.yml`（该版本已含缺 token 的 preflight 报错与部署后 nonce 重试断言）。
+
+`CLOUDFLARE_ACCOUNT_ID` **不是必需的 Secret**：`account_id` 已提交在 `wrangler.json:3`，`pnpm build` 会把它注入 `dist/server/wrangler.json`，wrangler 部署时直接读取。
+
+原 `deploy` job 的执行条件与产物复用（恢复后保持一致）：
 
 - `if: github.ref == 'refs/heads/main' && github.event_name == 'push'`
 - `environment: production` → `https://huat-fsac.eu.org`
 - Reuses the `dist` artifact from `build` (no second `pnpm build`)
-- `pnpm exec wrangler deploy --config dist/server/wrangler.json`
-- Post-check: `curl -sI https://huat-fsac.eu.org/` must contain `content-security-policy: … 'nonce-…'`
-
-### Required GitHub Secrets
-
-Add at **GitHub → Settings → Secrets and variables → Actions → New repository secret**:
-
-| Secret                  | Value                              | Where to get it                                                |
-| ----------------------- | ---------------------------------- | -------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Custom token (see below)           | Dash → My Profile → API Tokens → Create Custom Token           |
-| `CLOUDFLARE_ACCOUNT_ID` | `bfdcbff6cfe16d2b9bd657593ba88f5f` | Cloudflare Dashboard → Account → Overview or `wrangler.json:3` |
-
-Token permissions (Account → Iridite):
-
-- `Workers Scripts — Edit`
-- `Workers KV Storage — Edit`
-- `Cloudflare Pages — Edit` (kept for the Pages project that still hosts the Git build trigger)
-
-Create → copy once → store in password manager → add as **Encrypted** secret. Both `Production` environments are covered by repository-level secrets; no separate `Preview` env needed for this repo.
-
-> Until `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` are set, the `deploy` job fails with `Authentication error`. This is the “auto deploy is broken” state documented in `docs/PROJECT_MANAGEMENT_MODEL.md:191` and `docs/WORKFLOW.md:30`.
+- Post-check: served HTML must contain `'nonce-…'`
 
 ### Alternative: Pages Git build invoking `wrangler deploy`
 
@@ -60,11 +52,11 @@ pnpm build && pnpm exec wrangler deploy --config dist/server/wrangler.json
 
 (see `scripts/patch-cf-pages.mjs:22` and `docs/plans/2026-08-13-cloudflare-worker-ssr-deploy-plan.md:23`)
 
-This path also requires **Pages → Settings → Environment variables** `CLOUDFLARE_API_TOKEN` (Encrypt) + `CLOUDFLARE_ACCOUNT_ID` (Plaintext) for **both Production and Preview**. GitHub Actions deploy is now the primary path; the Pages-build path is kept as fallback and for `Retry deployment` from the Dashboard.
+This path also requires **Pages → Settings → Environment variables** `CLOUDFLARE_API_TOKEN` (Encrypt) + `CLOUDFLARE_ACCOUNT_ID` (Plaintext) for **both Production and Preview**. Agent-local `pnpm deploy:worker` is the current primary path; the Pages-build path is kept as fallback and for `Retry deployment` from the Dashboard.
 
 ---
 
-## Manual Deployment (fallback) / Agent Auto-Deploy
+## Agent Auto-Deploy (current primary path) / Manual Fallback
 
 Agent 已通过 `wrangler whoami`（OAuth `zcw85590@gmail.com` / `Iridite`）登录时，**`push main` 后无需人工指令**：
 
