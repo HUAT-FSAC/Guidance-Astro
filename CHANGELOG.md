@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.0.0...v1.0.1) (2026-09-19)
+
+
+### Performance Improvements
+
+* **assets:** shrink logo 231KB-&gt;13.5KB via avif/webp/png &lt;picture&gt; (T-035) ([312e4f9](https://github.com/HUAT-FSAC/Guidance-Astro/commit/312e4f9c7bd5fa54040e799a2d08b49ed8f1b1ab))
+
 ## 1.0.0 (2026-09-19)
 
 
