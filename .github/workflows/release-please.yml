@@ -8,10 +8,33 @@ name: Release Please
 # 首次运行会创建一个 "chore(main): release 0.0.1" 的初始化 PR,
 # 接受它之后即开始按提交生成 Release。
 #
-# 前置(GitHub 仓库侧手动一次):
-#   Settings → Actions → General → Workflow permissions
-#   → "Allow GitHub Actions to create and approve pull requests" ✅
-# 详见 docs/ROADMAP.md / docs/PROJECT_MANAGEMENT_MODEL.md
+# ── 权限现状（2026-09-19，T-021）────────────────────────────────────────
+# 组织 HUAT-FSAC **未开启** "Allow GitHub Actions to create and approve pull
+# requests"，且该开关是组织级锁定（仓库级 PUT 返回 409，仓库无法自行覆盖）。
+#
+# 关键点：它只约束工作流内置的 GITHUB_TOKEN，并不禁止自动化建 PR。
+# 因此下列替代路线均不需要动组织规则（按推荐度排序）：
+#
+#   A2 GitHub App（长期推荐）
+#      建一个 GitHub App 安装到本仓，权限 Contents:RW + Pull requests:RW
+#      + Issues:RW，再用 actions/create-github-app-token 在 job 内铸短时令牌。
+#      优点：无个人身份、令牌自动轮转、可单独吊销。
+#
+#   A1 细粒度 PAT（最快）
+#      仅授权本仓 Contents:RW + Pull requests:RW + Issues:RW 的 fine-grained
+#      PAT，存为仓库 secret RELEASE_PLEASE_TOKEN —— 本文件已自动优先使用它，
+#      无需改代码。
+#      ⚠️ 轮换提醒：细粒度 PAT 最长 1 年到期，到期后 Release PR 会静默失败。
+#         建/换 token 时把到期日回写到 docs/WORKFLOW.md §4 T-021 一栏。
+#
+#   C  无凭据应急（当前状态）
+#      没有 PAT/App 时，rp 用 GITHUB_TOKEN 仍能推 release 分支、**更新已有**
+#      Release PR、打 tag、发 Release；唯独"新建 PR"被 403。
+#      ⇒ 因此 #85 必须保持 open：一旦合并或关闭，下一张 Release PR 无法自动
+#        生成，需由维护者用已登录的 `gh pr create` 补建（runbook 见
+#        docs/WORKFLOW.md §4 T-021）。
+#
+# 详见 docs/WORKFLOW.md §4 T-021 / docs/PROJECT_MANAGEMENT_MODEL.md
 
 on:
   push:
@@ -33,9 +56,10 @@ jobs:
         uses: googleapis/release-please-action@v5
         id: release
         with:
-          # 组织若未开启 "Allow GitHub Actions to create and approve pull requests",
-          # GITHUB_TOKEN 建 PR 会被 403 拒绝(见 Issue#64 / T-021)。届时用一张只授予
-          # 本仓 contents:write + pull_requests:write 的 PAT 存进 RELEASE_PLEASE_TOKEN 即可绕过。
+          # 优先用 PAT / GitHub App 令牌；未配置时回落 GITHUB_TOKEN。
+          # 回落态只能"更新"已存在的 Release PR，不能"新建"（组织策略限制），
+          # 报错形如 "GitHub Actions is not permitted to create or approve
+          # pull requests" —— 见文件头 T-021 说明。
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
           release-type: node
 
