@@ -74,13 +74,13 @@
         "typescript": "^6.0.3"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^5.20260917.1",
+        "@cloudflare/workers-types": "^5.20260922.1",
         "@commitlint/cli": "^21.2.2",
         "@commitlint/config-conventional": "^21.2.2",
         "@fullhuman/postcss-purgecss": "^8.0.0",
         "@playwright/test": "^1.63.0",
         "@types/qrcode": "^1.5.6",
-        "@vitest/coverage-v8": "^4.1.10",
+        "@vitest/coverage-v8": "^4.1.11",
         "eslint": "^10.11.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-astro": "^3.2.1",
