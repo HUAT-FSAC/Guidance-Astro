@@ -15,10 +15,13 @@ updates:
       prefix: chore
       include: scope
     ignore:
-      # wrangler pinned at 4.114.0, allow patch/minor but review major
+      # wrangler 保持精确 pin（@cloudflare/vite-plugin peer 依赖需同步升级），major 需人工复核
       - dependency-name: wrangler
         update-types:
           - version-update:semver-major
+      # Starlight 0.42+ 引入 satteri WASI 依赖，rolldown/workerd 构建链无法解析（T-026 实测 + PR#89 CI 复现），待上游修复
+      - dependency-name: "@astrojs/starlight"
+        versions: [">=0.42.0"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
