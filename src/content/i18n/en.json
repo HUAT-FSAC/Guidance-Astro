@@ -475,5 +475,42 @@
         "dotSuffix": "",
         "raceCarAlt": "race car",
         "explanationAlt": "explanation"
+    },
+    "projectMetrics": {
+        "totalTasks": "Total Tasks",
+        "completed": "Completed",
+        "ciPassRate": "CI Pass Rate",
+        "testCoverage": "Test Coverage",
+        "statusDistribution": "Task Status Distribution",
+        "priorityDistribution": "Priority Distribution",
+        "milestones": "Milestone Progress",
+        "qualityMetrics": "Quality Metrics",
+        "lintErrors": "Lint Errors",
+        "typeErrors": "Type Errors",
+        "bundleSize": "Bundle Size",
+        "budget": "Budget",
+        "due": "Due",
+        "updatedAt": "Last Updated",
+        "dataSource": "Data Source",
+        "dataSourceValue": "GitHub API / CI Pipeline",
+        "status": {
+            "backlog": "Backlog",
+            "ready": "Ready",
+            "inProgress": "In Progress",
+            "review": "In Review",
+            "blocked": "Blocked",
+            "done": "Done"
+        },
+        "priority": {
+            "p0": "P0 - Critical",
+            "p1": "P1 - High",
+            "p2": "P2 - Medium",
+            "p3": "P3 - Low"
+        },
+        "milestoneStatus": {
+            "completed": "Completed",
+            "in-progress": "In Progress",
+            "backlog": "Not Started"
+        }
     }
 }

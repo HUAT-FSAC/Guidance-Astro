@@ -17,7 +17,7 @@ const bgStyle = backgroundImage ? `--join-bg: url(${backgroundImage});` : ''
     <div class="join-content">
         <h2 class="join-heading">{t.joinUs.heading}</h2>
         <span class="join-sub">JOIN US</span>
-        <a class="join-cta fs-cta-clip" href="/join/" role="button" data-astro-prefetch="hover">{t.joinUs.cta}</a>
+        <a class="join-cta fs-cta-clip" href={locale === 'en' ? '/en/join/' : '/join/'} data-astro-prefetch="hover">{t.joinUs.cta}</a>
     </div>
 </section>
 

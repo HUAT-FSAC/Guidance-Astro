@@ -475,5 +475,42 @@
         "dotSuffix": "组",
         "raceCarAlt": "赛车",
         "explanationAlt": "解说"
+    },
+    "projectMetrics": {
+        "totalTasks": "总任务数",
+        "completed": "已完成",
+        "ciPassRate": "CI 通过率",
+        "testCoverage": "测试覆盖率",
+        "statusDistribution": "任务状态分布",
+        "priorityDistribution": "优先级分布",
+        "milestones": "里程碑进度",
+        "qualityMetrics": "质量指标",
+        "lintErrors": "Lint 错误",
+        "typeErrors": "类型错误",
+        "bundleSize": "Bundle 体积",
+        "budget": "预算",
+        "due": "截止",
+        "updatedAt": "数据更新时间",
+        "dataSource": "数据来源",
+        "dataSourceValue": "GitHub API / CI Pipeline",
+        "status": {
+            "backlog": "待办",
+            "ready": "就绪",
+            "inProgress": "进行中",
+            "review": "审核中",
+            "blocked": "阻塞",
+            "done": "已完成"
+        },
+        "priority": {
+            "p0": "P0 - 紧急",
+            "p1": "P1 - 高",
+            "p2": "P2 - 中",
+            "p3": "P3 - 低"
+        },
+        "milestoneStatus": {
+            "completed": "已完成",
+            "in-progress": "进行中",
+            "backlog": "待开始"
+        }
     }
 }
