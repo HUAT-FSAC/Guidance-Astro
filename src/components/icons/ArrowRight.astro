@@ -5,6 +5,8 @@
 interface Props {
     size?: number;
     class?: string;
+    /* 本图标恒为装饰性：始终输出 aria-hidden，调用方无需（也无法）通过 props 改写。
+       若某个位置需要可读语义，请内联 svg 并配 role="img" + aria-label，不要用本组件。 */
 }
 
 const { size = 18, class: className = "" } = Astro.props;
@@ -21,6 +23,8 @@ const { size = 18, class: className = "" } = Astro.props;
     stroke-linecap="round"
     stroke-linejoin="round"
     class={className}
+    aria-hidden="true"
+    focusable="false"
 >
     <path d="M5 12h14"></path>
     <path d="M12 5l7 7-7 7"></path>
