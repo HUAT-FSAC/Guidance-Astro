@@ -6,12 +6,52 @@ import filterKnownBuildWarnings from './src/integrations/filter-known-build-warn
 import dedupeCss from './src/integrations/dedupe-css'
 import purgecss from 'vite-plugin-purgecss'
 
+/**
+ * 给 Markdown 渲染出的 <img> 补齐 loading="lazy" / decoding="async"。
+ *
+ * 背景：Starlight/Astro 默认不会为 markdown 里的图片添加这两个属性。本站文档单篇常含几十张
+ * 截图，全部以同步方式发出会与首屏 LCP 争抢带宽；缺少 decoding="async" 时，大图解码也会
+ * 占用主线程造成滚动掉帧。
+ *
+ * 采用手写的递归遍历而非 unist-util-visit，避免为了一个 8 行规则引入新依赖。
+ * 只对「未显式声明」的属性兜底：作者手写的 loading="eager" / decoding="sync" 一律保留。
+ */
+function rehypeImageDefaults() {
+    return (tree) => {
+        const visit = (node) => {
+            if (node && node.type === 'element' && node.tagName === 'img') {
+                node.properties ??= {}
+                if (node.properties.loading == null) {
+                    node.properties.loading = 'lazy'
+                }
+                if (node.properties.decoding == null) {
+                    node.properties.decoding = 'async'
+                }
+            }
+            if (Array.isArray(node?.children)) {
+                node.children.forEach(visit)
+            }
+        }
+        visit(tree)
+    }
+}
+
 // https://astro.build/config
 export default defineConfig({
     output: 'server',
     adapter: cloudflare({ imageService: 'compile' }),
     site: 'https://huat-fsac.eu.org',
     trailingSlash: 'always',
+    markdown: {
+        // ⚠️ 已知弃用：Astro 7 提示 `markdown.rehypePlugins` 已废弃，应改用
+        //   `markdown.processor = unified({ rehypePlugins: [...] })`（来自 @astrojs/markdown-remark）。
+        // 暂不迁移的两个原因：
+        //   1. @astrojs/markdown-remark 尚未安装，为一个 8 行规则新增依赖不划算；
+        //   2. Starlight 0.41 仍走旧 remark/rehype 管线，替换 processor 存在与其冲突的风险。
+        // 迁移时机：Starlight 跟进 Astro 7 的 unified() 方案后，随大版本升级一起切。
+        // 当前表现为构建期一条 deprecation warning，功能不受影响。
+        rehypePlugins: [rehypeImageDefaults],
+    },
     vite: {
         build: {
             cssCodeSplit: true,
@@ -176,6 +216,37 @@ export default defineConfig({
                     attrs: {
                         property: 'og:image',
                         content: 'https://huat-fsac.eu.org/og-image.jpg',
+                    },
+                },
+                /* 补齐 og:image 的尺寸与替代文本：
+                   缺 width/height 时 Facebook/LinkedIn 首帧无法预留版位，抓取后要二次布局；
+                   缺 alt 时分享卡片对读屏用户没有任何可读描述。实际文件为 1200x630 JPEG。 */
+                {
+                    tag: 'meta',
+                    attrs: {
+                        property: 'og:image:width',
+                        content: '1200',
+                    },
+                },
+                {
+                    tag: 'meta',
+                    attrs: {
+                        property: 'og:image:height',
+                        content: '630',
+                    },
+                },
+                {
+                    tag: 'meta',
+                    attrs: {
+                        property: 'og:image:alt',
+                        content: 'HUAT FSAC 东风 HUAT 无人驾驶车队',
+                    },
+                },
+                {
+                    tag: 'meta',
+                    attrs: {
+                        property: 'og:site_name',
+                        content: 'HUAT FSAC',
                     },
                 },
                 {
