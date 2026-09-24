@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.0.2...v1.1.0) (2026-09-24)
+
+
+### Features
+
+* **i18n:** 项目看板接入双语并修复英文站 CTA 跳中文页 ([10ee793](https://github.com/HUAT-FSAC/Guidance-Astro/commit/10ee793dfb3643d4aa39d81c8f3090ec731c02e2))
+
+
+### Bug Fixes
+
+* **a11y:** 装饰图标批量屏蔽读屏、导航补激活态、移除链接上的 button 角色 ([614b375](https://github.com/HUAT-FSAC/Guidance-Astro/commit/614b375fb909e1683aaada1acf0a97be633bddf5))
+* **deps:** bump postcss-selector-parser past DoS range and align peer deps ([f2cd284](https://github.com/HUAT-FSAC/Guidance-Astro/commit/f2cd284113a5bfe069cb40ba218e00b0b37d7ea8))
+
+
+### Performance Improvements
+
+* **assets:** markdown 图片补懒加载、移除死集成与冗余大图 ([d572d8f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/d572d8f79d7d1626cc637c816615d05a3bab220b))
+
 ## [1.0.2](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.0.1...v1.0.2) (2026-09-22)
 
 ### Documentation
