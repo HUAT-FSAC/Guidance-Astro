@@ -52,6 +52,23 @@ export default [
         items: [{ autogenerate: { directory: 'news' } }],
     },
     {
+        label: '实验室',
+        translations: { en: 'Lab' },
+        collapsed: false,
+        items: [
+            {
+                label: '智能驾驶实验室',
+                translations: { en: 'Autonomous Driving Lab' },
+                link: '/labs/',
+            },
+            {
+                label: 'Demo 中心（规划）',
+                translations: { en: 'Demo Center (Planning)' },
+                link: '/showcase-demos/',
+            },
+        ],
+    },
+    {
         label: '2025 赛季文档',
         translations: { en: '2025 Season Docs' },
         collapsed: false,

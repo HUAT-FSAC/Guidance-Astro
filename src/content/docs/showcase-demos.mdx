@@ -1,0 +1,53 @@
+---
+title: Showcase Lab Demo 中心（规划）
+description: 招新组、感知、规控三类 Demo 的扩展规划——录屏与可交互 Demo 的素材清单与接入方案（草稿，待车队审核）
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+<Aside type="caution" title="草稿 · 待车队审核">
+本文档为看板任务 T-030 的起草版本。三类 Demo 的**录屏素材尚未到位**，可交互 Demo 将基于现有 [智能驾驶交互实验室](/showcase-dashboard/) 扩展。素材与文案确认后请移除本提示并转为正式页面。
+</Aside>
+
+## 现状与目标
+
+现有 [Showcase Lab](/showcase-dashboard/) 已实现完全本地化的感知→执行闭环可视化（场景预设、实时指标、赛道图）。本规划在此基础上扩展三类面向不同受众的 Demo：
+
+<CardGrid>
+  <Card title="招新组 Demo" icon="add-document">
+    **受众**：新同学、宣讲会现场
+    **形态**：引导式交互，3 分钟看懂无人赛车怎么"自己开"
+    **所需素材**：招新宣讲录屏 **（待素材）**、引导文案 **（待文案）**
+    **状态**：⏳ 规划中
+  </Card>
+  <Card title="感知 Demo" icon="eye">
+    **受众**：对算法感兴趣的同学
+    **形态**：传感器数据回放 + 障碍识别可视化，展示点云/图像如何变成"障碍物列表"
+    **所需素材**：实车感知录屏 **（待素材）**、脱敏数据集 **（待素材）**
+    **状态**：⏳ 规划中
+  </Card>
+  <Card title="规控 Demo" icon="rocket">
+    **受众**：对规划控制感兴趣的同学
+    **形态**：赛道回放中叠加规划轨迹与控制量曲线，展示"想怎么走"到"实际怎么走"
+    **所需素材**：赛道循迹录屏 **（待素材）**、日志数据 **（待素材）**
+    **状态**：⏳ 规划中
+  </Card>
+</CardGrid>
+
+## 素材规格建议
+
+| 素材类型 | 规格建议                                    | 交付方式                  |
+| -------- | ------------------------------------------- | ------------------------- |
+| 录屏     | 1920×1080 及以上，≤ 60 秒，MP4（H.264）     | 提交至仓库 `public/media/` |
+| 数据     | 与现有场景格式一致的 JSON（见 showcase 数据） | 提交至 `src/data/`        |
+| 文案     | 中文为主，英文可后置（`draft: true` 路径）   | 直接提 PR                 |
+
+## 接入方案（供开发者参考）
+
+1. **录屏类**：压缩后放入 `public/media/`（遵守 `pnpm quality:bundle` 图片/媒体预算），页面内以 `<video>` + 封面图接入，遵守 `loading="lazy"`。
+2. **可交互类**：复用 `src/data/showcase-lab.ts` 的场景/子系统数据结构，新增 scenario 后由现有 `showcase-lab-client` 渲染，无需新框架。
+3. **发布门禁**：所有新增页面需通过 `pnpm lint && pnpm test:run && pnpm build && pnpm quality:bundle`。
+
+---
+
+> 素材到位后按上表逐项替换 **（待素材）** 标记即可转正式版。欢迎在[讨论区](https://github.com/HUAT-FSAC/Guidance-Astro/discussions)认领或认领素材。
