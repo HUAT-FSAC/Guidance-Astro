@@ -30,7 +30,7 @@
                   │  └ DocPage                                          │
                   ├────────────────────────────────────────────────────┤
                   │  数据 (src/data)        集成 (src/integrations)     │
-                  │  ├ cars.ts              ├ critical-css.ts          │
+                  │  ├ cars.ts              ├ dedupe-css.ts            │
                   │  ├ home.ts              ├ dedupe-css.ts            │
                   │  ├ seasons/*.json       ├ cloudflare-static-hdr…   │
                   │  ├ sponsors.json        └ filter-known-build-…     │
@@ -118,7 +118,6 @@
 │   │   ├── security.ts       # CSP nonce 生成、applyStandardHeaders、isCSPValid
 │   │   └── monitoring.ts     # Web Vitals + 告警 Webhook(Feishu/WeCom)
 │   └── integrations/         # 自定义 Vite/Astro 集成
-│       ├── critical-css.ts   # 首屏 CSS 内联
 │       ├── dedupe-css.ts     # CSS 去重
 │       ├── cloudflare-static-headers.ts
 │       ├── cloudflare-redirects.ts
@@ -186,9 +185,12 @@ pnpm build
   ├─ Vite 构建
   │   ├─ 静态资源 (dist/client/_astro/*.{js,css,webp,avif})
   │   ├─ dedupe-css 集成(节省 ~34KB)
-  │   ├─ critical-css 集成(首屏内联)
   │   └─ filter-known-build-warnings 集成(过滤已知第三方警告)
   │
+  │   注：原 critical-css 集成(首屏内联)已于 2026-09-24 移除——它既未在
+  │   astro.config 注册，SSR(output:server)下也无 .html 产物可内联；
+  │   且 SSR 每页内联 ~7KB CSS 无法被 CDN/浏览器缓存，收益低于 <link> 外链。
+  │   src/styles/critical.css 本身保留，供 showcase-dashboard(LabApp) 走 Vite import。
   ├─ @astrojs/cloudflare
   │   ├─ 生成 dist/server/entry.mjs (Worker 入口)
   │   ├─ 生成 dist/server/wrangler.json (assets binding ASSETS→../client)

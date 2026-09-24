@@ -117,7 +117,7 @@ const contributors = identities.map((identity, index) => ({
                 rel="noopener noreferrer"
                 class="btn-contributors-graph"
             >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
                     <line x1="12" y1="20" x2="12" y2="4"></line>
                     <line x1="6" y1="20" x2="6" y2="14"></line>
@@ -130,7 +130,7 @@ const contributors = identities.map((identity, index) => ({
                 rel="noopener noreferrer"
                 class="btn-contribute-cta"
             >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                     <path d="M12 5v14M5 12h14"></path>
                 </svg>
                 <span>{t.contributors.joinUs}</span>
@@ -377,15 +377,17 @@ const contributors = identities.map((identity, index) => ({
         border-color: rgba(37, 99, 235, 0.2);
     }
 
+    /* 说明：此处曾用 !important 硬压「正文链接下划线」，现已不再需要。
+       docs-global.css 的正文链接规则形如 a:not([class*='handle']):not([class*='btn']):not([class*='cta'])…，
+       .contributor-handle 命中 'handle'、.btn-* 命中 'btn'/'cta'，本来就被排除在外。
+       保留 !important 只会掩盖后续改错选择器时的问题，故降回普通声明。 */
     .contributor-handle {
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
         font-size: 0.85rem;
         color: var(--sl-color-accent);
-        text-decoration: none !important;
-        background-image: none !important;
-        border-bottom: none !important;
+        text-decoration: none;
         margin-bottom: 0.85rem;
         font-family: var(--sl-font-mono, monospace);
         opacity: 0.9;
@@ -395,8 +397,6 @@ const contributors = identities.map((identity, index) => ({
     .contributor-handle:hover {
         opacity: 1;
         transform: translateX(2px);
-        background-image: none !important;
-        text-decoration: none !important;
     }
 
     :global([data-theme='light']) .contributor-handle {
@@ -441,8 +441,7 @@ const contributors = identities.map((identity, index) => ({
         border-radius: 50px;
         font-size: 0.95rem;
         font-weight: 600;
-        text-decoration: none !important;
-        background-image: none !important;
+        text-decoration: none;
         transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
                     background 0.2s ease,
                     border-color 0.2s ease,
@@ -483,9 +482,11 @@ const contributors = identities.map((identity, index) => ({
         background: rgba(37, 99, 235, 0.05);
         box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
         transform: translateY(-2px);
-        background-image: none !important;
-        text-decoration: none !important;
     }
+
+    /* 以下一组 [data-theme='light'] / 'dark' 的配色仍保留 !important：
+       它们要压的是 Starlight 自身的 --sl-color-* 派生规则，其选择器结构与具体版本耦合，
+       降级为普通声明后一旦 Starlight 升版就可能悄悄被吃掉，风险收益不成正比。 */
 
     .btn-contribute-cta {
         background: #2563eb !important;
@@ -506,8 +507,6 @@ const contributors = identities.map((identity, index) => ({
         color: var(--fs-color-on-accent) !important;
         transform: translateY(-2px);
         box-shadow: 0 8px 24px rgba(37, 99, 235, 0.42);
-        background-image: none !important;
-        text-decoration: none !important;
     }
 
     .btn-contribute-cta:hover span,

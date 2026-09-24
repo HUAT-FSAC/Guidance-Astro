@@ -8,6 +8,18 @@ const isEn = isEnglishPath(Astro.url.pathname);
 const navItems = getNavItems(isEn ? 'en' : 'zh');
 const homeHref = isEn ? '/en/' : '/';
 const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
+
+const currentPath = Astro.url.pathname;
+/**
+ * 判断导航项是否处于当前页。
+ * 首页（'/' 与 '/en/'）必须严格相等才算命中，否则它会作为所有路径的公共前缀被误判为常亮，
+ * 导致 5 个导航项里永远有一项是「激活」态。
+ */
+function isActive(href: string): boolean {
+    return href === '/' || href === '/en/'
+        ? currentPath === href
+        : currentPath === href || currentPath.startsWith(href);
+}
 ---
 
 <div class="custom-header">
@@ -37,10 +49,16 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
 
     <nav class="header-nav" aria-label={isEn ? 'Main navigation' : '主导航'}>
       {navItems.map((item) => (
-        <a href={item.href}>{item.label}</a>
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
       ))}
-      <a href="https://github.com/HUAT-FSAC" target="_blank" class="nav-github">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      <a
+        href="https://github.com/HUAT-FSAC"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-github"
+        aria-label={isEn ? 'HUAT FSAC GitHub organization' : 'HUAT FSAC GitHub 组织主页'}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
       <Search class="header-search" />
       <ThemeToggle />
@@ -51,6 +69,7 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
 
 <style>
   .custom-header {
+    /* 品牌栏底色见下方 :global(.header) 上的 --fs-header-bg 定义（父子继承），此处只引用不重复定义 */
     position: relative;
     display: flex;
     align-items: center;
@@ -58,7 +77,7 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     width: 100%;
     height: 100%;
     padding: 0 1.5rem;
-    background: #ffffff;
+    background: var(--fs-header-bg);
     box-sizing: border-box;
     overflow: visible;
   }
@@ -103,25 +122,29 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     line-height: 1;
   }
 
-  /* ======== 背景噪点层 ======== */
+  /* ======== 背景噪点层 ========
+     噪点必须比 header 底色更暗才可见：.custom-header 的背景恒为浅色（见下方 background），
+     原先 12 层渐变全部写成 rgba(255,255,255,*)，白噪点叠白底 = 整层永远不可见、纯属无效绘制。
+     改用中性深灰（略偏冷，贴合品牌冷调），最终可视透明度≈α×0.35≈0.05，保持克制的颗粒感。 */
   .header-noise {
+    --noise-ink: 15, 23, 42;
     position: absolute;
     inset: 0;
     pointer-events: none;
     opacity: 0.35;
     background-image:
-      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
-      radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,0.3), transparent),
-      radial-gradient(1.5px 1.5px at 40% 15%, rgba(255,255,255,0.35), transparent),
-      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.25), transparent),
-      radial-gradient(1.5px 1.5px at 70% 30%, rgba(255,255,255,0.35), transparent),
-      radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.3), transparent),
-      radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,0.2), transparent),
-      radial-gradient(1.5px 1.5px at 60% 90%, rgba(255,255,255,0.3), transparent),
-      radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.25), transparent),
-      radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,0.2), transparent),
-      radial-gradient(1.5px 1.5px at 50% 55%, rgba(255,255,255,0.3), transparent),
-      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.25), transparent);
+      radial-gradient(1px 1px at 10% 20%, rgba(var(--noise-ink), 0.16), transparent),
+      radial-gradient(1px 1px at 25% 70%, rgba(var(--noise-ink), 0.12), transparent),
+      radial-gradient(1.5px 1.5px at 40% 15%, rgba(var(--noise-ink), 0.14), transparent),
+      radial-gradient(1px 1px at 55% 80%, rgba(var(--noise-ink), 0.1), transparent),
+      radial-gradient(1.5px 1.5px at 70% 30%, rgba(var(--noise-ink), 0.14), transparent),
+      radial-gradient(1px 1px at 85% 60%, rgba(var(--noise-ink), 0.12), transparent),
+      radial-gradient(1px 1px at 15% 50%, rgba(var(--noise-ink), 0.08), transparent),
+      radial-gradient(1.5px 1.5px at 60% 90%, rgba(var(--noise-ink), 0.12), transparent),
+      radial-gradient(1px 1px at 90% 10%, rgba(var(--noise-ink), 0.1), transparent),
+      radial-gradient(1px 1px at 35% 40%, rgba(var(--noise-ink), 0.08), transparent),
+      radial-gradient(1.5px 1.5px at 50% 55%, rgba(var(--noise-ink), 0.12), transparent),
+      radial-gradient(1px 1px at 75% 85%, rgba(var(--noise-ink), 0.1), transparent);
   }
 
   /* ======== 底部扫描线 ======== */
@@ -134,9 +157,9 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255,255,255,0.08) 20%,
-      rgba(59,130,246,0.3) 50%,
-      rgba(255,255,255,0.08) 80%,
+      rgba(15, 23, 42, 0.1) 20%,
+      rgba(59,130,246,0.45) 50%,
+      rgba(15, 23, 42, 0.1) 80%,
       transparent 100%
     );
     pointer-events: none;
@@ -178,7 +201,10 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
   .header-nav {
     display: flex;
     align-items: center;
-    gap: 3em;
+    /* 原来写死 gap: 3em（≈48px）：5 个导航项 + GitHub + 搜索 + 主题 + 语言共 9 个控件，
+       在 800–1200px 的笔记本窗口会挤爆并横向溢出。改为随视口收缩的 clamp，
+       大屏仍保持 48px 的原有通透感，800px 断点处收拢到 16px。 */
+    gap: clamp(1rem, 2.2vw, 3rem);
     height: 100%;
     position: relative;
     z-index: 10;
@@ -231,11 +257,16 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     text-shadow: none;
   }
 
-  /* ======== 覆盖 Starlight 默认 header 内边距 ======== */
+  /* ======== 覆盖 Starlight 默认 header 内边距 ========
+     --fs-header-bg 定义在此（最外层），.custom-header 通过继承引用，避免同一颜色写两处。
+     跨主题恒为白色是刻意决策：站点 logo 为深红字标，必须依托浅底才可辨识，
+     若随主题翻成 #030303 字标会整块消失。原先 `[data-theme='light']` 那份覆盖
+     反而把浅色主题降成 #f5f5f7 浅灰，形成「深色纯白 / 浅色浅灰」的反直觉组合，已移除。 */
   :global(.header) {
+    --fs-header-bg: #ffffff;
     padding: 0 !important;
     border-bottom: none !important;
-    background-color: #ffffff !important;
+    background-color: var(--fs-header-bg) !important;
   }
 
   /* ======== 响应式：移动端隐藏桌面导航，避免与 MobileNavigation 双重显示 ========
@@ -276,11 +307,7 @@ const titleText = isEn ? 'HUAT FSAC' : '东风 HUAT 无人驾驶车队';
     }
   }
 
-  /* ======== 浅色模式 ======== */
-  :global([data-theme='light']) .custom-header {
-    background: var(--fs-bg-surface);
-  }
-
+  /* header 底色已在 .custom-header 用 --fs-header-bg 统一定义，此处不再按主题重复覆盖 */
   :global([data-theme='light']) .header-title {
     text-shadow: none;
   }

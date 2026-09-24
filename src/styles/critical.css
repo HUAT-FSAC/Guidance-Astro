@@ -1,64 +1,11 @@
-/* 关键CSS - 内联到HTML中 */
+/* 关键 CSS
+ *
+ * 令牌已收敛到 src/styles/tokens.css（单一数据源），本文件只保留
+ * ① showcase-dashboard 页特有的补充变量；② 首屏渲染所需的基础布局与排版。
+ * 不要再在本文件重复声明 tokens.css 里已经有的变量。 */
+@import './tokens.css';
 
-/* 核心变量与令牌 */
 :root {
-    /* 基础调色板 - 深色 (默认) */
-    --fs-bg-base: #030303;
-    --fs-bg-surface: #0a0a0c;
-    --fs-bg-elevated: #151518;
-    --sl-color-accent: #3b82f6;
-    --fs-accent-glow: rgba(59, 130, 246, 0.25);
-
-    /* 语义令牌 - 深色
-     * 页面/卡片文字用 heading|text|muted|dimmed（随主题翻转）。
-     * 照片叠字用 --fs-color-on-image，实心强调按钮用 --fs-color-on-accent（始终为白）。
-     * 不要把 color 写成 #fff / white / rgba(255,255,255,...)，quality:theme 会拦。 */
-    --fs-color-text: #ececec;
-    --fs-color-text-muted: rgba(255, 255, 255, 0.85);
-    --fs-color-text-dimmed: rgba(255, 255, 255, 0.6);
-    --fs-color-heading: #ffffff;
-    --fs-color-border: rgba(255, 255, 255, 0.08);
-    --fs-color-border-strong: rgba(255, 255, 255, 0.2);
-    --fs-color-surface-hover: rgba(255, 255, 255, 0.04);
-    --fs-color-surface-active: rgba(255, 255, 255, 0.1);
-    --fs-color-aside-bg: rgba(255, 255, 255, 0.03);
-    --fs-color-card-bg: rgba(255, 255, 255, 0.04);
-    --fs-color-section-alt: #f8f9fa;
-    --fs-color-code-bg: rgba(59, 130, 246, 0.1);
-    --fs-color-code-inline-text: var(--sl-color-accent);
-    --fs-color-table-header-bg: rgba(255, 255, 255, 0.05);
-    --fs-color-overlay-soft: rgba(0, 0, 0, 0.4);
-    --fs-color-overlay-strong: rgba(0, 0, 0, 0.85);
-    /* 照片叠字 / 强调色按钮上的字：始终为白，不随主题翻转 */
-    --fs-color-on-image: #ffffff;
-    --fs-color-on-accent: #ffffff;
-    --fs-border-subtle: rgba(255, 255, 255, 0.08);
-    --fs-border-focus: rgba(59, 130, 246, 0.5);
-
-    /* 物理属性 - 圆角系统（与 docs-global.css 工程风小切角保持一致）*/
-    --radius-xs: 2px;
-    --radius-sm: 2px;
-    --radius-md: 4px;
-    --radius-lg: 6px;
-    --radius-xl: 16px;
-    --radius-full: 50%;
-    --fs-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: 0.2s var(--fs-ease-out);
-    --transition-normal: 0.4s var(--fs-ease-out);
-    --theme-transition: 0.3s ease-out;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.65), 0 10px 10px -5px rgba(0, 0, 0, 0.35);
-
-    /* 层级管理 */
-    --z-background: 1;
-    --z-content: 10;
-    --z-navigation: 100;
-    --z-floating: 1000;
-    --z-progress: 1100;
-    --z-modal: 10000;
-    --z-toast: 10001;
-    --z-cursor: 2147483647;
-
     /* 视口高度 - 使用 dvh 解决 iOS Safari 100vh 问题 */
     --vh: 100dvh;
     /* Fallback for older browsers that don't support dvh */
@@ -67,40 +14,10 @@
     }
 }
 
-/* 深色模式显式定义 */
-:root[data-theme='dark'] {
-    --sl-color-bg: var(--fs-bg-base);
-    --sl-color-bg-nav: rgba(3, 3, 3, 0.85);
-    --sl-color-gray-6: var(--fs-bg-surface);
-}
-
-/* 亮色模式 - 令牌覆盖 */
+/* 仅 showcase-dashboard 页需要的 Starlight 文本色桥接。
+   该页不走 Starlight 布局，渲染完全依赖本文件，因此需要这两行把
+   Starlight 的文本色变量接到本站语义色上；文档页由 Starlight 自身处理，无需此桥接。 */
 :root[data-theme='light'] {
-    --fs-bg-base: #ffffff;
-    --fs-bg-surface: #f5f5f7;
-    --fs-bg-elevated: #ffffff;
-    --fs-accent-glow: rgba(59, 130, 246, 0.15);
-
-    /* 语义令牌 - 亮色 */
-    --fs-color-text: #1a1a2e;
-    --fs-color-text-muted: rgba(0, 0, 0, 0.75);
-    --fs-color-text-dimmed: rgba(0, 0, 0, 0.5);
-    --fs-color-heading: #050505;
-    --fs-color-border: rgba(0, 0, 0, 0.08);
-    --fs-color-border-strong: rgba(0, 0, 0, 0.2);
-    --fs-color-surface-hover: rgba(0, 0, 0, 0.03);
-    --fs-color-surface-active: rgba(0, 0, 0, 0.1);
-    --fs-color-aside-bg: rgba(0, 0, 0, 0.02);
-    --fs-color-card-bg: #ffffff;
-    --fs-color-section-alt: #f8f9fa;
-    --fs-color-code-bg: rgba(59, 130, 246, 0.12);
-    --fs-color-code-inline-text: var(--sl-color-accent);
-    --fs-color-table-header-bg: rgba(0, 0, 0, 0.05);
-    --fs-border-subtle: rgba(0, 0, 0, 0.08);
-    --fs-border-focus: rgba(59, 130, 246, 0.4);
-
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
     --sl-color-text: var(--fs-color-text);
     --sl-color-text-invert: #ffffff;
 }
@@ -148,9 +65,8 @@ body {
 
 /* 优化移动端滚动性能 */
 @media (max-width: 768px) {
-    * {
-        -webkit-overflow-scrolling: touch;
-    }
+    /* 已移除 `-webkit-overflow-scrolling: touch`：该私有属性自 iOS 13 起被忽略，
+     * 且当时用 `*` 通配选择器作用到每个节点，在长文档页属于无收益的样式计算开销。 */
 
     /* 禁用双击缩放（保留捏合缩放）*/
     body {
