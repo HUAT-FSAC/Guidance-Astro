@@ -40,8 +40,10 @@ function getHeroVariants(src: string) {
     const ext = src.slice(dot)
     // 本地图片已为 hero 三图生成 768/1440 的 JPEG/WebP/AVIF 变体，其余单图也已生成 WebP/AVIF
     // 统一返回 768/1440 srcset，浏览器自动选择；若某尺寸缺失则 404 回退到 fallback，不影响首屏
+    // fallback 取 -1440 变体而非全尺寸原图：原图（photo-together.jpg 288KB 等）不再被请求，
+    // 已从 public/assets 删除，首屏 preload 也不再拉全量原图（见 #103）
     return {
-        fallback: `${base}${ext}`,
+        fallback: `${base}-1440${ext}`,
         jpgSrcSet: `${base}-768.jpg 768w, ${base}-1440.jpg 1440w`,
         webpSrcSet: `${base}-768.webp 768w, ${base}-1440.webp 1440w`,
         avifSrcSet: `${base}-768.avif 768w, ${base}-1440.avif 1440w`,
