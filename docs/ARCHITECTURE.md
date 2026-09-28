@@ -20,9 +20,9 @@
                   │  astro.config.mjs                                   │
                   ├────────────────────────────────────────────────────┤
                   │  路由 (src/pages)          内容 (Starlight)         │
-                  │  ├ index.astro (zh)        ├ content/docs/zh/**     │
-                  │  ├ en/   (en)              ├ content/docs/en/**     │
-                  │  └ …                      └ content.config.ts      │
+                  │  ├ docs.astro (中文文档页)  ├ content/docs/**       │
+                  │  ├ en/** (英文路由)        ├ content/docs/en/**    │
+                  │  └ showcase-dashboard.astro └ content.config.ts     │
                   ├────────────────────────────────────────────────────┤
                   │  组件 (src/components)                             │
                   │  ├ home / docs / navigation / overrides / icons    │
@@ -53,18 +53,18 @@
 
 ## 2. 技术栈快照
 
-| 层        | 选型                                                             | 关键文件                                                    | 备注                                        |
-| --------- | ---------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------- |
-| 框架      | **Astro 7.1.3** (`output: 'server'`)                             | [`astro.config.mjs:11`](../astro.config.mjs)                | SSR,默认零 JS                               |
-| 适配器    | `@astrojs/cloudflare`                                            | `astro.config.mjs:12`                                       | 编译期图片 (`imageService: 'compile'`)      |
-| 文档主题  | **Starlight 0.41**                                               | `src/content.config.ts`                                     | i18n/搜索/侧边栏/TOC                        |
-| 部署      | **Cloudflare Workers SSR**                                       | [`dist/server/wrangler.json`](../dist/server/wrangler.json) | `pnpm deploy:worker`                        |
-| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                           | `pnpm-workspace.yaml`                                       | 依赖白名单见 `onlyBuiltDependencies`        |
-| 测试      | **Vitest 4.1** + **Playwright 1.61**                             | `vitest.config.ts` / `playwright.config.ts`                 | 覆盖率阈值 70/60/70/70                      |
-| 质量      | ESLint 9 + Prettier 3 + Husky 9 + commitlint 20 + lint-staged 15 | `.config/*`                                                 | 提交时 ESLint + Prettier 走 lint-staged     |
-| 分析/告警 | Umami + Feishu/WeCom Webhook                                     | `src/config/monitoring.ts`                                  | `checkPerformanceAndAlert`                  |
-| 搜索      | Pagefind                                                         | 由 Starlight 自动集成                                       | `pnpm build` 后注入 `dist/client/pagefind/` |
-| PWA       | 手写 Service Worker + manifest                                   | `public/sw.js` / `public/manifest.json`                     | 智能缓存策略(见 `_headers`)                 |
+| 层        | 选型                                                              | 关键文件                                                                      | 备注                                        |
+| --------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| 框架      | **Astro 7.3.3** (`output: 'server'`)                              | [`astro.config.mjs:11`](../astro.config.mjs)                                  | SSR,默认零 JS                               |
+| 适配器    | `@astrojs/cloudflare`                                             | `astro.config.mjs:12`                                                         | 编译期图片 (`imageService: 'compile'`)      |
+| 文档主题  | **Starlight 0.41.11**                                             | `src/content.config.ts`                                                       | i18n/搜索/侧边栏/TOC                        |
+| 部署      | **Cloudflare Workers SSR**                                        | [`dist/server/wrangler.json`](../dist/server/wrangler.json)                   | `pnpm deploy:worker`                        |
+| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                            | `pnpm-workspace.yaml`                                                         | 依赖白名单见 `onlyBuiltDependencies`        |
+| 测试      | **Vitest 4.1** + **Playwright 1.63**                              | `vitest.config.ts`（转调 `.config/vitest.config.ts`）/ `playwright.config.ts` | 覆盖率阈值 80/80/80/80                      |
+| 质量      | ESLint 10 + Prettier 3 + Husky 9 + commitlint 21 + lint-staged 17 | `.config/*`                                                                   | 提交时 ESLint + Prettier 走 lint-staged     |
+| 分析/告警 | Umami + Feishu/WeCom Webhook                                      | `src/config/monitoring.ts`                                                    | `checkPerformanceAndAlert`                  |
+| 搜索      | Pagefind                                                          | 由 Starlight 自动集成                                                         | `pnpm build` 后注入 `dist/client/pagefind/` |
+| PWA       | 手写 Service Worker + manifest                                    | `public/sw.js` / `public/manifest.json`                                       | 智能缓存策略(见 `_headers`)                 |
 
 > 详细选型理由:见 [`docs/adr/001-astro-starlight-tech-stack.md`](./adr/001-astro-starlight-tech-stack.md)。
 
@@ -109,8 +109,9 @@
 │   │   ├── sponsors.json     # 赞助商
 │   │   └── showcase-lab*.ts  # Showcase Lab 数据
 │   ├── pages/                # 自定义路由(非 Starlight)
-│   │   ├── index.astro       # 中文首页
-│   │   └── en/               # 英文首页
+│   │   ├── docs.astro        # 中文文档页
+│   │   ├── showcase-dashboard.astro
+│   │   └── en/               # 英文路由（含 archive / showcase-dashboard）
 │   ├── styles/               # 全局 / 文档 / 主题 / 排版样式
 │   ├── types/                # 共享 TS 类型
 │   ├── utils/                # i18n / 性能 / 图片 / 字符串工具
@@ -221,7 +222,7 @@ pnpm deploy:worker         # = pnpm build && wrangler deploy --config dist/serve
 
 ```text
 content collection
-  src/content/docs/zh/seasons/2024.mdx  (MDX,内联 frontmatter)
+  src/content/docs/news/2024-season-finale.mdx  (MDX,内联 frontmatter)
   ──────────────────────────────────────
   Starlight loader 解析 frontmatter
   ──────────────────────────────────────
@@ -231,7 +232,7 @@ content collection
   ──────────────────────────────────────
   在首页 / 文档页对应路由渲染
   ──────────────────────────────────────
-  Astro build → 静态 HTML
+  Astro build → Worker SSR 实时渲染（output: 'server'，见 §4）
 ```
 
 > ⚠️ 团队成员/联系方式等**个人信息**应直接维护在 `src/data/seasons/*.json` 或 MDX frontmatter 内,
@@ -241,13 +242,13 @@ content collection
 
 ## 7. 测试架构
 
-| 层级   | 工具             | 入口                        | 覆盖范围                                      |
-| ------ | ---------------- | --------------------------- | --------------------------------------------- |
-| 单元   | Vitest 4         | `tests/unit/**`             | `src/utils`、`src/config`、`src/integrations` |
-| 组件   | Vitest 4 (jsdom) | `tests/unit/components/**`  | Astro 组件 props 与渲染                       |
-| 端到端 | Playwright 1.6   | `tests/e2e/**`              | 关键路径:首页/搜索/PWA/语言切换/移动端导航    |
-| 视觉   | Lighthouse CI    | `.config/lighthouserc.json` | 性能 ≥ 0.85(可配),SEO/可访问性                |
-| 质量   | 自研脚本         | `scripts/quality/*`         | 包体积预算 / 主题对比度                       |
+| 层级   | 工具               | 入口                                                               | 覆盖范围                                      |
+| ------ | ------------------ | ------------------------------------------------------------------ | --------------------------------------------- |
+| 单元   | Vitest 4.1         | `tests/unit/**` + `src/**/*.test.ts`（同目录单测）                 | `src/utils`、`src/config`、`src/integrations` |
+| 组件   | Vitest 4.1 (jsdom) | `tests/unit/*.test.ts`（DOM 行为断言，见 `setup-browser.ts` mock） | 控制器/工具的用户视角行为                     |
+| 端到端 | Playwright 1.63    | `tests/e2e/**`                                                     | 关键路径:首页/搜索/PWA/语言切换/移动端导航    |
+| 视觉   | Lighthouse CI      | `.config/lighthouserc.json`                                        | 性能 error 0.80 / warn 0.85,SEO/可访问性      |
+| 质量   | 自研脚本           | `scripts/quality/*`                                                | 包体积预算 / 主题对比度                       |
 
 > 覆盖率门禁见 [`docs/WORKFLOW.md §6`](./WORKFLOW.md#6-质量门禁definition-of-done);CI 拓扑见
 > [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml)。
