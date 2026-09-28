@@ -110,29 +110,76 @@ describe('image-optimization-boost', () => {
         handleImageError(img3, window.location.href)
         expect(img3.src).toBe('https://example.com/b.jpg')
     })
-    it('preloadImages', () => {
-        preloadImages(['/a.jpg', 'https://example.com/b.jpg', '', null as unknown as string])
-        // @ts-expect-error: suppress type error
-        const origImage = global.Image
-        // @ts-expect-error: suppress type error
-        global.Image = class {
-            src = ''
-            set src(v: string) {
-                if (v === 'throw') throw new Error('fail')
+    // 行为用例示范（#105）：断言可观察的副作用，而非仅 not.toThrow
+    describe('preloadImages 行为', () => {
+        it('为每个有效 URL 创建预加载 Image 并赋值 src', () => {
+            const created: { src: string }[] = []
+            const OrigImage = global.Image
+            // @ts-expect-error: 用记录型替身替代 Image 构造函数
+            global.Image = class {
+                src = ''
+                constructor() {
+                    created.push(this)
+                }
+            } as unknown as typeof Image
+            try {
+                preloadImages(['/a.jpg', 'https://example.com/b.jpg'])
+                expect(created).toHaveLength(2)
+                expect(created[0].src).toBe('/a.jpg')
+                expect(created[1].src).toBe('https://example.com/b.jpg')
+            } finally {
+                // @ts-expect-error: 恢复原始 Image
+                global.Image = OrigImage
             }
-            get src() {
-                return ''
+        })
+
+        it('跳过空值与非字符串条目', () => {
+            let count = 0
+            const OrigImage = global.Image
+            // @ts-expect-error: 用计数型替身替代 Image 构造函数
+            global.Image = class {
+                constructor() {
+                    count++
+                }
+            } as unknown as typeof Image
+            try {
+                preloadImages(['', null as unknown as string, '/ok.jpg'])
+                expect(count).toBe(1)
+            } finally {
+                // @ts-expect-error: 恢复原始 Image
+                global.Image = OrigImage
             }
-        } as unknown as typeof Image
-        preloadImages(['throw'])
-        // @ts-expect-error: suppress type error
-        global.Image = origImage
-        // without window
-        const origWindow = global.window
-        // @ts-expect-error: suppress type error
-        delete global.window
-        expect(() => preloadImages(['/a.jpg'])).not.toThrow()
-        // @ts-expect-error: suppress type error
-        global.window = origWindow
+        })
+
+        it('单个图片构造失败时吞掉异常并继续（返回 void，不抛错）', () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+            const OrigImage = global.Image
+            // @ts-expect-error: 用抛错型替身替代 Image 构造函数
+            global.Image = class {
+                constructor() {
+                    throw new Error('fail')
+                }
+            } as unknown as typeof Image
+            try {
+                expect(() => preloadImages(['/a.jpg'])).not.toThrow()
+                expect(warn).toHaveBeenCalled()
+            } finally {
+                // @ts-expect-error: 恢复原始 Image
+                global.Image = OrigImage
+                warn.mockRestore()
+            }
+        })
+
+        it('无 window 环境直接返回', () => {
+            const origWindow = global.window
+            // @ts-expect-error: 模拟 SSR 无 window 环境
+            delete global.window
+            try {
+                expect(() => preloadImages(['/a.jpg'])).not.toThrow()
+            } finally {
+                // @ts-expect-error: 恢复 window
+                global.window = origWindow
+            }
+        })
     })
 })
