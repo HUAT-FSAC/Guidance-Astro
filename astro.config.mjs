@@ -103,14 +103,10 @@ export default defineConfig({
                         /^fab-/,
                         /^error-/,
                         /^astro-/,
-                        // Starlight Search
+                        // Starlight Search（pagefind-ui 被 /^pagefind/ 覆盖，不重复列）
                         'site-search',
                         /^pagefind/,
-                        'pagefind-ui',
                         /^dialog/,
-                        'dialog',
-                        'data-open-modal',
-                        'data-close-modal',
                         'data-search-modal-open',
                     ],
                     deep: [
@@ -118,9 +114,9 @@ export default defineConfig({
                         /main-pane/,
                         /page/,
                         /header/,
+                        // /search/ 已覆盖 site-search，不重复列
                         /search/,
                         /sl-/,
-                        /site-search/,
                         /pagefind/,
                         /dialog/,
                         // 全局美化层：伪类/通用选择器无 class 锚点，会被 purgecss 误删
