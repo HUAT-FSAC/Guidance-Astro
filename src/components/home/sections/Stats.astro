@@ -25,7 +25,9 @@ function parseValue(value: string) {
             return (
                 <div class="stat-item reveal-upon-scroll" style={`transition-delay: ${index * 0.15 + 0.1}s;`}>
                     <div class={isStatic ? 'value is-static' : 'value'} data-target={isStatic ? undefined : num} data-suffix={suffix}>
-                        {isStatic ? `${num}${suffix}` : `0${suffix}`}
+                        {/* SSR 直接输出真值（渐进增强）：无 JS/爬虫也能看到正确数字；
+                            有 JS 时 stats-counter 会在初始化时重置为 0 再播放计数动画 */}
+                        {`${num}${suffix}`}
                     </div>
                     <div class="label">{stat.label}</div>
                 </div>

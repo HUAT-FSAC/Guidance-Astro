@@ -22,6 +22,11 @@ function animateCounters(): () => void {
 
     log.info('注册计数器观察', { count: counters.length })
 
+    // SSR 已输出真值（无 JS 也可见）；有 JS 时先重置为 0 再播放动画，保持原有视觉动效
+    counters.forEach((counter) => {
+        counter.textContent = `0${counter.dataset.suffix || ''}`
+    })
+
     const observer = new IntersectionObserver(
         (entries) => {
             for (const entry of entries) {
