@@ -72,9 +72,10 @@ describe('security config', () => {
             expect(header?.value).toBe('nosniff')
         })
 
-        it('includes X-Frame-Options', () => {
+        it('does not rely on legacy X-Frame-Options (frame-ancestors is the standard)', () => {
             const header = securityHeaders.find((h) => h.name === 'X-Frame-Options')
-            expect(header?.value).toBe('SAMEORIGIN')
+            expect(header).toBeUndefined()
+            expect(generateCSP()).toContain("frame-ancestors 'self'")
         })
 
         it('includes Referrer-Policy', () => {
@@ -94,14 +95,13 @@ describe('security config', () => {
             expect(hsts?.value).toBe('max-age=31536000; includeSubDomains; preload')
         })
 
-        it('contains exactly 8 security headers (CSP + 7 hardening)', () => {
-            expect(securityHeaders).toHaveLength(8)
+        it('contains exactly 7 security headers (CSP + 6 hardening)', () => {
+            expect(securityHeaders).toHaveLength(7)
             const names = securityHeaders.map((h) => h.name)
             expect(names).toEqual(
                 expect.arrayContaining([
                     'Content-Security-Policy',
                     'X-Content-Type-Options',
-                    'X-Frame-Options',
                     'Referrer-Policy',
                     'Permissions-Policy',
                     'Cross-Origin-Opener-Policy',
@@ -132,6 +132,15 @@ describe('security config', () => {
             const csp = generateCSP()
             expect(csp).toContain("object-src 'none'")
             expect(csp).toContain("frame-ancestors 'self'")
+        })
+
+        it('frame-src allows all players actually embedded (youtube/vimeo/bilibili)', () => {
+            const csp = generateCSP()
+            const frameSrc = csp.split(';').find((d) => d.trim().startsWith('frame-src'))!
+            expect(frameSrc).toContain('https://www.youtube.com')
+            expect(frameSrc).toContain('https://player.vimeo.com')
+            // BilibiliVideo.astro 嵌入 player.bilibili.com，缺失会导致生产文档视频白屏
+            expect(frameSrc).toContain('https://player.bilibili.com')
         })
 
         it('style-src retains unsafe-inline for Starlight but script-src never does', () => {

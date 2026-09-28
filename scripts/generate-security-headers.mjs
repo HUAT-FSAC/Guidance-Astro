@@ -125,7 +125,12 @@ function buildCsp(hashes) {
         'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
         'img-src': ["'self'", 'data:', 'https:', 'blob:'],
         'media-src': ["'self'", 'data:', 'https:'],
-        'frame-src': ["'self'", 'https://www.youtube.com', 'https://player.vimeo.com'],
+        'frame-src': [
+            "'self'",
+            'https://www.youtube.com',
+            'https://player.vimeo.com',
+            'https://player.bilibili.com',
+        ],
         'connect-src': ["'self'", 'https://cloud.umami.is', 'https://*.umami.is'],
         'worker-src': ["'self'", 'blob:'],
         'manifest-src': ["'self'"],
@@ -166,7 +171,6 @@ function buildHeadersFile(csp) {
     const cspLine = csp ? `  Content-Security-Policy: ${csp}\n` : ''
     return `${CACHE_HEADERS}/*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: accelerometer=(), gyroscope=(), magnetometer=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin

@@ -30,7 +30,8 @@ describe('security headers', () => {
         )
 
         expect(response.headers.get('Content-Security-Policy')).toBe("default-src 'none'")
-        expect(response.headers.get('X-Frame-Options')).toBe('SAMEORIGIN')
+        // X-Frame-Options 已移除（见 #104），frame-ancestors 'self' 为现行标准
+        expect(response.headers.get('X-Frame-Options')).toBeNull()
     })
 
     it('returns a short-cache policy for HTML pages and a no-store policy for the service worker', () => {
@@ -52,7 +53,7 @@ describe('security headers', () => {
         expect(defaultResponse.headers.get('Cache-Control')).toBe(
             'public, max-age=3600, must-revalidate'
         )
-        expect(defaultResponse.headers.get('X-Frame-Options')).toBe('SAMEORIGIN')
+        expect(defaultResponse.headers.get('X-Frame-Options')).toBeNull()
 
         const customResponse = applyStandardHeaders(
             new Response('ok', {

@@ -8,7 +8,8 @@ describe('renderCloudflareStaticHeaders', () => {
 
         expect(output.startsWith('/*\n')).toBe(true)
         expect(output).toContain('  Content-Security-Policy: ')
-        expect(output).toContain('  X-Frame-Options: SAMEORIGIN')
+        // X-Frame-Options 已移除（见 #104），frame-ancestors 为现行标准
+        expect(output).not.toContain('X-Frame-Options')
         expect(output).toContain('  Permissions-Policy: ')
         expect(output).toContain('  Cache-Control: public, max-age=3600, must-revalidate')
         expect(output).toContain(

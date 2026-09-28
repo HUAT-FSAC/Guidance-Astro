@@ -49,7 +49,14 @@ export function getCSPDirectives(nonce?: string) {
         'font-src': ["'self'", 'data:'],
         'img-src': ["'self'", 'data:', 'https:', 'blob:'],
         'media-src': ["'self'", 'data:', 'https:'],
-        'frame-src': ["'self'", 'https://www.youtube.com', 'https://player.vimeo.com'],
+        // BilibiliVideo.astro 嵌入 //player.bilibili.com（archive 文档多处在用），必须放行，
+        // 否则生产环境 frame-src 违规直接白屏。YouTube/Vimeo 保留（历史兼容）。
+        'frame-src': [
+            "'self'",
+            'https://www.youtube.com',
+            'https://player.vimeo.com',
+            'https://player.bilibili.com',
+        ],
         'connect-src': ["'self'", 'https://cloud.umami.is', 'https://*.umami.is'],
         'worker-src': ["'self'", 'blob:'],
         'manifest-src': ["'self'"],
@@ -58,6 +65,9 @@ export function getCSPDirectives(nonce?: string) {
         'object-src': ["'none'"],
         'frame-ancestors': ["'self'"],
         // 不升级不安全请求（允许 HTTP 开发环境，生产建议启用）
+        // 结论（2026-09 #104）：保持关闭。生产经 Cloudflare 全站 HTTPS + HSTS preload
+        // 已强制加密；开启会把 http://localhost（含 ws 热更新）升级为 https 从而破坏
+        // 本地开发。如未来 dev 全切 HTTPS 再重议。
         // 'upgrade-insecure-requests': [],
     }
 }
@@ -87,10 +97,9 @@ export const securityHeaders: SecurityHeader[] = [
         name: 'X-Content-Type-Options',
         value: 'nosniff',
     },
-    {
-        name: 'X-Frame-Options',
-        value: 'SAMEORIGIN',
-    },
+    // 注（2026-09 #104）：已删除 X-Frame-Options: SAMEORIGIN。
+    // frame-ancestors 'self'（CSP）是现行标准且更强；双头并存属冗余，
+    // 现代浏览器以 frame-ancestors 为准，旧头只增字节不增安全。
     {
         name: 'Referrer-Policy',
         value: 'strict-origin-when-cross-origin',
@@ -105,6 +114,11 @@ export const securityHeaders: SecurityHeader[] = [
         name: 'Cross-Origin-Opener-Policy',
         value: 'same-origin',
     },
+    // 结论（2026-09 #104）：COOP/CORP same-origin 与视频嵌入可共存，无需改动。
+    // 依据：iframe 嵌入由本站 CSP frame-src + frame-ancestors 管控；
+    // COOP 只隔离顶层文档与跨源弹窗的浏览上下文（含 window.open，不含 iframe）；
+    // CORP 约束的是“别人能否嵌入我们的响应”，不约束“我们嵌入别人的播放器”
+    //（播放器响应的 CORP 由 B 站/YouTube 自己下发）。BilibiliVideo 实测见 frame-src。
     {
         name: 'Cross-Origin-Resource-Policy',
         value: 'same-origin',
