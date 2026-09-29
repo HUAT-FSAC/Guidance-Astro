@@ -41,6 +41,9 @@ importers:
       '@astrojs/cloudflare':
         specifier: ^14.3.2
         version: 14.3.2(@types/node@24.13.3)(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(wrangler@4.136.2(@cloudflare/workers-types@5.20260922.1)(@types/node@24.13.3))(yaml@2.9.0)
+      '@astrojs/sitemap':
+        specifier: ^3.7.3
+        version: 3.7.3
       '@astrojs/starlight':
         specifier: ^0.41.11
         version: 0.41.11(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(supports-color@10.2.2)(typescript@6.0.3)
@@ -53,6 +56,9 @@ importers:
       astro:
         specifier: ^7.3.3
         version: 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0)
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4

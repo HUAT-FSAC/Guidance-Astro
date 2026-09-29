@@ -1,10 +1,35 @@
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig } from 'astro/config'
 import cloudflare from '@astrojs/cloudflare'
+import sitemap from '@astrojs/sitemap'
 import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
 import dedupeCss from './src/integrations/dedupe-css'
+import {
+    collectContentPagePaths,
+    collectNonIndexablePagePaths,
+} from './src/integrations/sitemap-paths'
 import purgecss from 'vite-plugin-purgecss'
+
+/** 站点正式域名（`site` 与 sitemap 的 `customPages` 共用同一来源） */
+const SITE_URL = 'https://huat-fsac.eu.org'
+
+/**
+ * issue #116：本站是全 SSR（`output: 'server'`），Starlight 内容页走动态 `[...slug]` 路由。
+ * `@astrojs/sitemap` 构建期只能枚举「有静态 pathname 的路由」，因此线上 sitemap 曾只剩
+ * 8 条 URL（6 个跳转桩 + 2 个静态页），166 个内容页全部缺席。
+ *
+ * 这里在构建期扫描文件系统，把内容页路径补进 `customPages`，并用 `filter` 剔除跳转桩 /
+ * noindex 页（推导规则见 `src/integrations/sitemap-paths.ts`）。
+ */
+const contentPagePaths = collectContentPagePaths(
+    fileURLToPath(new URL('./src/content/docs/', import.meta.url))
+)
+const nonIndexablePagePaths = new Set(
+    collectNonIndexablePagePaths(fileURLToPath(new URL('./src/pages/', import.meta.url)))
+)
 
 /**
  * 给 Markdown 渲染出的 <img> 补齐 loading="lazy" / decoding="async"。
@@ -40,7 +65,7 @@ function rehypeImageDefaults() {
 export default defineConfig({
     output: 'server',
     adapter: cloudflare({ imageService: 'compile' }),
-    site: 'https://huat-fsac.eu.org',
+    site: SITE_URL,
     trailingSlash: 'always',
     markdown: {
         // ⚠️ 已知弃用：Astro 7 提示 `markdown.rehypePlugins` 已废弃，应改用
@@ -391,6 +416,19 @@ export default defineConfig({
                 root: { label: '简体中文', lang: 'zh-CN' },
                 en: { label: 'English', lang: 'en', dir: 'ltr' },
             },
+        }),
+        // ⚠️ Starlight 检测到用户已注册 `@astrojs/sitemap` 时不会再注册自己的那份
+        //    （见 @astrojs/starlight/index.ts 对 integrations 名称的判断），因此下面的
+        //    `i18n` 必须与 Starlight 的 getSitemapConfig() 保持等价，否则双语 hreflang
+        //    互链会失效。
+        sitemap({
+            i18n: {
+                defaultLocale: 'root',
+                locales: { root: 'zh-CN', en: 'en' },
+            },
+            customPages: contentPagePaths.map((path) => new URL(path, SITE_URL).href),
+            filter: (page) =>
+                !nonIndexablePagePaths.has(decodeURI(new URL(page, SITE_URL).pathname)),
         }),
     ],
 })
