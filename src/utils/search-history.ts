@@ -43,7 +43,7 @@ function saveHistory(): void {
  * 生成唯一 ID
  */
 function generateId(): string {
-    return `search-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    return `search-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
 /**

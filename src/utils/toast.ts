@@ -267,7 +267,7 @@ function getIconSVG(type: ToastType): string {
  * 生成唯一 ID
  */
 function generateId(): string {
-    return `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
 /**
