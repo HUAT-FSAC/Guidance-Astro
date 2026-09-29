@@ -4,7 +4,7 @@
 > 所有人类与 AI Agent（单 Agent / 多 Agent 协作）在此仓库的任何开发动作，必须以本文档为锚点。
 > 开始任何任务前，先读本文档；结束任何任务后，回写本文档。
 
-**最后更新：** 2026-09-01 | **维护人：** 单人全栈（你）| **状态：** 生效中
+**最后更新：** 2026-09-29 | **维护人：** 单人全栈（你）| **状态：** 生效中
 **关联文档：** `AGENTS.md`（Agent 入口） / `docs/PROJECT_MANAGEMENT_MODEL.md`（看板与发布模型） / `docs/DEPLOYMENT.md`
 
 ---
@@ -25,12 +25,12 @@
 
 | 维度         | 事实                                                                                                                                                                                                                                                                                       |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.1.3 + Starlight 0.41 + TypeScript 5.9` 的文档站                                                                                                                                                                                                   |
+| **项目**     | HUAT FSAC Guidance-Astro — 基于 `Astro 7.3.3 + Starlight 0.41.11 + TypeScript 6.0.3` 的文档站                                                                                                                                                                                              |
 | **线上**     | `https://huat-fsac.eu.org` 由 **Cloudflare Worker SSR** 提供（`wrangler.json:1`），`*.pages.dev` 404 为预期                                                                                                                                                                                |
 | **部署**     | **Agent 本地部署**（2026-09-19 起）：`push main` → Agent 执行 `pnpm deploy:worker`（`pnpm build && wrangler deploy --config dist/server/wrangler.json`，wrangler OAuth）+ `curl` 验 CSP nonce。CI 已移除 `deploy` job（缺 `CLOUDFLARE_API_TOKEN` Secret，恢复方法见 `docs/DEPLOYMENT.md`） |
 | **技术栈**   | `Astro / Starlight / Cloudflare Workers / pnpm 11 / Node 22 / Vitest / Playwright / ESLint+Prettier+Husky`                                                                                                                                                                                 |
 | **内容源**   | `src/content/docs/**`（MDX）、`src/data/seasons/*.json`、`src/data/sponsors.json`                                                                                                                                                                                                          |
-| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 暂无开放任务；CI 含 `lint / typecheck / test / build / quality-gate`                                                                                                                                                     |
+| **当前状态** | `docs/TODOLIST.md` P0-P4 20项已在 2026-08-25 标记完成；`gh issue` 仅 #101 开放（恢复 CI 自动部署，阻塞于人类配 Secret）；CI 含 `lint / typecheck / test / build / quality-gate`                                                                                                            |
 | **约束**     | 单人开发（35h/周假设），无硬性截止时间（迭代制），无额外预算                                                                                                                                                                                                                               |
 
 ---
@@ -226,6 +226,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-28 | opencode/muse-spark | 自主开发：Issue #99~#105 逐一实现（#101 除外） | 用户指令全自主：分析→计划复用既有 7 issue（逐一核验有效，不重复创建）→按 P1→P2→P3 实现。已关 6 个：#99 Stats SSR 真值+4 用例（cc08793，本地 worker curl 验 50+/7+）；#104 删 XFO + frame-src 放行 bilibili +52 单测（e322244）；#100 ARCH 版本/阈值/目录同步（977ffd7）；#103 Hero fallback 切 1440 + 删 12 原图约 1.4MB（d8795ca）；#102 safelist 去 5 冗余（CSS 字节一致 + smoke 8/8，0d46b50）；#105 行为优先约定 + preloadImages 改写（全量 391 用例 + 覆盖率 93.9/85.2，4fc4b34）。#101 仍阻塞：CLOUDFLARE_API_TOKEN 缺失（secret list 复核），此时加回 deploy 只会长红，已留言。全部直接提交 main 未 push（用户禁 push）；工具链走 mise（node 22/pnpm 11）；门禁 lint/format/tsc/test:coverage/build/bundle/theme 全绿（e2e 仅 smoke，提交者 pre-commit 需 mise shim 在 PATH） |
 
 | 2026-09-25 | workbuddy-agent | 完成 T-038 站点全量评审收尾并上线 | 三轮评审的全部遗留项一次清完：P1（critical-css 死集成、markdown 图片无 lazy、看板硬编码中文、45 处装饰 SVG 未屏蔽）、P2（Header 双 !important 层叠战争、正文链接 6 条重复规则、og-image 资源与 ADR 漂移）、P3（令牌双写收敛为 tokens.css、9 个无引用组件清理） · **两处上轮误报已核实更正**：Hero 响应式图片实现完整，真问题是三条 preload 的 type 全匹配导致三份同时下载；`target="_blank"` 缺 rel 是属性换行造成的单行 grep 漏判，9 处均有 rel · **踩坑**：删 `src/utils/lazy-components.ts` 会打断 `tests/unit/lazy-components.test.ts` 与 `coverage-boost.test.ts`（判孤儿必须连 tests/ 一起扫），已 git checkout 恢复；commitlint subject-case 不允许 subject 出现大写词（Markdown→markdown） · 按 §5 建分支 + PR 并合并 main，随后 `pnpm deploy:worker` 上线 · 线上验证 `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-` · 风险 低（样式与资源为主，含一处 dashboard 阴影加深/焦点环转白的行为调整，已记于 commit 正文） |
+| 2026-09-29 | codebuddy-agent | 接力：推送遗留提交 + 修复 main 红灯 | push 上棒 8 提交 `2393735..9d8bf4c` · 部署 Worker `ffcd7276` + `curl` CSP nonce ✅ · CI `Audit Dependencies` 失败：`undici` override 下限过时（GHSA-3wwx-pv8p-q78v）→ 改 `"undici@<7.29.1": "~7.29.1"`（`b5e9172`）· 门禁 audit/test 391/build/tsc/lint/format 全绿 · `CI/CD Pipeline` success · 建并关 #115 |
+| 2026-09-29 | codebuddy-agent | 消除 WORKFLOW §2 快照版本漂移 | §2 `Astro 7.1.3 + TS 5.9` → `7.3.3 + 6.0.3`（对齐 `package.json`），`gh issue 暂无开放任务` → 仅 #101 开放 · 初始化 `.agent/STATE.md` 与 `.agent/HANDOFF.md` |
 
 ### 7.5 handoff 格式
 
