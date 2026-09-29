@@ -17,11 +17,12 @@
     - 根因：`undici` 传递依赖（经 `miniflare`）解析为 **7.29.0**，落入新公告 GHSA-3wwx-pv8p-q78v（moderate DoS，`>=7.28.0 <7.29.1`）；既有 override `"undici@<7.29.0": "~7.29.0"` 的区间已过时。
     - 修复：commit `b5e9172`，`pnpm-workspace.yaml` override 改为 `"undici@<7.29.1": "~7.29.1"`，lockfile 解析到 7.29.1。
     - 验证：`pnpm audit --audit-level=moderate` → `No known vulnerabilities found`；`pnpm test:run` → 391 passed；`pnpm build` OK；tsc/lint/format 全清。
+    - **CI 复验**：`b5e91725` 与 `33a1b2e` 的 `CI/CD Pipeline` 均 **success**（`gh run view 36585956682`；`Audit Dependencies` 转绿，Quality Gate 95 E2E 通过）。主干已稳定。
 
 ## 二、下一棒要做
 
-1. **确认 CI 转绿**：`gh run list --branch main --limit 5` 看 `b5e9172` 的 `CI/CD Pipeline` 是否全绿（尤其 `Audit Dependencies`）。
-2. **判断是否需再部署**：本次仅依赖 override（不改运行产物），按 AGENTS.md 判断线上无需重部署；若后续有影响运行时的改动，push 后务必 `pnpm deploy:worker` + curl 验 CSP nonce。
+1. **主干已绿、线上已同步**——本轮无遗留代码任务；正常执行“同步 → 读状态 → 选任务”即可。
+2. **留意依赖 override 时效性**：本棒因新公告拓宽 `undici` 受影响区间而红过一次。下一棒若见 `Audit Dependencies` 失败，优先检查 `pnpm-workspace.yaml` 里对应 override 的下限是否已过时（提高下限到 patched 版本即可）。
 3. **#101 仍阻塞**：见下。
 
 ## 三、阻塞项（需人类）

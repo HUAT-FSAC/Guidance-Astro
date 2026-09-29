@@ -22,13 +22,13 @@
 
 ## 当前进度
 
-- 主干 `main` 红灯已修复（本地原子提交，待 push 触发 CI 复验）。
+- 主干 `main` 已全绿：`b5e91725`（undici 修复）与 `33a1b2e`（.agent 状态）的 `CI/CD Pipeline` 均 **success**（含 `Audit Dependencies`、`Quality Gate` 95 E2E 通过）。
 - 无“正在处理”的 issue；唯一 open issue 为 #101（阻塞，见下）。
 
 ## 下一步（给下一棒）
 
-1. push 本次 `undici` 修复提交，确认 CI `Audit Dependencies` 转绿、`CI/CD Pipeline` 全绿。
-2. 若本次改动影响线上（依赖 override 不改变运行产物，通常不影响）→ 按 AGENTS.md 复核是否需再次 `pnpm deploy:worker`。
+1. 主干已稳定；本轮无遗留代码任务。
+2. 留意 dependabot PR（#106–#114）与 `undici` 同类“override 区间过时”风险：新公告可能再次拓宽受影响区间，届时提高 `pnpm-workspace.yaml` override 下限即可。
 3. 继续关注 #101（阻塞于人类配 Secret）。
 
 ## 阻塞项
