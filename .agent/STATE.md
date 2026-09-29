@@ -3,56 +3,40 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-29（UTC） ｜ **当前 agent-id：** agent-2026-09-29T14-45Z ｜ **状态：已交棒**
-**交棒时 HEAD：** `5f5d9e2`（= `origin/main`，工作区干净、与远程 0/0 同步）
+**最后更新：** 2026-09-29T16:25Z ｜ **当前 agent-id：** `deepseek-v4.1-flash-20260929T155840Z` ｜ **状态：进行中（第 3 轮）**
+**本轮起点 HEAD：** `cf52391`（工作区干净、与 `origin/main` 0/0）
 
-> 说明：`5f5d9e2` 之后如仅新增 `.agent/*` 文档跟进提交（含本次核对修正），不影响代码/线上状态。
+## 当前活跃任务
 
-## 本棒接手时的状态
-
-- 上一棒（2026-09-28）已实现 issue #99/#100/#102/#103/#104/#105 共 6 项，但只提交到**本地** `main`，**未 push**。
-- `origin/main` 领先本地（PR #98 合并了 `refactor/frontend/site-review-followups`），本地 8 个提交与其分叉（`git rev-list` 8/8）。
+- **#116 [P2] sitemap 仅含 8 条 URL**（本轮第 2 轮主动发现并归档，第 3 轮**正在实现**）。
+    - 根因：`output: 'server'` 全 SSR + Starlight 内容页走动态 `[...slug]` → 构建期无法枚举；`@astrojs/sitemap` 只收录 `src/pages/` 下的具体路径页，含 6 个 `en/archive` 302 跳转桩。
+    - 证据与验收标准见 issue 正文。
 
 ## 本棒已完成
 
-1. **推送上一棒遗留的 8 个提交**：`git rebase origin/main`（无冲突）→ push `2393735..9d8bf4c`。#99/#100/#102–#105 的实现现已上线主干。
-2. **线上部署验证**：`pnpm deploy:worker` 成功 → Worker 版本 `ffcd7276-0f92-4d92-a310-07e61f49d00c`；`curl -sI https://huat-fsac.eu.org/` → 200 + CSP `nonce-`（`frame-src` 含 bilibili、无冗余 `x-frame-options`）。
-3. **修复主干红灯（P0，`b5e9172`）**：CI `Audit Dependencies` 失败——`undici`（经 `miniflare` 传递）解析到 7.29.0，落入 GHSA-3wwx-pv8p-q78v（moderate DoS，`>=7.28.0 <7.29.1`），旧 override 下限过时。改为 `"undici@<7.29.1": "~7.29.1"`。
-4. **消除文档漂移（`3fb5fa7`，主动发现）**：`docs/WORKFLOW.md` §2 快照 `Astro 7.1.3 + TS 5.9` → `7.3.3 + 6.0.3`；`gh issue 暂无开放任务` → 仅 #101 开放；追加 §7.4 日志。
+1. **`a47d534` refactor：清理 `astro check` 弃用提示 8→2（行为等价）** —— 已 push `main`、CI 全绿。
+    - `toast.ts` / `search-history.ts` 的 `substr(2,9)`、`MemberCard.astro` 的 `substr(2,8)` → `slice`；`PageFrame.astro` 删除未使用的 `import type { Props }`；`cache-policy.ts` 未用形参 `context` → `_context`；`Giscus.astro` 显式 `is:inline`。
+    - 验证：`astro check` 0 errors、8 hints → 2 hints；lint / format:check / tsc / audit 全清；`vitest` 391 passed；`pnpm build` OK；CI run `36594790382` 7/7 job success。
+    - 剩余 2 条（`BilibiliVideo.astro` 的 `scrolling`、`share.ts:109` 的 `document.execCommand`）涉及真实行为/兼容性，**未动**（无测试覆盖、需浏览器验证）。
+2. **部署**：`pnpm deploy:worker` 成功 → Worker 版本 `99887664-a8ea-4edf-9a17-fb2a23bdcd81`；线上 `curl -sI https://huat-fsac.eu.org/` → `HTTP/2 200` + CSP 含 `nonce-`，`frame-src` 含 bilibili，无 `x-frame-options`。
+    - 产物核对：线上 `/_astro/enhanced-search.4nj0vnrI.js` 含 `toString(36).slice(2,11)`，`substr(2,` 计数为 0。
+3. **`.agent/.gitignore`**：新增（忽略 `LOCK`）。此前仓库无该文件，导致按协议创建的 `.agent/LOCK` 会被误提交。
+4. **#116 建单**：见上「当前活跃任务」。
 
-## 本棒提交清单（均已 push 到 `origin/main`）
+## 扫描结论（主动发现，本轮）
 
-| sha       | type           | 摘要                                           |
-| --------- | -------------- | ---------------------------------------------- |
-| `b5e9172` | fix(deps)      | 修复主干 Audit 红灯，undici → 7.29.1           |
-| `33a1b2e` | chore(agent)   | 初始化 `.agent/STATE.md` + `.agent/HANDOFF.md` |
-| `42c2800` | chore(agent)   | 回写 main 转绿                                 |
-| `3fb5fa7` | docs(workflow) | §2 版本/issue 状态同步 + 协作日志              |
-| `d69cc8c` | chore(agent)   | 回写第二轮                                     |
-| `f5f2375` | chore(agent)   | 扩充 HANDOFF（sha 对照 / 状态 / runbook）      |
-| `5f5d9e2` | chore(agent)   | 同步 STATE（sha / 状态 / 阻塞）                |
-
-> 被推送的 8 个上棒提交在 rebase 后获得新 sha，**准确对照见 `.agent/HANDOFF.md:§一.1`**。
-
-## 当前进度 / 最终验证
-
-- 主干 `main` **全绿**：`ci-cd.yml` 对 `b5e9172`/`33a1b2e`/`3fb5fa7`/`d69cc8c` 均 success（含 `Audit Dependencies`、`Quality Gate` 95 E2E）。（`f5f2375`/`5f5d9e2` 仅改 `.agent/*` 文档，不参与门禁。）
-- 本地门禁复跑：`pnpm audit --audit-level=moderate` 干净；`test:run` 391 passed；`build` OK；`tsc`/`lint`/`format:check` 全清。
-- 线上与远程同步；工作区干净。
-- **无“正在处理”的 issue**；唯一 open issue 为 #101（阻塞，见下）。
-
-## 扫描结论（主动发现）
-
-- `src/` 无 TODO/FIXME；`pnpm audit` 干净；无 open dependabot security alert；文档外链与预算阈值正常。
-- `astro check` 报 8 条 deprecation hint（`src/utils/share.ts:109` `document.execCommand`、`src/utils/toast.ts:270` `String.substr`）——非门禁项、迁移需行为变更，**未**处理。
+- 线上 8 条 sitemap URL 逐条实测：6 条 302、2 条 200（详见 #116）。
+- `src/utils/toast.ts`（443 行，导出 `showToast`/`createToast`/`toast`/`getToastHistory`/`clearToastHistory`）**全仓无任何引用** → 疑似死代码（`git log` 显示自 `971b9ac` 引入后从未接线）。**尚未处理、尚未建单**。
+- `.gitignore` 的 `src/content/docs/en/archive/` 规则**指向错误目录**：真正含乱码文件名的旧归档桩在 `src/pages/en/archive/`（6 个 `.astro`），而该目录已被跟踪（69 文件），规则对已跟踪文件无效 → 规则等于无效且会静默吞掉该目录的新增文件。
+- `pnpm audit` 干净；`src/` 无 TODO/FIXME；主干 CI 全绿。
 
 ## 下一步（给下一棒）
 
-1. 主干绿、线上同步；**无开放可处理 issue**，正常进入“同步 → 读状态 → 选任务”。
-2. 可选 tech-debt：上述 8 条 deprecation hint；`navigator.clipboard` 迁移须配套测试。
-3. 留意 override 时效性：若 `Audit Dependencies` 失败，先查 `pnpm-workspace.yaml` 对应 override 下限是否过时（提升到 patched 版本即可）。
-4. 继续关注 #101（阻塞于人类配 Secret）——**不要**在无 Secret 下把 deploy job 加回，会再次让 main 长红。
+1. 完成 / 复核 **#116**（本轮正在实现）；若本轮未完成，HANDOFF 会写明卡点。
+2. 候选（尚未建单）：`src/utils/toast.ts` 死代码（建议先建单再删，或保留——它是完整实现，可能是有意预留）；`.gitignore` 归档目录规则纠偏。
+3. 剩余 2 条 `astro check` hint：`BilibiliVideo.astro:13` 的 `scrolling="no"`（应换 CSS `overflow:hidden`，需浏览器验证）、`share.ts:109` 的 `document.execCommand`（降级路径忽略返回值，失败仍上报成功；线上 HTTPS 不会走到该分支，价值低）。
+4. override 时效性提醒见 `docs/WORKFLOW.md` 与 HANDOFF §五.2。
 
 ## 阻塞项
 
-- **#101**（恢复 CI 自动部署）：阻塞于 **人类操作**——需在仓库 `Settings → Secrets and variables → Actions` 配置 `CLOUDFLARE_API_TOKEN`（`CLOUDFLARE_ACCOUNT_ID` 不需要，见 `wrangler.json`）。在此之前线上部署只能走本机 `pnpm deploy:worker`（本棒已验证 wrangler OAuth 可用；登录态仅存于当前 Windows profile）。
+- **#101**（恢复 CI 自动部署）：阻塞于**人类操作**——需在仓库 `Settings → Secrets and variables → Actions` 配置 `CLOUDFLARE_API_TOKEN`（`CLOUDFLARE_ACCOUNT_ID` 不需要，见 `wrangler.json`）。在此之前线上部署只能走本机 `pnpm deploy:worker`（本棒已验证 wrangler OAuth 可用）。
