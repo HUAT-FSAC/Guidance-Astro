@@ -25,11 +25,17 @@
 - 主干 `main` 已全绿：`b5e91725`（undici 修复）与 `33a1b2e`（.agent 状态）的 `CI/CD Pipeline` 均 **success**（含 `Audit Dependencies`、`Quality Gate` 95 E2E 通过）。
 - 无“正在处理”的 issue；唯一 open issue 为 #101（阻塞，见下）。
 
+## 本棒第二轮（主动发现，低风险）
+
+- **消除 WORKFLOW §2 快照版本漂移**（`3fb5fa7`）：`Astro 7.1.3 + TS 5.9` → `7.3.3 + 6.0.3`（对齐 `package.json`/实装版本）；`gh issue 暂无开放任务` → 仅 #101 开放；按 §7.4 追加本棒协作日志两行。
+- 扫描结论：`src/` 无 TODO/FIXME；`pnpm audit` 干净；无 open dependabot alert；文档外链与预算阈值正常。`astro check` 有 8 条 deprecation hint（`document.execCommand`、`String.substr`）——非门禁项、迁移需行为变更，**未**处理。
+
 ## 下一步（给下一棒）
 
 1. 主干已稳定；本轮无遗留代码任务。
-2. 留意 dependabot PR（#106–#114）与 `undici` 同类“override 区间过时”风险：新公告可能再次拓宽受影响区间，届时提高 `pnpm-workspace.yaml` override 下限即可。
-3. 继续关注 #101（阻塞于人类配 Secret）。
+2. 可选：`astro check` 的 8 条 deprecation hint（`src/utils/share.ts:109` execCommand、`src/utils/toast.ts:270` substr）如需清理，属 tech-debt，注意 `navigator.clipboard` 迁移要配测试。
+3. 留意 dependabot PR（#106–#114）与 `undici` 同类“override 区间过时”风险：新公告可能再次拓宽受影响区间，届时提高 `pnpm-workspace.yaml` override 下限即可。
+4. 继续关注 #101（阻塞于人类配 Secret）。
 
 ## 阻塞项
 

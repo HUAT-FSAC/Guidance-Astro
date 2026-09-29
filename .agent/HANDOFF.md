@@ -22,8 +22,13 @@
 ## 二、下一棒要做
 
 1. **主干已绿、线上已同步**——本轮无遗留代码任务；正常执行“同步 → 读状态 → 选任务”即可。
-2. **留意依赖 override 时效性**：本棒因新公告拓宽 `undici` 受影响区间而红过一次。下一棒若见 `Audit Dependencies` 失败，优先检查 `pnpm-workspace.yaml` 里对应 override 的下限是否已过时（提高下限到 patched 版本即可）。
-3. **#101 仍阻塞**：见下。
+2. **可选 tech-debt**：`astro check` 8 条 deprecation hint（`src/utils/share.ts:109` `document.execCommand`、`src/utils/toast.ts:270` `String.substr`）。非门禁项，`navigator.clipboard` 迁移需行为变更 + 测试，故本棒未动。
+3. **留意依赖 override 时效性**：本棒因新公告拓宽 `undici` 受影响区间而红过一次。下一棒若见 `Audit Dependencies` 失败，优先检查 `pnpm-workspace.yaml` 里对应 override 的下限是否已过时（提高下限到 patched 版本即可）。
+4. **#101 仍阻塞**：见下。
+
+### 第二轮补充
+
+- `docs/WORKFLOW.md` §2 快照曾漂移（`Astro 7.1.3/TS 5.9`），已修为 `7.3.3/6.0.3`（`3fb5fa7`）并追加 §7.4 日志。
 
 ## 三、阻塞项（需人类）
 
