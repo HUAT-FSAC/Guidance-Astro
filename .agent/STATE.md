@@ -4,7 +4,9 @@
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
 **最后更新：** 2026-09-29（UTC） ｜ **当前 agent-id：** agent-2026-09-29T14-45Z ｜ **状态：已交棒**
-**交棒时 HEAD：** `f5f2375`（= `origin/main`，工作区干净、与远程 0/0 同步）
+**交棒时 HEAD：** `5f5d9e2`（= `origin/main`，工作区干净、与远程 0/0 同步）
+
+> 说明：`5f5d9e2` 之后如仅新增 `.agent/*` 文档跟进提交（含本次核对修正），不影响代码/线上状态。
 
 ## 本棒接手时的状态
 
@@ -22,18 +24,19 @@
 
 | sha       | type           | 摘要                                           |
 | --------- | -------------- | ---------------------------------------------- |
-| `b5e9172` | fix(deps)      | undici override → 7.29.1（修主干 Audit 红灯）  |
+| `b5e9172` | fix(deps)      | 修复主干 Audit 红灯，undici → 7.29.1           |
 | `33a1b2e` | chore(agent)   | 初始化 `.agent/STATE.md` + `.agent/HANDOFF.md` |
 | `42c2800` | chore(agent)   | 回写 main 转绿                                 |
-| `3fb5fa7` | docs(workflow) | §2 版本/issue 状态同步 + §7.4 协作日志         |
+| `3fb5fa7` | docs(workflow) | §2 版本/issue 状态同步 + 协作日志              |
 | `d69cc8c` | chore(agent)   | 回写第二轮                                     |
 | `f5f2375` | chore(agent)   | 扩充 HANDOFF（sha 对照 / 状态 / runbook）      |
+| `5f5d9e2` | chore(agent)   | 同步 STATE（sha / 状态 / 阻塞）                |
 
 > 被推送的 8 个上棒提交在 rebase 后获得新 sha，**准确对照见 `.agent/HANDOFF.md:§一.1`**。
 
 ## 当前进度 / 最终验证
 
-- 主干 `main` **全绿**：`ci-cd.yml` 对 `b5e9172`/`33a1b2e`/`3fb5fa7`/`d69cc8c` 均 success（含 `Audit Dependencies`、`Quality Gate` 95 E2E）。
+- 主干 `main` **全绿**：`ci-cd.yml` 对 `b5e9172`/`33a1b2e`/`3fb5fa7`/`d69cc8c` 均 success（含 `Audit Dependencies`、`Quality Gate` 95 E2E）。（`f5f2375`/`5f5d9e2` 仅改 `.agent/*` 文档，不参与门禁。）
 - 本地门禁复跑：`pnpm audit --audit-level=moderate` 干净；`test:run` 391 passed；`build` OK；`tsc`/`lint`/`format:check` 全清。
 - 线上与远程同步；工作区干净。
 - **无“正在处理”的 issue**；唯一 open issue 为 #101（阻塞，见下）。

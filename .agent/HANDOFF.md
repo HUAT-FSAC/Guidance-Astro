@@ -1,9 +1,11 @@
 # 交接说明（HANDOFF）
 
-**从（上一棒）：** agent-2026-09-29T14-45Z
+**本棒 Agent：** agent-2026-09-29T14-45Z
 **时间：** 2026-09-29（UTC，约 14:45–15:09）
 **仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ `main`
-**交棒时 HEAD：** `d69cc8c`（= `origin/main`，工作区干净、与远程 0/0 同步）
+**交棒时 HEAD：** `5f5d9e2`（= `origin/main`，工作区干净、与远程 0/0 同步）
+
+> 说明：`5f5d9e2` 之后如仅新增 `.agent/*` 文档跟进提交（含本次核对修正），不影响代码/线上状态。
 
 > 下一棒请先按 `docs/WORKFLOW.md:§1/§3` 与 `AGENTS.md` 的「发布与部署」执行：
 > `git fetch --all --prune` → `git pull --rebase` → 读本文件与 `.agent/STATE.md` → 选任务。
@@ -43,7 +45,7 @@
 - `3fb5fa7` —— `docs/WORKFLOW.md` §2 快照 `Astro 7.1.3 + TS 5.9` → `7.3.3 + 6.0.3`（对齐 `package.json`/实装版本）；`gh issue 暂无开放任务` → 仅 #101 开放；追加 §7.4 协作日志两行。
 - 扫描结论：`src/` 无 TODO/FIXME；`pnpm audit` 干净；无 open dependabot security alert；文档外链与预算阈值正常。
 
-### 本棒产生的全部 commit（`9d8bf4c..d69cc8c`，均已 push）
+### 本棒产生的全部 commit（`9d8bf4c..5f5d9e2`，均已 push）
 
 | sha       | type           | 摘要                                           |
 | --------- | -------------- | ---------------------------------------------- |
@@ -52,14 +54,16 @@
 | `42c2800` | chore(agent)   | 回写 main 转绿                                 |
 | `3fb5fa7` | docs(workflow) | §2 版本/issue 状态同步 + 协作日志              |
 | `d69cc8c` | chore(agent)   | 回写第二轮                                     |
+| `f5f2375` | chore(agent)   | 扩充 HANDOFF（sha 对照 / 状态 / runbook）      |
+| `5f5d9e2` | chore(agent)   | 同步 STATE（sha / 状态 / 阻塞）                |
 
 ---
 
 ## 二、交棒时主干最终状态（已复验）
 
-- CI：`CI/CD Pipeline`（workflow `ci-cd.yml`）对 `b5e9172`/`33a1b2e`/`3fb5fa7`/`d69cc8c` **全部 success**，含 `Audit Dependencies` 与 `Quality Gate`（95 E2E 通过）。
+- CI：`CI/CD Pipeline`（workflow `ci-cd.yml`）对 `b5e9172`/`33a1b2e`/`3fb5fa7`/`d69cc8c` **全部 success**，含 `Audit Dependencies` 与 `Quality Gate`（95 E2E 通过）。（`f5f2375`/`5f5d9e2` 仅改 `.agent/*` 文档，不参与门禁。）
 - 门禁本地复跑：`pnpm audit --audit-level=moderate` → No known vulnerabilities found；`pnpm test:run` → 391 passed；`pnpm build` OK；`tsc --noEmit`/`lint`/`format:check` 全清。
-- 工作区 `git status` 干净，`origin/main` = 本地 `main` = `d69cc8c`。
+- 工作区 `git status` 干净，`origin/main` = 本地 `main` = `5f5d9e2`。
 
 ---
 
