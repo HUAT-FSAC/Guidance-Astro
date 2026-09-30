@@ -3,7 +3,7 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T17:05Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 19 轮完成，进行中（无操作计数 0/5）
+**最后更新：** 2026-09-30T17:25Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 20 轮完成（验证轮），进行中（无操作计数 0/5）
 **本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142 + 第 16/17 轮记录）、`auto/.../144-ogimage-drift`（PR #145 = #144 + 第 18 轮记录）、`auto/.../146-labeler-and-semantics`（PR #147 = #146，**本文件所在，最新全量记录**）
 
 > ⚠️ **记录文件分散在十三个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，第 16-17 轮随 PR #143，第 18 轮随 PR #145，**第 19 轮（本版，最新）随 PR #147**。冲突一律取**最新（PR #147，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142 / #144 / #146）。
@@ -49,6 +49,7 @@
 - **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
 - **`format:check` 覆盖缺口的剩余部分**（第 15 轮建单 #140 时收敛）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——全仓不合规 26 项中 `.github/` 15 个 yml（实测 prettier 改动为纯引号风格：`ci-cd.yml` 2 行、`labeler.yml` 102 行、`dependabot.yml` 0 行）、`src/content/docs/**` 7 个 `.md`（在 `src/` 目录内但扩展名漏检）、`docs/components/COMPONENTS.md` 1 个。**未建单**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）且 `README.en.md` 与 PR #124 冲突，**待 #122/#124 合并后单独建单**。
 
+- **i18n 中英对称性已结清**（第 20 轮验证，无缺陷）：en 侧用翻译后 slug，路径集合差（zh 缺 24 / en 缺 36）**不可直接判缺**；5 个 en 中文文件名文件是**有意重定向 stub**（线上旧路由 200 → 新 slug 200），其余为单语内容，**语言切换器对缺失语言正确省略**（无死链）。复查时**先分类再判缺陷**，别拿路径差直接建单。
 - **门禁自审计已覆盖两侧**（第 15-16 轮）：`format:check`（#140）与 `eslint`（#142）的 CI 脚本覆盖面均已补齐到「配置/hook 声明的范围」。**剩余已知缺口**：`format:check` 的扩展名集（`md`/`yml`/`astro`）与 `.github/` 目录集未补（24 个文件待归一，yml 语义敏感）；`pnpm lint` 未设 `--max-warnings`（有意，阻断策略属人类决策）；`tsc --noEmit` 不覆盖 `tests/**`（预防性，见下条）。
 
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
@@ -134,6 +135,10 @@
 ### 第 19 轮（#146，主动发现）
 
 例行同步（12 PR 未合并、无可认领）→ **配置一致性审计**（新维度：CI/label 自动化配置本身）：把 \`.github/labeler.yml\` 的 9 个 label 键与仓库 39 个真实 label 逐一比对 → \`size:xs\` **不存在**；再查历史 PR 标签发现 \`breaking-change\` 出现在**所有** PR（含只改 README 的 #124）→ 读官方 README 定位根因：**无顶层 \`any\`/\`all\` 键的规则默认按 \`any\`(OR) 处理**，\`base-branch: main\` 单独成立即命中；第二处根因：\`size:xs\` 需要 \`issues: write\` 才能创建，而 workflow 只有 \`contents: read\`+\`pull-requests: write\` → 建单 **#146** → 修 \`850979d\`（仅 \`breaking-change\` 包进 \`all:\`）→ **PR #147**。验证：写**本地 labeler 判定复现器**（官方语义 + \`yaml\` + \`minimatch\`），**修复前输出与线上标签 3/3 吻合**（证明复现忠实），修复后 **6/6 断言 PASS**（含 2 个正例确保不漏打真·破坏性变更）+ §6 全绿。\`size:xs\` 属**仓库设置/权限决策**（扩 \`issues: write\` 会给 \`pull_request_target\` 扩权，官方警告），**未擅动**，方案与命令写进 issue。
+
+### 第 20 轮（验证轮：i18n 中英对称性审计，无缺陷）
+
+例行同步（13 PR 未合并、无可认领）→ **i18n 对称性审计**（新维度，用户面）：按文件路径直接比对无意义（en 侧用**翻译后 slug**，如 zh `入门` ↔ en `onboarding`），故改用三步实证 —— ①路径集合差得 zh 缺 en 24 项 / en 缺 zh 36 项；②逐一分类：**5 个 en 中文文件名文件（`docs-center/入门.mdx` 等）是有意的重定向 stub**（`meta http-equiv=refresh` + `location.replace` 指向新英文 slug，线上实测旧路由 200、新 slug 200 ✅），其余为**单语内容**（en 独有 28 个 `archive/2025/*` 英文页、zh 独有 8 个中文页）；③查语言切换器是否因此产生死链 → 线上实测 en 独有页**未生成 zh 链接**（Starlight 正确省略缺失语言），zh 对应路径 404 但**无任何入口指向它** ✅。结论：**无缺陷**，i18n 维度结清。
 
 ## 下一步（给下一棒）
 
