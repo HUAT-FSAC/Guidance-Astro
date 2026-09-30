@@ -231,6 +231,8 @@ pnpm quality:theme     # 主题对比度通过
 
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 接管过期锁(deepseek)并完成 #117 内链修复 | 接管过期 6.5h 的 LOCK 补提其遗留 8cec201 · 扫描 166 内容页 290 内链发现 16 处 404 建单 #117 · 修复 6 文件 16 链接 + redirects 抽 src/config/redirects.ts + 新增 internal-links 回归测试 748a3cb · 门禁全绿 412 tests · CI 36648032991 7/7 ✅ · 部署 df007a5b 线上 15 目标 200/旧路径 0 · #117 已关 |
 
+| 2026-09-30 | glm-5.3-flash-20260929T234352Z | 完成 #118 gitignore 误规则纠偏 | 溯源 8874314 把 src/pages/en/archive/ 错改为 src/content/docs/en/archive/ · 恢复原指向 03dc7c7 · git check-ignore 双向验证 ✅ · CI 36649026704 7/7 ✅ · #118 已关 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：

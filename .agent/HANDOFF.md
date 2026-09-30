@@ -34,22 +34,26 @@
 - 部署版本 `df007a5b-f9ae-4d30-8352-3911fe1a7dac`；线上 15 个目标 URL 逐条 **200**；5 个修复页旧路径出现 **0** 次；`curl -sI /` 含 `content-security-policy: nonce-`。
 - #117 由 `fix: #117` 提交自动关闭，已回填修复报告评论（含验证证据）。
 
+### 第 2 轮：`.gitignore` 误规则纠偏 → 建单 #118 → 修复并关闭（`03dc7c7`）
+
+- 溯源：`8874314`（2026-08-06，人类提交）把原本指向 `src/pages/en/archive/`（6 个 302 跳转桩）的忽略规则**错改**为 `src/content/docs/en/archive/`（69 个真实英文内容文件），导致该目录新增文件被 git 静默拦截（#117 修复时已实际踩中，被迫 `-f`）。
+- 修复：一行恢复原指向。`git check-ignore` 双向验证（桩目录新路径仍忽略 ✓，内容目录新路径不再忽略 ✓）；`git status --ignored` 预先确认无隐藏垃圾会浮现。
+- CI run `36649026704` 7/7 success；无运行时产物变化，未部署。#118 自动关闭并已回填评论（含「纯配置无可写单测」说明）。
+
 ---
 
 ## 二、交棒时主干状态
 
-- `main` 全绿（本地门禁 + CI 7/7）；线上与 `main` 同步（版本 `df007a5b`）。
-- 开放 issue：**#101**（P1，阻塞于人类配 Secret）。#117 已关闭。
+- `main` 全绿（本地门禁 + CI 7/7）；线上与 `main` 同步（版本 `df007a5b`，#118 为纯配置改动不涉及线上产物）。
+- 开放 issue：**#101**（P1，阻塞于人类配 Secret）。#117、#118 已关闭。
 - 工作区干净（LOCK 为本地运行时锁，不入库）。
 
 ---
 
 ## 三、下一棒要做（按优先级）
 
-1. **`.gitignore` 误规则纠偏**（轮 2 候选）：规则 `src/content/docs/en/archive/` 指向**真实内容目录**（69 个已跟踪 md/mdx），#117 修复时它实际拦截了 `git add`（被迫 `-f`）。动手前先 `git log -S "src/content/docs/en/archive"` 确认当初意图；最小修复 = 删除该条。是否给 `src/pages/en/archive/`（6 个跳转桩 .astro）补规则属产品决策，留给人定。
-2. **备选建单**（每轮最多 1 个新 issue，先查重）：
-    - `src/utils/toast.ts`（443 行）全仓无引用，疑似死代码但实现完整（含 i18n）→ 建单让人决定，**不要直接删**。
-    - `public/robots.txt` 缺失：线上 `/robots.txt` 只有 Cloudflare content-signals 注释块、无指令行（疑似 zone 级注入）。#116 后 sitemap 已有 167 条，补 `Sitemap:` 行是自然下一步，但需先确认改哪一侧（本地加 `public/robots.txt` 后 `wrangler dev` + 线上各验一次）。
+1. **`public/robots.txt` 补 Sitemap 指令**（轮 3 候选）：线上 `/robots.txt` 目前只有 Cloudflare content-signals 注释块、无指令行（疑似 zone 级注入）。#116 后 sitemap 已有 167 条 URL，`Sitemap: https://huat-fsac.eu.org/sitemap-index.xml` 是自然收尾。**先实测**：加 `public/robots.txt` 后本地 `wrangler dev` 看 ASSETS 是否带出，部署后线上确认 zone 注入块与新指令是否共存；若 CF 完全接管 robots.txt 则回退并记档。需建单后动手。
+2. **备选建单**（每轮最多 1 个新 issue，先查重）：`src/utils/toast.ts`（443 行）全仓无引用，疑似死代码但实现完整（含 i18n）→ 建单让人决定，**不要直接删**。
 3. **#101 阻塞**（人类配 Secret），**不要**在无 Secret 下把 deploy job 加回 `ci-cd.yml`。
 4. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13` scrolling、`share.ts:109` execCommand）价值低、需浏览器实测，勿动。
 
@@ -70,7 +74,7 @@
 4. **内容页 URL 逐段 slug**（#116/#117 两次验证）：`src/content/docs/**` 的 URL 由 `github-slugger` 逐段处理（`vsc-c-c++-dev-and-debug` → `vsc-c-c-dev-and-debug`、`ROS 入门` → `ros-入门`），`src/pages/**` 不 slug。任何由文件路径推 URL 的代码必须走 `src/integrations/sitemap-paths.ts`。
 5. **`@assets/` 别名图片不是断链**：MDX 里 `![alt](@assets/...)` 由 Astro 构建期处理为 `/_image/?href=/_astro/...`（线上已实测）。链接扫描必须跳过 `@` 开头目标，否则几十条误报。
 6. **行尾**：部分内容 `.mdx` 在磁盘上是 CRLF（`archive/sensing/index.mdx`、`archive/planning-control/index.mdx`、`archive/2024/2024-learning-roadmap.mdx`、`en/archive/2024/2024-learning-roadmap.mdx` 混合）。编辑用**单行替换**最稳；`.gitattributes` 已把 md/mdx 归一为 LF 入库，diff 不会爆炸。`.md`/`.mjs`/`.ts` 会过 husky lint-staged prettier，写完先 `pnpm format:check`。
-7. **`.gitignore` 的 `src/content/docs/en/archive/` 规则会拦截 `git add`**（对该目录下**新增**文件；已跟踪文件的修改用 `-f` 可绕）。轮 2 修复前，遇到 add 被拒属正常，不要误判成权限问题。
+7. ~~`.gitignore` 的 `src/content/docs/en/archive/` 规则会拦截 `git add`~~ **已修复（#118，`03dc7c7`）**：规则恢复为 `src/pages/en/archive/`。若未来该目录新增文件被拒，先查 ignore 规则再怀疑权限。
 8. **`fix: #N` commit subject 会自动关闭 issue**（本棒 #117 即如此）。想保持 open 就别在 subject 写 `fix: #N`。
 9. **依赖 override 时效性**：`pnpm-workspace.yaml` 用 override 压平传递依赖漏洞；安全公告拓宽区间时旧下限漏网 → `Audit Dependencies` 红。第一反应：`pnpm why <pkg>` → 提 override 下限 → `pnpm install` → `pnpm audit` 复验。
 
