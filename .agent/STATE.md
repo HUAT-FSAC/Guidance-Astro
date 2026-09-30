@@ -3,10 +3,10 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T23:05Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 14 轮完成，进行中（无操作计数 0/5）
-**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138，**本文件所在，最新全量记录**）
+**最后更新：** 2026-09-30T23:45Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 15 轮完成，进行中（无操作计数 0/5）
+**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140，**本文件所在，最新全量记录**）
 
-> ⚠️ **记录文件分散在九个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，**第 14 轮（本版，最新）随 PR #139**。冲突一律取**最新（PR #139，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138）。
+> ⚠️ **记录文件分散在十个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，**第 15 轮（本版，最新）随 PR #141**。冲突一律取**最新（PR #141，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140）。
 
 ## 当前活跃任务
 
@@ -19,6 +19,7 @@
 - **#134**（P3）：quality:lighthouse 链路两处失效（脚本裸 `lhci` 未装依赖必挂 + lighthouserc 重复键致 error 0.80 底线静默失效）→ 修复完成（`d43dfe9`），**PR #135 待人类合并**（本地端到端 exit 0 + 门禁全绿；零依赖变更）。
 - **#136**（P3）：现行文档 `file:line` 引用内容级漂移 9 处（5 文件）→ 修复完成（`f48d2c3`），**PR #137 待人类合并**（55 引用复扫 + 6/6 内容断言 + 门禁全绿）。
 - **#138**（P3）：CONTRIBUTING 图片压缩指引双失效（`pnpm exec sharp-cli` 未装依赖 + `optimize-images.mjs` 硬编码 `/workspace/*` 静默空跑）→ 修复完成（`a2e5853`），**PR #139 待人类合并**（沙箱假仓实跑 exit 0 + 等价性证明 + 门禁全绿）。
+- **#140**（P3）：`format:check` glob 窄于 lint-staged → 26 文件（含 `scripts/**` 8 个门禁执行体）在 CI 格式校验盲区，注入格式问题 exit 0 放行 → 修复完成（`41c3289`，glob 扩 `{src,tests,scripts}` + 归一存量），**PR #141 待人类合并**（盲区反向验证 exit 1 拦截 + token 零差异 + 门禁全绿）。md/yml 扩展名与 `.github/` 目录集按收敛原则留后续。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -36,13 +37,14 @@
 - **#132**（P3，本棒）：待 PR #133 合并。
 - **#134**（P3，本棒）：待 PR #135 合并。
 - **#136**（P3，本棒）：待 PR #137 合并。
-- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
 - **README 部署行 ACCOUNT_ID 漂移**：`README.md:70` / `README.en.md:71` 写 `pnpm deploy:worker`「需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`」——**Makefile 同问题已在 #130 修复**，README 两行因位于 PR #124 拆行区域（`README.en.md:71` 正是 #124 拆出行），**#124 合并后**建单修复（2 行，参照 #130 的 Makefile 文案）。
 - **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
-- **`format:check` 未覆盖 `scripts/**`**（第 14 轮发现）：`package.json:51` glob 仅 `{src,tests}/**` + 根级 `*.{json,mjs,ts}`，但 lint-staged 对 `**/*.mjs` 强制 `prettier --write` → 改 `scripts/` 任一文件必触发整文件格式归一（#138 实证：`optimize-images.mjs` 195 行 diff 等价于 prettier(main 原版+语义改动)）。main 上 `scripts/metrics/collect-github-metrics.mjs` 亦不合规。扩 glob 会让 main 立刻变红，**改口径需连带处理存量文件，超出单轮范围，待 #122 合并后单独建单**。
+- **`format:check` 覆盖缺口的剩余部分**（第 15 轮建单 #140 时收敛）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——全仓不合规 26 项中 `.github/` 15 个 yml（实测 prettier 改动为纯引号风格：`ci-cd.yml` 2 行、`labeler.yml` 102 行、`dependabot.yml` 0 行）、`src/content/docs/**` 7 个 `.md`（在 `src/` 目录内但扩展名漏检）、`docs/components/COMPONENTS.md` 1 个。**未建单**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）且 `README.en.md` 与 PR #124 冲突，**待 #122/#124 合并后单独建单**。
+
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
@@ -107,9 +109,13 @@
 
 例行同步（main `46f53f4` / 9 PR 全 OPEN / #122 未合并故无可认领 / #101/#120 仍阻塞）→ 延展 #134「文档教的命令要实跑复现」做全仓命令引用核验（`pnpm`/`npm run`/`make`/`pnpm exec`/`npx`，20 候选）→ 排除散文误报 + `pnpm exec tsc --noEmit` 三方一致（Makefile:76 / ci-cd.yml:42）+ 归档快照豁免后**实锤 1 处双失效** → 建单 **#138** → 修 `a2e5853`（2 文件）：`pnpm exec sharp-cli`（未装依赖，`Command not found`）改 `pnpm dlx sharp-cli --format webp`（6.x 尾参 `webp` 报 `Unknown argument`，沙箱实跑修正）、裸 `scripts/optimize-images.mjs` 改 `node` 前缀 + 硬编码 `/workspace/*` 改脚本位置解析仓库根（仓库无 `.devcontainer`，该路径本项目任何环境都不存在，脚本静默空跑）→ **PR #139**。195 行 diff 已证等价（main 原文件本就不 prettier 干净，lint-staged 强制归一；`prettier(原版+语义改动)` ≡ 提交版）。沙箱假仓实跑脚本 exit 0。§6 全绿。
 
+### 第 15 轮（#140，主动发现）
+
+例行同步（main `46f53f4` / 9 PR 全 OPEN / 无可认领）→ **CI 门禁自审计**（首次审「门禁本身覆盖什么」）→ 实锤 `format:check` glob（`package.json:50-51`）同时窄了目录集与扩展名集：hook（`.config/lint-staged.config.mjs`）管全仓 `**/*.mjs|md`，CI 门禁只管 `{src,tests}/**` 的 5 种扩展名 + 根级 3 种 → 全仓 369 文件 `prettier --check` 得 **26 个不合规且全部落在盲区** → **盲区放行实证**（往 `scripts/quality/check-theme-contrast.mjs` 注入格式问题，`format:check` exit **0** 放行）→ 建单 **#140** → 修 `41c3289`：glob 扩 `{src,tests,scripts}` + 归一 `collect-github-metrics.mjs` → **PR #141**（叠在 #139 之上）。验证：format:check 1→0、盲区反向 0→1（拦截）、token 级 558/558 零差异、§6 全绿。md/yml 扩展名与 `.github/` 目录集按「yml 语义敏感宜单独 PR」收敛为后续项。
+
 ## 下一步（给下一棒）
 
-1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
 2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
 3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
@@ -119,4 +125,4 @@
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
 - **#120**：toast.ts 删留二选一，等人类。
-- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139**：等人类 review+merge（协议禁止自动 merge）。
+- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141**：等人类 review+merge（协议禁止自动 merge）。
