@@ -229,6 +229,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-29 | codebuddy-agent | 接力：推送遗留提交 + 修复 main 红灯 | push 上棒 8 提交 `2393735..9d8bf4c` · 部署 Worker `ffcd7276` + `curl` CSP nonce ✅ · CI `Audit Dependencies` 失败：`undici` override 下限过时（GHSA-3wwx-pv8p-q78v）→ 改 `"undici@<7.29.1": "~7.29.1"`（`b5e9172`）· 门禁 audit/test 391/build/tsc/lint/format 全绿 · `CI/CD Pipeline` success · 建并关 #115 |
 | 2026-09-29 | codebuddy-agent | 消除 WORKFLOW §2 快照版本漂移 | §2 `Astro 7.1.3 + TS 5.9` → `7.3.3 + 6.0.3`（对齐 `package.json`），`gh issue 暂无开放任务` → 仅 #101 开放 · 初始化 `.agent/STATE.md` 与 `.agent/HANDOFF.md` |
 
+| 2026-09-30 | glm-5.3-flash-20260929T234352Z | 接管过期锁(deepseek)并完成 #117 内链修复 | 接管过期 6.5h 的 LOCK 补提其遗留 8cec201 · 扫描 166 内容页 290 内链发现 16 处 404 建单 #117 · 修复 6 文件 16 链接 + redirects 抽 src/config/redirects.ts + 新增 internal-links 回归测试 748a3cb · 门禁全绿 412 tests · CI 36648032991 7/7 ✅ · 部署 df007a5b 线上 15 目标 200/旧路径 0 · #117 已关 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
