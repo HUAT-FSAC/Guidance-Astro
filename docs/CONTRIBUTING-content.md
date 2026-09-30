@@ -155,7 +155,7 @@ import lidarSetup from '../../assets/docs/2025/感知/lidar-setup.png'
 
 ### 3.3 提交前自检
 
-- [ ] 图片已压缩:`pnpm exec sharp-cli -i src/assets/docs/.../x.png -o .../x.webp webp` 或 `scripts/optimize-images.mjs`
+- [ ] 图片已压缩:单文件用 `pnpm dlx sharp-cli -i src/assets/docs/.../x.png -o .../x.webp --format webp`(免装依赖,不要用 `pnpm exec sharp-cli`——未安装会报 Command not found);批量用 `node scripts/optimize-images.mjs`(原地压缩 `src/assets` 与 `public/assets`,并生成 `.webp`/`.avif` 同名副本)
 - [ ] 大图(>500KB)考虑拆分为多图或转为 AVIF/WebP
 - [ ] 没有把 `public/` 的相对路径硬编码进 MDX(应该是 `src/assets/`)
 
