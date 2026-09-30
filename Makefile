@@ -84,7 +84,7 @@ test-run: ## 单次跑 Vitest
 	@pnpm test:run
 
 .PHONY: test-coverage
-test-coverage: ## 覆盖率报告(70/60/70/70 阈值)
+test-coverage: ## 覆盖率报告(80/80/80/80 阈值)
 	@pnpm test:coverage
 
 .PHONY: test-e2e
@@ -120,7 +120,7 @@ reset: clean install ## clean + install(依赖坏了时救场)
 
 # ──────────────── 部署 ────────────────
 .PHONY: deploy
-deploy: build ## 构建并部署到 Cloudflare Workers(需 CLOUDFLARE_API_TOKEN/ACCOUNT_ID)
+deploy: build ## 构建并部署到 Cloudflare Workers(需 CLOUDFLARE_API_TOKEN；ACCOUNT_ID 由 wrangler.json 提供)
 	@pnpm deploy:worker
 
 .PHONY: whoami
@@ -140,5 +140,5 @@ secret-scan: ## 本地 gitleaks 扫描(需先 install:https://github.com/gitleak
 	@gitleaks detect --no-banner --config .gitleaks.toml --verbose
 
 .PHONY: audit
-audit: ## pnpm 安全审计
-	@pnpm audit --prod
+audit: ## pnpm 安全审计(与 CI Audit 门禁同口径 moderate)
+	@pnpm audit --audit-level=moderate
