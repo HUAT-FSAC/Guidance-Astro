@@ -39,7 +39,7 @@
 ## 影响
 
 - 正面：避免过早复杂化，`pnpm build` 保持 7s 级（`quality:bundle` 已紧），`dist/server/entry.mjs` 不引入 `satori`/`sharp` 大体积依赖；线上 `og:image` 已可用，`lighthouse` / `quality:theme` 不受影响。
-- 负面：单篇分享无法展示标题差异，SEO 外链展示一致；需在 `docs/WORKFLOW.md:7` 留痕，后续重议时需评估字体与缓存。
+- 负面：单篇分享无法展示标题差异，SEO 外链展示一致；需在 `docs/WORKFLOW.md:§7.6` 留痕，后续重议时需评估字体与缓存。
 
 ## 参考
 
