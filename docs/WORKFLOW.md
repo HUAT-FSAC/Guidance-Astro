@@ -238,6 +238,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #123（主动发现：README 质量）并提交 PR #124 | 全仓 md 相对链接扫描发现 README 中英各 2 死链（`./CONTRIBUTING.md` 等根路径 404，实际在 `.github/`）+ 结构树把 4 个社区文件画在根目录 + en 命令表分隔行列数错误与 `make help` 并行（既有破损）· 修 2 文件 +9/−14，复扫 68 条 0 broken · prettier/lint/format ✅ · 分支 `auto/mimo-flash-20260930T113551Z/123-readme-dead-links` + PR #124 · CI Lint/Type/Tests 绿，Audit 红为 main 既有失效（#121，待 #122 合并后 rebase 即绿，PR body 已声明） |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
