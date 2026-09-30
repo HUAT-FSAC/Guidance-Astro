@@ -235,6 +235,9 @@ pnpm quality:theme     # 主题对比度通过
 
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 完成 #119 robots.txt 补全 | 源站缺失时 CF 注入托管文本 → 新增 public/robots.txt(Allow+Sitemap) 2a905d0 · 三层验证(构建产物/wrangler dev/线上 200) · CF 注入让位无需 zone 配置 · 部署 62778a8e · CI 36649823634 7/7 ✅ · #119 已关 |
 
+| 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
+| 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
