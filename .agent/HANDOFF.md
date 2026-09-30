@@ -1,78 +1,85 @@
 # 交接说明（HANDOFF）
 
-**本棒 Agent：** `glm-5.3-flash-20260929T234352Z`
-**时间：** 2026-09-29T23:43Z – 2026-09-30T01:05Z（UTC），共 8 轮，按接力协议 §九.1 停止
-**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ `main`
-**本棒起点 HEAD：** `751607a` ｜ **交棒 HEAD：** `3f5e7d4`（CI 7/7 绿）
+**本棒 Agent：** `mimo-flash-20260930T113551Z`
+**时间：** 2026-09-30T11:35Z 起（UTC），第 1-9 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9 轮连续产出）
+**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 基线 `main@46f53f4`
+**产出分支：** `auto/.../121-audit-override-bump`（PR **#122**）、`auto/.../123-readme-dead-links`（PR **#124** = #123+#125）、`auto/.../126-docs-index-drift`（PR **#127** = #126）、`auto/.../128-dedup-webm`（PR **#129** = #128）、`auto/.../130-makefile-drift`（PR **#131** = #130，**最新全量记录**）
 
 > 下一棒请先按 `docs/WORKFLOW.md:§1/§3` 与 `AGENTS.md` 的「发布与部署」执行：
 > `git fetch --all --prune` → `git pull --rebase` → 读 `.agent/STATE.md` + 本文件 → 检查 `.agent/LOCK` → 选任务。
+>
+> ⚠️ **本棒记录文件分散在五个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，**第 9 轮（本版，最新）随 PR #131**。冲突一律取**最新（PR #131）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130）。
 
 ---
 
-## 一、本棒做了什么（8 轮总览）
+## 一、本棒做了什么（9 轮：1-4 产出 + 5-7 无操作 + 8-9 产出）
 
-| 轮  | 结果                                                                                                                                                                                      | 产出                                       |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 1   | 接管 deepseek 过期锁（其中断于第 4 轮，STATE/HANDOFF 已改未提交）→ 补提 `8cec201`；ENV.md 首轮探测；内链扫描发现 16 处 404 → 建单 #117 → 修复+回归测试 `748a3cb` → 部署 → 线上验收 → 关单 | CI 7/7（`36648032991`），部署 `df007a5b`   |
-| 2   | `.gitignore` 误规则纠偏：建单 #118 → 一行恢复 → 验证 → 关单                                                                                                                               | `03dc7c7`，CI 7/7（`36649026704`），未部署 |
-| 3   | `public/robots.txt`：建单 #119 → 实现 `2a905d0` → 三层验证 → 手动关单                                                                                                                     | 部署 `62778a8e`，CI 7/7（`36649823634`）   |
-| 4   | 建单 #120（toast.ts 死代码删留，`question` 标签留人类）                                                                                                                                   | 无代码改动                                 |
-| 5   | `src/pages` 静态页内链复扫：**0 断链**（#117 覆盖面补全）                                                                                                                                 | 无需建单                                   |
-| 6-8 | 连续 3 轮评估无安全可推进事项 → **§九.1 停止**（期间核实「旧提交 CI 失败」为 9 月 3-4 日历史 run 被 re-run 浮上列表，main 顶端始终全绿）                                                  | 无                                         |
+| 轮  | 结果                                                                                                                                                                                                                                                                  | 产出    |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 1   | `pnpm audit` 实测 **5 漏洞** → 建单 **#121** → override 提下限 + lockfile 重解析 → 门禁全绿 → `1b3851b` → **PR #122** → **CI 7/7 success（含 Audit）**                                                                                                                | PR #122 |
+| 2   | 主动扫描 → README **4 死链 + 结构树失真 + en 命令表破损** → 建单 **#123** → 修 2 文件 → `ea55094` → **PR #124** → CI Lint/Type/Tests 绿                                                                                                                               | PR #124 |
+| 3   | `70/60/70/70` 扫描 → README 阈值过时（实际 80/80/80/80）→ 建单 **#125** → 修 2 行 `49f18a1` → **折入 PR #124**（同表格相邻行必冲突实测）→ `Closes #125`                                                                                                               | PR #124 |
+| 4   | 锚点/脚本/TODO/内容 4 扫全清 → `docs/` 索引比对 → **树缺 2 文件 + agents/** → 建单 **#126** → +3 行 `835be3b` → 16==16 → **PR #127**（与全部开放 PR 零交集）                                                                                                          | PR #127 |
+| 5-7 | **无操作 ×3（计 3/5）**：sitemap 167/167、首页 30 资源 200、7 安全头齐、`_headers`↔`security.ts` 一致、35 重定向全通、65 外链 0 真死链、测试无 `.only/.skip`、manifest 图标齐、密钥/env 扫描 0 泄漏                                                                   | —       |
+| 8   | 协议完整性扫描 → 两份 **23.5MB md5 相同 webm**，副本零引用 → 建单 **#128** → `git rm` `945d951` → 门禁全绿（test **412**/build）→ **PR #129** → 计数清零                                                                                                              | PR #129 |
+| 9   | 复盘第 3 轮 `--include` 漏扫 → `git grep` 全量补扫 → **Makefile 三处漂移**（help 阈值 / 部署行 ACCOUNT_ID / audit `--prod` vs CI 全量实测 2 vs 5）→ 建单 **#130** → 修 4 行 `81582c2` → `make help`/`make audit` 实测断言 + §6 全绿 → **PR #131**；另发 #121 更正评论 | PR #131 |
 
-### 三个闭环的要点（下一棒可能用到）
+### 要点（下一棒可能用到）
 
-1. **#117 内链完整性（`748a3cb`，9 文件 +233/−53）**
-    - 修复：docs-center 5×LinkCard（`/文档中心/x/`→`/docs-center/x/`）+ `/2025/`→`/archive/2025/`；sensing `/感知/*`→`/archive/2025/sensing/*`；planning-control `/规控/*`→`/archive/2025/planning-control/*`（`高避`→`高速循迹`）+ `/规控/资料汇总/`→`/archive/planning-control/资料汇总/`；news 去除 `/news/` 死链；2024-learning-roadmap 中 2 处相对 `综合` 绝对化、en 1 处 `++`→slug。
-    - 架构：`redirects` 从 `astro.config.mjs` 抽到 `src/config/redirects.ts`（行为等价，astro.config 本就有导入本地 TS 模块的先例）。
-    - **回归门禁**：`tests/unit/internal-links.test.ts`（3 例）——全量解引用内容页内链 vs 合法集合（`sitemap-paths.ts` 的 slug 路由 + 静态页 + redirects 键 + public 文件）。**以后写 404 内链 CI 直接红**。本地单跑：`pnpm test:run tests/unit/internal-links.test.ts`。
-    - 线上验收：15 个目标 URL 全 200；5 个修复页旧路径 0 残留。
-2. **#118 gitignore（`03dc7c7`）**：`8874314`（2026-08-06）把规则从 `src/pages/en/archive/` 错改成 `src/content/docs/en/archive/`（真实内容目录，69 个已跟踪文件），会静默拦截该目录**新增**文件（#117 时已实际踩中，被迫 `git add -f`）。已恢复原指向并 `git check-ignore` 双向验证。
-3. **#119 robots.txt（`2a905d0`）**：源站此前无 robots.txt → CF 注入 content-signals 托管文本。新增 `public/robots.txt`（Allow 全站 + `Sitemap: https://huat-fsac.eu.org/sitemap-index.xml`）后**CF 注入让位**（仅源站缺失时才注入），无需 zone 人工配置。三层验证：构建产物 → 本地 `wrangler dev` → 线上 200。
-
----
+1. **#121 audit（`1b3851b`）**：与 #115（undici）同类根因——公告拓宽区间时旧 override 下限漏网。套路：`pnpm why <pkg>` → 提下限 → `pnpm install` → `pnpm audit` 复验 + §6 门禁。**高频复发**。**第 9 轮更正**：fast-uri ×2 走 `@astrojs/check`（**在 dependencies**，pnpm `dev: False`）为 prod 声明链，brace-expansion ×3 才是 dev 链——「不进运行时产物、无需部署」结论经 `dist/server` grep（无 fast-uri/ajv/yaml-language-server）验证**不变**；已发更正评论到 #121。
+2. **#123 README（`ea55094`）**：4 死链（根路径 404，实际在 `.github/`，**不要移动文件**）；结构树归并；en 表分隔行 + `make help` 拆行。链接扫描跳过 `file:///`、示例链接、历史归档。
+3. **#125 阈值（`49f18a1`）**：`70/60/70/70` → `80/80/80/80`（真值 `.config/vitest.config.ts:12-17`）。**不改** WORKFLOW 日志、ROADMAP 时间切片。折入逻辑见坑 12。
+4. **#126 目录树（`835be3b`）**：验收脚本：树条目正则 `[├└]── (\S+)` + 目录尾 `/` `rstrip` 归一，与 `os.listdir('docs')` 集合比对 0 差异。
+5. **#128 重复副本（`945d951`）**：`git ls-files` >500KB 逐一 md5 `uniq -w32 -D`——全仓唯一重复对即此。删零引用重复文件不动历史（blob 共享）。
+6. **#130 Makefile（`81582c2`）**：`make help` 的 `##` 注释是用户可见输出；`make audit` 原 `--prod` **无法复现 CI 判定**（实测 2 vs 5），已改 `--audit-level=moderate` 与 `ci-cd.yml:78` 一字不差。**教训见坑 17**（`--include` 扩展名过滤漏 Makefile）。README 同问题两行仍待 #124 合并（见 STATE「已观察未建单」）。
+7. **已观察未建单**（见 STATE）：README ACCOUNT_ID（等 #124）、GitHub Project `projects/1`（缺 scope 不可判定）、tests 未入 tsc（预防性缺口无实证，保守不建单）。
 
 ## 二、交棒时主干状态
 
-- `main` = `3f5e7d4`，与 `origin/main` 同步；本棒全部推送的 CI run 均 7/7 success；本地门禁（lint/format/tsc/vitest **412**/audit/build/bundle/theme）全绿。
-- 线上 `https://huat-fsac.eu.org` 版本 `62778a8e`，与 main 同步；`/`、`/robots.txt`、`/sitemap-index.xml`（167 URL）全部健康。
-- 工作区干净（LOCK 为本地运行时锁，不入库，本棒结束时已删除）。
-- 开放 issue：**#101**（P1，人类配 Secret）、**#120**（P3 question，人类决策）。开放 PR 均为 dependabot / release-please 自动 PR（**协议禁止自动 merge**，不碰）。
-
----
+- **⚠️ `main` 顶端 `46f53f4` 的 `Audit Dependencies` 门禁已失效**：main 下次任何 push 该 job 必红（公告晚于最后绿 run 482）。**PR #122 合并前禁止直推 `main`**——本棒九轮记录都只能落在分支上。
+- **PR #122 / #124 / #127 / #129 / #131 均待人类 review+merge**（协议禁止自动 merge）。除 #122 外的 Audit 红灯 = main 既有失效，#122 合并后 rebase 即绿（各 PR body 已声明）。
+- 本地门禁（第 9 轮实测）：lint / format / tsc / test **412** / build 全绿；`make audit` 5 漏洞 = 与 CI 同口径同判定（main 既有，#122 合并后归 0）；audit 修复后（#122 分支）为 0。
+- 线上健康（第 2/5 轮实测）：`/` 200 + CSP nonce、sitemap **167/167 全 200**、首页 30 资源 200、7 安全头齐、35 重定向全通。本棒改动不进产物，**未部署**（线上 `62778a8e` = main 产物，一致）。
+- 开放 issue：**#101**（人类配 Secret）、**#120**（question）、**#121**（待 #122）、**#123/#125**（待 #124）、**#126**（待 #127）、**#128**（待 #129）、**#130**（待 #131）。
+- 开放 PR：**#122、#124、#127、#129、#131**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot **不碰不 merge**。
 
 ## 三、下一棒要做（按优先级）
 
-1. **例行评估即可**：可接手 issue 仅 #101（阻塞于人类）与 #120（question，跳过）。若无新 issue / 人类新任务，预计快速触发 §九.1 停止——属正常，不必强行造任务。
-2. 若 #120 被人类裁决（删/留），按单内验收标准执行。
-3. 若 #101 的 Secret 已配好：按 #101 拆解把 deploy job 加回 `ci-cd.yml`（完整实现见提交 `8475f88`），此后部署回归 CI 自动。
-4. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13` scrolling、`share.ts:109` execCommand）价值低、需浏览器实测，勿动。
-
----
+1. `gh pr view 122 --json state,mergedAt`：
+    - **已合并** → main 恢复常绿，可直推记录文件；未合并的 #124/#127/#129/#131 rebase 让 Audit 转绿；核对 #121/#123/#125/#126/#128/#130 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+    - **未合并** → 遵守禁令走分支；例行评估（可接手仅 #101/#120；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
+2. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（`README.md:70`/`README.en.md:71`，参照 #130 Makefile 文案：`CLOUDFLARE_API_TOKEN` only + ACCOUNT_ID 由 wrangler.json 提供）。
+3. #120 被人类裁决后按单内验收执行；#101 Secret 配好后按单把 deploy job 加回 `ci-cd.yml`（完整实现见 `8475f88`）。
+4. **audit 类复发**：走一.1 套路；**重复大文件类**：走一.5 md5 扫描法；**文档漂移类**：全量 `git grep` 而非 `--include` 过滤（坑 17）。
+5. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13`、`share.ts:109`）勿动。
 
 ## 四、阻塞项（需人类操作）
 
-- **#101**：在 GitHub `Settings → Secrets and variables → Actions` 配置 `CLOUDFLARE_API_TOKEN`（`CLOUDFLARE_ACCOUNT_ID` 不需要）。**Secret 没配之前不要把 deploy job 加回 CI**（main 会红）。
+- **#122 / #124 / #127 / #129 / #131 review + merge**——#122 优先，它是解除「main 禁直推」的钥匙。
+- **#101**：GitHub `Settings → Secrets and variables → Actions` 配 `CLOUDFLARE_API_TOKEN`（`CLOUDFLARE_ACCOUNT_ID` 不需要）。配好前不要把 deploy job 加回 CI。
 - **#120**：toast.ts 删留二选一。
-- 在此之前线上部署走本机 `wrangler` OAuth（本棒成功部署 2 次；登录态只在当前 Windows profile，换机需重跑 `wrangler login`，需 strip 本地 proxy）。
+- 线上部署走本机 `wrangler` OAuth（`pnpm deploy:worker`）；登录态只在当前机器 profile，换机需重跑 `wrangler login`（strip 本地 proxy）。
 
----
+## 五、注意事项 / 坑（沿用上棒并新增 ⚠️）
 
-## 五、注意事项 / 坑（本棒新增 ⚠️ 标记）
-
-1. **分支保护与直推**：`main` 受保护但当前 token 有 **bypass** 权限，直推成功（remote 打印 "Bypassed rule violations" 属预期）。权限不同则走 `auto/<时间戳>-<简述>` 分支 + PR（不自动 merge）。
-2. **双远程**：`origin` = `HUAT-FSAC/Guidance-Astro`（权威）；`wsyhuat` = fork 且是独立代码线，**不要**当上游。
-3. **部署判据**：影响线上产物的改动（`src/**`、`astro.config.mjs`、`public/**`、依赖）push 后**自动** `pnpm deploy:worker`；纯 `.agent/**` / `.gitignore` / docs 改动不必部署。⚠️ **CF 托管 robots.txt 会因源站缺失而注入**——现在源站已有（#119），该问题已消失。
-4. **内容页 URL 逐段 slug**（#116/#117 两次验证）：`src/content/docs/**` 的 URL 经 `github-slugger` 逐段处理（`vsc-c-c++-dev-and-debug`→`vsc-c-c-dev-and-debug`、`ROS 入门`→`ros-入门`），`src/pages/**` 不 slug。推 URL 必须走 `src/integrations/sitemap-paths.ts`。
-5. ⚠️ **`@assets/` 别名图片不是断链**：MDX 里 `![alt](@assets/...)` 由 Astro 构建期处理为 `/_image/?href=/_astro/...`（线上实测）。链接扫描必须跳过 `@` 开头目标，否则 50+ 条误报。
-6. **行尾**：部分内容 `.mdx` 磁盘上是 CRLF。编辑用**单行替换**最稳；`.gitattributes` 已归一 LF 入库。`.md`/`.mjs`/`.ts` 会过 husky lint-staged prettier（**包括 `.agent/*.md`**，所以 prettier 会在提交时重排你刚写的 STATE/HANDOFF——Edit 前若报 "modified since read" 先重读）。
-7. **`.gitignore` 已修复（#118）**：`src/content/docs/en/archive/` 不再被忽略。若未来 add 被拒，先查 ignore 规则再怀疑权限。
-8. **`fix: #N` commit subject 自动关闭 issue**（#117 即如此）；**不想自动关就用 `feat:` / `chore:` 前缀**（#119 即如此——部署前无法预知线上效果时先不关单，验证后再手动关）。
-9. ⚠️ **`gh run list` 可能浮出被 re-run 的历史 run**：轮 6 曾见 9 月 3-4 日旧提交的 failure run 出现在 `--branch main --limit 2` 顶部，实为历史 run 被 re-run，**main 顶端始终全绿**。判断主干健康要用 `git log --oneline -1` 的 HEAD sha 对照最新 run 的 headSha，别只看列表前几行。
-10. **依赖 override 时效性**：`pnpm-workspace.yaml` 用 override 压平传递依赖漏洞；安全公告拓宽区间时旧下限漏网 → `Audit Dependencies` 红。第一反应：`pnpm why <pkg>` → 提 override 下限 → `pnpm install` → `pnpm audit` 复验。
-
----
+1. **main 直推当前被 #121 冻结**（见二）；token 有 bypass 权限，恢复后可按惯例直推记录文件。
+2. **双远程**：`origin` = `HUAT-FSAC/Guidance-Astro`（权威）；`wsyhuat` = fork，**不要**当上游。
+3. **部署判据**：影响线上产物（`src/**`、`astro.config.mjs`、`public/**`、依赖）push main 后自动 `pnpm deploy:worker` + CSP nonce 验收；纯 `.agent/**` / docs / Makefile 注释 / dev override / 零引用死文件删除**不必部署**。本棒九轮均不部署。
+4. **⚠️ `pnpm` 不在裸 PATH**：跑命令 `mise exec -- pnpm ...`；**git hook 需要 pnpm 在 PATH**，提交前 `export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"`，否则 pre-commit 报 `pnpm: not found`。
+5. **commit subject 关 issue**：`fix:/docs:/chore: #N` 落 main 时预期关；PR body `Closes #N` 双保险；**squash 改写 subject 会漏——合并后核对手动关**。
+6. **`gh run list` 可能浮出 re-run 历史 run**：对照 `headSha`。
+7. **依赖 override 时效性（高频复发）**：见一.1 套路（#115、#121）。
+8. **gh comment 带反引号一律 `--body-file`**：shell 双引号内反引号会被命令替换（本棒踩过）。
+9. **内容页 URL 逐段 slug**（`github-slugger`），推 URL 走 `src/integrations/sitemap-paths.ts`；链接扫描跳过 `@assets/` 目标。
+10. **行尾**：部分 `.mdx` 磁盘 CRLF；`.md` 等过 lint-staged prettier，Edit 报 "modified since read" 先重读。
+11. **`.gitignore` 已修复（#118）**；**社区文件在 `.github/` 是约定，链接指过去别移文件**（#123 教训）。
+12. **⚠️ prettier 对结构破损 markdown 表格的规范输出 = 整表去对齐**（第 3 轮实测）：在含破损表格的基线上提交该文件会带入去对齐 diff——#125 折入 #124 的技术原因；**不要 `--no-verify` 绕过**（跳过 commitlint）。
+13. **md 锚点扫描按 GitHub slug 规则**：小写、**去含句点的标点**、空格转 `-`、CJK 保留（漏剔 `.` 假阳性）；目录集合比对 `rstrip('/')` 归一。
+14. **pnpm 子命令不是脚本**：`pnpm audit/dlx/exec` 不代表 `package.json` 要有同名 script。
+15. **⚠️ 资源「孤儿」判定不可凭字符串搜索**：`Hero.astro` 动态构造 srcset、`cars.ts` 按年份构造——**找构造点或用 md5/引用双证据**；删文件前全类型 grep 0 引用 + 构建产物验证。
+16. **外链 404 分类再建单**：占位符（`YOUR_USERNAME`/`<page>`）、「形如…」示例、历史快照、匿名不可见的 settings/私有看板——都不算死链；仅确定性 404/410 且指向真实内容才建单（第 6 轮 65 外链 0 真死链的判定依据）。
+17. **⚠️ 全量扫描别用 `--include` 扩展名过滤**（第 9 轮复盘）：第 3 轮 `grep --include="*.md" *.ts ...` 漏了**无扩展名的 Makefile**（`make help` 的 `##` 注释是用户可见输出，与 README 同期漂移未被发现）。定稿前用 `git grep`（tracked 全量、天然排除 dist/node_modules）复扫一遍关键模式。
+18. **pnpm audit 的 `dev: False` ≠ 影响运行时**：`dependencies` 里的构建期 CLI（如 `@astrojs/check`）链也会标 prod——判「是否需部署」要 grep `dist/server` 实证，别只看 dev 标记（#121 更正评论的来龙去脉）。
 
 ## 六、关键命令速查
 
@@ -81,34 +88,35 @@
 git fetch --all --prune && git pull --rebase
 cat .agent/STATE.md .agent/HANDOFF.md
 
-# 门禁（§6）
-pnpm audit --audit-level=moderate && pnpm lint && pnpm format:check \
-  && pnpm exec tsc --noEmit && pnpm test:run && pnpm build
+# 本机门禁（mise 环境，见坑 4）
+mise exec -- pnpm audit --audit-level=moderate   # main 上 5 漏洞为 #121 既有；make audit 已同口径
+mise exec -- pnpm lint && mise exec -- pnpm format:check
+mise exec -- pnpm exec tsc --noEmit && mise exec -- pnpm test:run
+mise exec -- pnpm build
+mise exec -- pnpm quality:bundle && mise exec -- pnpm quality:theme
 
-# 链接完整性回归（#117 新增）
-pnpm test:run tests/unit/internal-links.test.ts
+# 提交（husky 需 pnpm 在 PATH，见坑 4）
+export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
 
-# 部署与线上验收
-pnpm deploy:worker
-curl -sI https://huat-fsac.eu.org/ | grep -iE '^(HTTP|content-security-policy|cache-control)'
-curl -s https://huat-fsac.eu.org/robots.txt                 # → Allow + Sitemap（#119）
-curl -s https://huat-fsac.eu.org/sitemap-0.xml | grep -o '<loc>' | wc -l   # → 167
+# PR / CI
+for n in 122 124 127 129 131; do gh pr view $n --json number,state,mergedAt --jq '"#\(.number) \(.state) \(.mergedAt // "-")"'; done
+gh run list --workflow=ci-cd.yml --branch main --limit 5 --json headSha,status,conclusion
 
-# CI 状态（对照 HEAD sha 判断主干健康，见坑 9）
-git log --oneline -1
-gh run list --workflow=ci-cd.yml --branch main --limit 5
-gh run watch <runId> --exit-status --interval 20
+# 全量漂移扫描（坑 17，别加 --include）
+git grep -n "关键模式" -- . ':!docs/reports' ':!docs/plans'
 
-# 本地 SSR 抽查（需 strip proxy）
-env -u HTTP_PROXY -u HTTPS_PROXY -u http_proxy -u https_proxy \
-  pnpm exec wrangler dev dist/server/entry.mjs --config dist/server/wrangler.json --port 8788
-curl -s --noproxy '*' http://127.0.0.1:8788/robots.txt
+# 重复大文件检测（坑 15，#128 套路）
+git ls-files -z | xargs -0 -I{} sh -c 'test -f "{}" && s=$(stat -c%s "{}") && [ "$s" -gt 512000 ] && echo "{}"' \
+  | while read f; do md5sum "$f"; done | sort | uniq -w32 -D
+
+# 部署与线上验收（仅产物变化时）
+mise exec -- pnpm deploy:worker
+curl -sI https://huat-fsac.eu.org/ | grep -iE '^(HTTP|content-security-policy)'
+curl -s https://huat-fsac.eu.org/sitemap-0.xml | grep -o '<loc>' | wc -l   # 167
 ```
-
----
 
 ## 七、与看板 / 前一棒的一致性
 
-- `docs/WORKFLOW.md:§4` 任务表 T-001..T-038 全部已完成；本棒工作走 issue 线（#117/#118/#119/#120），`§7.4` 已逐轮追加日志。
-- 上一棒 deepseek 的结论（#116 sitemap 167 条、`@assets` 扫描注意事项）经本棒线上实测复核，全部成立。
-- 本棒无未完成事项、无未提交改动；LOCK 已删除。
+- `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成；本棒走 issue 线（#121→PR #122、#123+#125→PR #124、#126→PR #127、#128→PR #129、#130→PR #131），`§7.4` 已逐轮追加日志行（随各自分支入库）。
+- 上一棒 `glm-5.3-flash-20260929T234352Z`（8 轮，#117/#118/#119 闭环、#120 建单、§九.1 停止）的结论与坑位全部沿用；本棒新增坑 4（mise PATH）、8（comment 反引号）、11-18（社区文件/prettier 破损表格/锚点 slug/pnpm 子命令/资源判定/外链分类/全量扫描过滤器/audit dev 标记），并把坑 7 展开为可复用套路。
+- 上棒「可接手 issue 仅 #101/#120」的判断在本棒起点仍成立，故进入主动发现模式：产出 **#121/#123/#125/#126/#128/#130 六单五 PR**（中途 3 轮无操作后靠协议完整性扫描 + 扫描器复盘连续重启产出）。
