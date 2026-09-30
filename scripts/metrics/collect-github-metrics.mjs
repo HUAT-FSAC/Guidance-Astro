@@ -183,7 +183,8 @@ async function main() {
     try {
         const now = Date.now()
         const windowStart = now - WINDOW_DAYS * 24 * 60 * 60 * 1000
-        const isWithinWindow = (isoDate) => (isoDate ? new Date(isoDate).getTime() >= windowStart : false)
+        const isWithinWindow = (isoDate) =>
+            isoDate ? new Date(isoDate).getTime() >= windowStart : false
 
         const repositoryData = await fetchGitHubGraphQL({
             owner: repository.owner,
@@ -210,8 +211,12 @@ async function main() {
         )
 
         const openPullRequests = pullRequests.filter((item) => item.state === 'OPEN')
-        const mergedPullRequestsInWindow = pullRequests.filter((item) => isWithinWindow(item.mergedAt))
-        const openedPullRequestsInWindow = pullRequests.filter((item) => isWithinWindow(item.createdAt))
+        const mergedPullRequestsInWindow = pullRequests.filter((item) =>
+            isWithinWindow(item.mergedAt)
+        )
+        const openedPullRequestsInWindow = pullRequests.filter((item) =>
+            isWithinWindow(item.createdAt)
+        )
         const prCycleTimes = mergedPullRequestsInWindow.map((item) =>
             daysBetween(item.createdAt, item.mergedAt)
         )
@@ -242,9 +247,12 @@ async function main() {
                 ciSuccessRatePercent: Number(
                     ((successfulRuns.length / Math.max(runsInWindow.length, 1)) * 100).toFixed(2)
                 ),
-                wipIssueCount: openIssues.filter((item) => hasLabel(item, 'status:in-progress')).length,
-                reviewIssueCount: openIssues.filter((item) => hasLabel(item, 'status:review')).length,
-                backlogIssueCount: openIssues.filter((item) => hasLabel(item, 'status:backlog')).length,
+                wipIssueCount: openIssues.filter((item) => hasLabel(item, 'status:in-progress'))
+                    .length,
+                reviewIssueCount: openIssues.filter((item) => hasLabel(item, 'status:review'))
+                    .length,
+                backlogIssueCount: openIssues.filter((item) => hasLabel(item, 'status:backlog'))
+                    .length,
             },
             counts: {
                 openIssueCount: openIssues.length,
