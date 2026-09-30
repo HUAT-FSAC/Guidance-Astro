@@ -1,7 +1,7 @@
 # 交接说明（HANDOFF）
 
 **本棒 Agent：** `mimo-flash-20260930T113551Z`
-**时间：** 2026-09-30T11:35Z 起（UTC），第 1-16 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9/11/12/13/14/15/16 轮连续产出，第 10 轮验证轮）
+**时间：** 2026-09-30T11:35Z 起（UTC），第 1-17 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9/11/12/13/14/15/16 轮连续产出，第 10/17 轮验证轮）
 **仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 基线 `main@46f53f4`
 **产出分支：** `auto/.../121-audit-override-bump`（PR **#122**）、`auto/.../123-readme-dead-links`（PR **#124** = #123+#125）、`auto/.../126-docs-index-drift`（PR **#127** = #126）、`auto/.../128-dedup-webm`（PR **#129** = #128）、`auto/.../130-makefile-drift`（PR **#131** = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR **#133** = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR **#135** = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR **#137** = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR **#139** = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR **#141** = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR **#143** = #142，**最新全量记录**）
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 一、本棒做了什么（16 轮：1-4 产出 + 5-7 无操作 + 8-16 产出/验证）
+## 一、本棒做了什么（17 轮：1-4 产出 + 5-7 无操作 + 8-16 产出 + 17 合并安全演练）
 
 | 轮  | 结果                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | 产出    |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -30,6 +30,7 @@
 | 14  | 延展 #134 教训做**全仓命令引用核验**（`pnpm`/`npm run`/`make`/`pnpm exec`/`npx`，20 候选）→ 排除散文误报 + `pnpm exec tsc --noEmit` 三方一致（Makefile:76/ci-cd.yml:42）+ 归档快照豁免后**实锤 1 处双失效** → 建单 **#138** → 修 2 文件 `a2e5853`：`pnpm exec sharp-cli`（未装依赖）改 `pnpm dlx sharp-cli --format webp`（6.x 尾参 `webp` 报 `Unknown argument`，沙箱实跑修正）+ `optimize-images.mjs` 硬编码 `/workspace/*`（无 devcontainer 故恒空跑）改脚本位置解析仓库根 → **PR #139**；195 行 diff 已证等价（main 原文件本就不 prettier 干净）；沙箱假仓实跑 exit 0；§6 全绿                                                                                                 | PR #139 |
 | 15  | **CI 门禁自审计**（首次审「门禁本身覆盖什么」）→ 实锤 `format:check` glob（`package.json:50-51`）同时窄了目录集与扩展名集：hook 管全仓 `**/*.mjs\|md`、CI 只管 `{src,tests}/**` 5 种扩展名 + 根级 3 种 → 全仓 369 文件 `prettier --check` **26 个不合规且全部落盲区** → **盲区放行实证**（往 `scripts/quality/check-theme-contrast.mjs` 注入格式问题，`format:check` exit **0** 放行）→ 建单 **#140** → 修 `41c3289`（glob 扩 `{src,tests,scripts}` + 归一 `collect-github-metrics.mjs`）→ **PR #141**（叠 #139 之上）；验证 format:check 1→0、盲区反向 0→1 拦截、token 级 558/558 零差异、§6 全绿；md/yml 与 `.github/` 按「yml 语义敏感宜单独 PR」收敛为后续                     | PR #141 |
 | 16  | 承 #140 审 **eslint 侧**：`pnpm lint` = `eslint src` 而 eslint 配置声明全仓 `**/*.ts\|tsx` + `**/*.astro` → **`tests/` 40 个 ts 文件不在 CI lint 门禁内**，`eslint tests` 实测 18 warnings（15 no-unused-vars + 3 sort-imports）→ 先排除误报（根级 4 个 `*.config.ts` 属 `ignores` 有意排除；根级 vitest/playwright config 是 `.config/` 薄 re-export shim **非重复**）→ 建单 **#142** → 修 `88733cb`（10 文件 24+/27−，lint 扩 `src tests` + 归一 18 warning）→ **PR #143**；验证 0 problems + 注入未用变量现被报出 + **412 tests / 38 files 全过** + §6 全绿；**过程自查修正**：误给 `branch-boost3.test.ts:99` 体内有引用的 `enc` 加 `_` 前缀，412 仍全绿（静默测试弱化）已改回 | PR #143 |
+| 17  | **11 个 PR 合并安全预演**（无可认领 issue，转交付风险审计）：`git merge-tree` 逐个验证各 PR 对 main **零冲突**，但按序实际合并暴露——**除 #122 外每个 PR 都在 3 个记录文件冲突**（11 分支全改 STATE/HANDOFF/§7.4），**内容文件零冲突**（#135/#137 `ARCHITECTURE.md` 不同行自动合并成功）→ 产出 `§二·〇 合并操作手册`（顺序 + 确定性解法 + **验收 `grep -c mimo-flash docs/WORKFLOW.md` == 13** + squash 手动关 12 issue）；演练用 scratch 分支并已删除，主干未受影响                                                                                                                                                                                                                | —       |
 
 ### 要点（下一棒可能用到）
 
@@ -126,6 +127,7 @@ grep -rn '^<<<<<<<' .agent/ docs/       # 必须无输出
 20. **⚠️ 本机是 WSL2，LHCI/chrome-launcher 会踩坑**（第 10 轮）：`is-wsl` 检测 → chrome-launcher 走 `makeWin32TmpDir`，但本会话 PATH 无 `/mnt/c/Users/...` 段 → 临时目录构造为 `undefined:/Users/undefined/...` 报 ENOENT。**绕过**：`export PATH="/mnt/c/Users/<Windows用户名>/AppData/Local:$PATH"`（Windows 用户名以 `ls /mnt/c/Users/` 为准，本机为 `21711`）+ `export CHROME_PATH=$HOME/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`。**运行副产物**：chrome-launcher 会在 CWD 造出 `C:\Users\...` 字面量目录（4 个/次）——跑完 `find . -maxdepth 1 -name 'C:*lighthouse*' -type d -exec rm -rf {} +` 清理。CI（ubuntu-latest）无此问题。
 21. **⚠️ `gh run list` 偶发返回对不上的瞬时结果**（第 10 轮踩过）：同一查询先后返回过「main 在 3a49e03/3852436 上 failure」的幽灵行（复跑同查询全绿、failure 过滤 0 命中、两个 SHA 虽是 main 祖先但其 ci-cd run 均绿——实为其他工作流/其他分页的串扰）。**判定 CI 状态前复跑一次查询并交叉核对 `workflowName`/`headSha`/`createdAt`**，别拿单次输出下结论。
 22. **⚠️ commitlint `footer-max-line-length ≤ 100`**（第 12 轮连拒两次）：`git commit -m` 的**正文段落按 footer 规则逐行查 ≤100 字符**（`subject-max-length` 同为 100，但 CJK 也按 1 字符计）。被拒时输出只有 `found 1 problems` 不带规则名——**直接 `echo "<msg>" | pnpm exec commitlint` 看完整规则报错**，然后把正文折行到每行 <100 再提交（多行同段落仍算 footer，注意别用 `--no-verify` 绕过）。
+23. **记录时间戳用 `date -u` 不要用本地时间（第 17 轮自查）**：本棒前几轮把本地时间（UTC+8）当成 UTC 写进 `最后更新`，一度还写出 `2026-09-31`（9 月无 31 日）这种不存在的日期。写记录前先 `date -u +%Y-%m-%dT%H:%MZ` 取真值，别手算时区。
 
 ## 六、关键命令速查
 
