@@ -135,7 +135,7 @@ describe('branch-boost2: filter warnings more', () => {
         )
         // should have filtered first and third, kept line1, line2, line3
         // now test empty filtered
-        const emptyResult = process.stdout.write as unknown as { length: number }
+        const _emptyResult = process.stdout.write as unknown as { length: number }
         // call with only filtered content
         process.stdout.write('Entry docs → 404 was not found.\n')
         // restore

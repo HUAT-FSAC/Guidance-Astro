@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { initSearchSuggestions } from '../../src/utils/search-suggestions'
 import { announce, trapFocus } from '../../src/utils/accessibility'
 import { shouldFilterBuildWarning } from '../../src/integrations/filter-known-build-warnings'
@@ -85,7 +85,7 @@ describe('branch-boost3', () => {
         // test with string and encoding
         let captured = ''
         // @ts-expect-error: suppress type error
-        process.stdout.write = (buf: string, enc?: unknown, cb?: unknown) => {
+        process.stdout.write = (buf: string, _enc?: unknown, _cb?: unknown) => {
             captured = typeof buf === 'string' ? buf : buf.toString()
             return true
         }
@@ -96,7 +96,7 @@ describe('branch-boost3', () => {
         // should be filtered to empty and return true
         // need to test with callback
         // @ts-expect-error: suppress type error
-        process.stdout.write = (buf: string, enc?: unknown, cb?: unknown) => {
+        process.stdout.write = (buf: string, enc?: unknown, _cb?: unknown) => {
             if (typeof enc === 'function') {
                 // enc is callback
                 return origWrite.call(process.stdout, buf, enc as never)

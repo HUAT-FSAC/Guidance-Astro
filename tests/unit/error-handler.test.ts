@@ -2,9 +2,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-    ErrorType,
     clearErrorHistory,
     createErrorInfo,
+    ErrorType,
     getErrorHistory,
     handleImageError,
     registerErrorHandler,

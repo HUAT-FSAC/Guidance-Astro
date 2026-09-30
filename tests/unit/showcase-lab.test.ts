@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-    type ShowcaseScenario,
-    showcaseScenarios,
-    showcaseScripts,
-} from '../../src/data/showcase-lab'
+import { showcaseScripts } from '../../src/data/showcase-lab'
 import {
     advanceShowcaseReplay,
     advanceShowcaseScript,

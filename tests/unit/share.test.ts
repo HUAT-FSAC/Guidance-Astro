@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-    generateShareUrl,
-    generateQRCodeUrl,
-    generateQRCodeDataUrl,
     canUseNativeShare,
+    generateQRCodeDataUrl,
+    generateQRCodeUrl,
+    generateShareUrl,
     type ShareData,
 } from '../../src/utils/share'
 

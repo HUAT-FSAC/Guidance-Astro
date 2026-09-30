@@ -210,10 +210,10 @@ describe('coverage-boost: filter-known-build-warnings', () => {
         const originalStderr = process.stderr.write
         const warnCalls: unknown[][] = []
         console.warn = (...args: unknown[]) => warnCalls.push(args)
-        let stdoutContent = ''
+        let _stdoutContent = ''
         // @ts-expect-error: mock
         process.stdout.write = (buf: string | Uint8Array, cb?: unknown) => {
-            stdoutContent += typeof buf === 'string' ? buf : buf.toString()
+            _stdoutContent += typeof buf === 'string' ? buf : buf.toString()
             if (typeof cb === 'function') (cb as () => void)()
             return true
         }
@@ -243,7 +243,8 @@ describe('coverage-boost: search-suggestions', () => {
     })
     it('getSearchSuggestions popular and history', async () => {
         // mock history to test de-dupe and sorting
-        const { filterSearchHistory } = await import('../../src/utils/search-history')
+        const { filterSearchHistory: _filterSearchHistory } =
+            await import('../../src/utils/search-history')
         // history returns one item matching
         // we already mock in other test, but here we test without mock (real history empty)
         const s1 = getSearchSuggestions('', 5)
@@ -266,7 +267,7 @@ describe('coverage-boost: search-suggestions', () => {
         renderSearchSuggestions(container2, '感知', vi.fn())
         expect(container2.querySelector('.search-suggestions-list')).toBeTruthy()
         // click button
-        const btn = container2.querySelector('.search-suggestions-button') as HTMLElement
+        const _btn = container2.querySelector('.search-suggestions-button') as HTMLElement
         const cb = vi.fn()
         const container3 = document.createElement('div')
         renderSearchSuggestions(container3, 'ROS', cb)
