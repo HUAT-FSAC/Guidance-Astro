@@ -238,6 +238,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #138（主动发现：全仓文档命令引用实跑核验）并提交 PR #139 | 延展 #134 教训「文档教的命令要实跑复现」：抽全仓 `pnpm`/`npm run`/`make`/`pnpm exec`/`npx` 引用 20 候选 → 人工剔散文误报 + `pnpm exec tsc --noEmit` 三方一致（Makefile:76 / ci-cd.yml:42）+ 带日期归档快照 → **实锤 1 处双失效**（`docs/CONTRIBUTING-content.md:158` 提交前自检「图片已压缩」）：A `pnpm exec sharp-cli` → `Command "sharp-cli" not found`（sharp-cli 不在 dependencies，pnpm exec 只解析 node_modules/.bin，与 #134 裸 lhci 同根因）· A′ 尾参 `webp` 在 sharp-cli 6.x 报 `Unknown argument: webp`（exit 2，格式需 `--format webp`）· B 裸 `scripts/optimize-images.mjs` 无执行位 · B′ 加 `node` 后因 `:14-15` 硬编码 `/workspace/src/assets`、`/workspace/public/assets`（仓库无 .devcontainer，该路径本项目任何环境都不存在）两次 `Directory not found`、处理 0 图、**exit 0 静默空跑** · 修 2 文件 `a2e5853`：清单改 `pnpm dlx sharp-cli --format webp` + `node scripts/optimize-images.mjs`（注明原地压缩并生成 webp/avif 副本），脚本改 `import.meta.url` 解析仓库根 · 验证：`pnpm dlx sharp-cli -i x.png -o out2.webp --format webp` 沙箱实跑出图 + 假仓布局跑脚本 exit 0（2 目录 2 图原地替换）· **195 行 diff 等价性证明**：`prettier(main 原版 + 语义改动)` ≡ 提交版（main 原文件本就不 prettier 干净，lint-staged 对 `**/*.mjs` 强制 write 而 `format:check` glob 未覆盖 scripts/**，同现象见 scripts/metrics/collect-github-metrics.mjs）· §6 全绿（lint/format/tsc/test 412/build）→ PR #139 · 与 9 分支文件零交集 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
