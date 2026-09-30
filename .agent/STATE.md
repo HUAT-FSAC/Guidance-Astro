@@ -3,33 +3,102 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T01:05Z ｜ **当前 agent-id：** `glm-5.3-flash-20260929T234352Z` ｜ **状态：已结束（§九.1 停止，共 8 轮）**
-**本轮起点 HEAD：** `751607a` ｜ **交棒 HEAD：** `3f5e7d4`（CI 7/7 绿，线上 `62778a8e` 健康）
+**最后更新：** 2026-09-30T16:15Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 11 轮完成，进行中（无操作计数 0/5）
+**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132，**本文件所在，最新全量记录**）
+
+> ⚠️ **记录文件分散在六个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，**第 11 轮（本版，最新）随 PR #133**。冲突一律取**最新（PR #133，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132）。
 
 ## 当前活跃任务
 
-- **无**。本棒已关闭 **#117、#118、#119**，新建 **#120**（question，人类决策）。
-- 可接手开放 issue 仅 **#101**（阻塞于人类配 `CLOUDFLARE_API_TOKEN` Secret）。
+- **#121**（P1）：pnpm audit 5 漏洞 → 修复完成，**PR #122 待人类合并**（CI 7/7 success）。第 9 轮补发**更正评论**：fast-uri ×2 实为 prod 声明链（`@astrojs/check` 在 dependencies），brace-expansion ×3 才是 dev 链；「不进运行时产物无需部署」结论经 `dist/server` grep 验证不变。
+- **#123 + #125**（P3×2）：README 死链/结构树/英文命令表 + 阈值描述 → **PR #124 待人类合并**（Lint/Type/Tests 绿；Audit 红为 main 既有）。
+- **#126**（P3）：docs/README.md 目录树缺 3 条 → **PR #127 待人类合并**（同绿）。
+- **#128**（P3）：归档视频 23.5MB 零引用副本 → **PR #129 待人类合并**（同绿）。
+- **#130**（P3）：Makefile 三处漂移（help 阈值 / 部署行 ACCOUNT_ID / audit 仅 --prod）→ 修复完成（`81582c2`），**PR #131 待人类合并**（门禁本地全绿）。
+- **#132**（P3）：`docs/PROJECT_MANAGEMENT_MODEL.md` 发布部署小节 5 处与现状矛盾（称「自动部署已恢复」+ 要配 ACCOUNT_ID）→ 修复完成（`10aba9c`），**PR #133 待人类合并**（门禁本地全绿；条件式表述使 #101 完成后无需回改）。
+
+## ⚠️ 重要警告（给下一棒）
+
+**#122 合并前不要直推 `main`**：main 的 `Audit Dependencies` job 因 5 个新公告漏洞已失效（公告晚于主干最后绿 run 482），任何 push 都会红。一切改动（含 `.agent/**`、`docs/**`）先走分支。**#124/#127/#129/#131 的 Audit 红灯同因，#122 合并后 rebase 即绿。**
+
+## 开放 issue 现状
+
+- **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
+- **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
+- **#121**（P1，本棒）：待 PR #122 合并。
+- **#123/#125**（P3，本棒）：待 PR #124 合并。
+- **#126**（P3，本棒）：待 PR #127 合并。
+- **#128**（P3，本棒）：待 PR #129 合并。
+- **#130**（P3，本棒）：待 PR #131 合并。
+- **#132**（P3，本棒）：待 PR #133 合并。
+- 开放 PR：**#122、#124、#127、#129、#131、#133**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+
+## 已观察、未建单（待时机）
+
+- **README 部署行 ACCOUNT_ID 漂移**：`README.md:70` / `README.en.md:71` 写 `pnpm deploy:worker`「需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`」——**Makefile 同问题已在 #130 修复**，README 两行因位于 PR #124 拆行区域（`README.en.md:71` 正是 #124 拆出行），**#124 合并后**建单修复（2 行，参照 #130 的 Makefile 文案）。
+- **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
+- **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
 
-1. **接管与补提**：接管 deepseek（LOCK 过期 6.5h+）遗留的第 3 轮记录并提交 `8cec201`；首轮探测生成 `.agent/ENV.md`。
-2. **`748a3cb` fix #117：内容页 16 处失效内链修复 + 链接完整性回归测试** —— push + 部署（`df007a5b`）+ CI 7/7 + issue 已关并评论。
-    - 6 个内容文件 16 处链接（docs-center 5×LinkCard + `/2025/`；sensing 2；planning-control 4（`高避`→`高速循迹`）；news 去除 `/news/` 死链；2024-learning-roadmap 中 2 + en 1（`++`→slug））。
-    - `redirects` 抽到 `src/config/redirects.ts`（行为等价）；新增 `tests/unit/internal-links.test.ts`（3 例，**永久回归门禁**：新内容页写 404 内链 CI 直接红）。
-    - vitest 412 passed；线上 15 目标 URL 全 200、旧路径 0 残留。
-3. **`03dc7c7` fix #118：`.gitignore` 英文归档忽略规则纠偏** —— 溯源 `8874314` 错改（`src/pages/en/archive/` → `src/content/docs/en/archive/`），恢复原指向；`git check-ignore` 双向验证；CI 7/7（`36649026704`）；未部署（无产物变化）。
-4. **`2a905d0` feat #119：新增 `public/robots.txt`（Allow + Sitemap）** —— 三层验证（构建产物 / 本地 wrangler dev / 线上 200）；**CF content-signals 注入让位**（仅源站缺失时注入），无需 zone 人工配置；部署（`62778a8e`）+ CI 7/7（`36649823634`）；手动关单并评论。
-5. **建单 #120**（`question`）：`src/utils/toast.ts`（443 行）零引用死代码删留决策。证据：全仓无 import、5 个导出零调用、4 处 import 由 `deed7d5`（2026-07-27）移除、`a47d534` 曾为其消耗维护。**留给人类，勿直接删。**
-6. **静态页内链复扫（轮 5）**：`src/pages/**/*.astro` 的 href/src 全查 —— 404 候选 **0**、相对链接 0。#117 覆盖面补全，无需建单。
+### 第 1 轮（#121）
+
+门禁首关 `pnpm audit` 实测 5 漏洞 → 建单 **#121** → override 提下限（brace-expansion 5.0.12 / fast-uri >=4.1.5）+ lockfile 重解析 → 门禁全绿（audit 0 / lint / format / tsc / test **412** / build / bundle / theme）→ `1b3851b` → **PR #122** → CI **7/7 success**。
+
+### 第 2 轮（#123）
+
+主动扫描 → README **4 死链 + 结构树失真 + en 命令表破损** → 建单 **#123** → 修 2 文件（+9/−14）→ 链接复扫 68 条 0 broken → `ea55094` → **PR #124** → CI Lint/Type/Tests 绿。
+
+### 第 3 轮（#125）
+
+全仓 `70/60/70/70` 扫描 → README 阈值描述与实际 80/80/80/80 不一致 → 建单 **#125** → 修 2 行 `49f18a1` → **折入 PR #124**（同表格相邻行，独立分支必冲突实测确认）→ CI run 36716822328 绿（Audit 既有红，已回评 #125）。
+
+### 第 4 轮（#126）
+
+扫描 4 项全清（md 锚点 0 broken〔GitHub slug 去句点规则〕/ pnpm 脚本与 make 目标全存在 / src TODO 0 / 内容 en 90 在位）→ `docs/` 索引比对 → **树缺 `CONTRIBUTING-content.md`/`HANDOFF-2026-09-19.md`/`agents/`** → 建单 **#126** → +3 行 `835be3b` → 集合比对 16==16 → **PR #127** → CI Lint/Type/Tests 绿。
+
+### 第 5-7 轮（无操作 ×3，计数 3/5）
+
+- 第 5 轮：同文件锚点 0 broken、engines/node 22 一致、public 孤儿扫描不可靠（动态 srcset 构造，不建单）、sitemap **167/167 全 200**、`_headers`↔`security.ts` 一致、首页 30 资源 200、7 安全头齐。
+- 第 6 轮：35 重定向全通（源 3xx 目标 200）；65 核心文档外链 404 全定性为占位符/示例/历史快照/不可判定私有看板 → 0 真死链。
+- 第 7 轮：测试无 `.only/.skip`、无旧域名、`SITE_URL` 正确、manifest 链接与 3 图标齐。
+
+### 第 8 轮（#128，计数清零）
+
+协议完整性扫描（密钥/env/大二进制 **0 泄漏**）→ >500KB 文件 md5 唯一重复对 = 两份 23.5MB webm，副本 `planning-and-control/showcase.webm` 全仓零引用 → 建单 **#128** → `git rm` `945d951` → 门禁全绿（test 412/build，产物含正本 chunk）→ **PR #129** → CI 与声明一致。
+
+### 第 9 轮（#130）
+
+复盘第 3 轮 `--include` 扩展名过滤漏洞 → `git grep` 全量扫 `70/60/70/70` + `TOKEN/ACCOUNT_ID` → 发现 **Makefile 三处漂移**（`:87` help 阈值、`:123` 部署行 ACCOUNT_ID、`:144` audit 仅 `--prod` 与 CI 全量 moderate 口径分裂实测 2 vs 5）→ 建单 **#130** → 修 3 处（4 行）`81582c2` → 断言：`make help` 0 残留 + 新文案在；`make audit` 实跑 5 与 `ci-cd.yml:78` 同命令同结果；§6 全绿（lint/format/tsc/test 412/build）→ **PR #131**。另：**#121 发更正评论**（fast-uri ×2 prod 声明链、无需部署结论经 dist grep 验证不变）。
+
+### 第 10 轮（Quality Gate 本地全量验证，无新 issue）
+
+例行同步：main 仍 `46f53f4`、5 个 PR 全 OPEN、无可认领 issue（#101/#120 仍阻塞）、无他人新活动、main 的 ci-cd 最新 run 全绿（早前一次查询浮出的 3a49e03/3852436「failure」复现为 API 瞬时异常，重查一致为全绿）。
+
+转验证模式（CI Quality Gate 因 needs-audit **全程跳过**，#122 合并后会重新激活——提前本地排雷）：
+
+1. **E2E**：`pnpm test:e2e` → **95/95 passed**（18.6s，webServer `preview:ssr` 自动起）——本会话首次全量 e2e。
+2. **预算三件套**：`quality:theme` ✅ / `quality:bundle` ✅（Top CSS 120.89KB）/ `quality:routes` ✅。
+3. **LHCI**：collect 4 URL（`/`、`/docs-center/`、`/team/`、`/join/`）+ assert **exit 0**（仅 warn：FCP 2350ms>2000、join 页 color-contrast、INP auditRan；error 级 perf≥0.8/title/lang/alt 全过）。
+    - ⚠️ **本机是 WSL2**（`6.18.33.2-microsoft-standard-WSL2`）：chrome-launcher 走 WSL 分支，会话 PATH 无 `/mnt/c/Users/...` 段 → 临时目录构造成 `undefined:/Users/undefined/...` 报 ENOENT。**绕过**：`PATH="/mnt/c/Users/21711/AppData/Local:$PATH"` + `CHROME_PATH=~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`（坑 19）。**纯本地环境问题，CI ubuntu-latest 不受影响**（历史 Quality Gate 7/7 绿含 LHCI）。
+    - 运行副产物：chrome-launcher 在 CWD 造出 4 个 `C:\Users\...` 字面量目录，已清理（未入库）。
+
+**结论**：Quality Gate 五环节本地全绿 → #122 合并后 4 个功能 PR（#124/#127/#129/#131）rebase 转绿的置信度完整（这些 PR 均不改动 LHCI 审计页面与运行时产物）。
+
+### 第 11 轮（#132，主动发现）
+
+例行同步（main `46f53f4` / 6 PR 全 OPEN 且全 MERGEABLE / 无可认领 / main ci-cd 全绿）→ 延展第 9 轮发现模式做全仓 `git grep` 复扫：`70/60/70/70` 全部命中均为已知/豁免（README 待 #124、ROADMAP 快照、WORKFLOW 日志、本轮记录自身）、`audit --prod` 零残留、**`CLOUDFLARE_ACCOUNT_ID` 命中 `docs/PROJECT_MANAGEMENT_MODEL.md:192/215`** → 读上下文确认该发布部署小节停留在 2026-08-28 口径（称「✅ 自动部署已恢复」、要求配 ACCOUNT_ID、发版首选写 push main、手动兜底标签颠倒、`DEPLOYMENT.md:22` 行号漂移），**T-033 口径同步白名单漏掉此文件**（AGENTS.md/DEPLOYMENT.md/WORKFLOW §3 都改了）→ 查重（无重复单；与 #101 关联非重复：#101 恢复动作、本单文档口径）→ 建单 **#132** → 修 5 处（10 行替换）`10aba9c` → 断言：ACCOUNT_ID 仅剩否定式 ×2 / 无「自动部署已恢复」/ 无 `:22` 引用 / 三方口径交叉核对（AGENTS.md:22/24 + DEPLOYMENT.md:20/36 + ci-cd.yml:153 及顶层 job 无 deploy）→ §6 全绿（lint/format/tsc/test 412/build）→ **PR #133**（与 #122/#124/#127/#129/#131 文件零交集）。恢复类表述全部条件式化——**#101 完成后本文件无需回改**。
 
 ## 下一步（给下一棒）
 
-1. 开放 issue 只剩 #101（人类配 Secret，见阻塞）与 #120（question 标签，协议跳过，等人类决策）。
-2. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro` scrolling、`share.ts` execCommand）价值低、需浏览器实测，勿动。
-3. 若无新 issue / 人类新任务，下一棒预计同样快速触发 §九.1 停止——属正常，不必强行造任务。
+1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
+3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
+4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
+5. **全仓 `git grep` 复扫套路**（第 9/11 轮连续两轮产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132 是第 9 轮 `--include` 教训的直接延展），扫出的命中先按「日志/快照豁免」定性再建单。
 
 ## 阻塞项
 
-- **#101**（恢复 CI 自动部署）：阻塞于**人类操作**——需在仓库 Settings 配置 `CLOUDFLARE_API_TOKEN` Secret。在此之前线上部署走本机 `pnpm deploy:worker`（本棒已验证可用，成功 2 次）。
-- **#120**（toast.ts 删留）：等人类决策（question 标签）。
+- **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
+- **#120**：toast.ts 删留二选一，等人类。
+- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133**：等人类 review+merge（协议禁止自动 merge）。
