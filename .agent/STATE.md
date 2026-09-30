@@ -3,10 +3,10 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T23:45Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 15 轮完成，进行中（无操作计数 0/5）
-**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140，**本文件所在，最新全量记录**）
+**最后更新：** 2026-09-30T23:58Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 16 轮完成，进行中（无操作计数 0/5）
+**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142，**本文件所在，最新全量记录**）
 
-> ⚠️ **记录文件分散在十个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，**第 15 轮（本版，最新）随 PR #141**。冲突一律取**最新（PR #141，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140）。
+> ⚠️ **记录文件分散在十一个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，**第 16 轮（本版，最新）随 PR #143**。冲突一律取**最新（PR #143，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142）。
 
 ## 当前活跃任务
 
@@ -20,6 +20,7 @@
 - **#136**（P3）：现行文档 `file:line` 引用内容级漂移 9 处（5 文件）→ 修复完成（`f48d2c3`），**PR #137 待人类合并**（55 引用复扫 + 6/6 内容断言 + 门禁全绿）。
 - **#138**（P3）：CONTRIBUTING 图片压缩指引双失效（`pnpm exec sharp-cli` 未装依赖 + `optimize-images.mjs` 硬编码 `/workspace/*` 静默空跑）→ 修复完成（`a2e5853`），**PR #139 待人类合并**（沙箱假仓实跑 exit 0 + 等价性证明 + 门禁全绿）。
 - **#140**（P3）：`format:check` glob 窄于 lint-staged → 26 文件（含 `scripts/**` 8 个门禁执行体）在 CI 格式校验盲区，注入格式问题 exit 0 放行 → 修复完成（`41c3289`，glob 扩 `{src,tests,scripts}` + 归一存量），**PR #141 待人类合并**（盲区反向验证 exit 1 拦截 + token 零差异 + 门禁全绿）。md/yml 扩展名与 `.github/` 目录集按收敛原则留后续。
+- **#142**（P3）：`pnpm lint` 只 `eslint src` → `tests/` 40 个 ts 文件不在 CI lint 门禁内（18 warnings 从未暴露）→ 修复完成（`88733cb`，扩 `eslint src tests` + 归一 18 warning），**PR #143 待人类合并**（0 problems + 注入实证 + 412 tests 全过）。不加 `--max-warnings`（阻断策略留人类）。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -37,13 +38,15 @@
 - **#132**（P3，本棒）：待 PR #133 合并。
 - **#134**（P3，本棒）：待 PR #135 合并。
 - **#136**（P3，本棒）：待 PR #137 合并。
-- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141、#143**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
 - **README 部署行 ACCOUNT_ID 漂移**：`README.md:70` / `README.en.md:71` 写 `pnpm deploy:worker`「需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`」——**Makefile 同问题已在 #130 修复**，README 两行因位于 PR #124 拆行区域（`README.en.md:71` 正是 #124 拆出行），**#124 合并后**建单修复（2 行，参照 #130 的 Makefile 文案）。
 - **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
 - **`format:check` 覆盖缺口的剩余部分**（第 15 轮建单 #140 时收敛）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——全仓不合规 26 项中 `.github/` 15 个 yml（实测 prettier 改动为纯引号风格：`ci-cd.yml` 2 行、`labeler.yml` 102 行、`dependabot.yml` 0 行）、`src/content/docs/**` 7 个 `.md`（在 `src/` 目录内但扩展名漏检）、`docs/components/COMPONENTS.md` 1 个。**未建单**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）且 `README.en.md` 与 PR #124 冲突，**待 #122/#124 合并后单独建单**。
+
+- **门禁自审计已覆盖两侧**（第 15-16 轮）：`format:check`（#140）与 `eslint`（#142）的 CI 脚本覆盖面均已补齐到「配置/hook 声明的范围」。**剩余已知缺口**：`format:check` 的扩展名集（`md`/`yml`/`astro`）与 `.github/` 目录集未补（24 个文件待归一，yml 语义敏感）；`pnpm lint` 未设 `--max-warnings`（有意，阻断策略属人类决策）；`tsc --noEmit` 不覆盖 `tests/**`（预防性，见下条）。
 
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
@@ -113,9 +116,13 @@
 
 例行同步（main `46f53f4` / 9 PR 全 OPEN / 无可认领）→ **CI 门禁自审计**（首次审「门禁本身覆盖什么」）→ 实锤 `format:check` glob（`package.json:50-51`）同时窄了目录集与扩展名集：hook（`.config/lint-staged.config.mjs`）管全仓 `**/*.mjs|md`，CI 门禁只管 `{src,tests}/**` 的 5 种扩展名 + 根级 3 种 → 全仓 369 文件 `prettier --check` 得 **26 个不合规且全部落在盲区** → **盲区放行实证**（往 `scripts/quality/check-theme-contrast.mjs` 注入格式问题，`format:check` exit **0** 放行）→ 建单 **#140** → 修 `41c3289`：glob 扩 `{src,tests,scripts}` + 归一 `collect-github-metrics.mjs` → **PR #141**（叠在 #139 之上）。验证：format:check 1→0、盲区反向 0→1（拦截）、token 级 558/558 零差异、§6 全绿。md/yml 扩展名与 `.github/` 目录集按「yml 语义敏感宜单独 PR」收敛为后续项。
 
+### 第 16 轮（#142，主动发现）
+
+例行同步（无可认领）→ 承 #140 门禁自审计审 **eslint 侧**：`pnpm lint` = `eslint src`，而 `.config/eslint.config.mjs` 规则块声明全仓 `**/*.ts|tsx` + `**/*.astro`、hook 亦全仓 → **`tests/` 40 个 ts 文件不在 CI lint 覆盖内**，`eslint tests` 实测 **18 warnings**（15 no-unused-vars + 3 sort-imports）→ 先排除误报：根级 4 个 `*.config.ts` 是 `ignores` **有意排除**（注释「配置文件使用独立配置」）、根级 `vitest.config.ts`/`playwright.config.ts` 是 `.config/` 的薄 re-export shim **非重复** → 建单 **#142** → 修 `88733cb`（10 文件 24+/27−）：`lint`/`lint:fix` 扩 `eslint src tests` + 归一 18 warning（`_` 前缀符合配置既有约定 / 未用 import 成员删除）→ **PR #143**。验证：lint 0 problems、注入未用变量现被报出、**412 tests / 38 files 全过**、§6 全绿。**过程自查出并修正隐患**：误将 `branch-boost3.test.ts:99` 的 `enc`（函数体内有引用）加了 `_` 前缀，412 tests 仍全绿（断言不依赖该分支）= 静默测试弱化，已改回。
+
 ## 下一步（给下一棒）
 
-1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141/#143 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
 2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
 3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
@@ -125,4 +132,4 @@
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
 - **#120**：toast.ts 删留二选一，等人类。
-- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141**：等人类 review+merge（协议禁止自动 merge）。
+- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141、#142/#143**：等人类 review+merge（协议禁止自动 merge）。
