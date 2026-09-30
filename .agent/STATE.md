@@ -29,6 +29,8 @@
 
 **#122 合并前不要直推 `main`**：main 的 `Audit Dependencies` job 因 5 个新公告漏洞已失效（公告晚于主干最后绿 run 482），任何 push 都会红。一切改动（含 `.agent/**`、`docs/**`）先走分支。**#124/#127/#129/#131 的 Audit 红灯同因，#122 合并后 rebase 即绿。**
 
+> **第 20 轮复核（2026-09-30T17:30Z）**：`pnpm audit --audit-level=moderate` 在当前依赖状态下仍报 **5 漏洞（3 moderate + 2 high）→ exit 1**，**冻结规则依然成立**。另澄清一个易误判点：`gh run list --branch main --limit 100` 会返回 **60 个 failure**，但它们**全部是 2026-09-29T15:00Z 之前的历史**（SHA 经 `git merge-base --is-ancestor` 核实确在 main 上）；该时间点之后 main 共 16 个 run **全部 success**，含顶端 `46f53f4`（run 36651249360）。**「main 有 60 个红」是时间窗假象，main 顶端是绿的**（坑 20 的变体：分支过滤 + limit 组合会改变时间窗）。
+
 ## 开放 issue 现状
 
 - **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
