@@ -62,7 +62,7 @@ pnpm dev                 # http://localhost:4321
 | `pnpm lint` / `pnpm lint:fix`       | ESLint 检查 / 自动修复                                            |
 | `pnpm format` / `pnpm format:check` | Prettier 格式化 / 校验                                            |
 | `pnpm test:run`                     | Vitest 单元测试(单次)                                             |
-| `pnpm test:coverage`                | 覆盖率报告(70/60/70/70 阈值)                                      |
+| `pnpm test:coverage`                | 覆盖率报告(80/80/80/80 阈值)                                      |
 | `pnpm test:e2e`                     | Playwright 端到端测试                                             |
 | `pnpm quality:bundle`               | 构建体积预算                                                      |
 | `pnpm quality:theme`                | 主题对比度                                                        |

@@ -63,7 +63,7 @@ pnpm dev                 # http://localhost:4321
 | `pnpm lint` / `pnpm lint:fix`       | ESLint check / auto-fix                                               |
 | `pnpm format` / `pnpm format:check` | Prettier write / check                                                |
 | `pnpm test:run`                     | Vitest unit tests (single run)                                        |
-| `pnpm test:coverage`                | Coverage report (70/60/70/70 thresholds)                              |
+| `pnpm test:coverage`                | Coverage report (80/80/80/80 thresholds)                              |
 | `pnpm test:e2e`                     | Playwright end-to-end tests                                           |
 | `pnpm quality:bundle`               | Bundle budget check                                                   |
 | `pnpm quality:theme`                | Theme contrast check                                                  |
