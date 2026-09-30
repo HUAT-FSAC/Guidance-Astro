@@ -8,8 +8,8 @@ Production: [https://huat-fsac.eu.org](https://huat-fsac.eu.org) — zone route 
 
 ## Architecture
 
-- `astro.config.mjs:11` `output: 'server'` + `adapter: cloudflare({ imageService: 'compile' })`
-- `src/middleware.ts:19` generates per-request CSP nonce via `src/config/security.ts` and injects `nonce="…"` into every `<script>`; `Cache-Control: private, no-cache, must-revalidate` for HTML
+- `astro.config.mjs:67-68` `output: 'server'` + `adapter: cloudflare({ imageService: 'compile' })`
+- `src/middleware/` steps generate & apply per-request CSP nonce via `src/config/security.ts` (`nonce.ts:9` generates, `html-transform.ts:19` injects `nonce="…"` into every `<script>`) and `cache-policy.ts:12` sets `Cache-Control: private, no-cache, must-revalidate` for HTML
 - `pnpm build` emits `dist/server/entry.mjs` (Worker) + `dist/server/wrangler.json` (assets binding `ASSETS → ../client`) + `dist/client/` (static assets)
 - Deploy target is **Cloudflare Workers**, not `wrangler pages deploy`
 
@@ -152,7 +152,7 @@ For Pages-managed fallback: Pages → `huat-fsac` → Deployments → Retry / Ro
 
 ## Related Documentation
 
-- `docs/PROJECT_MANAGEMENT_MODEL.md:189` — release & deploy flow (broken auto-deploy note)
+- `docs/PROJECT_MANAGEMENT_MODEL.md:189` — release & deploy flow
 - `docs/plans/2026-08-13-cloudflare-worker-ssr-deploy-plan.md` — step-by-step cutover (Tasks 1–6)
 - `docs/WORKFLOW.md:50` — stage 5 DoD (`curl -sI … nonce-`)
 - [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
