@@ -238,6 +238,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #136（主动发现：全仓 file:line 引用内容级核验）并提交 PR #137 | 延展 #132 模式：`git -c core.quotePath=false ls-files -z` 全仓扫 `file:line`（豁免 openwiki/plans/reports/ROADMAP/WORKFLOW 日志行）55 处 · 三级解析（精确→相对→唯一 basename）+ **逐条读被引行与断言做内容比对** → 发现 **9 处内容漂移**（5 文件）：`astro.config.mjs:11/:12/:147` 指向已改写的 config header/第 12 行（实为 `:67` output server / `:68` adapter / `:204` og-image.jpg，其中 §7.6 漏 T-038 png→jpg 更正）、`src/middleware.ts:19` 指 EOF 13（middleware 已拆 `nonce.ts:9`/`html-transform.ts:19`/`cache-policy.ts:12`）、CONTRIBUTING `WORKFLOW.md:5/:6` 改 §5/§6 章节引用（免疫 §4/§7.4 追加漂移）、DEPLOYMENT `:155` 注释在 #133 后过期 → 中性化、TODOLIST 裸 `Hero.astro:NN` ×8 → `src/components/Hero.astro` + `src/sections/` 歧义排除（行号范围 ≤203 排除 4 行 overrides）· 建单 **#136** → 修 5 文件 16 行 `f48d2c3` · 验证：旧模式 grep 0 残留 + 6/6 内容断言 PASS + §6 全绿（lint/format/tsc/test 412/build）· 主坑=**行号在≠内容对**（9 处中 8 处范围通过但内容错，纯行号扫描器测不出）→ 分支 `auto/mimo-flash-20260930T113551Z/136-doc-lineref-drift` + PR #137 · 与 8 分支文件零交集（本行仅存本分支，合并时 §7.4 各轮行全保留） |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
