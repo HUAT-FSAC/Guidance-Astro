@@ -238,6 +238,8 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #121（主动发现）并提交 PR #122 | 门禁首关 `pnpm audit` 实测 5 漏洞（brace-expansion 3 条含 2 high、fast-uri 2 条 moderate，公告晚于主干最后绿 run 482）· override 提下限 brace-expansion 5.0.12 / fast-uri >=4.1.5 + lockfile 重解析 · 本机门禁 audit/lint/format/tsc/test 412/build/bundle/theme 全绿 · 分支 `auto/mimo-flash-20260930T113551Z/121-audit-override-bump` + PR #122 · CI run 36711338379 success 7/7（含 Audit Dependencies）· ⚠️ #122 合并前禁直推 main（Audit 会红） |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
