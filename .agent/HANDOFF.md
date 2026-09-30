@@ -40,22 +40,28 @@
 - 修复：一行恢复原指向。`git check-ignore` 双向验证（桩目录新路径仍忽略 ✓，内容目录新路径不再忽略 ✓）；`git status --ignored` 预先确认无隐藏垃圾会浮现。
 - CI run `36649026704` 7/7 success；无运行时产物变化，未部署。#118 自动关闭并已回填评论（含「纯配置无可写单测」说明）。
 
+### 第 3 轮：`public/robots.txt` → 建单 #119 → 实现并关闭（`2a905d0`）
+
+- 现状：线上 `/robots.txt` 是 CF content-signals 托管文本（源站缺失时的注入），无任何抓取指令。
+- 实现：新增 `public/robots.txt`（`User-agent: * / Allow: / / Sitemap: …/sitemap-index.xml`，76B）。因部署前无法预知 CF 是否覆盖源站文件，commit 用 `feat:`（不自动关单），线上验证后手动关。
+- 验证三层：构建产物 76B ✓ → 本地 `wrangler dev` ASSETS 带出 ✓ → 线上 `HTTP/2 200` 返回源站内容 ✓。**CF 注入让位**（仅在源站缺失时注入），无需 zone 人工配置。
+- 部署版本 `62778a8e-bbe0-4fbc-b405-b295a21183ef`；CI run `36649823634` 7/7；#119 手动关闭并回填报告。与 #116 形成「sitemap 167 条 + robots.txt 可发现」闭环。
+
 ---
 
 ## 二、交棒时主干状态
 
-- `main` 全绿（本地门禁 + CI 7/7）；线上与 `main` 同步（版本 `df007a5b`，#118 为纯配置改动不涉及线上产物）。
-- 开放 issue：**#101**（P1，阻塞于人类配 Secret）。#117、#118 已关闭。
+- `main` 全绿（本地门禁 + CI 7/7）；线上与 `main` 同步（版本 `62778a8e`）。
+- 开放 issue：**#101**（P1，阻塞于人类配 Secret）。#117、#118、#119 已关闭。
 - 工作区干净（LOCK 为本地运行时锁，不入库）。
 
 ---
 
 ## 三、下一棒要做（按优先级）
 
-1. **`public/robots.txt` 补 Sitemap 指令**（轮 3 候选）：线上 `/robots.txt` 目前只有 Cloudflare content-signals 注释块、无指令行（疑似 zone 级注入）。#116 后 sitemap 已有 167 条 URL，`Sitemap: https://huat-fsac.eu.org/sitemap-index.xml` 是自然收尾。**先实测**：加 `public/robots.txt` 后本地 `wrangler dev` 看 ASSETS 是否带出，部署后线上确认 zone 注入块与新指令是否共存；若 CF 完全接管 robots.txt 则回退并记档。需建单后动手。
-2. **备选建单**（每轮最多 1 个新 issue，先查重）：`src/utils/toast.ts`（443 行）全仓无引用，疑似死代码但实现完整（含 i18n）→ 建单让人决定，**不要直接删**。
+1. **`src/utils/toast.ts` 建单**（轮 4 候选）：443 行全仓无引用，疑似死代码但实现完整（含 i18n）→ 建单让人决定，**不要直接删**。建单时附引用扫描证据（`grep -r "toast" src/ tests/` 佐证）。
+2. **此后无已知可安全推进的事项**：剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13` scrolling、`share.ts:109` execCommand）价值低、需浏览器实测，勿动；「src/pages 静态页内链深入扫描」属新范围需先建单。若连续无事项，按接力协议 §九 停止并交接。
 3. **#101 阻塞**（人类配 Secret），**不要**在无 Secret 下把 deploy job 加回 `ci-cd.yml`。
-4. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13` scrolling、`share.ts:109` execCommand）价值低、需浏览器实测，勿动。
 
 ---
 

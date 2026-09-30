@@ -233,6 +233,8 @@ pnpm quality:theme     # 主题对比度通过
 
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 完成 #118 gitignore 误规则纠偏 | 溯源 8874314 把 src/pages/en/archive/ 错改为 src/content/docs/en/archive/ · 恢复原指向 03dc7c7 · git check-ignore 双向验证 ✅ · CI 36649026704 7/7 ✅ · #118 已关 |
 
+| 2026-09-30 | glm-5.3-flash-20260929T234352Z | 完成 #119 robots.txt 补全 | 源站缺失时 CF 注入托管文本 → 新增 public/robots.txt(Allow+Sitemap) 2a905d0 · 三层验证(构建产物/wrangler dev/线上 200) · CF 注入让位无需 zone 配置 · 部署 62778a8e · CI 36649823634 7/7 ✅ · #119 已关 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：

@@ -3,13 +3,13 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T00:35Z ｜ **当前 agent-id：** `glm-5.3-flash-20260929T234352Z` ｜ **状态：进行中（第 3 轮开始）**
+**最后更新：** 2026-09-30T00:55Z ｜ **当前 agent-id：** `glm-5.3-flash-20260929T234352Z` ｜ **状态：进行中（第 4 轮开始）**
 **本轮起点 HEAD：** `751607a`（工作区仅有上一棒未提交的 STATE/HANDOFF 更新，已补提为 `8cec201`）
 
 ## 当前活跃任务
 
-- 无进行中的任务。**#117、#118 均已实现、验证、关闭**（见「本棒已完成」第 2、3 条）。
-- 第 3 轮候选：`public/robots.txt` 补 `Sitemap:` 行（需先实测 zone 注入行为，见「下一步」2）。
+- 无进行中的任务。**#117、#118、#119 均已实现、验证、关闭**（见「本棒已完成」第 2-4 条）。
+- 第 4 轮候选：`src/utils/toast.ts` 死代码建单（留给人类决策，不直接删）。
 
 ## 本棒已完成
 
@@ -22,13 +22,17 @@
 3. **`03dc7c7` fix #118：`.gitignore` 英文归档忽略规则纠偏** —— push + CI 7/7 绿 + issue 已关并评论（无运行时产物变化，未部署）。
     - 溯源：`8874314`（2026-08-06）把原指向 `src/pages/en/archive/`（6 个 302 桩）的规则错改为 `src/content/docs/en/archive/`（69 个真实内容文件）。
     - 验证：`git check-ignore` 双向命中验证 + `git status --ignored` 确认无隐藏垃圾；CI run `36649026704` 7/7。
+4. **`2a905d0` feat #119：新增 `public/robots.txt`（全站允许抓取 + Sitemap 声明）** —— push + 部署 + CI 7/7 绿 + issue 手动关闭并评论。
+    - 部署前无法预知 CF 托管 robots.txt 是否覆盖源站，故 commit 用 `feat:` 而非 `fix:`（不自动关单），线上验证后手动关。
+    - 三层验证：构建产物 76B ✓ → 本地 `wrangler dev` ASSETS 带出 ✓ → 线上 `HTTP/2 200` 返回源站内容 ✓。**CF content-signals 注入让位**（注入仅发生在源站缺失时），无需 zone 人工配置。
+    - 部署版本 `62778a8e-bbe0-4fbc-b405-b295a21183ef`；CI run `36649823634` 7/7。
 
 ## 下一步（给下一棒）
 
-1. **`public/robots.txt`**（轮 3 候选）：线上 `/robots.txt` 只有 Cloudflare content-signals 注释块、无指令行。#116 后 sitemap 已有 167 条，补 `Sitemap: https://huat-fsac.eu.org/sitemap-index.xml` 是自然收尾。**先实测**：本地 `wrangler dev` 确认 ASSETS 会带出 `public/robots.txt`，部署后线上确认 zone 注入块与新指令是否共存；若 CF 完全接管 robots.txt 则回退并记档。
-2. 备选建单（**每轮最多新建 1 个 issue**）：`src/utils/toast.ts`（443 行全仓无引用，疑似死代码，需人决定删留，不要直接删）。
-3. 剩余 2 条 `astro check` hint（`BilibiliVideo.astro` scrolling、`share.ts` execCommand）价值低、需浏览器实测，勿动。
+1. **`src/utils/toast.ts` 建单**（轮 4 候选）：443 行全仓无引用，疑似死代码但实现完整（含 i18n），需人类决定删留，**不要直接删**。建单时附引用扫描证据。
+2. 此后无已知可安全推进的事项：剩余 2 条 `astro check` hint（`BilibiliVideo.astro` scrolling、`share.ts` execCommand）价值低、需浏览器实测，勿动；#116 曾提的「src/pages 静态页内链扫描」已在 #117 测试中以静态页路由为合法集合部分覆盖，深入属新范围需建单。
+3. 若连续无事项，按接力协议 §九 触发停止条件并交接。
 
 ## 阻塞项
 
-- **#101**（恢复 CI 自动部署）：阻塞于**人类操作**——需在仓库 Settings 配置 `CLOUDFLARE_API_TOKEN` Secret。在此之前线上部署走本机 `pnpm deploy:worker`（本棒已验证可用，成功 1 次）。
+- **#101**（恢复 CI 自动部署）：阻塞于**人类操作**——需在仓库 Settings 配置 `CLOUDFLARE_API_TOKEN` Secret。在此之前线上部署走本机 `pnpm deploy:worker`（本棒已验证可用，成功 2 次）。
