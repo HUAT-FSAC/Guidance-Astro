@@ -3,7 +3,7 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T23:58Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 16 轮完成，进行中（无操作计数 0/5）
+**最后更新：** 2026-09-31T00:12Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 17 轮完成（验证轮），进行中（无操作计数 0/5）
 **本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142，**本文件所在，最新全量记录**）
 
 > ⚠️ **记录文件分散在十一个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，**第 16 轮（本版，最新）随 PR #143**。冲突一律取**最新（PR #143，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142）。
@@ -119,6 +119,10 @@
 ### 第 16 轮（#142，主动发现）
 
 例行同步（无可认领）→ 承 #140 门禁自审计审 **eslint 侧**：`pnpm lint` = `eslint src`，而 `.config/eslint.config.mjs` 规则块声明全仓 `**/*.ts|tsx` + `**/*.astro`、hook 亦全仓 → **`tests/` 40 个 ts 文件不在 CI lint 覆盖内**，`eslint tests` 实测 **18 warnings**（15 no-unused-vars + 3 sort-imports）→ 先排除误报：根级 4 个 `*.config.ts` 是 `ignores` **有意排除**（注释「配置文件使用独立配置」）、根级 `vitest.config.ts`/`playwright.config.ts` 是 `.config/` 的薄 re-export shim **非重复** → 建单 **#142** → 修 `88733cb`（10 文件 24+/27−）：`lint`/`lint:fix` 扩 `eslint src tests` + 归一 18 warning（`_` 前缀符合配置既有约定 / 未用 import 成员删除）→ **PR #143**。验证：lint 0 problems、注入未用变量现被报出、**412 tests / 38 files 全过**、§6 全绿。**过程自查出并修正隐患**：误将 `branch-boost3.test.ts:99` 的 `enc`（函数体内有引用）加了 `_` 前缀，412 tests 仍全绿（断言不依赖该分支）= 静默测试弱化，已改回。
+
+### 第 17 轮（验证轮：11 个 PR 的合并安全预演）
+
+无可认领 issue → 转为**交付风险审计**：`git merge-tree` 显示 11 个 PR 各自对 main **零冲突**（rc=0），但逐个实际合并暴露真实风险——**除 #122 外每个 PR 都在 3 个记录文件冲突**（11 个分支全改 `STATE`/`HANDOFF`/`WORKFLOW §7.4`），而**内容文件零冲突**（唯一同文件的 #135/#137 `ARCHITECTURE.md` 不同行，实测自动合并成功）。跑通完整合并序列（冲突按既定规则解决）后得出**可核验的合并手册**并写入 `HANDOFF §二·〇`：合并顺序（#122 优先解锁 Audit → 其余 → 链式 #139→#141→#143）、确定性解法（STATE/HANDOFF 取进来方、§7.4 两边全保留）、**验收标准 `grep -c mimo-flash docs/WORKFLOW.md` == 13**（去重后并集；直接相加会得 16，因 #141 携 2 行、#143 携 3 行）、squash 需手动关 12 个 issue。
 
 ## 下一步（给下一棒）
 
