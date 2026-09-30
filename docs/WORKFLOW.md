@@ -237,6 +237,7 @@ pnpm quality:theme     # 主题对比度通过
 
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #128（主动发现：协议完整性扫描）并提交本 PR | 第 5-7 轮无操作 ×3（sitemap 167/167 200 · 35 重定向全通 · 65 外链 0 真死链 · 首页 30 资源 200 · 7 安全头齐 · 测试无 .only/.skip · 密钥/env 扫描 0 泄漏）后重启：>500KB 文件 md5 唯一重复对 = `planning-control/planning-and-control/showcase.webm`（23.5MB，与 `videos/showcase.webm` 字节全同，zh/en 内容页均引正本，副本全仓零引用）→ 建单 #128 认领 → `git rm`（`945d951`）→ 门禁全绿 lint/format/tsc/test 412/build + 产物含正本 chunk · 分支 `auto/mimo-flash-20260930T113551Z/128-dedup-webm` + 本 PR · 与 #122/#124/#127 文件零交集 · 无操作计数清零（0/5）· 待办：ACCOUNT_ID 漂移等 #124 合并后建单 |
 
 ### 7.5 handoff 格式
 
