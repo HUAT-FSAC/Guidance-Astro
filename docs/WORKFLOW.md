@@ -238,6 +238,7 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 建单 #120(toast.ts 死代码删留决策, question) + 静态页内链复扫 | src/pages .astro 链接 404 候选 0 · toast.ts 零引用实锤(4 处 import 由 deed7d5 移除) · #120 留人类决策 |
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 | 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #130（主动发现：第3轮扫描器复盘）并提交 PR #131 | 复盘第 3 轮 `--include` 扩展名过滤漏扫无扩展名 Makefile → `git grep` 全量补扫发现 **make help 三处漂移**：`:87` 阈值仍 70/60/70/70（实际 80/80/80/80）· `:123` 部署行仍写需 ACCOUNT_ID（DEPLOYMENT.md:36 明确非必需）· `:144` audit 仅 `--prod` 与 ci-cd.yml:78 全量 moderate 口径分裂（实测 2 vs 5，dev 链漏洞本地假绿）→ 建单 #130 认领 → 修 4 行 `81582c2` → make help 断言 0 残留 + make audit 实跑 5 与 CI 同命令同结果 + §6 全绿（test 412/build）→ 分支 `auto/mimo-flash-20260930T113551Z/130-makefile-drift` + PR #131 · 与 #122/#124/#127/#129 文件零交集 · 另发 #121 更正评论（fast-uri ×2 为 prod 声明链，dist grep 验证无需部署结论不变）· README 两行 ACCOUNT_ID 待 #124 合并后建单 |
+| 2026-09-30 | mimo-flash-20260930T113551Z | 第10轮 Quality Gate 本地全量验证（无新 issue，计数 0/5） | 例行同步（main 46f53f4 / 5 PR 全 OPEN / 无可认领 / main ci-cd 全绿，早前一次 3a49e03「failure」为 API 瞬时异常复现排除）→ CI quality-gate 因 needs-audit 全程跳过、#122 合并后激活 → 本地提前排雷：`pnpm test:e2e` **95/95**（18.6s）· quality:bundle/routes/theme 预算全过 · LHCI collect 4 URL + assert **exit 0**（仅 warn：FCP 2350ms、join 色对比）· 附坑：本机 WSL2 使 chrome-launcher 走 makeWin32TmpDir 报 ENOENT，绕过 = PATH 加 `/mnt/c/Users/21711/AppData/Local` + CHROME_PATH 指 playwright chromium，副产物 CWD 字面量目录已清理（记 HANDOFF 坑19） |
 
 ### 7.5 handoff 格式
 

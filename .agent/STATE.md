@@ -3,7 +3,7 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T14:45Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 9 轮完成，进行中（无操作计数 0/5）
+**最后更新：** 2026-09-30T15:10Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 10 轮完成，进行中（无操作计数 0/5；第 10 轮为验证轮，无新 issue）
 **本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130，**本文件所在，最新全量记录**）
 
 > ⚠️ **记录文件分散在五个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，**第 9 轮（本版，最新）随 PR #131**。冲突一律取**最新（PR #131）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130）。
@@ -68,6 +68,20 @@
 ### 第 9 轮（#130）
 
 复盘第 3 轮 `--include` 扩展名过滤漏洞 → `git grep` 全量扫 `70/60/70/70` + `TOKEN/ACCOUNT_ID` → 发现 **Makefile 三处漂移**（`:87` help 阈值、`:123` 部署行 ACCOUNT_ID、`:144` audit 仅 `--prod` 与 CI 全量 moderate 口径分裂实测 2 vs 5）→ 建单 **#130** → 修 3 处（4 行）`81582c2` → 断言：`make help` 0 残留 + 新文案在；`make audit` 实跑 5 与 `ci-cd.yml:78` 同命令同结果；§6 全绿（lint/format/tsc/test 412/build）→ **PR #131**。另：**#121 发更正评论**（fast-uri ×2 prod 声明链、无需部署结论经 dist grep 验证不变）。
+
+### 第 10 轮（Quality Gate 本地全量验证，无新 issue）
+
+例行同步：main 仍 `46f53f4`、5 个 PR 全 OPEN、无可认领 issue（#101/#120 仍阻塞）、无他人新活动、main 的 ci-cd 最新 run 全绿（早前一次查询浮出的 3a49e03/3852436「failure」复现为 API 瞬时异常，重查一致为全绿）。
+
+转验证模式（CI Quality Gate 因 needs-audit **全程跳过**，#122 合并后会重新激活——提前本地排雷）：
+
+1. **E2E**：`pnpm test:e2e` → **95/95 passed**（18.6s，webServer `preview:ssr` 自动起）——本会话首次全量 e2e。
+2. **预算三件套**：`quality:theme` ✅ / `quality:bundle` ✅（Top CSS 120.89KB）/ `quality:routes` ✅。
+3. **LHCI**：collect 4 URL（`/`、`/docs-center/`、`/team/`、`/join/`）+ assert **exit 0**（仅 warn：FCP 2350ms>2000、join 页 color-contrast、INP auditRan；error 级 perf≥0.8/title/lang/alt 全过）。
+    - ⚠️ **本机是 WSL2**（`6.18.33.2-microsoft-standard-WSL2`）：chrome-launcher 走 WSL 分支，会话 PATH 无 `/mnt/c/Users/...` 段 → 临时目录构造成 `undefined:/Users/undefined/...` 报 ENOENT。**绕过**：`PATH="/mnt/c/Users/21711/AppData/Local:$PATH"` + `CHROME_PATH=~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`（坑 19）。**纯本地环境问题，CI ubuntu-latest 不受影响**（历史 Quality Gate 7/7 绿含 LHCI）。
+    - 运行副产物：chrome-launcher 在 CWD 造出 4 个 `C:\Users\...` 字面量目录，已清理（未入库）。
+
+**结论**：Quality Gate 五环节本地全绿 → #122 合并后 4 个功能 PR（#124/#127/#129/#131）rebase 转绿的置信度完整（这些 PR 均不改动 LHCI 审计页面与运行时产物）。
 
 ## 下一步（给下一棒）
 

@@ -1,7 +1,7 @@
 # 交接说明（HANDOFF）
 
 **本棒 Agent：** `mimo-flash-20260930T113551Z`
-**时间：** 2026-09-30T11:35Z 起（UTC），第 1-9 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9 轮连续产出）
+**时间：** 2026-09-30T11:35Z 起（UTC），第 1-10 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9 轮连续产出，第 10 轮验证轮）
 **仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 基线 `main@46f53f4`
 **产出分支：** `auto/.../121-audit-override-bump`（PR **#122**）、`auto/.../123-readme-dead-links`（PR **#124** = #123+#125）、`auto/.../126-docs-index-drift`（PR **#127** = #126）、`auto/.../128-dedup-webm`（PR **#129** = #128）、`auto/.../130-makefile-drift`（PR **#131** = #130，**最新全量记录**）
 
@@ -23,6 +23,7 @@
 | 5-7 | **无操作 ×3（计 3/5）**：sitemap 167/167、首页 30 资源 200、7 安全头齐、`_headers`↔`security.ts` 一致、35 重定向全通、65 外链 0 真死链、测试无 `.only/.skip`、manifest 图标齐、密钥/env 扫描 0 泄漏                                                                   | —       |
 | 8   | 协议完整性扫描 → 两份 **23.5MB md5 相同 webm**，副本零引用 → 建单 **#128** → `git rm` `945d951` → 门禁全绿（test **412**/build）→ **PR #129** → 计数清零                                                                                                              | PR #129 |
 | 9   | 复盘第 3 轮 `--include` 漏扫 → `git grep` 全量补扫 → **Makefile 三处漂移**（help 阈值 / 部署行 ACCOUNT_ID / audit `--prod` vs CI 全量实测 2 vs 5）→ 建单 **#130** → 修 4 行 `81582c2` → `make help`/`make audit` 实测断言 + §6 全绿 → **PR #131**；另发 #121 更正评论 | PR #131 |
+| 10  | 例行同步无新事项 → **Quality Gate 本地全量验证**（CI 因 needs-audit 全程跳过，#122 合并后激活——提前排雷）：E2E **95/95** ✅ · bundle/routes/theme 预算 ✅ · LHCI collect 4 URL + assert **exit 0** ✅（WSL 环境绕过见坑 19）→ 无新 issue，计数保持 0/5                | —       |
 
 ### 要点（下一棒可能用到）
 
@@ -33,12 +34,13 @@
 5. **#128 重复副本（`945d951`）**：`git ls-files` >500KB 逐一 md5 `uniq -w32 -D`——全仓唯一重复对即此。删零引用重复文件不动历史（blob 共享）。
 6. **#130 Makefile（`81582c2`）**：`make help` 的 `##` 注释是用户可见输出；`make audit` 原 `--prod` **无法复现 CI 判定**（实测 2 vs 5），已改 `--audit-level=moderate` 与 `ci-cd.yml:78` 一字不差。**教训见坑 17**（`--include` 扩展名过滤漏 Makefile）。README 同问题两行仍待 #124 合并（见 STATE「已观察未建单」）。
 7. **已观察未建单**（见 STATE）：README ACCOUNT_ID（等 #124）、GitHub Project `projects/1`（缺 scope 不可判定）、tests 未入 tsc（预防性缺口无实证，保守不建单）。
+8. **Quality Gate 本地验证（第 10 轮）**：CI 的 quality-gate job `needs: build`，而 build `needs: audit`——main Audit 一红它就全程 skipped（#122 合并前）。本地五环节已全绿：`quality:bundle/routes/theme` + `pnpm test:e2e`（**95/95**）+ LHCI（`pnpm dlx @lhci/cli@0.15.1 collect/assert --config=.config/lighthouserc.json`，4 URL，assert 仅 warn）。**LHCI 在本机会触发 WSL 坑（见坑 19）**；审计页面为 `/`、`/docs-center/`、`/team/`、`/join/`——本棒 5 个 PR 均不碰这些页面，#122 合并后 rebase 转绿置信度完整。
 
 ## 二、交棒时主干状态
 
-- **⚠️ `main` 顶端 `46f53f4` 的 `Audit Dependencies` 门禁已失效**：main 下次任何 push 该 job 必红（公告晚于最后绿 run 482）。**PR #122 合并前禁止直推 `main`**——本棒九轮记录都只能落在分支上。
+- **⚠️ `main` 顶端 `46f53f4` 的 `Audit Dependencies` 门禁已失效**：main 下次任何 push 该 job 必红（公告晚于最后绿 run 482）。**PR #122 合并前禁止直推 `main`**——本棒十轮记录都只能落在分支上。
 - **PR #122 / #124 / #127 / #129 / #131 均待人类 review+merge**（协议禁止自动 merge）。除 #122 外的 Audit 红灯 = main 既有失效，#122 合并后 rebase 即绿（各 PR body 已声明）。
-- 本地门禁（第 9 轮实测）：lint / format / tsc / test **412** / build 全绿；`make audit` 5 漏洞 = 与 CI 同口径同判定（main 既有，#122 合并后归 0）；audit 修复后（#122 分支）为 0。
+- 本地门禁（第 10 轮实测，Quality Gate 五环节含此前 CI 跳过的部分）：lint / format / tsc / test **412** / build / **e2e 95/95** / bundle·routes·theme 预算 / **LHCI assert exit 0** 全绿；`make audit` 5 漏洞 = 与 CI 同口径同判定（main 既有，#122 合并后归 0）。
 - 线上健康（第 2/5 轮实测）：`/` 200 + CSP nonce、sitemap **167/167 全 200**、首页 30 资源 200、7 安全头齐、35 重定向全通。本棒改动不进产物，**未部署**（线上 `62778a8e` = main 产物，一致）。
 - 开放 issue：**#101**（人类配 Secret）、**#120**（question）、**#121**（待 #122）、**#123/#125**（待 #124）、**#126**（待 #127）、**#128**（待 #129）、**#130**（待 #131）。
 - 开放 PR：**#122、#124、#127、#129、#131**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot **不碰不 merge**。
@@ -80,6 +82,7 @@
 16. **外链 404 分类再建单**：占位符（`YOUR_USERNAME`/`<page>`）、「形如…」示例、历史快照、匿名不可见的 settings/私有看板——都不算死链；仅确定性 404/410 且指向真实内容才建单（第 6 轮 65 外链 0 真死链的判定依据）。
 17. **⚠️ 全量扫描别用 `--include` 扩展名过滤**（第 9 轮复盘）：第 3 轮 `grep --include="*.md" *.ts ...` 漏了**无扩展名的 Makefile**（`make help` 的 `##` 注释是用户可见输出，与 README 同期漂移未被发现）。定稿前用 `git grep`（tracked 全量、天然排除 dist/node_modules）复扫一遍关键模式。
 18. **pnpm audit 的 `dev: False` ≠ 影响运行时**：`dependencies` 里的构建期 CLI（如 `@astrojs/check`）链也会标 prod——判「是否需部署」要 grep `dist/server` 实证，别只看 dev 标记（#121 更正评论的来龙去脉）。
+19. **⚠️ 本机是 WSL2，LHCI/chrome-launcher 会踩坑**（第 10 轮）：`is-wsl` 检测 → chrome-launcher 走 `makeWin32TmpDir`，但本会话 PATH 无 `/mnt/c/Users/...` 段 → 临时目录构造为 `undefined:/Users/undefined/...` 报 ENOENT。**绕过**：`export PATH="/mnt/c/Users/<Windows用户名>/AppData/Local:$PATH"`（Windows 用户名以 `ls /mnt/c/Users/` 为准，本机为 `21711`）+ `export CHROME_PATH=$HOME/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`。**运行副产物**：chrome-launcher 会在 CWD 造出 `C:\Users\...` 字面量目录（4 个/次）——跑完 `find . -maxdepth 1 -name 'C:*lighthouse*' -type d -exec rm -rf {} +` 清理。CI（ubuntu-latest）无此问题。
 
 ## 六、关键命令速查
 
@@ -119,4 +122,4 @@ curl -s https://huat-fsac.eu.org/sitemap-0.xml | grep -o '<loc>' | wc -l   # 167
 
 - `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成；本棒走 issue 线（#121→PR #122、#123+#125→PR #124、#126→PR #127、#128→PR #129、#130→PR #131），`§7.4` 已逐轮追加日志行（随各自分支入库）。
 - 上一棒 `glm-5.3-flash-20260929T234352Z`（8 轮，#117/#118/#119 闭环、#120 建单、§九.1 停止）的结论与坑位全部沿用；本棒新增坑 4（mise PATH）、8（comment 反引号）、11-18（社区文件/prettier 破损表格/锚点 slug/pnpm 子命令/资源判定/外链分类/全量扫描过滤器/audit dev 标记），并把坑 7 展开为可复用套路。
-- 上棒「可接手 issue 仅 #101/#120」的判断在本棒起点仍成立，故进入主动发现模式：产出 **#121/#123/#125/#126/#128/#130 六单五 PR**（中途 3 轮无操作后靠协议完整性扫描 + 扫描器复盘连续重启产出）。
+- 上棒「可接手 issue 仅 #101/#120」的判断在本棒起点仍成立，故进入主动发现模式：产出 **#121/#123/#125/#126/#128/#130 六单五 PR**（中途 3 轮无操作后靠协议完整性扫描 + 扫描器复盘连续重启产出），第 10 轮完成 Quality Gate 本地全量验证（e2e 95/95 + LHCI 过，见一.8 与坑 19）。
