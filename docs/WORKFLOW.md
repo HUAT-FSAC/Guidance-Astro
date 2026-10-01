@@ -239,6 +239,10 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-09-30 | glm-5.3-flash-20260929T234352Z | 停止（接力协议 §九.1） | 轮6-8 连续 3 轮无可安全推进事项 · main 3f5e7d4 CI 7/7 绿 · 线上版本 62778a8e 健康 · 交棒下一棒 |
 | 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #126（主动发现：docs 索引比对）并提交 PR #127 | md 锚点扫描 0 broken（修正 GitHub slug 去句点规则，首轮 3 条系算法误报）· pnpm 脚本/make 目标 vs package.json/Makefile/ci-cd.yml 全存在（排除 audit/dlx/exec 子命令误报）· src TODO 0 · 内容 en 90 在位 → 转 docs/ 索引比对发现 `docs/README.md` 目录树缺 `CONTRIBUTING-content.md`/`HANDOFF-2026-09-19.md`/`agents/` · 树 +3 行 `835be3b` · 集合比对 16==16 零差异 + prettier ✅ · 分支 `auto/mimo-flash-20260930T113551Z/126-docs-index-drift` + PR #127 · 与 #122/#124 文件零交集，合并顺序无约束 · 另记待办：README 部署行 ACCOUNT_ID 漂移，#124 合并后建单（同表格必冲突） |
 
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #121（主动发现）并提交 PR #122 | 门禁首关 `pnpm audit` 实测 5 漏洞（brace-expansion 3 条含 2 high、fast-uri 2 条 moderate，公告晚于主干最后绿 run 482）· override 提下限 brace-expansion 5.0.12 / fast-uri >=4.1.5 + lockfile 重解析 · 本机门禁 audit/lint/format/tsc/test 412/build/bundle/theme 全绿 · 分支 `auto/mimo-flash-20260930T113551Z/121-audit-override-bump` + PR #122 · CI run 36711338379 success 7/7（含 Audit Dependencies）· ⚠️ #122 合并前禁直推 main（Audit 会红） |
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #123（主动发现：README 质量）并提交 PR #124 | 全仓 md 相对链接扫描发现 README 中英各 2 死链（`./CONTRIBUTING.md` 等根路径 404，实际在 `.github/`）+ 结构树把 4 个社区文件画在根目录 + en 命令表分隔行列数错误与 `make help` 并行（既有破损）· 修 2 文件 +9/−14，复扫 68 条 0 broken · prettier/lint/format ✅ · 分支 `auto/mimo-flash-20260930T113551Z/123-readme-dead-links` + PR #124 · CI Lint/Type/Tests 绿，Audit 红为 main 既有失效（#121，待 #122 合并后 rebase 即绿，PR body 已声明） |
+| 2026-09-30 | mimo-flash-20260930T113551Z | 认领 #125（主动发现：覆盖率阈值描述漂移）并随 PR #124 交付 | 全仓 `70/60/70/70` 扫描发现 README 中英 `test:coverage` 行写旧阈值，实际 `.config/vitest.config.ts:12-17` 自 T-026 起为 80/80/80/80（`ARCHITECTURE.md:63` 已正确）· WORKFLOW:67/174 日志与 ROADMAP:22 时间切片不改 · 修 2 行 +2/−2（等长，表格对齐不变）`49f18a1` · prettier ✅ · 实测独立分支会与 #124 同表格真实冲突（prettier 对 main 破损表格输出整表去对齐）→ **折入 PR #124**（`Closes #125`，commit 拆分保持 scope 纯净） |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：
