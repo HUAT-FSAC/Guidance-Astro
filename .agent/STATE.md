@@ -3,55 +3,36 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-01T12:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 21 轮完成（#148 建单+PR #149），进行中（无操作计数 0/5）
-**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142 + 第 16/17 轮记录）、`auto/.../144-ogimage-drift`（PR #145 = #144 + 第 18 轮记录）、`auto/.../146-labeler-and-semantics`（PR #147 = #146，**此前最新全量记录**）、`auto/muse-spark-20261001T114700Z/148-project-automation-dead-jobs`（PR #149 = #148，**本文件所在，最新全量记录**）
+**最后更新：** 2026-10-01T13:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 22 轮完成（14 PR 全合并，main 已解锁），进行中（无操作计数 0/5）
+**主干：** `main@35e1abc`（CI 全绿：Audit/Lint/Type/Tests/Build/QualityGate/Preview）｜ **已关 issue：** #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148（15 个）｜ **开放：** #101（人类配 Secret）、#120（question）
 
-> ⚠️ **记录文件分散在十四个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，第 16-17 轮随 PR #143，第 18 轮随 PR #145，**第 19-20 轮随 PR #147**，**第 21 轮（本版，最新）随 PR #149**。冲突一律取**最新（PR #149，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142 / #144 / #146 / #148）。
+> 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
 ## 当前活跃任务
 
-- **#121**（P1）：pnpm audit 5 漏洞 → 修复完成，**PR #122 待人类合并**（CI 7/7 success）。第 9 轮补发**更正评论**：fast-uri ×2 实为 prod 声明链（`@astrojs/check` 在 dependencies），brace-expansion ×3 才是 dev 链；「不进运行时产物无需部署」结论经 `dist/server` grep 验证不变。
-- **#123 + #125**（P3×2）：README 死链/结构树/英文命令表 + 阈值描述 → **PR #124 待人类合并**（Lint/Type/Tests 绿；Audit 红为 main 既有）。
-- **#126**（P3）：docs/README.md 目录树缺 3 条 → **PR #127 待人类合并**（同绿）。
-- **#128**（P3）：归档视频 23.5MB 零引用副本 → **PR #129 待人类合并**（同绿）。
-- **#130**（P3）：Makefile 三处漂移（help 阈值 / 部署行 ACCOUNT_ID / audit 仅 --prod）→ 修复完成（`81582c2`），**PR #131 待人类合并**（门禁本地全绿）。
-- **#132**（P3）：`docs/PROJECT_MANAGEMENT_MODEL.md` 发布部署小节 5 处与现状矛盾（称「自动部署已恢复」+ 要配 ACCOUNT_ID）→ 修复完成（`10aba9c`），**PR #133 待人类合并**（门禁本地全绿；条件式表述使 #101 完成后无需回改）。
-- **#134**（P3）：quality:lighthouse 链路两处失效（脚本裸 `lhci` 未装依赖必挂 + lighthouserc 重复键致 error 0.80 底线静默失效）→ 修复完成（`d43dfe9`），**PR #135 待人类合并**（本地端到端 exit 0 + 门禁全绿；零依赖变更）。
-- **#136**（P3）：现行文档 `file:line` 引用内容级漂移 9 处（5 文件）→ 修复完成（`f48d2c3`），**PR #137 待人类合并**（55 引用复扫 + 6/6 内容断言 + 门禁全绿）。
-- **#138**（P3）：CONTRIBUTING 图片压缩指引双失效（`pnpm exec sharp-cli` 未装依赖 + `optimize-images.mjs` 硬编码 `/workspace/*` 静默空跑）→ 修复完成（`a2e5853`），**PR #139 待人类合并**（沙箱假仓实跑 exit 0 + 等价性证明 + 门禁全绿）。
-- **#140**（P3）：`format:check` glob 窄于 lint-staged → 26 文件（含 `scripts/**` 8 个门禁执行体）在 CI 格式校验盲区，注入格式问题 exit 0 放行 → 修复完成（`41c3289`，glob 扩 `{src,tests,scripts}` + 归一存量），**PR #141 待人类合并**（盲区反向验证 exit 1 拦截 + token 零差异 + 门禁全绿）。md/yml 扩展名与 `.github/` 目录集按收敛原则留后续。
-- **#142**（P3）：`pnpm lint` 只 `eslint src` → `tests/` 40 个 ts 文件不在 CI lint 门禁内（18 warnings 从未暴露）→ 修复完成（`88733cb`，扩 `eslint src tests` + 归一 18 warning），**PR #143 待人类合并**（0 problems + 注入实证 + 412 tests 全过）。不加 `--max-warnings`（阻断策略留人类）。
-- **#144**（P3）：og:image 决策留痕残留漂移 2 处（§7.6 验证行仍校验 png，与同段决策行矛盾 = #136 部分修复；ADR-002:42 过期行号）→ 修复完成（`84baa42`），**PR #145 待人类合并**（3/3 内容断言 + 线上 curl 实测 + §6 全绿；决策行与 #137 逐字一致故合并无冲突）。
-- **STATE 挂起项已结**：`check-bundle-budget.mjs` 的 og-image 预算条目 —— `public/og-image.png` 系 ADR-002:57 有意保留的历史遗存，条目**有效应保留**，无需建单。
-- **#146**（P3）：`.github/labeler.yml` 两处缺陷 —— ① `breaking-change` 因「无顶层键默认 any(OR)」被打到**所有** PR；② `size:xs` 因 workflow 缺 `issues: write` 无法创建 → **永久失效**。修复 `850979d`（仅 ① 显式包 `all:`）→ **PR #147 待人类合并**（本地复现器验证：修复前与线上标签 3/3 吻合，修复后 6/6 断言 PASS）。**② 待人类决策**：建议手工创建 `size:xs` label（官方替代方案），不要给 `pull_request_target` 扩 `issues: write`。
-- **#148**（P3）：`.github/workflows/project-automation.yml` 两个 job 失效 —— ① `check-milestone-deadline` 永不运行（`on:` 无 schedule 触发，旧 `if: github.event.schedule` 恒假；近 10 run 全 skipped；预警写死 `issue_number: 1` 而 #1 实为已合并 PR）；② `update-issue-status` 空转（脚本只 `console.log`、零 `github.rest` 写调用，issue 事件每次白跑一次 checkout）→ 修复 `b247567`（两处改 `if: false` 显式禁用 + NOTE 注释，零行为变更）→ **PR #149 待人类合并**（YAML 解析 OK + 旧可执行条件 0 残留 + §6 全绿 lint/tsc/format/test 412/build）。**未动**：`update-linked-issues` 缺 `issues: write`（无失败实证，保守不动）与 `add-to-project` 的 `PROJECT_TOKEN` Bad credentials（run 36742311392，属 secret/看板侧，需人类轮换/确认 projects/1）。
+- 无（第 22 轮已合并全部 14 PR，15 个 issue 全关）。main 已解锁，可直推记录文件、可正常建单走分支。
+- **新候选（此前被 #122/#124 阻塞，现已解锁）**：
+    1. README 部署行 ACCOUNT_ID 漂移（`README.md:70`/`README.en.md:71`，参照 #130 文案，2 行）——见§已观察第 1 条。
+    2. `format:check` 剩余缺口（扩展名集 `md`/`yml`/`astro` + `.github/` 目录集，24 文件归一，yml 语义敏感宜逐个确认）——见§已观察第 3 条。
 
 ## ⚠️ 重要警告（给下一棒）
 
-**#122 合并前不要直推 `main`**：main 的 `Audit Dependencies` job 因 5 个新公告漏洞已失效（公告晚于主干最后绿 run 482），任何 push 都会红。一切改动（含 `.agent/**`、`docs/**`）先走分支。**#124/#127/#129/#131 的 Audit 红灯同因，#122 合并后 rebase 即绿。**
+**main 直推冻结已解除**（第 22 轮）：`main@35e1abc` CI 全绿（含 Audit，run 36863298437）。记录文件（`.agent/**`、`docs/WORKFLOW.md:§7.4`）恢复惯例直推；代码/文档修复仍走独立分支+PR（WORKFLOW §5）。
 
-> **第 20 轮复核（2026-09-30T17:30Z）**：`pnpm audit --audit-level=moderate` 在当前依赖状态下仍报 **5 漏洞（3 moderate + 2 high）→ exit 1**，**冻结规则依然成立**。另澄清一个易误判点：`gh run list --branch main --limit 100` 会返回 **60 个 failure**，但它们**全部是 2026-09-29T15:00Z 之前的历史**（SHA 经 `git merge-base --is-ancestor` 核实确在 main 上）；该时间点之后 main 共 16 个 run **全部 success**，含顶端 `46f53f4`（run 36651249360）。**「main 有 60 个红」是时间窗假象，main 顶端是绿的**（坑 20 的变体：分支过滤 + limit 组合会改变时间窗）。
+> 历史备注（冻结期 2026-09-30~2026-10-01）：`pnpm audit` 公告晚于主干最后绿 run，`#122` 合并前禁直推 main；`gh run list --branch main --limit 100` 的 60 个 failure 全是 2026-09-29T15:00Z 前历史（时间窗假象，坑 20 变体）。
 
 ## 开放 issue 现状
 
 - **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
 - **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
-- **#121**（P1，本棒）：待 PR #122 合并。
-- **#123/#125**（P3，本棒）：待 PR #124 合并。
-- **#126**（P3，本棒）：待 PR #127 合并。
-- **#128**（P3，本棒）：待 PR #129 合并。
-- **#130**（P3，本棒）：待 PR #131 合并。
-- **#132**（P3，本棒）：待 PR #133 合并。
-- **#134**（P3，本棒）：待 PR #135 合并。
-- **#136**（P3，本棒）：待 PR #137 合并。
-- **#138/#140/#142/#144/#146/#148**（P3，本棒）：分别待 PR #139/#141/#143/#145/#147/**#149** 合并。
-- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141、#143、#145、#147、#149**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
+- 开放 PR：无（本棒 14 个全关：9 merged + 5 superseded-closed）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
-- **README 部署行 ACCOUNT_ID 漂移**：`README.md:70` / `README.en.md:71` 写 `pnpm deploy:worker`「需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`」——**Makefile 同问题已在 #130 修复**，README 两行因位于 PR #124 拆行区域（`README.en.md:71` 正是 #124 拆出行），**#124 合并后**建单修复（2 行，参照 #130 的 Makefile 文案）。
-- **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
-- **`format:check` 覆盖缺口的剩余部分**（第 15 轮建单 #140 时收敛）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——全仓不合规 26 项中 `.github/` 15 个 yml（实测 prettier 改动为纯引号风格：`ci-cd.yml` 2 行、`labeler.yml` 102 行、`dependabot.yml` 0 行）、`src/content/docs/**` 7 个 `.md`（在 `src/` 目录内但扩展名漏检）、`docs/components/COMPONENTS.md` 1 个。**未建单**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）且 `README.en.md` 与 PR #124 冲突，**待 #122/#124 合并后单独建单**。
+- **README 部署行 ACCOUNT_ID 漂移**（新建候选 1，已解锁）：`README.md:70` / `README.en.md:71` 写 `pnpm deploy:worker`「需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`」——参照 #130 的 Makefile 文案改（`CLOUDFLARE_API_TOKEN` only + ACCOUNT_ID 由 wrangler.json 提供，2 行）。
+- **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；另 `add-to-project` 在 run 36742311392 报 `PROJECT_TOKEN` Bad credentials，需人类轮换/确认。若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
+- **`format:check` 覆盖缺口的剩余部分**（新建候选 2，已解锁）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——此前测得全仓不合规 26 项中 `.github/` 15 个 yml（纯引号风格）、`src/content/docs/**` 7 个 `.md`、`docs/components/COMPONENTS.md` 1 个。**建单时注意**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）。
 
 - **i18n 中英对称性已结清**（第 20 轮验证，无缺陷）：en 侧用翻译后 slug，路径集合差（zh 缺 24 / en 缺 36）**不可直接判缺**；5 个 en 中文文件名文件是**有意重定向 stub**（线上旧路由 200 → 新 slug 200），其余为单语内容，**语言切换器对缺失语言正确省略**（无死链）。复查时**先分类再判缺陷**，别拿路径差直接建单。
 - **门禁自审计已覆盖两侧**（第 15-16 轮）：`format:check`（#140）与 `eslint`（#142）的 CI 脚本覆盖面均已补齐到「配置/hook 声明的范围」。**剩余已知缺口**：`format:check` 的扩展名集（`md`/`yml`/`astro`）与 `.github/` 目录集未补（24 个文件待归一，yml 语义敏感）；`pnpm lint` 未设 `--max-warnings`（有意，阻断策略属人类决策）；`tsc --noEmit` 不覆盖 `tests/**`（预防性，见下条）。
@@ -148,17 +129,19 @@
 
 例行同步（main 仍 `46f53f4`、13 PR 全 OPEN 且 MERGEABLE、无可认领、main 顶端 run 36651249360 7/7 绿但本地 `pnpm audit` 仍 5 漏洞 exit 1 → **冻结令继续有效**）→ **工作流自动化配置审计**（承 #146 维度，从 labeler 扩到 project-automation）：读 `.github/workflows/project-automation.yml` 全文件 → 实锤两处失效合并建单 **#148**：A=`check-milestone-deadline` **永不运行**（`on:` 无 schedule 触发，旧 `if: github.event.schedule == '0 9 * * *'` 只在 schedule 事件下有值 → 近 10 run 全 skipped，run 36742311392 实证；且预警写死 `issue_number: 1` 而 #1 实为**已合并 PR**）；B=`update-issue-status` **空转**（脚本 27–38 行读标签算 status 后只 `console.log`、零 `github.rest` 写调用，issue 事件每次白跑一次 checkout 却显示 success）→ 查重（无重复单；与 #101/PROJECT_TOKEN 无关：那是 secret 侧）→ 修 `b247567`（2 处改 `if: false` 显式禁用 + NOTE(#148) 注释，**不补 schedule、不加权限，零行为变更**）→ **PR #149**。验证：`yaml.safe_load` 解析 OK（4 jobs 保留）、旧可执行条件 0 残留（仅注释内提及）、§6 全绿（lint 0 / tsc 0 / format 全过 / test **412/412** / build Complete）。**有意未动**：`update-linked-issues` 缺 `issues: write`（默认只读下合并时 403，但无失败实证，保守不动）；`add-to-project` 在 run 36742311392 报 `Bad credentials`（`PROJECT_TOKEN`，属 secret/看板侧，需人类轮换/确认 projects/1，已有 STATE 观察项）。
 
+### 第 22 轮（合并马拉松：用户指令 review+merge 全部 14 PR，main 解锁）
+
+用户明确授权后执行（协议默认禁自动 merge，人类指令优先）：①查分支保护（1 review + `quality-gate` 上下文 + enforce_admins=false → `--admin` 是唯一路径；`--admin` 绕的是 review 对象与永不满足的上下文，质量本身用 CI 卡）；②逐 PR review（内容文件除 #135/#137 同改 ARCHITECTURE 不同行外全 disjoint）；③先合 #122（Audit 解冻，#121 自动关）；④独立 PR 按序同步 main（records 取分支侧、`§7.4` 行并集脚本合）→ 每分支 CI 核心 5 项（Audit/Lint/Type/Tests/Build）绿 → `--squash --admin` 合并（#124→#127→#129→#131→#133→#135→#137，issue #123/#125/#126/#128/#130/#132/#134/#136 全自动关）；⑤链顶 #149 一次带入 #138/#140/#142/#144/#146/#148（squash 默认消息含全部分支 subject，`fix: #N` 的自动关，`docs: #144` 手动补关；被替代 PR #139/#141/#143/#145/#147 标 superseded 关）。**过程纠错两处（如实记录）**：A. `git show --stat` 看 merge commit 会误报缺文件（实为 combined diff，只看该命令会误判，必须用三点 diff + 内容 grep 核对）；B. 本棒第 21 轮记录 commit 把 §7.4 第 20 轮行**替换**而非追加（edit 新串漏了旧行），本轮从 `2d08c90` 原样补回并全表核对 89=71+18。验收：main@35e1abc run 36863298437 **全绿**（含 QualityGate e2e/LHCI 与 Preview），正本 webm 在位、副本已删，`grep '^<<<<<<<'` 无输出。
+
 ## 下一步（给下一棒）
 
-1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141/#143/#145/#147/#149 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
-2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
-3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
-4. **人类待办**（第 21 轮新增）：轮换/确认 `PROJECT_TOKEN`（`add-to-project` 在 run 36742311392 报 Bad credentials）与 `orgs/HUAT-FSAC/projects/1` 是否存在；裁决 `update-linked-issues` 是补 `issues: write` 还是删除（WORKFLOW.md 为 SSOT 的话可删）。
-5. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-6. **全仓 `git grep` 复扫套路**（第 9/11/12 轮连续产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132；`quality:*` 脚本可执行性→#134），扫出的命中先按「日志/快照豁免」定性再建单；**「文档教的命令」要实跑复现**（#134 的 A 部分）。
+1. **新候选建单**（main 已解锁，直接走分支+PR）：① README 部署行 ACCOUNT_ID（2 行）；② `format:check` 剩余缺口（24 文件，yml 逐个确认）。
+2. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。
+3. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
+4. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
 
 ## 阻塞项
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
 - **#120**：toast.ts 删留二选一，等人类。
-- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141、#142/#143、#144/#145、#146/#147、#148/#149**：等人类 review+merge（协议禁止自动 merge）。
+- 人类侧：`PROJECT_TOKEN`、`size:xs` label、`update-linked-issues` 去留（见上）。
