@@ -55,7 +55,7 @@ pnpm dev                 # http://localhost:4321
 ### Common commands
 
 | Command                             | Description                                                           |
-| ----------------------------------- | --------------------------------------------------------------------- | --- | ----------- | ------------------------------------------------------------------ |
+| ----------------------------------- | --------------------------------------------------------------------- |
 | `pnpm dev`                          | Start dev server                                                      |
 | `pnpm build`                        | Production build (output in `dist/`)                                  |
 | `pnpm preview`                      | Preview the static build locally                                      |
@@ -63,12 +63,13 @@ pnpm dev                 # http://localhost:4321
 | `pnpm lint` / `pnpm lint:fix`       | ESLint check / auto-fix                                               |
 | `pnpm format` / `pnpm format:check` | Prettier write / check                                                |
 | `pnpm test:run`                     | Vitest unit tests (single run)                                        |
-| `pnpm test:coverage`                | Coverage report (70/60/70/70 thresholds)                              |
+| `pnpm test:coverage`                | Coverage report (80/80/80/80 thresholds)                              |
 | `pnpm test:e2e`                     | Playwright end-to-end tests                                           |
 | `pnpm quality:bundle`               | Bundle budget check                                                   |
 | `pnpm quality:theme`                | Theme contrast check                                                  |
 | `pnpm quality:lighthouse`           | Lighthouse CI assertions                                              |
-| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |     | `make help` | List all `make` shortcuts (`make dev/build/ci/deploy/secret-scan`) |
+| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |
+| `make help`                         | List all `make` shortcuts (`make dev/build/ci/deploy/secret-scan`)    |
 
 ---
 
@@ -79,14 +80,11 @@ Guidance-Astro/
 ├── README.md            # Chinese version
 ├── README.en.md         # This file
 ├── LICENSE              # MIT
-├── CONTRIBUTING.md      # Contributing guide
-├── CODE_OF_CONDUCT.md   # Code of Conduct
-├── SUPPORT.md           # Support channels
-├── SECURITY.md          # Vulnerability disclosure
 ├── CHANGELOG.md         # Release history
 ├── .editorconfig        # Editor style consistency
 ├── .nvmrc               # Node version
 ├── .github/             # Issue / PR templates + CI + Dependabot
+│                        #   + community files (CONTRIBUTING/CODE_OF_CONDUCT/SUPPORT/SECURITY)
 ├── public/              # Static assets (PWA, favicon, _headers)
 ├── src/                 # Site source
 │   ├── assets/          # Optimizable images
@@ -134,14 +132,14 @@ import myImage from '../../assets/docs/2025/perception/lidar-setup.png'
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full flow. TL;DR:
+See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for the full flow. TL;DR:
 
 1. Fork → create branch `type/area/desc`
 2. Follow [Conventional Commits](https://www.conventionalcommits.org/)
 3. Push and open a PR, link any related Issue
 4. Pass the quality gates in [`docs/WORKFLOW.md §6`](./docs/WORKFLOW.md#6-质量门禁definition-of-done) before merge
 
-Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) first.
+Please read [CODE_OF_CONDUCT.md](./.github/CODE_OF_CONDUCT.md) first.
 
 ---
 

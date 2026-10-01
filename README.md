@@ -62,7 +62,7 @@ pnpm dev                 # http://localhost:4321
 | `pnpm lint` / `pnpm lint:fix`       | ESLint 检查 / 自动修复                                            |
 | `pnpm format` / `pnpm format:check` | Prettier 格式化 / 校验                                            |
 | `pnpm test:run`                     | Vitest 单元测试(单次)                                             |
-| `pnpm test:coverage`                | 覆盖率报告(70/60/70/70 阈值)                                      |
+| `pnpm test:coverage`                | 覆盖率报告(80/80/80/80 阈值)                                      |
 | `pnpm test:e2e`                     | Playwright 端到端测试                                             |
 | `pnpm quality:bundle`               | 构建体积预算                                                      |
 | `pnpm quality:theme`                | 主题对比度                                                        |
@@ -79,14 +79,11 @@ Guidance-Astro/
 ├── README.md            # 本文件(中文)
 ├── README.en.md         # English version
 ├── LICENSE              # MIT
-├── CONTRIBUTING.md      # 贡献指南
-├── CODE_OF_CONDUCT.md   # 行为准则
-├── SUPPORT.md           # 支持渠道
-├── SECURITY.md          # 安全漏洞上报
 ├── CHANGELOG.md         # 版本记录
 ├── .editorconfig        # 编辑器风格统一
 ├── .nvmrc               # Node 版本
 ├── .github/             # Issue / PR 模板 + CI + Dependabot
+│                        #   + 社区文件(CONTRIBUTING/CODE_OF_CONDUCT/SUPPORT/SECURITY)
 ├── public/              # 静态资源(PWA、favicon、_headers)
 ├── src/                 # 站点源码
 │   ├── assets/          # 可优化的图片资源
@@ -137,14 +134,14 @@ import myImage from '../../assets/docs/2025/感知/lidar-setup.png'
 
 ## 🤝 贡献
 
-欢迎贡献!完整流程见 [CONTRIBUTING.md](./CONTRIBUTING.md)。速查:
+欢迎贡献!完整流程见 [CONTRIBUTING.md](./.github/CONTRIBUTING.md)。速查:
 
 1. Fork 仓库 → 创建分支 `type/area/desc`
 2. 提交时遵循 [Conventional Commits](https://www.conventionalcommits.org/)
 3. 推送后提 PR,关联 Issue(若有)
 4. 通过 [`docs/WORKFLOW.md §6 质量门禁`](./docs/WORKFLOW.md#6-质量门禁definition-of-done) 后合并
 
-提 PR 前请阅读 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
+提 PR 前请阅读 [CODE_OF_CONDUCT.md](./.github/CODE_OF_CONDUCT.md)。
 
 ---
 
