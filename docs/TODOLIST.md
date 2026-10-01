@@ -14,7 +14,7 @@
 
 **涉及文件**：
 
-- `src/components/home/Hero.astro` (Line 70-71, 76, 80, 98-103, 129-137, 140)
+- `src/components/home/sections/Hero.astro` (Line 70-71, 76, 80, 98-103, 129-137, 140)
 - `src/components/docs/ImageLightbox.astro` (Line 57-58, 63, 189-196, 200)
 
 **详细位置**：
@@ -69,7 +69,7 @@ README 中已记录的已知问题，亮色主题下多个组件显示效果不�
 **涉及文件**：
 
 - `src/styles/docs-global.css` (Line 195-227)
-- `src/components/home/Hero.astro` (Line 196-203)
+- `src/components/home/sections/Hero.astro` (Line 196-203)
 - `src/components/home/Achievement.astro` (Line 150-164)
 
 **详细问题**：
@@ -231,7 +231,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 **涉及文件**：
 
 - `src/data/home.ts` (Line 57, 77, 85, 95-111, 130-131, 143-167)
-- `src/components/home/Hero.astro` (Line 14-22)
+- `src/components/home/sections/Hero.astro` (Line 14-22)
 
 **详细问题**：
 
@@ -275,7 +275,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 
 更新了以下组件：
 
-- `src/components/home/Hero.astro` - 首屏背景图片优化
+- `src/components/home/sections/Hero.astro` - 首屏背景图片优化
 - `src/components/home/Achievement.astro` - 成就展示图片优化
 - `src/components/home/Seasons.astro` - 赛季图片优化
 - `src/components/home/Sponsors.astro` - 赞助商图片优化
@@ -293,7 +293,7 @@ README 中已记录的已知问题，表格内容不能占据完整的父元素�
 
 **涉及文件**：
 
-- `src/components/home/Hero.astro`
+- `src/components/home/sections/Hero.astro`
 - `src/components/home/Seasons.astro`
 - `src/components/home/Achievement.astro`
 - `src/components/home/Features.astro`
@@ -408,7 +408,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 
 **涉及文件**：
 
-- `src/components/home/Hero.astro` (Line 63-142)
+- `src/components/home/sections/Hero.astro` (Line 63-142)
 - `src/components/docs/ImageLightbox.astro` (Line 41-204)
 
 **验收标准**：
@@ -433,7 +433,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 
 更新了以下组件：
 
-- `src/components/home/Hero.astro` - 使用新的初始化管理器
+- `src/components/home/sections/Hero.astro` - 使用新的初始化管理器
 - `src/components/docs/ImageLightbox.astro` - 使用新的初始化管理器
 
 ---
@@ -481,7 +481,7 @@ README 中记录的已知问题，h2 左侧的主题色装饰条不适用于所�
 更新了以下组件：
 
 - `src/components/overrides/PageFrame.astro` - 集成错误边界组件
-- `src/components/home/Hero.astro` - 添加图片错误处理
+- `src/components/home/sections/Hero.astro` - 添加图片错误处理
 
 ---
 

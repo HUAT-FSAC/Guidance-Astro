@@ -1,18 +1,18 @@
 # 交接说明（HANDOFF）
 
 **本棒 Agent：** `mimo-flash-20260930T113551Z`
-**时间：** 2026-09-30T11:35Z 起（UTC），第 1-12 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9/11/12 轮连续产出，第 10 轮验证轮）
+**时间：** 2026-09-30T11:35Z 起（UTC），第 1-13 轮完成（进行中；第 5-7 轮无操作 ×3，第 8/9/11/12/13 轮连续产出，第 10 轮验证轮）
 **仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 基线 `main@46f53f4`
-**产出分支：** `auto/.../121-audit-override-bump`（PR **#122**）、`auto/.../123-readme-dead-links`（PR **#124** = #123+#125）、`auto/.../126-docs-index-drift`（PR **#127** = #126）、`auto/.../128-dedup-webm`（PR **#129** = #128）、`auto/.../130-makefile-drift`（PR **#131** = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR **#133** = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR **#135** = #134，**最新全量记录**）
+**产出分支：** `auto/.../121-audit-override-bump`（PR **#122**）、`auto/.../123-readme-dead-links`（PR **#124** = #123+#125）、`auto/.../126-docs-index-drift`（PR **#127** = #126）、`auto/.../128-dedup-webm`（PR **#129** = #128）、`auto/.../130-makefile-drift`（PR **#131** = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR **#133** = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR **#135** = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR **#137** = #136，**最新全量记录**）
 
 > 下一棒请先按 `docs/WORKFLOW.md:§1/§3` 与 `AGENTS.md` 的「发布与部署」执行：
 > `git fetch --all --prune` → `git pull --rebase` → 读 `.agent/STATE.md` + 本文件 → 检查 `.agent/LOCK` → 选任务。
 >
-> ⚠️ **本棒记录文件分散在七个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，**第 12 轮（本版，最新）随 PR #135**。冲突一律取**最新（PR #135，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134）。
+> ⚠️ **本棒记录文件分散在八个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，**第 13 轮（本版，最新）随 PR #137**。冲突一律取**最新（PR #137，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136）。
 
 ---
 
-## 一、本棒做了什么（12 轮：1-4 产出 + 5-7 无操作 + 8-12 产出/验证）
+## 一、本棒做了什么（13 轮：1-4 产出 + 5-7 无操作 + 8-13 产出/验证）
 
 | 轮  | 结果                                                                                                                                                                                                                                                                                                                                                                                                               | 产出    |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
@@ -26,6 +26,7 @@
 | 10  | 例行同步无新事项 → **Quality Gate 本地全量验证**（CI 因 needs-audit 全程跳过，#122 合并后激活——提前排雷）：E2E **95/95** ✅ · bundle/routes/theme 预算 ✅ · LHCI collect 4 URL + assert **exit 0** ✅（WSL 环境绕过见坑 19）→ 无新 issue，计数保持 0/5                                                                                                                                                             | —       |
 | 11  | 延展第 9 轮模式全仓复扫（`70/60` 全豁免、`audit --prod` 0 残留）→ `CLOUDFLARE_ACCOUNT_ID` 命中 **PROJECT_MANAGEMENT_MODEL 漂移 5 处**（称「自动部署已恢复」+ 要配 ACCOUNT_ID，T-033 口径同步漏了此文件）→ 查重（与 #101 关联非重复）→ 建单 **#132** → 修 10 行 `10aba9c` → 断言/三方交叉核对 + §6 全绿 → **PR #133**（恢复类表述条件式化，#101 完成后无需回改）                                                    | PR #133 |
 | 12  | 三连验证（coverage 实跑 exit 0 · `.agent/LOCK` 设计内本地锁无漂移 · `quality:lighthouse` 脚本）→ 命中**两处失效**建单 **#134**：脚本裸 `lhci` 未装依赖必挂（4 处文档在教）+ lighthouserc **重复键**致 T-022 error 0.80 底线静默失效（现仅 warn，加载器 require() last-wins 实证）→ 修 3 文件 `d43dfe9`（dlx@0.15.1 与 CI 逐字节一致、零依赖）→ 端到端 exit 0 + §6 全绿 → **PR #135**（踩 commitlint footer 坑 21） | PR #135 |
+| 13  | 延展 #132 模式做**全仓 file:line 引用内容级核验**（55 处三级解析+逐条比对）→ **9 处内容漂移**（5 文件：astro.config :11/:12/:147 全错、middleware.ts:19 已重构、CONTRIBUTING 指空行、§7.6 og-image 漏 T-038 更正、TODOLIST Hero 路径 ×8）→ 建单 **#136** → 修 16 行 `f48d2c3` → 6/6 内容断言 PASS + 旧模式 0 残留 + §6 全绿 → **PR #137**（CONTRIBUTING 改 §5/§6 章节引用免疫漂移）                                | PR #137 |
 
 ### 要点（下一棒可能用到）
 
@@ -39,20 +40,21 @@
 8. **Quality Gate 本地验证（第 10 轮）**：CI 的 quality-gate job `needs: build`，而 build `needs: audit`——main Audit 一红它就全程 skipped（#122 合并前）。本地五环节已全绿：`quality:bundle/routes/theme` + `pnpm test:e2e`（**95/95**）+ LHCI（`pnpm dlx @lhci/cli@0.15.1 collect/assert --config=.config/lighthouserc.json`，4 URL，assert 仅 warn）。**LHCI 在本机会触发 WSL 坑（见坑 19）**；审计页面为 `/`、`/docs-center/`、`/team/`、`/join/`——本棒 5 个 PR 均不碰这些页面，#122 合并后 rebase 转绿置信度完整。
 9. **#132 T-033 口径同步白名单遗漏（第 11 轮）**：同类治理文档的口径同步若只改 `AGENTS.md`/`DEPLOYMENT.md`/`WORKFLOW §3` 三处，**还要 `git grep` 关键词（如 `CLOUDFLARE_ACCOUNT_ID`、`自动部署`）全仓找漏网文件**——`docs/PROJECT_MANAGEMENT_MODEL.md` 就是漏网者（发布部署小节停留 2026-08-28 口径 5 处漂移）。修复采用**条件式表述**（「恢复后……」），使 #101 完成后无需回改。
 10. **#134 quality:lighthouse 链路两处失效（第 12 轮）**：① **「文档教的命令」要实跑复现**——`package.json` 调裸 `lhci` 而依赖未装，CI 内联 `pnpm dlx @0.15.1` 掩盖了脚本已死，Makefile/README×2/ARCHITECTURE 四处在教死命令（修复=脚本改 dlx 同版本，与 CI 逐字节一致、**零依赖零 lockfile**）；② **配置文件的重复 JSON 键静默生效**——T-022 想写 error0.80+warn0.85 双档，`require()` last-wins 只剩 warn，**error 底线整体丢失**；断言生效值必须 `node -e require()` 实测 + 读加载器源码，不能看文件字面。LHCI 一指标只能一个档位，双档不可表达（取舍记录在 #134）。
+11. **#136 内容级核验三步法（第 13 轮）**：行号在≠内容对——扫描分三级：①存在性（文件/行号范围）→ ②**逐条读被引行与断言比对**（本轮 9 处中 8 处是范围通过但内容错）→ ③同名文件歧义用行号范围+上下文排除（TODOLIST 裸名 Hero.astro 靠 ≤203 行段排除 4 行 overrides）。**文档互引优先用 § 章节引用**（CONTRIBUTING 改 §5/§6 后免疫 §4/§7.4 追加漂移）。口诀：`git grep` 拿到引用 → 打开目标行看内容 → 再看断言。
 
 ## 二、交棒时主干状态
 
 - **⚠️ `main` 顶端 `46f53f4` 的 `Audit Dependencies` 门禁已失效**：main 下次任何 push 该 job 必红（公告晚于最后绿 run 482）。**PR #122 合并前禁止直推 `main`**——本棒十轮记录都只能落在分支上。
-- **PR #122 / #124 / #127 / #129 / #131 / #133 / #135 均待人类 review+merge**（协议禁止自动 merge）。除 #122 外的 Audit 红灯 = main 既有失效，#122 合并后 rebase 即绿（各 PR body 已声明）。
+- **PR #122 / #124 / #127 / #129 / #131 / #133 / #135 / #137 均待人类 review+merge**（协议禁止自动 merge）。除 #122 外的 Audit 红灯 = main 既有失效，#122 合并后 rebase 即绿（各 PR body 已声明）。
 - 本地门禁（第 10 轮实测，Quality Gate 五环节含此前 CI 跳过的部分）：lint / format / tsc / test **412** / build / **e2e 95/95** / bundle·routes·theme 预算 / **LHCI assert exit 0** 全绿；`make audit` 5 漏洞 = 与 CI 同口径同判定（main 既有，#122 合并后归 0）。
 - 线上健康（第 2/5 轮实测）：`/` 200 + CSP nonce、sitemap **167/167 全 200**、首页 30 资源 200、7 安全头齐、35 重定向全通。本棒改动不进产物，**未部署**（线上 `62778a8e` = main 产物，一致）。
-- 开放 issue：**#101**（人类配 Secret）、**#120**（question）、**#121**（待 #122）、**#123/#125**（待 #124）、**#126**（待 #127）、**#128**（待 #129）、**#130**（待 #131）、**#132**（待 #133）、**#134**（待 #135）。
-- 开放 PR：**#122、#124、#127、#129、#131、#133、#135**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot **不碰不 merge**。
+- 开放 issue：**#101**（人类配 Secret）、**#120**（question）、**#121**（待 #122）、**#123/#125**（待 #124）、**#126**（待 #127）、**#128**（待 #129）、**#130**（待 #131）、**#132**（待 #133）、**#134**（待 #135）、**#136**（待 #137）。
+- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot **不碰不 merge**。
 
 ## 三、下一棒要做（按优先级）
 
 1. `gh pr view 122 --json state,mergedAt`：
-    - **已合并** → main 恢复常绿，可直推记录文件；未合并的 #124/#127/#129/#131/#133/#135 rebase 让 Audit 转绿；核对 #121/#123/#125/#126/#128/#130/#132/#134 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+    - **已合并** → main 恢复常绿，可直推记录文件；未合并的 #124/#127/#129/#131/#133/#135/#137 rebase 让 Audit 转绿；核对 #121/#123/#125/#126/#128/#130/#132/#134/#136 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
     - **未合并** → 遵守禁令走分支；例行评估（可接手仅 #101/#120；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
 2. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（`README.md:70`/`README.en.md:71`，参照 #130 Makefile 文案：`CLOUDFLARE_API_TOKEN` only + ACCOUNT_ID 由 wrangler.json 提供）。
 3. #120 被人类裁决后按单内验收执行；#101 Secret 配好后按单把 deploy job 加回 `ci-cd.yml`（完整实现见 `8475f88`）。
@@ -61,7 +63,7 @@
 
 ## 四、阻塞项（需人类操作）
 
-- **#122 / #124 / #127 / #129 / #131 / #133 / #135 review + merge**——#122 优先，它是解除「main 禁直推」的钥匙。
+- **#122 / #124 / #127 / #129 / #131 / #133 / #135 / #137 review + merge**——#122 优先，它是解除「main 禁直推」的钥匙。
 - **#101**：GitHub `Settings → Secrets and variables → Actions` 配 `CLOUDFLARE_API_TOKEN`（`CLOUDFLARE_ACCOUNT_ID` 不需要）。配好前不要把 deploy job 加回 CI。
 - **#120**：toast.ts 删留二选一。
 - 线上部署走本机 `wrangler` OAuth（`pnpm deploy:worker`）；登录态只在当前机器 profile，换机需重跑 `wrangler login`（strip 本地 proxy）。
@@ -108,7 +110,7 @@ mise exec -- pnpm quality:bundle && mise exec -- pnpm quality:theme
 export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
 
 # PR / CI
-for n in 122 124 127 129 131 133 135; do gh pr view $n --json number,state,mergedAt --jq '"#\(.number) \(.state) \(.mergedAt // "-")"'; done
+for n in 122 124 127 129 131 133 135 137; do gh pr view $n --json number,state,mergedAt --jq '"#\(.number) \(.state) \(.mergedAt // "-")"'; done
 gh run list --workflow=ci-cd.yml --branch main --limit 5 --json headSha,status,conclusion
 
 # 全量漂移扫描（坑 17，别加 --include）
@@ -128,4 +130,4 @@ curl -s https://huat-fsac.eu.org/sitemap-0.xml | grep -o '<loc>' | wc -l   # 167
 
 - `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成；本棒走 issue 线（#121→PR #122、#123+#125→PR #124、#126→PR #127、#128→PR #129、#130→PR #131），`§7.4` 已逐轮追加日志行（随各自分支入库）。
 - 上一棒 `glm-5.3-flash-20260929T234352Z`（8 轮，#117/#118/#119 闭环、#120 建单、§九.1 停止）的结论与坑位全部沿用；本棒新增坑 4（mise PATH）、8（comment 反引号）、11-18（社区文件/prettier 破损表格/锚点 slug/pnpm 子命令/资源判定/外链分类/全量扫描过滤器/audit dev 标记），并把坑 7 展开为可复用套路。
-- 上棒「可接手 issue 仅 #101/#120」的判断在本棒起点仍成立，故进入主动发现模式：产出 **#121/#123/#125/#126/#128/#130/#132/#134 八单七 PR**（中途 3 轮无操作后靠协议完整性扫描 + 扫描器复盘连续重启产出），第 10 轮完成 Quality Gate 本地全量验证（e2e 95/95 + LHCI 过，见一.8 与坑 19），第 11/12 轮靠全仓 `git grep` 模式延展连续产出 #132/#134（见一.9/一.10）。
+- 上棒「可接手 issue 仅 #101/#120」的判断在本棒起点仍成立，故进入主动发现模式：产出 **#121/#123/#125/#126/#128/#130/#132/#134/#136 九单八 PR**（中途 3 轮无操作后靠协议完整性扫描 + 扫描器复盘连续重启产出），第 10 轮完成 Quality Gate 本地全量验证（e2e 95/95 + LHCI 过，见一.8 与坑 19），第 11/12 轮靠全仓 `git grep` 模式延展连续产出 #132/#134（见一.9/一.10），第 13 轮内容级核验收口 #136（见一.11）。

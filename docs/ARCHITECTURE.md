@@ -55,8 +55,8 @@
 
 | 层        | 选型                                                              | 关键文件                                                                      | 备注                                        |
 | --------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
-| 框架      | **Astro 7.3.3** (`output: 'server'`)                              | [`astro.config.mjs:11`](../astro.config.mjs)                                  | SSR,默认零 JS                               |
-| 适配器    | `@astrojs/cloudflare`                                             | `astro.config.mjs:12`                                                         | 编译期图片 (`imageService: 'compile'`)      |
+| 框架      | **Astro 7.3.3** (`output: 'server'`)                              | [`astro.config.mjs:67`](../astro.config.mjs)                                  | SSR,默认零 JS                               |
+| 适配器    | `@astrojs/cloudflare`                                             | `astro.config.mjs:68`                                                         | 编译期图片 (`imageService: 'compile'`)      |
 | 文档主题  | **Starlight 0.41.11**                                             | `src/content.config.ts`                                                       | i18n/搜索/侧边栏/TOC                        |
 | 部署      | **Cloudflare Workers SSR**                                        | [`dist/server/wrangler.json`](../dist/server/wrangler.json)                   | `pnpm deploy:worker`                        |
 | 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                            | `pnpm-workspace.yaml`                                                         | 依赖白名单见 `onlyBuiltDependencies`        |
