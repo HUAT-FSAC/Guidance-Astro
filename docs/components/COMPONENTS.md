@@ -5,27 +5,27 @@
 ## 目录
 
 - [首页组件](#首页组件)
-  - [Hero](#hero)
-  - [Achievement](#achievement)
-  - [Features](#features)
-  - [NewsSection](#newssection)
-  - [Seasons](#seasons)
-  - [Sponsors](#sponsors)
-  - [Recruitment](#recruitment)
-  - [FormulaStudentInfo](#formulastudentinfo)
-  - [Stats](#stats)
-  - [Acknowledgement](#acknowledgement)
+    - [Hero](#hero)
+    - [Achievement](#achievement)
+    - [Features](#features)
+    - [NewsSection](#newssection)
+    - [Seasons](#seasons)
+    - [Sponsors](#sponsors)
+    - [Recruitment](#recruitment)
+    - [FormulaStudentInfo](#formulastudentinfo)
+    - [Stats](#stats)
+    - [Acknowledgement](#acknowledgement)
 - [UI 组件](#ui-组件)
-  - [ThemeSwitcher](#themeswitcher)
-  - [BackToTop](#backtotop)
-  - [KeyboardNav](#keyboardnav)
-  - [ParticleBackground](#particlebackground)
-  - [MobileNavigation](#mobilenavigation)
-  - [ScrollProgress](#scrollprogress)
+    - [ThemeSwitcher](#themeswitcher)
+    - [BackToTop](#backtotop)
+    - [KeyboardNav](#keyboardnav)
+    - [ParticleBackground](#particlebackground)
+    - [MobileNavigation](#mobilenavigation)
+    - [ScrollProgress](#scrollprogress)
 - [文档组件](#文档组件)
-  - [ImageLightbox](#imagelightbox)
-  - [Breadcrumbs](#breadcrumbs)
-  - [ReadingProgress](#readingprogress)
+    - [ImageLightbox](#imagelightbox)
+    - [Breadcrumbs](#breadcrumbs)
+    - [ReadingProgress](#readingprogress)
 
 ---
 
@@ -41,12 +41,12 @@
 
 ```typescript
 interface Props {
-  title: string;           // 主标题
-  subtitle?: string;       // 副标题
-  description?: string;    // 描述文字
-  ctaText: string;         // 按钮文字
-  ctaLink: string;         // 按钮链接
-  backgroundImage?: string; // 背景图片 URL
+    title: string // 主标题
+    subtitle?: string // 副标题
+    description?: string // 描述文字
+    ctaText: string // 按钮文字
+    ctaLink: string // 按钮链接
+    backgroundImage?: string // 背景图片 URL
 }
 ```
 
@@ -68,6 +68,7 @@ import Hero from '../../components/home/sections/Hero.astro';
 ```
 
 **功能特点**:
+
 - 响应式设计，支持移动端
 - 打字机效果动画
 - 背景图片懒加载
@@ -85,13 +86,13 @@ import Hero from '../../components/home/sections/Hero.astro';
 
 ```typescript
 interface Props {
-  badge?: string;          // 徽章文字
-  title: string;           // 标题
-  description: string;     // 描述
-  ctaText: string;         // 按钮文字
-  ctaLink: string;         // 按钮链接
-  image: string;           // 图片 URL
-  reverse?: boolean;       // 是否反转布局
+    badge?: string // 徽章文字
+    title: string // 标题
+    description: string // 描述
+    ctaText: string // 按钮文字
+    ctaLink: string // 按钮链接
+    image: string // 图片 URL
+    reverse?: boolean // 是否反转布局
 }
 ```
 
@@ -143,17 +144,17 @@ import Features from '../../components/home/sections/Features.astro';
 
 ```typescript
 interface Props {
-  title: string;           // 标题
-  subtitle?: string;       // 副标题
-  news: NewsItem[];        // 新闻列表
+    title: string // 标题
+    subtitle?: string // 副标题
+    news: NewsItem[] // 新闻列表
 }
 
 interface NewsItem {
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  date?: string;
+    title: string
+    description: string
+    image: string
+    link: string
+    date?: string
 }
 ```
 
@@ -193,19 +194,19 @@ const newsItems = [
 
 ```typescript
 interface Props {
-  seasons: SeasonItem[];
+    seasons: SeasonItem[]
 }
 
 interface SeasonItem {
-  year: string;
-  teamImg: string;
-  carImg: string;
-  advisor?: string;
-  captain?: string;
-  members?: {
-    group: string;
-    names: string[];
-  }[];
+    year: string
+    teamImg: string
+    carImg: string
+    advisor?: string
+    captain?: string
+    members?: {
+        group: string
+        names: string[]
+    }[]
 }
 ```
 
@@ -232,16 +233,16 @@ import { seasons } from '../../data/seasons/2025.json';
 
 ```typescript
 interface Props {
-  groups: SponsorGroup[];
+    groups: SponsorGroup[]
 }
 
 interface SponsorGroup {
-  name: string;
-  items: {
-    title: string;
-    logo: string;
-    link?: string;
-  }[];
+    name: string
+    items: {
+        title: string
+        logo: string
+        link?: string
+    }[]
 }
 ```
 
@@ -286,11 +287,11 @@ Formula Student 介绍组件。
 
 ```typescript
 interface Props {
-  title: string;
-  subtitle?: string;
-  description: string;
-  ctaText: string;
-  ctaLink: string;
+    title: string
+    subtitle?: string
+    description: string
+    ctaText: string
+    ctaLink: string
 }
 ```
 
@@ -322,11 +323,11 @@ import FormulaStudentInfo from '../../components/home/sections/FormulaStudentInf
 
 ```typescript
 interface Props {
-  stats: {
-    value: string;
-    label: string;
-    icon?: string;
-  }[];
+    stats: {
+        value: string
+        label: string
+        icon?: string
+    }[]
 }
 ```
 
@@ -386,6 +387,7 @@ import ThemeSwitcher from '../../components/home/ui/ThemeSwitcher.astro';
 ```
 
 **功能特点**:
+
 - 亮色/暗色模式切换
 - 5 种主题色可选（经典橙、电竞蓝、赛道红、科技紫、极速绿）
 - 自动保存用户偏好
@@ -523,10 +525,10 @@ import ImageLightbox from '../../components/docs/ImageLightbox.astro';
 
 ```typescript
 interface Props {
-  items: {
-    label: string;
-    href?: string;
-  }[];
+    items: {
+        label: string
+        href?: string
+    }[]
 }
 ```
 
@@ -573,19 +575,25 @@ import ReadingProgress from '../../components/docs/ReadingProgress.astro';
 安全的 localStorage 操作工具。
 
 ```typescript
-import { safeGetItem, safeSetItem, safeRemoveItem, safeGetJSON, safeSetJSON } from '../utils/storage';
+import {
+    safeGetItem,
+    safeSetItem,
+    safeRemoveItem,
+    safeGetJSON,
+    safeSetJSON,
+} from '../utils/storage'
 
 // 获取值
-const value = safeGetItem('key', 'default');
+const value = safeGetItem('key', 'default')
 
 // 设置值
-safeSetItem('key', 'value');
+safeSetItem('key', 'value')
 
 // 获取 JSON
-const data = safeGetJSON('key', { default: true });
+const data = safeGetJSON('key', { default: true })
 
 // 设置 JSON
-safeSetJSON('key', { data: true });
+safeSetJSON('key', { data: true })
 ```
 
 ### image-optimization.ts
@@ -593,17 +601,22 @@ safeSetJSON('key', { data: true });
 图片优化工具。
 
 ```typescript
-import { optimizeExternalImage, generateSrcSet, getImageLoadingStrategy, getImageFetchPriority } from '../utils/image-optimization';
+import {
+    optimizeExternalImage,
+    generateSrcSet,
+    getImageLoadingStrategy,
+    getImageFetchPriority,
+} from '../utils/image-optimization'
 
 // 优化外部图片
-const optimizedUrl = optimizeExternalImage(url, 1200, 85);
+const optimizedUrl = optimizeExternalImage(url, 1200, 85)
 
 // 生成 srcset
-const srcset = generateSrcSet(url, [400, 800, 1200]);
+const srcset = generateSrcSet(url, [400, 800, 1200])
 
 // 获取加载策略
-const loading = getImageLoadingStrategy(true); // "eager"
-const priority = getImageFetchPriority(true); // "high"
+const loading = getImageLoadingStrategy(true) // "eager"
+const priority = getImageFetchPriority(true) // "high"
 ```
 
 ### error-handling.ts
@@ -611,15 +624,21 @@ const priority = getImageFetchPriority(true); // "high"
 错误处理工具。
 
 ```typescript
-import { registerErrorHandler, triggerError, createErrorInfo, wrapAsync, ErrorType } from '../utils/error-handling';
+import {
+    registerErrorHandler,
+    triggerError,
+    createErrorInfo,
+    wrapAsync,
+    ErrorType,
+} from '../utils/error-handling'
 
 // 注册错误处理器
 registerErrorHandler(ErrorType.COMPONENT_ERROR, (error) => {
-  console.error('Component error:', error);
-});
+    console.error('Component error:', error)
+})
 
 // 包装异步函数
-const safeFetch = wrapAsync(fetchData, 'MyComponent');
+const safeFetch = wrapAsync(fetchData, 'MyComponent')
 ```
 
 ### component-initialization.ts
@@ -627,29 +646,34 @@ const safeFetch = wrapAsync(fetchData, 'MyComponent');
 组件初始化管理工具。
 
 ```typescript
-import { initComponent, cleanupComponent, setupComponentLifecycle, initComponents } from '../utils/component-initialization';
+import {
+    initComponent,
+    cleanupComponent,
+    setupComponentLifecycle,
+    initComponents,
+} from '../utils/component-initialization'
 
 // 初始化单个组件
 initComponent('.my-component', (element) => {
-  // 初始化逻辑
-  return () => {
-    // 清理逻辑
-  };
-});
+    // 初始化逻辑
+    return () => {
+        // 清理逻辑
+    }
+})
 
 // 设置组件生命周期
 setupComponentLifecycle('.my-component', (element) => {
-  // 初始化逻辑
-  return () => {
-    // 清理逻辑
-  };
-});
+    // 初始化逻辑
+    return () => {
+        // 清理逻辑
+    }
+})
 
 // 批量初始化
 initComponents([
-  { selector: '.component-1', initFn: fn1 },
-  { selector: '.component-2', initFn: fn2 }
-]);
+    { selector: '.component-1', initFn: fn1 },
+    { selector: '.component-2', initFn: fn2 },
+])
 ```
 
 ---
@@ -673,8 +697,8 @@ import { safeGetItem } from '../utils/storage';
 
 ```typescript
 interface Props {
-  title: string;
-  description?: string;
+    title: string
+    description?: string
 }
 ```
 
@@ -684,9 +708,9 @@ interface Props {
 
 ```typescript
 try {
-  // 可能出错的代码
+    // 可能出错的代码
 } catch (error) {
-  console.error('Error:', error);
+    console.error('Error:', error)
 }
 ```
 

@@ -17,46 +17,51 @@ sidebar: true
 #### 步骤
 
 1. **Fork 仓库**
-   - 访问 [HUAT-FSAC 仓库](https://github.com/HUAT-FSAC/huat-fsac-docs)
-   - 点击右上角的 "Fork" 按钮，创建自己的仓库副本
+    - 访问 [HUAT-FSAC 仓库](https://github.com/HUAT-FSAC/huat-fsac-docs)
+    - 点击右上角的 "Fork" 按钮，创建自己的仓库副本
 
 2. **克隆仓库**
-   ```bash
-   git clone https://github.com/你的用户名/huat-fsac-docs.git
-   cd huat-fsac-docs
-   ```
+
+    ```bash
+    git clone https://github.com/你的用户名/huat-fsac-docs.git
+    cd huat-fsac-docs
+    ```
 
 3. **创建分支**
-   ```bash
-   git checkout -b feature/你的功能名称
-   ```
+
+    ```bash
+    git checkout -b feature/你的功能名称
+    ```
 
 4. **安装依赖**
-   ```bash
-   pnpm install
-   ```
+
+    ```bash
+    pnpm install
+    ```
 
 5. **进行修改**
-   - 添加新内容或修改现有文档
-   - 确保代码风格一致
-   - 测试你的更改
+    - 添加新内容或修改现有文档
+    - 确保代码风格一致
+    - 测试你的更改
 
 6. **提交更改**
-   ```bash
-   git add .
-   git commit -m "描述你的更改"
-   ```
+
+    ```bash
+    git add .
+    git commit -m "描述你的更改"
+    ```
 
 7. **推送到 GitHub**
-   ```bash
-   git push origin feature/你的功能名称
-   ```
+
+    ```bash
+    git push origin feature/你的功能名称
+    ```
 
 8. **创建 Pull Request**
-   - 回到 GitHub 上你的 fork 仓库
-   - 点击 "Compare & pull request" 按钮
-   - 填写 PR 描述，说明你的更改内容和原因
-   - 点击 "Create pull request"
+    - 回到 GitHub 上你的 fork 仓库
+    - 点击 "Compare & pull request" 按钮
+    - 填写 PR 描述，说明你的更改内容和原因
+    - 点击 "Create pull request"
 
 ### 2. GitHub Issues
 
@@ -134,12 +139,15 @@ sidebar: true
 ### 3. 常见问题
 
 #### Q: 如何处理合并冲突？
+
 A: 在提交 PR 前，先从主分支拉取最新代码并解决冲突。
 
 #### Q: 我的 PR 被拒绝了怎么办？
+
 A: 不要灰心！维护者会提供具体的反馈，根据反馈修改后再次提交。
 
 #### Q: 我可以贡献哪些类型的内容？
+
 A: 你可以贡献技术文档、教程、经验分享、项目进度更新等任何与 HUAT FSAC 相关的内容。
 
 ## 联系我们
