@@ -57,7 +57,7 @@
         "quality:routes": "node scripts/quality/check-route-budget.mjs",
         "quality:theme": "node scripts/quality/check-theme-contrast.mjs",
         "assets:logo": "node scripts/quality/optimize-logo.mjs",
-        "quality:lighthouse": "lhci collect --config=.config/lighthouserc.json && lhci assert --config=.config/lighthouserc.json",
+        "quality:lighthouse": "pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json && pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json",
         "metrics:collect": "node scripts/metrics/collect-github-metrics.mjs",
         "dev:worker": "wrangler pages dev dist --compatibility-date=2024-04-01",
         "prepare": "husky"
