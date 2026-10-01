@@ -2,7 +2,9 @@ name: Close Stale Issues / PRs
 
 # 30 天无活动 → 打 stale 标签 + 留评论;
 # 再 7 天无活动 → 自动关闭。
-# 仅作用于我们显式指定的 label,避免误伤维护者正在跟进的项。
+# 注意：本配置没有 label 过滤 = 全量扫描，仅 exempt-*-labels 豁免
+#（priority:p0 等 + status:review / area:devops / work-in-progress），
+# 靠豁免表避免误伤维护者正在跟进的项，而非 allowlist。
 
 on:
   schedule:
