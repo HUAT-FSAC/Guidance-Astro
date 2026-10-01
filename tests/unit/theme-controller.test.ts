@@ -250,7 +250,7 @@ describe('theme controller', () => {
         const root = mount()
         const toggle = root.querySelector('.theme-toggle')!
         const mouseDown = vi.spyOn(toggle, 'addEventListener')
-        const cleanup = initThemeController(root)
+        const _cleanup = initThemeController(root)
 
         expect(mouseDown).toHaveBeenCalledWith('mousedown', expect.any(Function))
 
@@ -270,7 +270,7 @@ describe('theme controller', () => {
     })
 
     it('initializes on DOMContentLoaded when the document is loading', () => {
-        const root = mount()
+        const _root = mount()
         Object.defineProperty(document, 'readyState', { value: 'loading', configurable: true })
         setupThemeControllerLifecycle('#theme-root', {})
         expect(isComponentInitialized('#theme-root')).toBe(false)
@@ -285,7 +285,7 @@ describe('theme controller', () => {
     })
 
     it('initializes immediately when the document is ready', () => {
-        const root = mount()
+        const _root = mount()
         Object.defineProperty(document, 'readyState', { value: 'complete', configurable: true })
         setupThemeControllerLifecycle('#theme-root', {})
         expect(isComponentInitialized('#theme-root')).toBe(true)

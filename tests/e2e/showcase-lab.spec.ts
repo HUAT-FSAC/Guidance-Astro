@@ -98,7 +98,7 @@ test.describe('智能驾驶交互实验室', () => {
         await page.goto('/showcase-dashboard/')
 
         const lab = page.locator('[data-showcase-lab]')
-        const scenarioTitle = lab.locator('[data-showcase-scenario-name]')
+        const _scenarioTitle = lab.locator('[data-showcase-scenario-name]')
         const replayFrameLabel = lab.locator('#showcase-replay-frame-label')
 
         // 使用 evaluate 点击以避免 Astro dev toolbar 拦截

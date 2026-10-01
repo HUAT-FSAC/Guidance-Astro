@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
     AnalyticsEvent,
-    trackEvent,
-    trackScrollDepth,
-    trackExternalLinks,
-    trackDocumentReading,
     initAnalytics,
+    trackDocumentReading,
+    trackEvent,
+    trackExternalLinks,
+    trackScrollDepth,
 } from '../../src/utils/analytics'
 
 describe('analytics', () => {
@@ -68,7 +68,7 @@ describe('analytics', () => {
 
         it('should clean up previous listener when called again', () => {
             const removeSpy = vi.spyOn(window, 'removeEventListener')
-            const cleanup1 = trackDocumentReading()
+            const _cleanup1 = trackDocumentReading()
             const cleanup2 = trackDocumentReading()
             // First listener should have been removed when second call happened
             expect(removeSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function))

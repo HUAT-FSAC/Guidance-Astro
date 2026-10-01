@@ -65,12 +65,15 @@
 
 # --- 特殊标记 ---
 'breaking-change':
-    - base-branch: 'main'
-    - changed-files:
-        - any-glob-to-any-file:
-              - 'astro.config.mjs'
-              - 'src/middleware.ts'
-              - 'wrangler.json'
+    # 必须显式包 all:——否则 labeler 对无顶层键的规则按 any(OR) 处理，
+    # base-branch: main 单独成立即命中，会给所有 PR 打上本标签
+    - all:
+        - base-branch: 'main'
+        - changed-files:
+            - any-glob-to-any-file:
+                  - 'astro.config.mjs'
+                  - 'src/middleware.ts'
+                  - 'wrangler.json'
 
 # --- 体量提示（仅保留纯路径规则；actions/labeler 不支持 max-changed-lines，
 # 曾因此全红，见 T-022b。size:s/m/l/xl 留给维护者手动评估） ---
