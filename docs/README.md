@@ -25,7 +25,10 @@ docs/
 ├── VERSION_CONTROL_POLICY.md      # 分支与发布
 ├── PROJECT_MANAGEMENT_MODEL.md    # 项目管理模型
 ├── TODOLIST.md                    # 历史任务清单
+├── CONTRIBUTING-content.md        # 内容编写指南（面向写文档的贡献者）
+├── HANDOFF-2026-09-19.md          # 历史交接快照（2026-09-19）
 ├── adr/                           # 架构决策记录
+├── agents/                        # Agent 协作文档（domain / issue-tracker / triage-labels）
 ├── guides/                        # 操作指南
 ├── plans/                         # 功能计划与设计（历史归档见 archive/）
 ├── reports/                       # 实施 / 完成 / 归档报告
