@@ -53,22 +53,22 @@ pnpm dev                 # http://localhost:4321
 
 ### 常用命令
 
-| 命令                                | 说明                                                              |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| `pnpm dev`                          | 启动开发服务器                                                    |
-| `pnpm build`                        | 构建生产版本(产物在 `dist/`)                                      |
-| `pnpm preview`                      | 本地预览构建结果(静态)                                            |
-| `pnpm preview:ssr`                  | 用 Wrangler 本地跑 SSR                                            |
-| `pnpm lint` / `pnpm lint:fix`       | ESLint 检查 / 自动修复                                            |
-| `pnpm format` / `pnpm format:check` | Prettier 格式化 / 校验                                            |
-| `pnpm test:run`                     | Vitest 单元测试(单次)                                             |
-| `pnpm test:coverage`                | 覆盖率报告(80/80/80/80 阈值)                                      |
-| `pnpm test:e2e`                     | Playwright 端到端测试                                             |
-| `pnpm quality:bundle`               | 构建体积预算                                                      |
-| `pnpm quality:theme`                | 主题对比度                                                        |
-| `pnpm quality:lighthouse`           | Lighthouse CI 断言                                                |
-| `pnpm deploy:worker`                | `build` + `wrangler deploy`(需 `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |
-| `make help`                         | 列出所有 `make` 快捷命令(`make dev/build/ci/deploy/secret-scan`)  |
+| 命令                                | 说明                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | 启动开发服务器                                                                               |
+| `pnpm build`                        | 构建生产版本(产物在 `dist/`)                                                                 |
+| `pnpm preview`                      | 本地预览构建结果(静态)                                                                       |
+| `pnpm preview:ssr`                  | 用 Wrangler 本地跑 SSR                                                                       |
+| `pnpm lint` / `pnpm lint:fix`       | ESLint 检查 / 自动修复                                                                       |
+| `pnpm format` / `pnpm format:check` | Prettier 格式化 / 校验                                                                       |
+| `pnpm test:run`                     | Vitest 单元测试(单次)                                                                        |
+| `pnpm test:coverage`                | 覆盖率报告(80/80/80/80 阈值)                                                                 |
+| `pnpm test:e2e`                     | Playwright 端到端测试                                                                        |
+| `pnpm quality:bundle`               | 构建体积预算                                                                                 |
+| `pnpm quality:theme`                | 主题对比度                                                                                   |
+| `pnpm quality:lighthouse`           | Lighthouse CI 断言                                                                           |
+| `pnpm deploy:worker`                | `build` + `wrangler deploy`(需 `CLOUDFLARE_API_TOKEN`；`ACCOUNT_ID` 由 `wrangler.json` 提供) |
+| `make help`                         | 列出所有 `make` 快捷命令(`make dev/build/ci/deploy/secret-scan`)                             |
 
 ---
 
