@@ -22,10 +22,13 @@ jobs:
           github-token: ${{ secrets.PROJECT_TOKEN }}
 
   # 自动更新 Issue 状态标签
+  # NOTE(#148)：本 job 已显式禁用（if: false）。原因：脚本只读标签算出 status 后
+  # 仅 console.log，没有任何 github.rest 写调用，标签从未被更新——"成功但无事发生"。
+  # 重新启用前需补上真正的写逻辑 + issues:write 权限，并经人类确认标签体系（WORKFLOW.md 才是 SSOT）。
   update-issue-status:
     name: Update Issue Status
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues'
+    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
@@ -87,10 +90,15 @@ jobs:
             }
 
   # 检查里程碑延期
+  # NOTE(#148)：本 job 已显式禁用（if: false）。原因有二：① 工作流 on: 里没有
+  # schedule 触发器，而旧条件 github.event.schedule 只在 schedule 事件下才有值，
+  # 故该 job 永不运行；② 脚本把预警评论写死到 issue_number: 1，而 #1 实际是已合并
+  # 的 PR 并非 issue。重新启用前需补 schedule 触发器 + 改为新建 issue（或可配置
+  # 的目标），并经人类确认。
   check-milestone-deadline:
     name: Check Milestone Deadline
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 9 * * *'  # 每天上午9点运行
+    if: false
     steps:
       - name: Check milestones
         uses: actions/github-script@v9
