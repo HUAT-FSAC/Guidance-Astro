@@ -54,22 +54,22 @@ pnpm dev                 # http://localhost:4321
 
 ### Common commands
 
-| Command                             | Description                                                           |
-| ----------------------------------- | --------------------------------------------------------------------- |
-| `pnpm dev`                          | Start dev server                                                      |
-| `pnpm build`                        | Production build (output in `dist/`)                                  |
-| `pnpm preview`                      | Preview the static build locally                                      |
-| `pnpm preview:ssr`                  | Run the SSR build with Wrangler locally                               |
-| `pnpm lint` / `pnpm lint:fix`       | ESLint check / auto-fix                                               |
-| `pnpm format` / `pnpm format:check` | Prettier write / check                                                |
-| `pnpm test:run`                     | Vitest unit tests (single run)                                        |
-| `pnpm test:coverage`                | Coverage report (80/80/80/80 thresholds)                              |
-| `pnpm test:e2e`                     | Playwright end-to-end tests                                           |
-| `pnpm quality:bundle`               | Bundle budget check                                                   |
-| `pnpm quality:theme`                | Theme contrast check                                                  |
-| `pnpm quality:lighthouse`           | Lighthouse CI assertions                                              |
-| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN/ACCOUNT_ID`) |
-| `make help`                         | List all `make` shortcuts (`make dev/build/ci/deploy/secret-scan`)    |
+| Command                             | Description                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Start dev server                                                                                        |
+| `pnpm build`                        | Production build (output in `dist/`)                                                                    |
+| `pnpm preview`                      | Preview the static build locally                                                                        |
+| `pnpm preview:ssr`                  | Run the SSR build with Wrangler locally                                                                 |
+| `pnpm lint` / `pnpm lint:fix`       | ESLint check / auto-fix                                                                                 |
+| `pnpm format` / `pnpm format:check` | Prettier write / check                                                                                  |
+| `pnpm test:run`                     | Vitest unit tests (single run)                                                                          |
+| `pnpm test:coverage`                | Coverage report (80/80/80/80 thresholds)                                                                |
+| `pnpm test:e2e`                     | Playwright end-to-end tests                                                                             |
+| `pnpm quality:bundle`               | Bundle budget check                                                                                     |
+| `pnpm quality:theme`                | Theme contrast check                                                                                    |
+| `pnpm quality:lighthouse`           | Lighthouse CI assertions                                                                                |
+| `pnpm deploy:worker`                | `build` + `wrangler deploy` (needs `CLOUDFLARE_API_TOKEN`; `ACCOUNT_ID` is provided by `wrangler.json`) |
+| `make help`                         | List all `make` shortcuts (`make dev/build/ci/deploy/secret-scan`)                                      |
 
 ---
 
