@@ -1,0 +1,10 @@
+# 生成物：由 release-please / OpenWiki 维护，原样保留
+openwiki/
+CHANGELOG.md
+
+# 历史快照：字节级冻结，不归一、不校验
+docs/plans/
+docs/reports/
+docs/HANDOFF-2026-09-19.md
+src/content/docs/archive/
+src/content/docs/en/archive/
