@@ -3,16 +3,16 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-01T14:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 24 轮完成（#152 建单+PR #153 待人类合并），进行中（无操作计数 0/5）
-**主干：** `main@d95cc55`（CI 全绿）｜ **活跃：** #150 → PR #151（待合并）、#152 → PR #153（CI 核心 5 项绿，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#150、#152
+**最后更新：** 2026-10-01T15:25Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 25–26 轮完成（#151/#153 已合并；#154 建单+PR #155 待人类合并），进行中（无操作计数 0/5）
+**主干：** `main@9e41da7`（CI 全绿：run 36879855991/36879806024，QualityGate 同 SHA 重跑转绿）｜ **活跃：** #154 → PR #155（CI 全绿含 3-run QualityGate，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#154
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
 ## 当前活跃任务
 
-- **#150**（P3，本轮）：README 中英部署行 ACCOUNT_ID 漂移（`README.md:70`/`README.en.md:71` 仍写需 TOKEN/ACCOUNT_ID，与 #130 修后的 Makefile:123 + DEPLOYMENT:36 + AGENTS.md 口径矛盾；第 9 轮因 PR #124 拆行冲突推迟）→ 修 2 行（对齐 Makefile 文案 + prettier 表格重对齐，语义仅 2 行）→ **PR #151 待人类合并**（CI 核心 5 项绿；docs-only 无需部署）。
-- 无其他活跃任务（#101/#120 等人类；#121–#148 全关）。
-- **新候选**：`format:check` 剩余缺口（扩展名集 + `.github/` 目录集，24 文件归一，yml 逐个确认）。
+- **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
+- **#154**（P3，本轮）：main QualityGate LHCI perf 抖动（`9e41da7` 首跑 `/` 0.59 失败→同 SHA 重跑转绿；`d95cc55` 纯记录 commit 同 job 0.77 失败；T-022 冷机 0.83 余量薄）→ 建单 **#154** → 修 1 行（`numberOfRuns: 1→3`，assert 取中位数；0.8 error 档不动）→ **PR #155**（CI 全绿：核心 5 项 + 3-run QualityGate `12 total runs` 中位数断言过；本地 JSON 解析 + format 全过 + lint/tsc/test；非运行时改动无需部署；**留待人类 review+merge**）。**教训**：shell 跨调用 PATH 不继承，commit 前必须同命令内 export（husky 拦了一次，坑 4 变体）。
+- 无其他活跃任务（#101/#120 等人类）。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -25,18 +25,17 @@
 - **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
 - **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
-- **#150**（P3）：待 PR #151 合并（`docs: #150` 无关键字，合并后手动关）。
-- **#152**（P3，本轮）：`format:check` 仍窄于 hook（精确测 hook 覆盖 287 − CI 覆盖 = 154 盲区；剔除生成物/快照后有意义缺口 50 文件：`.config` 6、`docs` 现行 17、`.github` 11、根 md 3、`public/manifest.json`、`src` 下 md 11）→ 修 `format`/`format:check` 同步扩 7 组 glob + 新增 `.prettierignore`（openwiki/CHANGELOG/plans/reports/ dated 快照/archive 双目录）+ 归一 2 实脏活文件（COMPONENTS.md 嵌套列表+fence 按 semi:false/tabWidth:4，contributing.md 纯空白）→ **PR #153 待人类合并**（新门禁精确命中 2 预测文件 + 反向注入 exit 1 + §6 全绿）。**有意不做**：`*.astro`（prettier 无 parser 实证）、`*.yml`（hook 未覆盖，保持基准）、`*.mdx`（hook 未覆盖）、历史快照 18 实脏不动。
-- 开放 PR：**#151、#153**（本棒，CI 均核心 5 项绿，待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
+- **#154**（P3）：→ PR #155（CI 全绿含 3-run QualityGate，待人类合并；`fix:` + body `Closes`，合并后核对自动关）。
+- 开放 PR：**#155**（本棒，待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
-- **README 部署行 ACCOUNT_ID 漂移**（#150→PR #151 待合并）：合并后本条删除；`docs: #150` 无关键字，记得手动关 issue。
 - **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；另 `add-to-project` 在 run 36742311392 报 `PROJECT_TOKEN` Bad credentials，需人类轮换/确认。若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
-- **`format:check` 覆盖缺口的剩余部分**（新建候选 2，已解锁）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——此前测得全仓不合规 26 项中 `.github/` 15 个 yml（纯引号风格）、`src/content/docs/**` 7 个 `.md`、`docs/components/COMPONENTS.md` 1 个。**建单时注意**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）。
+- ~~**`format:check` 覆盖缺口的剩余部分**~~（已结清，第 24 轮 #152）：md/`.config`/`.github`/根 md/public/src-md 7 组 glob 已补 + `.prettierignore` 冻结快照；剩余 `yml/yaml/astro/mdx` 为**有意不做**（hook 未覆盖/`*.astro` 无 parser 实证），不再建单。
 
 - **i18n 中英对称性已结清**（第 20 轮验证，无缺陷）：en 侧用翻译后 slug，路径集合差（zh 缺 24 / en 缺 36）**不可直接判缺**；5 个 en 中文文件名文件是**有意重定向 stub**（线上旧路由 200 → 新 slug 200），其余为单语内容，**语言切换器对缺失语言正确省略**（无死链）。复查时**先分类再判缺陷**，别拿路径差直接建单。
-- **门禁自审计已覆盖两侧**（第 15-16 轮）：`format:check`（#140）与 `eslint`（#142）的 CI 脚本覆盖面均已补齐到「配置/hook 声明的范围」。**剩余已知缺口**：`format:check` 的扩展名集（`md`/`yml`/`astro`）与 `.github/` 目录集未补（24 个文件待归一，yml 语义敏感）；`pnpm lint` 未设 `--max-warnings`（有意，阻断策略属人类决策）；`tsc --noEmit` 不覆盖 `tests/**`（预防性，见下条）。
+- **门禁自审计已覆盖两侧**（第 15-16 轮 + 第 24 轮 #152 收尾）：`format:check`（#140→#152）与 `eslint`（#142）均已对齐到 hook 声明范围（7 组 glob + `.prettierignore`）。**剩余均为有意不做**：`yml/yaml/astro/mdx`（hook 未覆盖/`*.astro` 无 parser 实证）、历史快照冻结；`pnpm lint` 未设 `--max-warnings`（阻断策略属人类决策）；`tsc --noEmit` 不覆盖 `tests/**`（预防性，见下条）。
 
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
@@ -142,10 +141,18 @@
 
 例行同步（#151 仍 OPEN 留人类、其余无可认领）→ 取§已观察第 3 条 → 精确重测（hook 覆盖 287 − CI 覆盖 = 154 盲区；剔除生成物/快照后有意义缺口 **50 文件**；全量 `prettier --check` 287 文件仅 20 脏，其中活文件仅 **2 个**）→ 关键排除实证：`*.astro` 无 prettier parser（含空格文件名炸 shell 展开，`*.yml`/`*.mdx` hook 本就不覆盖，均不扩）→ 查重无重复 → 建单 **#152** → 修 4 文件（`format`/`format:check` 同步扩 7 组 glob + 新增 `.prettierignore` + 归一 COMPONENTS.md/contributing.md）→ **PR #153**（新门禁精确命中 2 预测文件 + 反向注入 `docs/README.md` exit 1 拦截 + §6 全绿 lint/tsc/test 412/build；非运行时改动无需部署；**留待人类合并**）。归一等价性：contributing.md 纯空白（1950 字符一致）；COMPONENTS.md 为 prettier canonical 风格归一（嵌套列表 2sp→4sp + fence 代码按仓库 semi:false/tabWidth:4，与 #140 的 token 证明同源，属文档示例无运行时）。
 
+### 第 25 轮（#151/#153 合并落 main + LHCI 抖动实锤）
+
+人类 review 通过（"没问题，继续"）→ #151/#153 事先 CI 全绿（含 QualityGate）→ `--admin --squash` 合并（分支保护 review 对象 + 永不满足 `quality-gate` 上下文，只能 admin）→ #150/#152 靠 body `Closes` 自动关（已核对；`docs:`/`fix:` 均生效）→ main@9e41da7 首跑 QualityGate 在 `/` perf 0.59 失败 → 同 SHA `--failed` 重跑转绿（run 36879855991 全 success）；并案 `d95cc55`（纯记录 commit）同 job 0.77 失败 —— 纯记录改动不可能影响 perf，实锤抖动非回归。
+
+### 第 26 轮（#154：LHCI numberOfRuns 1→3，1 行）
+
+取§已观察抖动项 → 查重无重复 → 建单 **#154**（证据：0.59/0.77 + 同 SHA 重跑转绿；T-022 冷机 0.83 余量薄；#134 恢复 error 档后首次显形）→ 修 1 行（`numberOfRuns: 1→3`，assert 取中位数；0.8 error 档不动；下调阈值/改 warn 明确不做）→ **PR #155**（CI 全绿：核心 5 项 + QualityGate `12 total runs` 中位数断言过 + Preview；本地 JSON 解析 + format 全过 + lint/tsc/test；非运行时改动无需部署；**留待人类合并**）。**教训**：shell 跨调用 PATH 不继承，commit 前须同命令内 export（husky `command not found` 拦 commit 一次）。
+
 ## 下一步（给下一棒）
 
-1. **#151/#153 合并后**：删§已观察第 1 条，手动关 #150（`docs:` 无关键字）/#152（`fix:` 会自动关，核对即可）。
-2. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #151/#153。
+1. **#155 合并后**：核对 #154 自动关（`fix:` + body `Closes` 双保险）；若 main QualityGate 再抖动（中位数仍拦），回 #154 留证据并考虑加 run 数（0.8 阈值不动仍是底线）。
+2. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #155。
 3. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
 4. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
 
