@@ -3,8 +3,8 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-01T13:30Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 23 轮完成（#150 建单+PR #151 待人类合并），进行中（无操作计数 0/5）
-**主干：** `main@023e02e`（CI 全绿）｜ **活跃：** #150 → PR #151（README 部署行 2 行，CI 核心 5 项绿，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#150（待 #151）
+**最后更新：** 2026-10-01T14:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 24 轮完成（#152 建单+PR #153 待人类合并），进行中（无操作计数 0/5）
+**主干：** `main@d95cc55`（CI 全绿）｜ **活跃：** #150 → PR #151（待合并）、#152 → PR #153（CI 核心 5 项绿，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#150、#152
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
@@ -25,12 +25,13 @@
 - **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
 - **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
-- **#150**（P3，本轮）：待 PR #151 合并。
-- 开放 PR：**#151**（本棒，CI 核心 5 项绿，待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#150**（P3）：待 PR #151 合并（`docs: #150` 无关键字，合并后手动关）。
+- **#152**（P3，本轮）：`format:check` 仍窄于 hook（精确测 hook 覆盖 287 − CI 覆盖 = 154 盲区；剔除生成物/快照后有意义缺口 50 文件：`.config` 6、`docs` 现行 17、`.github` 11、根 md 3、`public/manifest.json`、`src` 下 md 11）→ 修 `format`/`format:check` 同步扩 7 组 glob + 新增 `.prettierignore`（openwiki/CHANGELOG/plans/reports/ dated 快照/archive 双目录）+ 归一 2 实脏活文件（COMPONENTS.md 嵌套列表+fence 按 semi:false/tabWidth:4，contributing.md 纯空白）→ **PR #153 待人类合并**（新门禁精确命中 2 预测文件 + 反向注入 exit 1 + §6 全绿）。**有意不做**：`*.astro`（prettier 无 parser 实证）、`*.yml`（hook 未覆盖，保持基准）、`*.mdx`（hook 未覆盖）、历史快照 18 实脏不动。
+- 开放 PR：**#151、#153**（本棒，CI 均核心 5 项绿，待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
-- **README 部署行 ACCOUNT_ID 漂移**（第 23 轮已建单 #150→PR #151，待合并）：内容见活跃任务；合并后本条删除。
+- **README 部署行 ACCOUNT_ID 漂移**（#150→PR #151 待合并）：合并后本条删除；`docs: #150` 无关键字，记得手动关 issue。
 - **GitHub Project 看板 URL**：`docs/PROJECT_MANAGEMENT_MODEL.md:10` 的 `projects/1` 匿名 404——gh token 缺 `read:project` scope 无法验证（私有看板可能 404），**不可判定不建单**；另 `add-to-project` 在 run 36742311392 报 `PROJECT_TOKEN` Bad credentials，需人类轮换/确认。若后续能验证确实不存在，改指向 `docs/WORKFLOW.md:§4`。
 - **`format:check` 覆盖缺口的剩余部分**（新建候选 2，已解锁）：#140 只补了 `scripts/` 目录集；**扩展名集**（漏 `md`/`yml`/`yaml`/`astro`）与 **`.github/` 目录集**仍缺——此前测得全仓不合规 26 项中 `.github/` 15 个 yml（纯引号风格）、`src/content/docs/**` 7 个 `.md`、`docs/components/COMPONENTS.md` 1 个。**建单时注意**：扩全量需一次性归一 24 个文件（含 workflow，语义敏感宜逐个确认）。
 
@@ -137,13 +138,16 @@
 
 例行同步（main@023e02e 与 origin 一致、开放 issue 仅 #101/#120、开放 PR 全为自动 PR 不碰）→ 取§已观察第 1 条（第 9 轮因 PR #124 拆行冲突推迟）→ 复核漂移仍在（`README.md:70`/`README.en.md:71` 仍写 TOKEN/ACCOUNT_ID，与 Makefile:123 + DEPLOYMENT:36 + AGENTS.md 矛盾；全仓其余 ACCOUNT_ID 引用均为正当）→ 查重无重复 → 建单 **#150** → 修 2 行（对齐 Makefile 文案 + prettier 表格重对齐，语义仅 2 行：`git stash` 对照证改前 prettier 干净）→ **PR #151**（CI 核心 5 项绿；docs-only 无需部署；**留待人类 review+merge**——新工作无合并授权，回归默认协议）。**教训**：edit 新串必须包含旧串全部保留内容，提交记录类文件后逐行核对行数（89=71+18 类断言）。
 
+### 第 24 轮（#152：`format:check` 剩余缺口，50 文件盲区/实脏 2 个）
+
+例行同步（#151 仍 OPEN 留人类、其余无可认领）→ 取§已观察第 3 条 → 精确重测（hook 覆盖 287 − CI 覆盖 = 154 盲区；剔除生成物/快照后有意义缺口 **50 文件**；全量 `prettier --check` 287 文件仅 20 脏，其中活文件仅 **2 个**）→ 关键排除实证：`*.astro` 无 prettier parser（含空格文件名炸 shell 展开，`*.yml`/`*.mdx` hook 本就不覆盖，均不扩）→ 查重无重复 → 建单 **#152** → 修 4 文件（`format`/`format:check` 同步扩 7 组 glob + 新增 `.prettierignore` + 归一 COMPONENTS.md/contributing.md）→ **PR #153**（新门禁精确命中 2 预测文件 + 反向注入 `docs/README.md` exit 1 拦截 + §6 全绿 lint/tsc/test 412/build；非运行时改动无需部署；**留待人类合并**）。归一等价性：contributing.md 纯空白（1950 字符一致）；COMPONENTS.md 为 prettier canonical 风格归一（嵌套列表 2sp→4sp + fence 代码按仓库 semi:false/tabWidth:4，与 #140 的 token 证明同源，属文档示例无运行时）。
+
 ## 下一步（给下一棒）
 
-1. **#151 合并后**：删§已观察第 1 条（README 漂移），关 #150（`docs: #150` subject 无关键字，需手动关）。
-2. **新候选建单**：`format:check` 剩余缺口（24 文件，yml 逐个确认）。
-3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。
-4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-5. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
+1. **#151/#153 合并后**：删§已观察第 1 条，手动关 #150（`docs:` 无关键字）/#152（`fix:` 会自动关，核对即可）。
+2. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #151/#153。
+3. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
+4. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
 
 ## 阻塞项
 
