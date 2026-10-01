@@ -3,10 +3,10 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T17:25Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 20 轮完成（验证轮），进行中（无操作计数 0/5）
-**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142 + 第 16/17 轮记录）、`auto/.../144-ogimage-drift`（PR #145 = #144 + 第 18 轮记录）、`auto/.../146-labeler-and-semantics`（PR #147 = #146，**本文件所在，最新全量记录**）
+**最后更新：** 2026-10-01T12:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 21 轮完成（#148 建单+PR #149），进行中（无操作计数 0/5）
+**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134 + 第 12 轮记录）、`auto/.../136-doc-lineref-drift`（PR #137 = #136 + 第 13 轮记录）、`auto/.../138-img-compress-guide`（PR #139 = #138 + 第 14 轮记录）、`auto/.../140-format-check-coverage`（PR #141 = #140 + 第 15 轮记录）、`auto/.../142-lint-coverage`（PR #143 = #142 + 第 16/17 轮记录）、`auto/.../144-ogimage-drift`（PR #145 = #144 + 第 18 轮记录）、`auto/.../146-labeler-and-semantics`（PR #147 = #146，**此前最新全量记录**）、`auto/muse-spark-20261001T114700Z/148-project-automation-dead-jobs`（PR #149 = #148，**本文件所在，最新全量记录**）
 
-> ⚠️ **记录文件分散在十三个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，第 16-17 轮随 PR #143，第 18 轮随 PR #145，**第 19 轮（本版，最新）随 PR #147**。冲突一律取**最新（PR #147，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142 / #144 / #146）。
+> ⚠️ **记录文件分散在十四个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，第 12 轮随 PR #135，第 13 轮随 PR #137，第 14 轮随 PR #139，第 15 轮随 PR #141，第 16-17 轮随 PR #143，第 18 轮随 PR #145，**第 19-20 轮随 PR #147**，**第 21 轮（本版，最新）随 PR #149**。冲突一律取**最新（PR #149，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134 / #136 / #138 / #140 / #142 / #144 / #146 / #148）。
 
 ## 当前活跃任务
 
@@ -24,6 +24,7 @@
 - **#144**（P3）：og:image 决策留痕残留漂移 2 处（§7.6 验证行仍校验 png，与同段决策行矛盾 = #136 部分修复；ADR-002:42 过期行号）→ 修复完成（`84baa42`），**PR #145 待人类合并**（3/3 内容断言 + 线上 curl 实测 + §6 全绿；决策行与 #137 逐字一致故合并无冲突）。
 - **STATE 挂起项已结**：`check-bundle-budget.mjs` 的 og-image 预算条目 —— `public/og-image.png` 系 ADR-002:57 有意保留的历史遗存，条目**有效应保留**，无需建单。
 - **#146**（P3）：`.github/labeler.yml` 两处缺陷 —— ① `breaking-change` 因「无顶层键默认 any(OR)」被打到**所有** PR；② `size:xs` 因 workflow 缺 `issues: write` 无法创建 → **永久失效**。修复 `850979d`（仅 ① 显式包 `all:`）→ **PR #147 待人类合并**（本地复现器验证：修复前与线上标签 3/3 吻合，修复后 6/6 断言 PASS）。**② 待人类决策**：建议手工创建 `size:xs` label（官方替代方案），不要给 `pull_request_target` 扩 `issues: write`。
+- **#148**（P3）：`.github/workflows/project-automation.yml` 两个 job 失效 —— ① `check-milestone-deadline` 永不运行（`on:` 无 schedule 触发，旧 `if: github.event.schedule` 恒假；近 10 run 全 skipped；预警写死 `issue_number: 1` 而 #1 实为已合并 PR）；② `update-issue-status` 空转（脚本只 `console.log`、零 `github.rest` 写调用，issue 事件每次白跑一次 checkout）→ 修复 `b247567`（两处改 `if: false` 显式禁用 + NOTE 注释，零行为变更）→ **PR #149 待人类合并**（YAML 解析 OK + 旧可执行条件 0 残留 + §6 全绿 lint/tsc/format/test 412/build）。**未动**：`update-linked-issues` 缺 `issues: write`（无失败实证，保守不动）与 `add-to-project` 的 `PROJECT_TOKEN` Bad credentials（run 36742311392，属 secret/看板侧，需人类轮换/确认 projects/1）。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -43,7 +44,8 @@
 - **#132**（P3，本棒）：待 PR #133 合并。
 - **#134**（P3，本棒）：待 PR #135 合并。
 - **#136**（P3，本棒）：待 PR #137 合并。
-- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141、#143、#145、#147**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#138/#140/#142/#144/#146/#148**（P3，本棒）：分别待 PR #139/#141/#143/#145/#147/**#149** 合并。
+- 开放 PR：**#122、#124、#127、#129、#131、#133、#135、#137、#139、#141、#143、#145、#147、#149**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
@@ -142,16 +144,21 @@
 
 例行同步（13 PR 未合并、无可认领）→ **i18n 对称性审计**（新维度，用户面）：按文件路径直接比对无意义（en 侧用**翻译后 slug**，如 zh `入门` ↔ en `onboarding`），故改用三步实证 —— ①路径集合差得 zh 缺 en 24 项 / en 缺 zh 36 项；②逐一分类：**5 个 en 中文文件名文件（`docs-center/入门.mdx` 等）是有意的重定向 stub**（`meta http-equiv=refresh` + `location.replace` 指向新英文 slug，线上实测旧路由 200、新 slug 200 ✅），其余为**单语内容**（en 独有 28 个 `archive/2025/*` 英文页、zh 独有 8 个中文页）；③查语言切换器是否因此产生死链 → 线上实测 en 独有页**未生成 zh 链接**（Starlight 正确省略缺失语言），zh 对应路径 404 但**无任何入口指向它** ✅。结论：**无缺陷**，i18n 维度结清。
 
+### 第 21 轮（#148，主动发现）
+
+例行同步（main 仍 `46f53f4`、13 PR 全 OPEN 且 MERGEABLE、无可认领、main 顶端 run 36651249360 7/7 绿但本地 `pnpm audit` 仍 5 漏洞 exit 1 → **冻结令继续有效**）→ **工作流自动化配置审计**（承 #146 维度，从 labeler 扩到 project-automation）：读 `.github/workflows/project-automation.yml` 全文件 → 实锤两处失效合并建单 **#148**：A=`check-milestone-deadline` **永不运行**（`on:` 无 schedule 触发，旧 `if: github.event.schedule == '0 9 * * *'` 只在 schedule 事件下有值 → 近 10 run 全 skipped，run 36742311392 实证；且预警写死 `issue_number: 1` 而 #1 实为**已合并 PR**）；B=`update-issue-status` **空转**（脚本 27–38 行读标签算 status 后只 `console.log`、零 `github.rest` 写调用，issue 事件每次白跑一次 checkout 却显示 success）→ 查重（无重复单；与 #101/PROJECT_TOKEN 无关：那是 secret 侧）→ 修 `b247567`（2 处改 `if: false` 显式禁用 + NOTE(#148) 注释，**不补 schedule、不加权限，零行为变更**）→ **PR #149**。验证：`yaml.safe_load` 解析 OK（4 jobs 保留）、旧可执行条件 0 残留（仅注释内提及）、§6 全绿（lint 0 / tsc 0 / format 全过 / test **412/412** / build Complete）。**有意未动**：`update-linked-issues` 缺 `issues: write`（默认只读下合并时 403，但无失败实证，保守不动）；`add-to-project` 在 run 36742311392 报 `Bad credentials`（`PROJECT_TOKEN`，属 secret/看板侧，需人类轮换/确认 projects/1，已有 STATE 观察项）。
+
 ## 下一步（给下一棒）
 
-1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141/#143/#145/#147 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135/#137/#139/#141/#143/#145/#147/#149 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
 2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
 3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
-4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-5. **全仓 `git grep` 复扫套路**（第 9/11/12 轮连续产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132；`quality:*` 脚本可执行性→#134），扫出的命中先按「日志/快照豁免」定性再建单；**「文档教的命令」要实跑复现**（#134 的 A 部分）。
+4. **人类待办**（第 21 轮新增）：轮换/确认 `PROJECT_TOKEN`（`add-to-project` 在 run 36742311392 报 Bad credentials）与 `orgs/HUAT-FSAC/projects/1` 是否存在；裁决 `update-linked-issues` 是补 `issues: write` 还是删除（WORKFLOW.md 为 SSOT 的话可删）。
+5. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
+6. **全仓 `git grep` 复扫套路**（第 9/11/12 轮连续产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132；`quality:*` 脚本可执行性→#134），扫出的命中先按「日志/快照豁免」定性再建单；**「文档教的命令」要实跑复现**（#134 的 A 部分）。
 
 ## 阻塞项
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
 - **#120**：toast.ts 删留二选一，等人类。
-- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141、#142/#143、#144/#145、#146/#147**：等人类 review+merge（协议禁止自动 merge）。
+- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135、#136/#137、#138/#139、#140/#141、#142/#143、#144/#145、#146/#147、#148/#149**：等人类 review+merge（协议禁止自动 merge）。
