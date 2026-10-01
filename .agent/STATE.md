@@ -3,10 +3,10 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-09-30T16:15Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 11 轮完成，进行中（无操作计数 0/5）
-**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132，**本文件所在，最新全量记录**）
+**最后更新：** 2026-09-30T17:30Z ｜ **当前 agent-id：** `mimo-flash-20260930T113551Z` ｜ **状态：** 第 12 轮完成，进行中（无操作计数 0/5）
+**本轮起点 HEAD：** `46f53f4` ｜ **产出分支：** `auto/.../121-audit-override-bump`（PR #122，CI 7/7 绿）、`auto/.../123-readme-dead-links`（PR #124 = #123+#125）、`auto/.../126-docs-index-drift`（PR #127 = #126）、`auto/.../128-dedup-webm`（PR #129 = #128）、`auto/.../130-makefile-drift`（PR #131 = #130 + 第 10 轮记录）、`auto/.../132-pmmd-deploy-drift`（PR #133 = #132 + 第 11 轮记录）、`auto/.../134-lighthouse-assert-path`（PR #135 = #134，**本文件所在，最新全量记录**）
 
-> ⚠️ **记录文件分散在六个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，**第 11 轮（本版，最新）随 PR #133**。冲突一律取**最新（PR #133，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132）。
+> ⚠️ **记录文件分散在七个分支**（#122 合并前禁直推 main）：第 1 轮随 PR #122，第 2-3 轮随 PR #124，第 4 轮随 PR #127，第 8 轮随 PR #129，第 9-10 轮随 PR #131，第 11 轮随 PR #133，**第 12 轮（本版，最新）随 PR #135**。冲突一律取**最新（PR #135，已合并则取 main）**；`docs/WORKFLOW.md:§7.4` 各轮增行全部保留（#121 / #123+#125 / #126 / #128 / #130 / 第 10 轮验证行 / #132 / #134）。
 
 ## 当前活跃任务
 
@@ -16,6 +16,7 @@
 - **#128**（P3）：归档视频 23.5MB 零引用副本 → **PR #129 待人类合并**（同绿）。
 - **#130**（P3）：Makefile 三处漂移（help 阈值 / 部署行 ACCOUNT_ID / audit 仅 --prod）→ 修复完成（`81582c2`），**PR #131 待人类合并**（门禁本地全绿）。
 - **#132**（P3）：`docs/PROJECT_MANAGEMENT_MODEL.md` 发布部署小节 5 处与现状矛盾（称「自动部署已恢复」+ 要配 ACCOUNT_ID）→ 修复完成（`10aba9c`），**PR #133 待人类合并**（门禁本地全绿；条件式表述使 #101 完成后无需回改）。
+- **#134**（P3）：quality:lighthouse 链路两处失效（脚本裸 `lhci` 未装依赖必挂 + lighthouserc 重复键致 error 0.80 底线静默失效）→ 修复完成（`d43dfe9`），**PR #135 待人类合并**（本地端到端 exit 0 + 门禁全绿；零依赖变更）。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -31,7 +32,8 @@
 - **#128**（P3，本棒）：待 PR #129 合并。
 - **#130**（P3，本棒）：待 PR #131 合并。
 - **#132**（P3，本棒）：待 PR #133 合并。
-- 开放 PR：**#122、#124、#127、#129、#131、#133**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#134**（P3，本棒）：待 PR #135 合并。
+- 开放 PR：**#122、#124、#127、#129、#131、#133、#135**（均本棒）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
@@ -89,16 +91,20 @@
 
 例行同步（main `46f53f4` / 6 PR 全 OPEN 且全 MERGEABLE / 无可认领 / main ci-cd 全绿）→ 延展第 9 轮发现模式做全仓 `git grep` 复扫：`70/60/70/70` 全部命中均为已知/豁免（README 待 #124、ROADMAP 快照、WORKFLOW 日志、本轮记录自身）、`audit --prod` 零残留、**`CLOUDFLARE_ACCOUNT_ID` 命中 `docs/PROJECT_MANAGEMENT_MODEL.md:192/215`** → 读上下文确认该发布部署小节停留在 2026-08-28 口径（称「✅ 自动部署已恢复」、要求配 ACCOUNT_ID、发版首选写 push main、手动兜底标签颠倒、`DEPLOYMENT.md:22` 行号漂移），**T-033 口径同步白名单漏掉此文件**（AGENTS.md/DEPLOYMENT.md/WORKFLOW §3 都改了）→ 查重（无重复单；与 #101 关联非重复：#101 恢复动作、本单文档口径）→ 建单 **#132** → 修 5 处（10 行替换）`10aba9c` → 断言：ACCOUNT_ID 仅剩否定式 ×2 / 无「自动部署已恢复」/ 无 `:22` 引用 / 三方口径交叉核对（AGENTS.md:22/24 + DEPLOYMENT.md:20/36 + ci-cd.yml:153 及顶层 job 无 deploy）→ §6 全绿（lint/format/tsc/test 412/build）→ **PR #133**（与 #122/#124/#127/#129/#131 文件零交集）。恢复类表述全部条件式化——**#101 完成后本文件无需回改**。
 
+### 第 12 轮（#134，主动发现）
+
+例行同步（main `46f53f4` / 7 PR 全 OPEN / 无可认领 / main ci-cd 双查全绿〔坑 20〕）→ 本轮验证第 9 轮改动的连锁主张：① `pnpm test:coverage` 实跑 **exit 0**（80/80/80/80 阈值实证通过，CI Tests job 同口径全绿）；② `.agent/LOCK` 机制核对 = `.agent/.gitignore` 设计内本地锁 + WORKFLOW:150 §7.4 认领行权威，无漂移不建单；③ **`quality:lighthouse` 脚本可执行性** → 发现两处失效合并建单 **#134**：A=`package.json:60` 调裸 `lhci` 而依赖未装（干净检出必挂，Makefile/README×2/ARCHITECTURE 四处在教死命令，CI 内联 dlx 掩盖）；B=`lighthouserc.json` **重复键** `categories:performance`（T-022 `860253d` 意图 error0.80+warn0.85 双档，JSON 后者覆盖 + LHCI 加载器 `:78` require() last-wins 实证）→ **error 底线静默失效**。修 3 文件 `d43dfe9`：脚本改 `pnpm dlx @lhci/cli@0.15.1`（与 `ci-cd.yml:148-149` 程序化逐字节比对 MATCHES，零依赖零 lockfile）+ 删重复键恢复 `error@0.8` + ARCHITECTURE `:250/:276` 口径。验证：修复前 `lhci not found` 复现 → 修复后 `pnpm quality:lighthouse` 端到端 **exit 0**（4 URL collect+assert）；第 10 轮实测分数 91/97/95/97 证 error@0.80 余量 11+ 分；§6 全绿 → **PR #135**。**踩坑**：commitlint `footer-max-line-length≤100`（坑 21，两次提交被拒后折行通过）。
+
 ## 下一步（给下一棒）
 
-1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
+1. **#122 已合并？** → push main 恢复常绿（本棒改动均不进运行时产物，**无需部署**）→ #124/#127/#129/#131/#133/#135 rebase 让 Audit 转绿 → 核对 #121/#123/#125/#126/#128/#130/#132/#134 是否被 `Closes` 自动关（squash 改写 subject 会漏，**手动关**）。
 2. **#122 未合并？** → 禁 push main；例行评估（可接手仅 #101/#120 均阻塞；README ACCOUNT_ID 待 #124）→ 连续无操作满 5 触发 §九.1 停止（**当前 0/5**）。
 3. **#124 合并后**：建单修 README 两行 ACCOUNT_ID（参照 #130 Makefile 文案，2 行）。
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-5. **全仓 `git grep` 复扫套路**（第 9/11 轮连续两轮产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132 是第 9 轮 `--include` 教训的直接延展），扫出的命中先按「日志/快照豁免」定性再建单。
+5. **全仓 `git grep` 复扫套路**（第 9/11/12 轮连续产出）：拿到一个漂移模式就扫全仓同类（`CLOUDFLARE_ACCOUNT_ID`→#132；`quality:*` 脚本可执行性→#134），扫出的命中先按「日志/快照豁免」定性再建单；**「文档教的命令」要实跑复现**（#134 的 A 部分）。
 
 ## 阻塞项
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
 - **#120**：toast.ts 删留二选一，等人类。
-- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133**：等人类 review+merge（协议禁止自动 merge）。
+- **#121/#122、#123+#125/#124、#126/#127、#128/#129、#130/#131、#132/#133、#134/#135**：等人类 review+merge（协议禁止自动 merge）。

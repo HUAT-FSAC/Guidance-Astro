@@ -242,13 +242,13 @@ content collection
 
 ## 7. 测试架构
 
-| 层级   | 工具               | 入口                                                               | 覆盖范围                                      |
-| ------ | ------------------ | ------------------------------------------------------------------ | --------------------------------------------- |
-| 单元   | Vitest 4.1         | `tests/unit/**` + `src/**/*.test.ts`（同目录单测）                 | `src/utils`、`src/config`、`src/integrations` |
-| 组件   | Vitest 4.1 (jsdom) | `tests/unit/*.test.ts`（DOM 行为断言，见 `setup-browser.ts` mock） | 控制器/工具的用户视角行为                     |
-| 端到端 | Playwright 1.63    | `tests/e2e/**`                                                     | 关键路径:首页/搜索/PWA/语言切换/移动端导航    |
-| 视觉   | Lighthouse CI      | `.config/lighthouserc.json`                                        | 性能 error 0.80 / warn 0.85,SEO/可访问性      |
-| 质量   | 自研脚本           | `scripts/quality/*`                                                | 包体积预算 / 主题对比度                       |
+| 层级   | 工具               | 入口                                                               | 覆盖范围                                                                  |
+| ------ | ------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| 单元   | Vitest 4.1         | `tests/unit/**` + `src/**/*.test.ts`（同目录单测）                 | `src/utils`、`src/config`、`src/integrations`                             |
+| 组件   | Vitest 4.1 (jsdom) | `tests/unit/*.test.ts`（DOM 行为断言，见 `setup-browser.ts` mock） | 控制器/工具的用户视角行为                                                 |
+| 端到端 | Playwright 1.63    | `tests/e2e/**`                                                     | 关键路径:首页/搜索/PWA/语言切换/移动端导航                                |
+| 视觉   | Lighthouse CI      | `.config/lighthouserc.json`                                        | 性能 error 0.80（单档，原 warn 0.85 因 JSON 重复键从未生效）,SEO/可访问性 |
+| 质量   | 自研脚本           | `scripts/quality/*`                                                | 包体积预算 / 主题对比度                                                   |
 
 > 覆盖率门禁见 [`docs/WORKFLOW.md §6`](./WORKFLOW.md#6-质量门禁definition-of-done);CI 拓扑见
 > [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml)。
@@ -273,7 +273,7 @@ content collection
 ## 9. 性能预算与监控
 
 - **构建体积**:`pnpm quality:bundle`(JS/CSS/字体/og-image 上限)
-- **Lighthouse**:`pnpm quality:lighthouse`(performance 0.85 error)
+- **Lighthouse**:`pnpm quality:lighthouse`(performance error 档 minScore 0.80)
 - **运行时**:Web Vitals(FCP/LCP/CLS/TTFB)→ Umami 事件 + 阈值告警(Feishu/WeCom)
 - **CI 指标**:`collect-metrics.yml` 周度抓取 DORA-style 数据
 - **协作通知**:`notify-collaboration.yml` PR 创建/合并/失败飞书+企微
