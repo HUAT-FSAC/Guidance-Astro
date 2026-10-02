@@ -1,7 +1,6 @@
 ---
 title: 内容贡献指南
 description: 如何为HUAT FSAC文档中心贡献内容
-sidebar: true
 ---
 
 # 内容贡献指南
@@ -17,14 +16,14 @@ sidebar: true
 #### 步骤
 
 1. **Fork 仓库**
-    - 访问 [HUAT-FSAC 仓库](https://github.com/HUAT-FSAC/huat-fsac-docs)
+    - 访问 [HUAT-FSAC 仓库](https://github.com/HUAT-FSAC/Guidance-Astro)
     - 点击右上角的 "Fork" 按钮，创建自己的仓库副本
 
 2. **克隆仓库**
 
     ```bash
-    git clone https://github.com/你的用户名/huat-fsac-docs.git
-    cd huat-fsac-docs
+    git clone https://github.com/你的用户名/Guidance-Astro.git
+    cd Guidance-Astro
     ```
 
 3. **创建分支**
@@ -69,7 +68,7 @@ sidebar: true
 
 #### 步骤
 
-1. 访问 [Issues 页面](https://github.com/HUAT-FSAC/huat-fsac-docs/issues)
+1. 访问 [Issues 页面](https://github.com/HUAT-FSAC/Guidance-Astro/issues)
 2. 点击 "New issue" 按钮
 3. 选择合适的模板（bug 报告或功能请求）
 4. 填写详细信息
@@ -118,7 +117,7 @@ sidebar: true
 3. **人工审核**：维护者审核更改内容
 4. **反馈**：维护者提供反馈，作者进行修改
 5. **合并**：审核通过后，PR 被合并到主分支
-6. **部署**：更改会自动部署到网站
+6. **部署**：更改合并后由维护者按发布流程部署到网站
 
 ## 贡献者指南
 
