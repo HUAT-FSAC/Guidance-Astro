@@ -3,15 +3,15 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T11:25Z ｜ **当前 agent-id：** `muse-spark-20261002T111151Z` ｜ **状态：** 第 30 轮完成（#155/#157/#159/#161 免 review 合并落 main + 两次部署上线已验），进行中（无操作计数 0/5；上一棒锁已删，本轮新建锁）
-**主干：** `main@0437947`（CI 全绿 run 37000100746，Audit 经 #161 自愈；线上 Version `73738007` 200 + CSP nonce ✅）｜ **活跃：** 无（#154/#156/#158/#160 均已关）｜ **开放：** #101（人类配 Secret）、#120（question）
+**最后更新：** 2026-10-02T12:04Z ｜ **当前 agent-id：** `muse-spark-20261002T120405Z` ｜ **状态：** 第 31 轮完成（#162 rp 失败告警调查：瞬时故障，已诊断关闭），进行中（无操作计数 0/5）
+**主干：** `main@3dbbf82`（CI 全绿；线上 Version `73738007`）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret）、#120（question）
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
 ## 当前活跃任务
 
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
-- **#154/#156/#158/#160**（均已关）：用户授权免 review 直接推进 → 按序 `--admin --squash` 合并（分支保护 review 对象 + 永不满足 `quality-gate` 上下文，只能 admin；四 PR 事先 CI 全绿）：① **#161**（P1 devalue，`795d89d`，main Audit 自愈）→ 部署 `0b79c574`；② **#159**（`bd30e3f`，栈上已含 #161，合后剩余 diff 仅 contributing）→ 部署；③ **#155**（`4e8c362`，CI 配置，无需部署）；④ **#157**（`0437947`，纯注释，无需部署）。body `Closes` 四 issue 均自动关（已核对）。**教训（坑 25）**：GitHub 端 squash 落 main 后本地树过期，两次部署上线了旧树（/docs-center/contributing/ 404 复测发现）→ `git pull` + `pnpm install` 重建后 Version `73738007`，contributing 200 + sitemap 命中 + CSP ✅。**规程**：凡 GitHub 端合并落 main，部署前必 `git pull` 并确认目标文件在位。
+- **#154/#156/#158/#160**（均已关，第 30 轮合并，细见下）：① #161 → 部署；② #159 → 部署；③ #155；④ #157。body `Closes` 自动关已核对；线上 Version `73738007`。
 - 无其他活跃任务（#101/#120 等人类）。
 
 ## ⚠️ 重要警告（给下一棒）
@@ -27,6 +27,7 @@
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
 - **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
 - **#154/#156/#158/#160**：第 30 轮已合并关闭（body `Closes` 自动关，已核对）。
+- **#162**：rp 在 `bd30e3f` 的失败告警——GitHub GraphQL 瞬时故障（前后 run 全绿，#96 管线正常），已诊断关闭（见第 31 轮），无代码改动。
 - 开放 PR：无（relay PR 全合；#155/#157 合并无需部署）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
@@ -40,24 +41,6 @@
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
-
-### 第 10 轮（Quality Gate 本地全量验证，无新 issue）
-
-例行同步：main 仍 `46f53f4`、5 个 PR 全 OPEN、无可认领 issue（#101/#120 仍阻塞）、无他人新活动、main 的 ci-cd 最新 run 全绿（早前一次查询浮出的 3a49e03/3852436「failure」复现为 API 瞬时异常，重查一致为全绿）。
-
-转验证模式（CI Quality Gate 因 needs-audit **全程跳过**，#122 合并后会重新激活——提前本地排雷）：
-
-1. **E2E**：`pnpm test:e2e` → **95/95 passed**（18.6s，webServer `preview:ssr` 自动起）——本会话首次全量 e2e。
-2. **预算三件套**：`quality:theme` ✅ / `quality:bundle` ✅（Top CSS 120.89KB）/ `quality:routes` ✅。
-3. **LHCI**：collect 4 URL（`/`、`/docs-center/`、`/team/`、`/join/`）+ assert **exit 0**（仅 warn：FCP 2350ms>2000、join 页 color-contrast、INP auditRan；error 级 perf≥0.8/title/lang/alt 全过）。
-    - ⚠️ **本机是 WSL2**（`6.18.33.2-microsoft-standard-WSL2`）：chrome-launcher 走 WSL 分支，会话 PATH 无 `/mnt/c/Users/...` 段 → 临时目录构造成 `undefined:/Users/undefined/...` 报 ENOENT。**绕过**：`PATH="/mnt/c/Users/21711/AppData/Local:$PATH"` + `CHROME_PATH=~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`（坑 19）。**纯本地环境问题，CI ubuntu-latest 不受影响**（历史 Quality Gate 7/7 绿含 LHCI）。
-    - 运行副产物：chrome-launcher 在 CWD 造出 4 个 `C:\Users\...` 字面量目录，已清理（未入库）。
-
-**结论**：Quality Gate 五环节本地全绿 → #122 合并后 4 个功能 PR（#124/#127/#129/#131）rebase 转绿的置信度完整（这些 PR 均不改动 LHCI 审计页面与运行时产物）。
-
-### 第 11 轮（#132，主动发现）
-
-例行同步（main `46f53f4` / 6 PR 全 OPEN 且全 MERGEABLE / 无可认领 / main ci-cd 全绿）→ 延展第 9 轮发现模式做全仓 `git grep` 复扫：`70/60/70/70` 全部命中均为已知/豁免（README 待 #124、ROADMAP 快照、WORKFLOW 日志、本轮记录自身）、`audit --prod` 零残留、**`CLOUDFLARE_ACCOUNT_ID` 命中 `docs/PROJECT_MANAGEMENT_MODEL.md:192/215`** → 读上下文确认该发布部署小节停留在 2026-08-28 口径（称「✅ 自动部署已恢复」、要求配 ACCOUNT_ID、发版首选写 push main、手动兜底标签颠倒、`DEPLOYMENT.md:22` 行号漂移），**T-033 口径同步白名单漏掉此文件**（AGENTS.md/DEPLOYMENT.md/WORKFLOW §3 都改了）→ 查重（无重复单；与 #101 关联非重复：#101 恢复动作、本单文档口径）→ 建单 **#132** → 修 5 处（10 行替换）`10aba9c` → 断言：ACCOUNT_ID 仅剩否定式 ×2 / 无「自动部署已恢复」/ 无 `:22` 引用 / 三方口径交叉核对（AGENTS.md:22/24 + DEPLOYMENT.md:20/36 + ci-cd.yml:153 及顶层 job 无 deploy）→ §6 全绿（lint/format/tsc/test 412/build）→ **PR #133**（与 #122/#124/#127/#129/#131 文件零交集）。恢复类表述全部条件式化——**#101 完成后本文件无需回改**。
 
 ### 第 12 轮（#134，主动发现）
 
@@ -135,9 +118,13 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 用户明确"不需要 review，直接推进"（免 review 自主推进长期生效）→ 四 PR 事先 CI 全绿 → 按序 `--admin --squash`：① **#161**（`795d89d`，main Audit 自愈）→ 部署 `0b79c574` + CSP ✅；② **#159**（`bd30e3f`，栈上已含 #161，合后剩余 diff 仅 contributing）→ 部署；③ **#155**（`4e8c362`）；④ **#157**（`0437947`，#155/#157 无需部署）。body `Closes` 四 issue 自动关（已核对 #154/#156/#158/#160 closed）。**事故**：GitHub 端合并后本地树过期，两次部署上线了旧树（`/docs-center/contributing/` 线上 404，sitemap 无命中——复测发现）→ `git pull` + `pnpm install`（#161 换 lock）重建 → Version `73738007`：contributing **200** + sitemap 命中 + CSP ✅。**坑 25**：凡 GitHub 端合并落 main，部署前必 `git pull` 并确认目标文件在位（本地 `git log` 多旧即不可直接 deploy）。main run 37000100746 **全绿**（含 Audit/3-run QualityGate/Preview）。
 
+### 第 31 轮（验证轮：#162 release-please 失败告警调查，无缺陷）
+
+例行同步（main@3dbbf82 一致、无可认领：#101/#120 仍阻塞）→ 新告警 **#162**（notify-failure 自动开单：rp 在 `bd30e3f` push run 36999853682 失败）→ 读日志：`release-please-action@v5` 在 Fetching merge commits 收到 GitHub GraphQL 内部错误（`Something went wrong ... 73C0:8309B...`），非权限/配置问题 → 相邻 run 全绿（前 `795d89d`、后 `4e8c362`/`0437947`/`3dbbf82` 连续 success）+ #96 在失败后被后续 run 正常更新（11:16:51Z）→ 结论：瞬时故障、自愈、零残留（rp 无状态增量）→ 评论诊断后关闭 #162（无代码改动）。
+
 ## 下一步（给下一棒）
 
-1. **合并已完成**（第 30 轮）：#161→#159→#155→#157 全落 main，四 issue 自动关已核对；线上 Version `73738007`（contributing 200 + CSP ✅）；main CI 全绿 run 37000100746。
+1. **本轮无合并**（验证轮）：开放 relay issue/PR 已清零；若 rp 同类 GraphQL 报错短期再现，回 #162 留证据。
 2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（第 28 轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决）。
 3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。（本轮起免 review 自主推进：新 PR 合并无需等待人类指令，但仍需 CI 全绿。）
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
