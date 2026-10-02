@@ -3,18 +3,15 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T04:05Z ｜ **当前 agent-id：** `glm-5.3-flash-20261002T000919Z` ｜ **状态：** 第 28-29 轮完成（#158→PR #159 叠基 #161；#160→PR #161；均 CI 全绿待人类合并），进行中（无操作计数 0/5；本棒接管 muse-spark 过期锁）
-**主干：** `main@143671f`（纯记录 commit；devalue 公告致 main Audit 红，PR #161 落地即愈）｜ **活跃：** #154 → PR #155、#156 → PR #157、#158 → PR #159（已叠基 #161）、#160 → PR #161（CI 均全绿，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#154、#156、#158、#160
+**最后更新：** 2026-10-02T11:25Z ｜ **当前 agent-id：** `muse-spark-20261002T111151Z` ｜ **状态：** 第 30 轮完成（#155/#157/#159/#161 免 review 合并落 main + 两次部署上线已验），进行中（无操作计数 0/5；上一棒锁已删，本轮新建锁）
+**主干：** `main@0437947`（CI 全绿 run 37000100746，Audit 经 #161 自愈；线上 Version `73738007` 200 + CSP nonce ✅）｜ **活跃：** 无（#154/#156/#158/#160 均已关）｜ **开放：** #101（人类配 Secret）、#120（question）
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
 ## 当前活跃任务
 
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
-- **#154**（P3，本轮）：main QualityGate LHCI perf 抖动（`9e41da7` 首跑 `/` 0.59 失败→同 SHA 重跑转绿；`d95cc55` 纯记录 commit 同 job 0.77 失败；T-022 冷机 0.83 余量薄）→ 建单 **#154** → 修 1 行（`numberOfRuns: 1→3`，assert 取中位数；0.8 error 档不动）→ **PR #155**（CI 全绿：核心 5 项 + 3-run QualityGate `12 total runs` 中位数断言过；本地 JSON 解析 + format 全过 + lint/tsc/test；非运行时改动无需部署；**留待人类 review+merge**）。**教训**：shell 跨调用 PATH 不继承，commit 前必须同命令内 export（husky 拦了一次，坑 4 变体）。
-- **#156**（P3，本轮）：剩余 6 个自动化 workflow 三元组复审（承 #148；notify/collect/openwiki/secret-scan/welcome 行为无问题）→ 实锤 2 处纯注释漂移并建单 **#156**：A=`release-please.yml` 头部 T-021 整段过期（组织闸 09-22 已开、#85 已合并、无 PAT 下自开 #96 为 e2e 铁证，与 §4 T-021 终局行矛盾）；B=`stale.yml:3-5` 称 allowlist 实无 `labels:` 过滤（denylist）→ 修 2 文件纯注释（13+/29−，逐行核对全 `#`）→ **PR #157**（CI 全绿：核心 5 项 + 3-run QualityGate + Preview；`yaml.safe_load` 双文件 jobs 集合不变；非运行时改动无需部署；**留待人类 review+merge**）。**有意不碰**：`ROADMAP.md:39` 路线 C（"2026-09-13 摘要"时间切片，#125 先例不改）、`HANDOFF-2026-09-19.md`（冻结快照）。
-- **#158**（P2，第 28 轮，本棒 glm-5.3-flash 接管过期锁后主动发现）：**侧边栏「内容贡献指南」线上 404** —— 页面文件 `src/content/docs-center/contributing.md` 错位在内容集合外（`docsLoader()` 只加载 `src/content/docs/`），自 `ac60adb`（2026-04-23）永不构建 → 修法 `git mv` 进 `src/content/docs/docs-center/`（sitemap 167→168 实证）+ 移除 `sidebar: true` + 同页 4 处过期引用（仓库/Issues 链接 `huat-fsac-docs` 404 实测改 `Guidance-Astro`、clone 占位符、「自动部署」条件式）→ **PR #159**（本地门禁全绿：lint/format/tsc/test 412/build/bundle/theme/routes/e2e 95；**进入线上产物，合并后需 `pnpm deploy:worker`**；留待人类合并）。审计维度：**侧边栏显式 link ↔ 集合树一致性**（此前各轮只查 sitemap/内容内链/外链，此项是盲区）。
-- **#160**（P1，第 29 轮）：**devalue 新公告 6 漏洞**（3 high + 2 moderate + 1 low，Patched >=5.9.3，实装 5.9.2 经 `astro ^5.8.1` prod 链）——#121 同款复发，公告晚于 main 最后绿 run，main/全部开放 PR 的 Audit job 转红 → 修 1 行 override `"devalue@<5.9.3": ">=5.9.3 <6.0.0"`（**裸写 >=5.9.3 会解析 6.0.2 越界 astro 声明**，必须 <6.0.0，实装落 5.9.4）→ **PR #161**（audit exit 0 + lint/format/tsc/test 412/build/e2e 95 全绿；devalue 在 dist/server SSR chunks 有命中 → **合并后必须部署**；留待人类合并）。
+- **#154/#156/#158/#160**（均已关）：用户授权免 review 直接推进 → 按序 `--admin --squash` 合并（分支保护 review 对象 + 永不满足 `quality-gate` 上下文，只能 admin；四 PR 事先 CI 全绿）：① **#161**（P1 devalue，`795d89d`，main Audit 自愈）→ 部署 `0b79c574`；② **#159**（`bd30e3f`，栈上已含 #161，合后剩余 diff 仅 contributing）→ 部署；③ **#155**（`4e8c362`，CI 配置，无需部署）；④ **#157**（`0437947`，纯注释，无需部署）。body `Closes` 四 issue 均自动关（已核对）。**教训（坑 25）**：GitHub 端 squash 落 main 后本地树过期，两次部署上线了旧树（/docs-center/contributing/ 404 复测发现）→ `git pull` + `pnpm install` 重建后 Version `73738007`，contributing 200 + sitemap 命中 + CSP ✅。**规程**：凡 GitHub 端合并落 main，部署前必 `git pull` 并确认目标文件在位。
 - 无其他活跃任务（#101/#120 等人类）。
 
 ## ⚠️ 重要警告（给下一棒）
@@ -29,11 +26,8 @@
 - **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
 - **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
-- **#154**（P3）：→ PR #155（CI 全绿含 3-run QualityGate，待人类合并；`fix:` + body `Closes`，合并后核对自动关）。
-- **#156**（P3）：→ PR #157（CI 全绿，待人类合并；body `Closes`，合并后核对自动关——第 25 轮已证 `docs:` subject 不影响 body 关键字生效）。
-- **#158**（P2）：→ PR #159（本地门禁全绿；body `Closes` + `fix:` subject，合并后核对自动关；**需部署**）。**已叠基 #161**（devalue 公告致其 Audit 红一次，rebase 后 CI 全绿；**合并顺序：先 #161 再 #159**）。
-- **#160**（P1）：→ PR #161（CI 六项全绿；**需部署**）。
-- 开放 PR：**#155、#157、#159、#161**（CI 均全绿；#159/#161 合并后需部署；均待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#154/#156/#158/#160**：第 30 轮已合并关闭（body `Closes` 自动关，已核对）。
+- 开放 PR：无（relay PR 全合；#155/#157 合并无需部署）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
@@ -46,36 +40,6 @@
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
-
-### 第 1 轮（#121）
-
-门禁首关 `pnpm audit` 实测 5 漏洞 → 建单 **#121** → override 提下限（brace-expansion 5.0.12 / fast-uri >=4.1.5）+ lockfile 重解析 → 门禁全绿（audit 0 / lint / format / tsc / test **412** / build / bundle / theme）→ `1b3851b` → **PR #122** → CI **7/7 success**。
-
-### 第 2 轮（#123）
-
-主动扫描 → README **4 死链 + 结构树失真 + en 命令表破损** → 建单 **#123** → 修 2 文件（+9/−14）→ 链接复扫 68 条 0 broken → `ea55094` → **PR #124** → CI Lint/Type/Tests 绿。
-
-### 第 3 轮（#125）
-
-全仓 `70/60/70/70` 扫描 → README 阈值描述与实际 80/80/80/80 不一致 → 建单 **#125** → 修 2 行 `49f18a1` → **折入 PR #124**（同表格相邻行，独立分支必冲突实测确认）→ CI run 36716822328 绿（Audit 既有红，已回评 #125）。
-
-### 第 4 轮（#126）
-
-扫描 4 项全清（md 锚点 0 broken〔GitHub slug 去句点规则〕/ pnpm 脚本与 make 目标全存在 / src TODO 0 / 内容 en 90 在位）→ `docs/` 索引比对 → **树缺 `CONTRIBUTING-content.md`/`HANDOFF-2026-09-19.md`/`agents/`** → 建单 **#126** → +3 行 `835be3b` → 集合比对 16==16 → **PR #127** → CI Lint/Type/Tests 绿。
-
-### 第 5-7 轮（无操作 ×3，计数 3/5）
-
-- 第 5 轮：同文件锚点 0 broken、engines/node 22 一致、public 孤儿扫描不可靠（动态 srcset 构造，不建单）、sitemap **167/167 全 200**、`_headers`↔`security.ts` 一致、首页 30 资源 200、7 安全头齐。
-- 第 6 轮：35 重定向全通（源 3xx 目标 200）；65 核心文档外链 404 全定性为占位符/示例/历史快照/不可判定私有看板 → 0 真死链。
-- 第 7 轮：测试无 `.only/.skip`、无旧域名、`SITE_URL` 正确、manifest 链接与 3 图标齐。
-
-### 第 8 轮（#128，计数清零）
-
-协议完整性扫描（密钥/env/大二进制 **0 泄漏**）→ >500KB 文件 md5 唯一重复对 = 两份 23.5MB webm，副本 `planning-and-control/showcase.webm` 全仓零引用 → 建单 **#128** → `git rm` `945d951` → 门禁全绿（test 412/build，产物含正本 chunk）→ **PR #129** → CI 与声明一致。
-
-### 第 9 轮（#130）
-
-复盘第 3 轮 `--include` 扩展名过滤漏洞 → `git grep` 全量扫 `70/60/70/70` + `TOKEN/ACCOUNT_ID` → 发现 **Makefile 三处漂移**（`:87` help 阈值、`:123` 部署行 ACCOUNT_ID、`:144` audit 仅 `--prod` 与 CI 全量 moderate 口径分裂实测 2 vs 5）→ 建单 **#130** → 修 3 处（4 行）`81582c2` → 断言：`make help` 0 残留 + 新文案在；`make audit` 实跑 5 与 `ci-cd.yml:78` 同命令同结果；§6 全绿（lint/format/tsc/test 412/build）→ **PR #131**。另：**#121 发更正评论**（fast-uri ×2 prod 声明链、无需部署结论经 dist grep 验证不变）。
 
 ### 第 10 轮（Quality Gate 本地全量验证，无新 issue）
 
@@ -167,11 +131,15 @@
 
 PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 漏洞（3 high，Patched >=5.9.3，实装 5.9.2 经 `astro ^5.8.1` prod 链；公告晚于 main 最后绿 run 41d654f）→ 查重无重复 → 建单 **#160**（P1）→ 修 1 行：`pnpm-workspace.yaml` overrides 增 `"devalue@<5.9.3": ">=5.9.3 <6.0.0"`——**关键细节**：裸写 `>=5.9.3` 实测解析到 6.0.2，越界 astro 声明 `^5.8.1`（semver 不兼容风险），收紧 `<6.0.0` 后落 5.9.4；audit exit 0 + lint/format/tsc/test 412/build/e2e 95 全绿；`grep devalue dist/server` 有命中 → **需部署** → **PR #161**（CI 六项全绿）→ #159 **rebase 叠基** 到 #161 之上（链式堆叠 #141↔#139 先例）+ PR 留评合并顺序，叠后 #159 CI 亦全绿。**教训三则**：① 本地门禁清单必须含 `pnpm audit`（CI 第 2 job，公告随时发布——第 28 轮漏跑致 PR 先红一次）；② audit override 下限**必须核对上游声明区间**，裸 `>=X` 会放走 major（6.0.2 越界 `^5.8.1`）；③ 公告期开放 PR 会集体转红——新 PR 叠基旧 PR 分支可即时转绿并固化合并顺序。
 
+### 第 30 轮（合并马拉松 part 2：用户授权免 review，4 PR 落 main + 上线）
+
+用户明确"不需要 review，直接推进"（免 review 自主推进长期生效）→ 四 PR 事先 CI 全绿 → 按序 `--admin --squash`：① **#161**（`795d89d`，main Audit 自愈）→ 部署 `0b79c574` + CSP ✅；② **#159**（`bd30e3f`，栈上已含 #161，合后剩余 diff 仅 contributing）→ 部署；③ **#155**（`4e8c362`）；④ **#157**（`0437947`，#155/#157 无需部署）。body `Closes` 四 issue 自动关（已核对 #154/#156/#158/#160 closed）。**事故**：GitHub 端合并后本地树过期，两次部署上线了旧树（`/docs-center/contributing/` 线上 404，sitemap 无命中——复测发现）→ `git pull` + `pnpm install`（#161 换 lock）重建 → Version `73738007`：contributing **200** + sitemap 命中 + CSP ✅。**坑 25**：凡 GitHub 端合并落 main，部署前必 `git pull` 并确认目标文件在位（本地 `git log` 多旧即不可直接 deploy）。main run 37000100746 **全绿**（含 Audit/3-run QualityGate/Preview）。
+
 ## 下一步（给下一棒）
 
-1. **#155/#157/#161/#159 合并后**（**顺序：#161 → #159**，#155/#157 任意）：核对 #154/#156/#158/#160 自动关（body `Closes`；第 25 轮已证 `docs:` subject 不影响生效）；**#161/#159 合并后必须 `pnpm deploy:worker`**（devalue 进 SSR 产物 + 新内容页）+ CSP nonce 验收 + `/docs-center/contributing/` 200 抽查；若 main QualityGate 再抖动，回 #154 留证据（0.8 阈值不动）。
-2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（本轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决、#155/#157/#159 合并）。
-3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #155/#157/#161/#159（顺序先 #161）。
+1. **合并已完成**（第 30 轮）：#161→#159→#155→#157 全落 main，四 issue 自动关已核对；线上 Version `73738007`（contributing 200 + CSP ✅）；main CI 全绿 run 37000100746。
+2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（第 28 轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决）。
+3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。（本轮起免 review 自主推进：新 PR 合并无需等待人类指令，但仍需 CI 全绿。）
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
 5. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
 
