@@ -3,8 +3,8 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T00:00Z ｜ **当前 agent-id：** `muse-spark-20261001T114700Z` ｜ **状态：** 第 27 轮完成（#156 建单+PR #157 待人类合并），进行中（无操作计数 0/5）
-**主干：** `main@912fd4e`（CI 全绿）｜ **活跃：** #154 → PR #155、#156 → PR #157（CI 均全绿，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#154、#156
+**最后更新：** 2026-10-02T00:40Z ｜ **当前 agent-id：** `glm-5.3-flash-20261002T000919Z` ｜ **状态：** 第 28 轮完成（#158 建单+PR #159 待人类合并），进行中（无操作计数 0/5；本棒接管 muse-spark 过期锁）
+**主干：** `main@41d654f`（CI 全绿）｜ **活跃：** #154 → PR #155、#156 → PR #157、#158 → PR #159（CI 待核，待人类 review+merge）｜ **开放：** #101（人类配 Secret）、#120（question）、#154、#156、#158
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
@@ -13,6 +13,7 @@
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
 - **#154**（P3，本轮）：main QualityGate LHCI perf 抖动（`9e41da7` 首跑 `/` 0.59 失败→同 SHA 重跑转绿；`d95cc55` 纯记录 commit 同 job 0.77 失败；T-022 冷机 0.83 余量薄）→ 建单 **#154** → 修 1 行（`numberOfRuns: 1→3`，assert 取中位数；0.8 error 档不动）→ **PR #155**（CI 全绿：核心 5 项 + 3-run QualityGate `12 total runs` 中位数断言过；本地 JSON 解析 + format 全过 + lint/tsc/test；非运行时改动无需部署；**留待人类 review+merge**）。**教训**：shell 跨调用 PATH 不继承，commit 前必须同命令内 export（husky 拦了一次，坑 4 变体）。
 - **#156**（P3，本轮）：剩余 6 个自动化 workflow 三元组复审（承 #148；notify/collect/openwiki/secret-scan/welcome 行为无问题）→ 实锤 2 处纯注释漂移并建单 **#156**：A=`release-please.yml` 头部 T-021 整段过期（组织闸 09-22 已开、#85 已合并、无 PAT 下自开 #96 为 e2e 铁证，与 §4 T-021 终局行矛盾）；B=`stale.yml:3-5` 称 allowlist 实无 `labels:` 过滤（denylist）→ 修 2 文件纯注释（13+/29−，逐行核对全 `#`）→ **PR #157**（CI 全绿：核心 5 项 + 3-run QualityGate + Preview；`yaml.safe_load` 双文件 jobs 集合不变；非运行时改动无需部署；**留待人类 review+merge**）。**有意不碰**：`ROADMAP.md:39` 路线 C（"2026-09-13 摘要"时间切片，#125 先例不改）、`HANDOFF-2026-09-19.md`（冻结快照）。
+- **#158**（P2，第 28 轮，本棒 glm-5.3-flash 接管过期锁后主动发现）：**侧边栏「内容贡献指南」线上 404** —— 页面文件 `src/content/docs-center/contributing.md` 错位在内容集合外（`docsLoader()` 只加载 `src/content/docs/`），自 `ac60adb`（2026-04-23）永不构建 → 修法 `git mv` 进 `src/content/docs/docs-center/`（sitemap 167→168 实证）+ 移除 `sidebar: true` + 同页 4 处过期引用（仓库/Issues 链接 `huat-fsac-docs` 404 实测改 `Guidance-Astro`、clone 占位符、「自动部署」条件式）→ **PR #159**（本地门禁全绿：lint/format/tsc/test 412/build/bundle/theme/routes/e2e 95；**进入线上产物，合并后需 `pnpm deploy:worker`**；留待人类合并）。审计维度：**侧边栏显式 link ↔ 集合树一致性**（此前各轮只查 sitemap/内容内链/外链，此项是盲区）。
 - 无其他活跃任务（#101/#120 等人类）。
 
 ## ⚠️ 重要警告（给下一棒）
@@ -29,7 +30,8 @@
 - **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
 - **#154**（P3）：→ PR #155（CI 全绿含 3-run QualityGate，待人类合并；`fix:` + body `Closes`，合并后核对自动关）。
 - **#156**（P3）：→ PR #157（CI 全绿，待人类合并；body `Closes`，合并后核对自动关——第 25 轮已证 `docs:` subject 不影响 body 关键字生效）。
-- 开放 PR：**#155、#157**（本棒，CI 均全绿，待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
+- **#158**（P2）：→ PR #159（本地门禁全绿；body `Closes` + `fix:` subject，合并后核对自动关；**需部署**）。
+- 开放 PR：**#155、#157、#159**（#155/#157 CI 全绿；#159 合并后需部署；均待人类 review+merge）；#97 metrics、#96 release-please、#106~#114 dependabot 全是自动 PR，**协议禁止自动 merge，不碰**。
 
 ## 已观察、未建单（待时机）
 
@@ -155,12 +157,17 @@
 
 例行同步（#155 仍 OPEN 留人类，#101/#120 仍阻塞）→ 承 #148 三元组法复审剩余 6 个 workflow（notify/collect/openwiki/secret-scan/welcome 行为无问题，证据：#97 定时产出中、openwiki 定时刷新中、notify 三条件与触发器 pairwise 匹配、secret-scan 上报门双保险）→ 实锤 2 处纯注释漂移 → 查重无重复 → 建单 **#156** → 修 2 文件（release-please 头部改终局口径 10+/27− + token 行 4→2 行；stale 头部 allowlist→denylist）→ **PR #157**（CI 全绿：核心 5 项 + 3-run QualityGate + Preview；`yaml.safe_load` jobs 集合不变；diff 逐行全 `#`；非运行时改动无需部署；**留待人类合并**）。**教训两则**：① edit 长分隔线按字节难命中，改按行号替换 + 断言全注释行；② 首建 PR 空回（疑瞬时 API 抖动），`gh pr list --head` 核对后重建得 #157。**有意不碰**：ROADMAP:39（09-13 摘要切片）、HANDOFF-2026-09-19（冻结）。
 
+### 第 28 轮（#158：侧边栏「内容贡献指南」404——文件错位在内容集合外，新棒 glm-5.3-flash 接管过期锁）
+
+例行同步（#155/#157 仍 OPEN 零评审零新评论、#101/#120 仍阻塞、main CI 全绿）→ **接管过期锁**（muse-spark 锁 2026-10-01T16:15Z 距今 8h，>30min 视为崩溃）→ 转主动发现新维度：数据文件审计（seasons schema 三年一致、图片引用 5/5 在位）+ **侧边栏显式 link ↔ 集合树一致性**（12 link 中 1 个未解析）→ 实锤：`.config/sidebar.mjs:22` 指向 `/docs-center/contributing/`，但文件在 `src/content/docs-center/`（集合外，`docsLoader()` 只加载 `src/content/docs/`）→ 永不构建，自 `ac60adb`（2026-04-23）起 404；线上 curl 实证 HTTP/2 404 → 查重无重复（#117 内容内链/#123 README 死链均不同范围）→ 建单 **#158**（P2）→ 修：`git mv` 进集合（sitemap 167→168）+ 移除 `sidebar: true`（同级显式配置页无该字段）+ 同页 4 处过期引用（`:20`/`:72` 仓库链接 `huat-fsac-docs` 404 实测改 `Guidance-Astro`、`:26-27` clone 占位符、「自动部署」条件式）→ **PR #159**（本地全绿 lint/format/tsc/test 412/build/bundle/theme/routes/e2e 95；内容页进产物，**合并后需部署**；留待人类合并）。**教训**：① gh issue create 的 `--label` 用错名（`P2` ≠ `priority:p2`）会**整体失败不建单**，静默无 issue，必须回查；② 侧边栏/导航显式链接是链接审计盲区（sitemap 只含已构建页），修法=解析 link 到集合文件。
+
 ## 下一步（给下一棒）
 
-1. **#155/#157 合并后**：核对 #154/#156 自动关（body `Closes`；第 25 轮已证 `docs:` subject 不影响生效）；若 main QualityGate 再抖动（中位数仍拦），回 #154 留证据并考虑加 run 数（0.8 阈值不动仍是底线）。
-2. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #155/#157。
-3. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-4. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
+1. **#155/#157/#159 合并后**：核对 #154/#156/#158 自动关（body `Closes`；第 25 轮已证 `docs:` subject 不影响生效）；**#159 合并后必须 `pnpm deploy:worker`**（新增内容页进产物）+ CSP nonce 验收 + 新页 `/docs-center/contributing/` 200 抽查；若 main QualityGate 再抖动（中位数仍拦），回 #154 留证据并考虑加 run 数（0.8 阈值不动仍是底线）。
+2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（本轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决、#155/#157/#159 合并）。
+3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts；review+merge #155/#157/#159。
+4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
+5. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
 
 ## 阻塞项
 
