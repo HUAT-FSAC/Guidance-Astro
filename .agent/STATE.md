@@ -166,7 +166,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 2. **开工前自查**（避免踩已知坑）：
     - #165 未开工前先确认 **#164 已 close**，否则会把 main 拖进 lockfile 悬崖（#164 正文有完整说明）。
     - #167 未开工前先确认 **#165 已 close**，先发依赖后发版，避免刚发 v1.1.0 立刻被顶出 v1.1.1。
-3. **D-009 待人类裁决**（见 PLAN §五）：是否授权按 D-005 先例执行 dependabot 批次处置。**未裁决前 #165 不要开工** —— 逐个合并 9 个自动 PR 属无授权触碰。
+3. ~~**D-009 待人类裁决**~~ ✅ **已裁决（2026-10-03）**：授权按 D-005 先例执行 dependabot 批次处置。**#165 的唯一剩余前置是 #164**。⚠️ 但**逐个合并自动 PR 仍禁止** —— 不得用 `--admin` 单独 merge 任何 dependabot PR（D-009 硬约束）。
 4. **Planner 验收纪律（D-006）**：Executor 完成后**留结果评论、不要自行关单**；由 Planner 逐条对照验收标准核对后才关单。
 5. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + `PLAN.md` + `DECISIONS.md` + HANDOFF → 检查锁 → 选 `ready` 任务（P0>P1>…、Milestone 优先、编号小优先）。
 6. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
@@ -175,6 +175,6 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 ## 阻塞项
 
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（**配好前不要把 deploy job 加回 CI**）。
-- **D-009 裁决**：dependabot 批次处置是否授权（PLAN §五；默认方案 = 按 D-005 先例执行批次处置）。
+- ~~D-009 裁决~~：✅ **已裁决 2026-10-03** —— 授权 dependabot 批次处置（D-009 生效，见 `DECISIONS.md`）。**不再阻塞 #165。**
 - 人类侧待办（均需凭据/仓库设置，Agent 不可自决）：`PROJECT_TOKEN` 轮换 + `projects/1` 是否存在；`size:xs` 手工建 label（补 `issues: write` 会扩大 `pull_request_target` 权限面，官方警告）；`update-linked-issues` 补权限还是删除。
 - ~~#120~~：已于第 32 轮关闭（toast.ts 删除），不再是阻塞项。

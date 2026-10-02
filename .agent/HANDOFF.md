@@ -3,7 +3,7 @@
 **本棒 Agent：** `planner-20261002T171300Z`（第 35 轮，**Planning Agent 角色**）
 **时间：** 2026-10-02T17:13Z 起（UTC；上一棒无遗留锁）
 **仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@78fec09`
-**状态：** 路线图与长期决策已建立（`PLAN.md` / `DECISIONS.md`），M1 稳态治理 4 个 `ready` 任务入队；无代码改动
+**状态：** 路线图与长期决策已建立（`PLAN.md` / `DECISIONS.md`），M1 稳态治理 4 个 `ready` 任务入队；D-009 已获人类裁决；无代码改动
 
 > 🔴 **本棒起角色为 Planning Agent，不再是 Execution Agent。**
 > **下一棒请先按 `docs/WORKFLOW.md:§1/§3` 执行：**
@@ -18,7 +18,7 @@
 3. **真实状态核实**：CI 全绿（run 37009784096）／线上 `/` 200 + CSP nonce／`pnpm audit` 0 漏洞／看板 T-001..T-038 全完成。
 4. **发现三处实证红灯**（详见 `STATE.md` 第 35 轮）：依赖摄入近停摆（9 PR 占满限流额度）、wrangler peer 硬失败（且发现比表面更深，见 §三）、发版停滞 11 天、记录文件损坏。
 5. **产出**：新建 `PLAN.md` / `DECISIONS.md`；新建 **#164 / #165 / #166 / #167** 并逐条加 Planner 状态标注；修 `STATE.md` 损坏行与重复 `#101` 条目；`WORKFLOW §7.4` 追加本轮行（102 → 103）。
-6. **未做**：无代码改动、无 PR、无部署、无自动 PR 触碰（**D-009 待人类裁决**）。
+6. **D-009 人类裁决已下达**（见 §四）：授权 dependabot 批次处置，**逐个合并自动 PR 仍禁止**。
 
 ## 二、当前 ready 队列（M1 稳态治理，4 项）
 
@@ -40,7 +40,7 @@
 
 - #165 开工前确认 **#164 已 close**，否则会把 main 拖进 lockfile 悬崖。
 - #167 开工前确认 **#165 已 close**（先发依赖后发版）。
-- #165 开工前确认 **D-009 已获人类授权**（未授权不触碰自动 PR）。
+- ~~#165 开工前确认 D-009 授权~~ ✅ **已授权 2026-10-03**；剩余前置只有 **#164**。
 
 **D-006 纪律：** Executor 完成后**留结果评论、不要自行关单**；由 Planner 逐条对照验收标准核对后关单。
 
@@ -51,10 +51,11 @@
 3. **9 个 dependabot PR 只改同 2 个文件**（`package.json` + `pnpm-lock.yaml`），是严格串行 rebase 链，不是 9 个独立任务。
 4. **`STATE.md:7` 历史上损坏**（三段重复 + 粗体未闭合），本棒已修；剩余体检见 #166。
 
-## 四、阻塞项（需人类/Planner）
+## 四、Decision Gate 结果与剩余阻塞
+
+- ✅ **D-009 已裁决（2026-10-03）**：授权按 D-005 先例执行 dependabot 批次处置（批次 commit + 关闭 PR + 留言关联）。**逐个合并 dependabot 自动 PR 仍禁止**，不得用 `--admin` 单独 merge 任何 dependabot PR。
 
 - **#101**：配 `CLOUDFLARE_API_TOKEN`（Actions Secrets）。**配好前不要把 deploy job 加回 CI**（会重演 main 长红）；实现已备好（`8475f88`）。
-- **D-009 裁决**：是否授权按 D-005 先例执行 dependabot 批次处置（`PLAN.md` §五）。
 - 人类侧：`PROJECT_TOKEN` 轮换 + `projects/1` 是否存在；`size:xs` 手工建 label；`update-linked-issues` 去留（均属凭据/仓库设置，Agent 不可自决）。
 
 ## 五、注意事项 / 坑（执行相关精简版，全量见 git 历史）
@@ -86,6 +87,6 @@ curl -s -o /dev/null -w "%{http_code}\n" https://huat-fsac.eu.org/
 ## 七、与看板 / 前一棒的一致性
 
 - `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成 → 阶段判定为**功能期结束，进入漂移治理期**（`PLAN.md` §一，附 7 项实测判据）。
-- 长期决策 D-001..D-009 落 `.agent/DECISIONS.md`；D-001..D-008 为**从 git 历史与既有轮次复原**，D-009 为本轮新提请裁决。
+- 长期决策 D-001..D-009 落 `.agent/DECISIONS.md`；D-001..D-008 为**从 git 历史与既有轮次复原**，**D-009 于 2026-10-03 获人类裁决**（授权批次处置；逐个合并自动 PR 仍禁止）。
 - 本轮 `§7.4` 追加第 35 轮行。
 - **本棒起新增文件**：`PLAN.md`（路线图，唯一写入点）、`DECISIONS.md`（长期决策，唯一写入点）。
