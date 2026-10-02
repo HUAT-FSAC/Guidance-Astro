@@ -3,8 +3,8 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T12:53Z ｜ **当前 agent-id：** `muse-spark-20261002T125315Z` ｜ **状态：** 第 33 轮完成（显式导航面复审：12/12 sidebar link 在位，零缺陷验证轮），进行中（无操作计数 0/5）
-**主干：** `main@d731fad`（CI 全绿；线上 Version `73738007`）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret｜ **开放：** #101（人类配 Secret，仍阻塞）
+**最后更新：** 2026-10-02T13:32Z ｜ **当前 agent-id：** `muse-spark-20261002T133206Z` ｜ **状态：** 第 34 轮完成（无可选任务验证轮：主干绿+线上健康+audit 干净），进行中（无操作计数 2/5，连两轮验证无缺陷）
+**主干：** `main@a789466`（CI 全绿 run 37009784096；线上 200；`pnpm audit` 0 漏洞）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret｜ **开放：** #101（人类配 Secret｜ **开放：** #101（人类配 Secret，仍阻塞）
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
@@ -43,10 +43,6 @@
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
-
-### 第 14 轮（#138，主动发现）
-
-例行同步（main `46f53f4` / 9 PR 全 OPEN / #122 未合并故无可认领 / #101/#120 仍阻塞）→ 延展 #134「文档教的命令要实跑复现」做全仓命令引用核验（`pnpm`/`npm run`/`make`/`pnpm exec`/`npx`，20 候选）→ 排除散文误报 + `pnpm exec tsc --noEmit` 三方一致（Makefile:76 / ci-cd.yml:42）+ 归档快照豁免后**实锤 1 处双失效** → 建单 **#138** → 修 `a2e5853`（2 文件）：`pnpm exec sharp-cli`（未装依赖，`Command not found`）改 `pnpm dlx sharp-cli --format webp`（6.x 尾参 `webp` 报 `Unknown argument`，沙箱实跑修正）、裸 `scripts/optimize-images.mjs` 改 `node` 前缀 + 硬编码 `/workspace/*` 改脚本位置解析仓库根（仓库无 `.devcontainer`，该路径本项目任何环境都不存在，脚本静默空跑）→ **PR #139**。195 行 diff 已证等价（main 原文件本就不 prettier 干净，lint-staged 强制归一；`prettier(原版+语义改动)` ≡ 提交版）。沙箱假仓实跑脚本 exit 0。§6 全绿。
 
 ### 第 15 轮（#140，主动发现）
 
@@ -124,9 +120,13 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 例行同步（main 一致、无可认领：仅 #101 阻塞、relay PR 零）→ 承 #158/第 28 轮建议，复审其余显式导航面：Header 仅外部 GitHub 链接、无自定义 Footer（Starlight 默认）、sidebar.mjs 无 /en/ 项（单语 zh 侧栏，en 行为第 20 轮已结清）、内容内链已有 internal-links 回归测试覆盖 → 核心动作：sidebar 12 个 `link:` 在 fresh main 构建产物中逐一比对 sitemap（**percent-encoding 必须 unquote 后再比**，首轮 6 条系编码假阳性）→ **12/12 在位**（含 #159 修好的 contributing）；autogenerate 目录构建全绿；sitemap-0 恰 **168 页**与 #159 的 167→168 吻合（169 系 sitemap-index 自身 loc 混入，计数时剔除）。结论：零缺陷，不建单。
 
+### 第 34 轮（验证轮：无可选任务，主干/线上/供应链三查全绿）
+
+新 Execution Agent 规则首轮：无 PLAN.md；唯一开放 issue #101 仍阻塞（secret 复查仍仅 CODECOV/PROJECT）→ 无 ready 任务可选 → 执行健康验证：main CI 全绿（run 37009784096 success）+ 线上 `/` 200 + `pnpm audit --audit-level=moderate` 0 漏洞 → 无需建单（auto-discovered 额度未用），无代码改动。
+
 ## 下一步（给下一棒）
 
-1. **本轮无合并**（验证轮）：开放 relay issue/PR 已清零（仅 #101 阻塞）。
+1. **本轮无合并**（验证轮×2累计 1/5）：仅 #101 阻塞；有 ready issue 或新告警时优先处理。
 2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（第 28 轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决）。
 3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。（本轮起免 review 自主推进：新 PR 合并无需等待人类指令，但仍需 CI 全绿。）
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
