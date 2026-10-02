@@ -3,8 +3,8 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T12:04Z ｜ **当前 agent-id：** `muse-spark-20261002T120405Z` ｜ **状态：** 第 31 轮完成（#162 rp 失败告警调查：瞬时故障，已诊断关闭），进行中（无操作计数 0/5）
-**主干：** `main@3dbbf82`（CI 全绿；线上 Version `73738007`）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret）、#120（question）
+**最后更新：** 2026-10-02T12:15Z ｜ **当前 agent-id：** `muse-spark-20261002T121515Z` ｜ **状态：** 第 32 轮完成（#120 按推荐方案 A 删除+PR #163 合并；#101 复核仍缺 Secret），进行中（无操作计数 0/5）
+**主干：** `main@d6768b8`（CI 全绿 run 37006389469；线上 Version `73738007` 健康，本轮删死代码无运行时影响、无需部署）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret，仍阻塞）
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
@@ -12,7 +12,8 @@
 
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
 - **#154/#156/#158/#160**（均已关，第 30 轮合并，细见下）：① #161 → 部署；② #159 → 部署；③ #155；④ #157。body `Closes` 自动关已核对；线上 Version `73738007`。
-- 无其他活跃任务（#101/#120 等人类）。
+- **#120**（P3，本轮结清）：用户指令"按推荐来" → 执行单内推荐方案 A（删）：删前复核全仓 `utils/toast` 零引用依旧 + 线上 200/200 健康 → `git rm src/utils/toast.ts`（443 行）→ 本地 §6 全绿（lint/format/tsc/test 412/build）→ **PR #163**（CI 全绿；删除无行为变化，**无需部署**）→ `--admin --squash` 合并，body `Closes` 自动关 #120（已核对）。
+- 无其他活跃任务（#101 等人类）。
 
 ## ⚠️ 重要警告（给下一棒）
 
@@ -23,7 +24,8 @@
 ## 开放 issue 现状
 
 - **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
-- **#120**（P3，`question`）：toast.ts 删留等人类决策，跳过。
+- **#120**：第 32 轮按推荐方案 A 删除并合并关闭。
+- **#101**（P1）：复核 secret 仍仅 CODECOV/PROJECT（`CLOUDFLARE_API_TOKEN` 未配），deploy job 加回仍阻塞；线上 OAuth 路径健康（200/200）。
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
 - **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
 - **#154/#156/#158/#160**：第 30 轮已合并关闭（body `Closes` 自动关，已核对）。
@@ -41,10 +43,6 @@
 - **测试文件未纳入 tsc**：`tsconfig.json` include 仅 `src/**`，`tsc --noEmit` 不覆盖 `tests/**`（vitest 用 esbuild 不查类型）——预防性缺口、当前无实证缺陷，且纳入可能暴露存量类型错需连带修复，**暂不建单**（保守原则）。
 
 ## 本棒已完成
-
-### 第 12 轮（#134，主动发现）
-
-例行同步（main `46f53f4` / 7 PR 全 OPEN / 无可认领 / main ci-cd 双查全绿〔坑 20〕）→ 本轮验证第 9 轮改动的连锁主张：① `pnpm test:coverage` 实跑 **exit 0**（80/80/80/80 阈值实证通过，CI Tests job 同口径全绿）；② `.agent/LOCK` 机制核对 = `.agent/.gitignore` 设计内本地锁 + WORKFLOW:150 §7.4 认领行权威，无漂移不建单；③ **`quality:lighthouse` 脚本可执行性** → 发现两处失效合并建单 **#134**：A=`package.json:60` 调裸 `lhci` 而依赖未装（干净检出必挂，Makefile/README×2/ARCHITECTURE 四处在教死命令，CI 内联 dlx 掩盖）；B=`lighthouserc.json` **重复键** `categories:performance`（T-022 `860253d` 意图 error0.80+warn0.85 双档，JSON 后者覆盖 + LHCI 加载器 `:78` require() last-wins 实证）→ **error 底线静默失效**。修 3 文件 `d43dfe9`：脚本改 `pnpm dlx @lhci/cli@0.15.1`（与 `ci-cd.yml:148-149` 程序化逐字节比对 MATCHES，零依赖零 lockfile）+ 删重复键恢复 `error@0.8` + ARCHITECTURE `:250/:276` 口径。验证：修复前 `lhci not found` 复现 → 修复后 `pnpm quality:lighthouse` 端到端 **exit 0**（4 URL collect+assert）；第 10 轮实测分数 91/97/95/97 证 error@0.80 余量 11+ 分；§6 全绿 → **PR #135**。**踩坑**：commitlint `footer-max-line-length≤100`（坑 21，两次提交被拒后折行通过）。
 
 ### 第 13 轮（#136，主动发现）
 
@@ -122,9 +120,13 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 例行同步（main@3dbbf82 一致、无可认领：#101/#120 仍阻塞）→ 新告警 **#162**（notify-failure 自动开单：rp 在 `bd30e3f` push run 36999853682 失败）→ 读日志：`release-please-action@v5` 在 Fetching merge commits 收到 GitHub GraphQL 内部错误（`Something went wrong ... 73C0:8309B...`），非权限/配置问题 → 相邻 run 全绿（前 `795d89d`、后 `4e8c362`/`0437947`/`3dbbf82` 连续 success）+ #96 在失败后被后续 run 正常更新（11:16:51Z）→ 结论：瞬时故障、自愈、零残留（rp 无状态增量）→ 评论诊断后关闭 #162（无代码改动）。
 
+### 第 32 轮（#120：按推荐方案 A 删除 toast.ts 死代码）
+
+用户指令"按推荐来" → #120 单内推荐方案 A（删：零引用 2 个月 + 独立实现已满足需求 + 曾耗维护轮转）→ 复核零引用依旧（`git grep utils/toast` 空）+ 线上健康 → 建分支删 1 文件 → 本地 §6 全绿（lint 0/format/tsc 0/test 412/build Complete）→ **PR #163**（CI 全绿；无行为变化免部署）→ `--admin --squash` 合并 `d6768b8`，#120 自动关（已核对）→ main run 37006389469 全绿。#101：secret 复核仍缺，维持阻塞（无需人类之外动作）。
+
 ## 下一步（给下一棒）
 
-1. **本轮无合并**（验证轮）：开放 relay issue/PR 已清零；若 rp 同类 GraphQL 报错短期再现，回 #162 留证据。
+1. **本轮合并已完成**：#163 落 main，#120 自动关已核对；开放 relay issue/PR 已清零（仅 #101 阻塞）。
 2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（第 28 轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决）。
 3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。（本轮起免 review 自主推进：新 PR 合并无需等待人类指令，但仍需 CI 全绿。）
 4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
