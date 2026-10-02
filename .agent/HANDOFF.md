@@ -2,33 +2,34 @@
 
 **本棒 Agent：** `glm-5.3-flash-20261002T000919Z`（第 28 轮起）
 **时间：** 2026-10-02T00:09Z 起接管（UTC）
-**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@41d654f`（CI 全绿）
-**状态：** ⚠️ 本棒**接管了 muse-spark 的过期锁**（其锁 2026-10-01T16:15Z，距接管 8h > 30min，判定崩溃；其最终记录 commit `41d654f` 已入库，无未落盘工作）。#121–#156 全关；活跃 #154 → PR #155、#156 → PR #157（CI 全绿）、#158 → PR #159（本轮新建）；开放 #101、#120、#154、#156、#158
+**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@143671f`（记录 commit；devalue 公告致 main Audit 红，#161 落地即愈）
+**状态：** ⚠️ 本棒**接管了 muse-spark 的过期锁**（其锁 2026-10-01T16:15Z，距接管 8h > 30min，判定崩溃；其最终记录 commit `41d654f` 已入库，无未落盘工作）。#121–#156 全关；活跃 #154 → PR #155、#156 → PR #157、#158 → PR #159、#160 → PR #161（CI 均全绿；**#159 已叠基 #161，合并顺序先 #161**）；开放 #101、#120、#154、#156、#158、#160
 
 > 下一棒请先按 `docs/WORKFLOW.md:§1/§3` 与 `AGENTS.md` 的「发布与部署」执行：
 > `git fetch --all --prune` → `git pull --rebase` → 读 `.agent/STATE.md` + 本文件 → 检查 `.agent/LOCK` → 选任务。
 
 ---
 
-## 一、本棒做了什么（第 28 轮）
+## 一、本棒做了什么（第 28–29 轮）
 
 | 轮  | 结果                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 产出    |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | 28  | 接管过期锁 → 例行同步（#155/#157 仍 OPEN 零评审、#101/#120 仍阻塞、main CI 全绿）→ 主动发现新维度：**数据文件审计**（`src/data/` seasons schema 三年一致、图片引用 5/5 在位、showcase/home/cars 图片路径在位）+ **侧边栏显式 link ↔ 集合树一致性**（12 link 解析，1 个未解析）→ 实锤 **#158**：`.config/sidebar.mjs:22`「内容贡献指南」指向 `/docs-center/contributing/`，但页面文件错位在 `src/content/docs-center/`（集合外，`docsLoader()` 只加载 `src/content/docs/`）→ **永不构建，自 `ac60adb`（2026-04-23）起线上 404**（curl 实证）→ 查重无重复 → 修：`git mv` 进 `src/content/docs/docs-center/`（sitemap **167→168** 实证）+ 移除 `sidebar: true` + 同页 4 处过期引用（`:20`/`:72` 仓库链接 `huat-fsac-docs` **404 实测**改 `Guidance-Astro`、`:26-27` clone 占位符仓库名、`:121`「自动部署」条件式）→ **PR #159**（本地全绿 lint/format/tsc/test 412/build/bundle/theme/routes/**e2e 95**；**内容页进产物，合并后必须 `pnpm deploy:worker`**；留待人类合并） | PR #159 |
+| 29  | **devalue 新公告 6 漏洞**（3 high + 2 moderate + 1 low，Patched >=5.9.3，实装 5.9.2 经 `astro ^5.8.1` prod 链）——#121 同款复发，公告晚于 main 最后绿 run，PR #159 首跑 Audit 红暴露 → 建单 **#160**（P1）→ 修 1 行：`pnpm-workspace.yaml` overrides 增 `"devalue@<5.9.3": ">=5.9.3 <6.0.0"`（**关键细节：裸写 >=5.9.3 实测解析 6.0.2，越界 astro 声明 ^5.8.1，必须 <6.0.0**，实装落 5.9.4）→ audit exit 0 + lint/format/tsc/test 412/build/e2e 95 全绿 → **PR #161**（CI 六项全绿）→ #159 **rebase 叠基** #161（链式先例 #141↔#139）+ PR 留评合并顺序（**先 #161 再 #159**），叠后 #159 CI 全绿。`grep devalue dist/server` 有命中（SSR chunks）→ **#161/#159 合并后必须部署**                                                                                                                                                                                                                                                                                          | PR #161 |
 
 > 上棒 muse-spark（第 21–27 轮，#148/#150/#152/#154/#156 五单五 PR + 第 22 轮合并马拉松 + 第 25 轮受权合并 #151/#153）与上上棒 mimo-flash（第 1–20 轮，#121–#146 审计马拉松）的明细见本文件 git 历史与 `docs/WORKFLOW.md:§7.4`（已 95+ 行）。
 
 ## 二、交棒时主干状态
 
-- `main@41d654f`（纯记录 commit）CI 全绿；Audit/Lint/Type/Tests/Build/QualityGate/Preview 全 success。
-- 开放 issue：**#101**（人类配 `CLOUDFLARE_API_TOKEN` Secret）、**#120**（toast.ts 删留 question）、#154/#156/#158（均有待合并 PR）。
-- 开放 PR：**#155**（#154 LHCI numberOfRuns 1→3）、**#157**（#156 workflow 注释口径，纯注释）、**#159**（#158 侧边栏 404 修复，**合并后需部署**）；另有 #96/#97/#106~#114 自动 PR（dependabot/release-please/metrics），**协议禁止自动 merge，不碰**。
-- 本棒未动 main 代码（修复在分支）；记录文件照惯例直推 main。
+- `main@143671f`（本轮两次纯记录 commit）。devalue 公告发布晚于 main 最后绿 run `41d654f`——main 最新 Audit 红（run 于记录 commit 触发），**#161 合并落地即愈**，非内容回归。
+- 开放 issue：**#101**（人类配 `CLOUDFLARE_API_TOKEN` Secret）、**#120**（toast.ts 删留 question）、#154/#156/#158/#160（均有待合并 PR）。
+- 开放 PR：**#155**（#154 LHCI numberOfRuns 1→3）、**#157**（#156 workflow 注释口径，纯注释）、**#161**（#160 devalue 下限，**合并后需部署**）、**#159**（#158 侧边栏 404 修复，**已叠基 #161**，**合并后需部署**）；另有 #96/#97/#106~#114 自动 PR（dependabot/release-please/metrics），**协议禁止自动 merge，不碰**。
+- 修复均在分支；记录文件照惯例直推 main。
 
 ## 三、下一棒要做（按优先级）
 
-1. **例行同步**：若人类已合并 #155/#157 → 核对 #154/#156 自动关（body `Closes`）；若合并 **#159** → 核对 #158 自动关 + **必须 `pnpm deploy:worker`**（见五.3 判据）+ `curl -sI` CSP nonce + 新页 `/docs-center/contributing/` 200 抽查；若 main QualityGate 再抖动，回 #154 留证据（0.8 阈值不动）。
-2. **人类待办**：review+merge #155/#157/#159；`PROJECT_TOKEN` 轮换/确认 + projects/1；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret（配好前不要把 deploy job 加回 CI）；#120 裁决 toast.ts。
+1. **例行同步**：若人类已合并 #161/#159 → 核对 #160/#158 自动关（body `Closes`）+ **必须 `pnpm deploy:worker`**（devalue 进 SSR 产物 + 新内容页；见五.4 判据）+ `curl -sI` CSP nonce + `/docs-center/contributing/` 200 抽查；若合并 #155/#157 → 核对 #154/#156 自动关；若 main QualityGate 再抖动，回 #154 留证据（0.8 阈值不动）。
+2. **人类待办**：review+merge #161 → #159 → #155/#157（顺序要求仅 #161 先于 #159）；`PROJECT_TOKEN` 轮换/确认 + projects/1；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret（配好前不要把 deploy job 加回 CI）；#120 裁决 toast.ts。
 3. **新候选（主动发现）**：本轮的「sidebar 显式 link ↔ 集合树」解析法可延伸到**其余显式链接面**——`astro.config.mjs` 的 Starlight `nav`/社交链接、页脚、LanguageSwitcher、`LinkCard` 等内容内嵌导航组件；同法：解析 link → 集合文件/重定向存在性。其余旧观察项已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。
 4. #120 被人类裁决后按单内验收执行；#101 Secret 配好后按单把 deploy job 加回 `ci-cd.yml`（完整实现见 `8475f88`）。
 5. 复发套路：audit 类走旧一.1（`pnpm why` → 提下限 → `pnpm install` → 复验）；文档漂移类全量 `git grep`（坑 18）；口径同步类改完三处权威文档后全仓 grep 找漏网（#132 套路）。剩余 2 条 `astro check` hint（`BilibiliVideo.astro:13`、`share.ts:109`）勿动。
@@ -50,7 +51,7 @@
 6. **⚠️ `pnpm` 不在裸 PATH**：跑命令 `mise exec -- pnpm ...`；git hook 需要 pnpm 在 PATH，提交前同一条命令内 `export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"`（跨调用不继承，husky 拦过两次）。
 7. **commit subject 关 issue**：`fix:/docs:/chore: #N` 落 main 时预期关；PR body `Closes #N` 双保险；**squash 改写 subject 会漏——合并后核对手动关**。
 8. **`gh run list` 可能浮出幽灵行/re-run**：判定 CI 状态前复跑查询并交叉核对 `headSha`/`workflowName`（坑 20/21）。
-9. **依赖 override 时效性（高频复发）**：`pnpm audit` 公告拓宽区间时旧 override 下限漏网——`pnpm why <pkg>` → 提下限 → `pnpm install` → 复验（#115/#121 套路）。
+9. **依赖 override 时效性（高频复发）**：`pnpm audit` 公告拓宽区间时旧 override 下限漏网——`pnpm why <pkg>` → 提下限 → `pnpm install` → 复验（#115/#121/#160 套路）。**override 下限必须核对上游声明区间**：裸 `>=X` 会放走 major——devalue 裸写 `>=5.9.3` 实测解析 6.0.2，越界 `astro` 声明的 `^5.8.1`；要写 `">=X <Y.0.0"` 锁在同 major（第 29 轮）。**⚠️ 本地门禁清单必须含 `pnpm audit --audit-level=moderate`**（CI 第 2 job、公告随时发布，第 28 轮漏跑致 PR #159 先红一次）；公告期开放 PR 会集体转 Audit 红——新修复 PR 叠基可即时转绿并固化合并顺序（先合修复 PR）。
 10. **gh comment 带反引号一律 `--body-file`**：shell 双引号内反引号会被命令替换。
 11. **CRLF 噪声会伪造 diff 规模**：本地磁盘 CRLF 而 git 存 LF；证格式归一无语义变化用 token 级比较（第 15 轮坑 10）；Edit 报 "modified since read" 先重读（坑 11）。
 12. **prettier 对破损表格的规范输出 = 整表去对齐**：别 `--no-verify` 绕 husky。
