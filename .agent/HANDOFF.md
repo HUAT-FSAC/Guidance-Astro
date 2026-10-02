@@ -1,37 +1,34 @@
 # 交接说明（HANDOFF）
 
-**本棒 Agent：** `muse-spark-20261002T121515Z`（第 32 轮）
-**时间：** 2026-10-02T12:15Z 起（UTC；上一棒锁已删，本轮新建锁）
-**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@d6768b8`
-**状态：** #120 按推荐方案 A（删）执行并合并关闭；#101 复核 secret 仍缺、维持阻塞；开放仅 #101；relay PR 为零；线上 Version `73738007` 健康；main CI 全绿 run 37006389469
+**本棒 Agent：** `muse-spark-20261002T125315Z`（第 33 轮）
+**时间：** 2026-10-02T12:53Z 起（UTC；上一棒锁已删，本轮新建锁）
+**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@d731fad`
+**状态：** 验证轮——显式导航面延伸复审零缺陷（sidebar 12/12 link 在位）；开放仅 #101；relay PR 为零；线上 Version `73738007` 健康；main CI 全绿
 
 > 下一棒请先按 `docs/WORKFLOW.md:§1/§3` 与 `AGENTS.md` 的「发布与部署」执行：
 > `git fetch --all --prune` → `git pull --rebase` → 读 `.agent/STATE.md` + 本文件 → 检查 `.agent/LOCK` → 选任务。
 
 ---
 
-## 一、本棒做了什么（第 32 轮）
+## 一、本棒做了什么（第 33 轮：验证轮，无缺陷）
 
-用户指令"待人类两项按推荐来" → 分两路：
+例行同步无可认领 → 承 #158/第 28 轮建议复审其余显式导航面：Header 仅外部链接、无自定义 Footer（Starlight 默认）、sidebar 无 /en/ 项、内容内链已有回归测试覆盖 → fresh main 构建 + sitemap 比对：sidebar 12 个 `link:` **12/12 在位**（含 #159 修好的 contributing）；autogenerate 构建全绿；sitemap-0 恰 168 页（与 #159 的 167→168 吻合）。零缺陷，不建单。**教训**：sitemap `<loc>` 是 percent-encoded，CJK 路由比对必须 unquote（首轮 6 条假阳性）；计数剔除 sitemap-index 自身 loc。
 
-1. **#120（执行推荐方案 A：删）**：单内 A/B 中 A 为推荐（零引用 2 个月 + `share-controller` 独立实现已满足需求 + 曾耗一次维护轮转 `a47d534`；YAGNI）→ 开工前复核：全仓 `git grep utils/toast` 仍空 + 线上 200/200 健康 → 建分支 `refactor/utils/remove-toast-dead-code`，`git rm src/utils/toast.ts`（443 行）→ 本地 §6 全绿（lint 0 / format / tsc 0 / test 412/412 / build Complete；残留 grep 空）→ **PR #163**（CI 全绿：核心 5 项 + 3-run QualityGate + Preview）→ `--admin --squash` 合并 `d6768b8`，body `Closes` 自动关 #120（已核对）→ main run 37006389469 全绿。**删除无行为变化（tree-shaking 本就不打包它），无需部署。**
-2. **#101（复核）**：`gh secret list` 仍仅 CODECOV/PROJECT，`CLOUDFLARE_API_TOKEN` 未配 → deploy job 加回继续阻塞（无人类之外可做动作）；线上 OAuth 路径抽查健康（`/` + `/docs-center/contributing/` 均 200）。维持开放，不滥发评论。
-
-> 前棒摘要：第 31 轮（#162 rp 瞬时故障调查关闭）；第 30 轮（4-PR 合并 + 上线，坑：部署前必 pull）；第 28–29 轮（#158→#159；#160→#161）。明细见 git 历史与 `docs/WORKFLOW.md:§7.4`（已 99+ 行）。
+> 前棒摘要：第 32 轮（#120 删 toast→#163）；第 31 轮（#162 瞬时故障关闭）；第 30 轮（4-PR 合并 + 上线）。明细见 git 历史与 `docs/WORKFLOW.md:§7.4`（已 100+ 行）。
 
 ## 二、交棒时主干状态
 
-- `main@d6768b8` CI 全绿；relay issue 全关（除 #101）。
+- `main@d731fad` CI 全绿；relay issue 全关（除 #101）。
 - 开放 issue：仅 **#101**（人类配 `CLOUDFLARE_API_TOKEN` Secret；配好前不加回 deploy job）。
-- 开放 PR：无 relay PR；自动 PR（dependabot/release-please/metrics），**协议禁止自动 merge，不碰**。
-- 线上 Version `73738007` 与 main 内容一致（其后仅记录 commit + 死代码删除，均不进产物）。
+- 开放 PR：无 relay PR；自动 PR 不碰。
+- 线上 Version `73738007` 与 main 一致。
 
 ## 三、下一棒要做（按优先级）
 
-1. **新候选（主动发现）**：显式链接面解析法可延伸到 nav/页脚/LanguageSwitcher/`LinkCard`；或开新审计维度。观察项已清空（`--max-warnings`/tsc-tests 预防性缺口留人类）。
-2. 若 rp 同类 GraphQL 报错短期再现，回 #162 留证据（notify-failure 自动开单）。
-3. #101 Secret 配好后按单把 deploy job 加回 `ci-cd.yml`（完整实现见 `8475f88`；`ACCOUNT_ID` 不需要）。
-4. 复发套路：audit 类走五.10；漂移类全量 `git grep`；口径同步类全仓 grep 找漏网。2 条 `astro check` hint 勿动。
+1. **新候选（主动发现）**：开新审计维度（显式链接面已清：sidebar 12/12 + Header/Footer 无内链 + 内容内链有回归测试）。观察项已清空（`--max-warnings`/tsc-tests 留人类）。
+2. 若 rp 同类 GraphQL 报错再现，回 #162 留证据。
+3. #101 Secret 配好后加回 deploy job（实现见 `8475f88`；`ACCOUNT_ID` 不需要）。
+4. 复发套路：audit 走五.10；漂移全量 `git grep`；2 条 `astro check` hint 勿动。
 
 ## 四、阻塞项（需人类操作）
 
@@ -41,16 +38,16 @@
 
 ## 五、注意事项 / 坑
 
-1. **⚠️ 部署前必须 `git pull`**（第 30 轮）：GitHub 端合并后本地即落后。规程：部署前必 pull + 确认目标文件 + lock 变动时 `pnpm install`；部署后 curl 抽查变更页。
-2. **⚠️ gh issue `--label` 名错整体失败**：先 `gh label list`，建后回查。
-3. **侧边栏/导航显式链接是审计盲区**（#158）：解析 `link:` → 在集合/页面找文件。
-4. **内容集合只有两个**：`docs` + `i18n`；`src/content/` 下其他目录是死文件。
-5. **部署判据**：进产物才 deploy + CSP 验收；记录/注释/死代码删除不部署。
-6. **双远程**：`origin` 权威；`huat-fsac-docs` 旧名一律过期。
-7. **⚠️ `pnpm` 不在裸 PATH**：同命令内 export（跨调用不继承）。
-8. **关 issue 双保险**：subject 关键字 + body `Closes`；合并后核对。
-9. **`gh run list` 幽灵行**：交叉核对 `headSha`。
-10. **override 下限核对上游区间**（裸 `>=X` 放走 major；#160）；**本地门禁含 `pnpm audit`**；公告期叠基转绿。
+1. **⚠️ 部署前必须 `git pull`**（第 30 轮）：GitHub 端合并后本地即落后。规程：pull + 确认文件 + lock 变动则 install；部署后 curl 抽查。
+2. **⚠️ sitemap 比对先 unquote**（第 33 轮）：`<loc>` percent-encoded，CJK 直接比对假阳性；计数只取 sitemap-0（剔除 index 自身 loc）。
+3. **⚠️ gh issue `--label` 名错整体失败**：先 `gh label list`，建后回查。
+4. **侧边栏/导航显式链接是审计盲区**（#158，已清：sidebar 12/12 在位）：解析 `link:` → 集合/页面找文件。
+5. **内容集合只有两个**：`docs` + `i18n`。
+6. **部署判据**：进产物才 deploy + CSP 验收；记录/注释/死代码删除不部署。
+7. **双远程**：`origin` 权威；`huat-fsac-docs` 旧名过期。
+8. **⚠️ `pnpm` 不在裸 PATH**：同命令内 export。
+9. **关 issue 双保险** + 合并后核对。
+10. **override 下限核对上游区间**；**本地门禁含 `pnpm audit`**；公告期叠基转绿。
 11. **comment 反引号用 `--body-file`**；jq 嵌套引号分步查。
 12. **CRLF 噪声**：token 级比较；"modified since read" 先重读。
 13. **prettier 破损表格去对齐**：别 `--no-verify`。
@@ -60,7 +57,7 @@
 17. **孤儿判定找构造点**；删前 0 引用 + 产物验证。
 18. **全量 `git grep`**，别 `--include`。
 19. **外链先分类**再建单。
-20. **三元组审计**（#148）；labeler 默认 OR；门禁审覆盖面 + 反向注入；命令实跑；`file:line` 内容核验；集合差先分类；修后复查同段。
+20. **三元组审计**；labeler 默认 OR；门禁审覆盖面 + 反向注入；命令实跑；`file:line` 内容核验；集合差先分类；修后复查同段。
 21. **全绿 ≠ 无害**：重命名前确认引用。
 22. **锁协议**：超 30min 可接管；正常结束删锁；锁不提交。
 
@@ -80,6 +77,6 @@ curl -sI https://huat-fsac.eu.org/ | grep -iE '^(HTTP|content-security-policy)'
 
 ## 七、与看板 / 前一棒的一致性
 
-- `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成；现走 issue 线，`§7.4` 逐轮追加（本轮新增第 32 轮行）。
+- `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成；现走 issue 线，`§7.4` 逐轮追加（本轮新增第 33 轮行）。
 - 前棒结论与坑位已并入第五节；更早见 git 历史。
 - 免 review 自主推进长期生效：新 PR 仍需 CI 全绿才可合并；自动 PR 不碰。

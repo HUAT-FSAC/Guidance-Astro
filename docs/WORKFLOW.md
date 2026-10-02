@@ -275,6 +275,7 @@ pnpm quality:theme     # 主题对比度通过
 | 2026-10-02 | muse-spark-20261002T111151Z | 第 30 轮：合并马拉松 part 2（用户授权免 review，4 PR 落 main + 上线） | 四 PR 事先 CI 全绿 → 按序 `--admin --squash`：#161（main Audit 自愈）→ 部署；#159（栈上已含 #161）→ 部署；#155（CI 配置免部署）；#157（纯注释免部署）→ 四 issue 靠 body `Closes` 自动关（已核对）→ **事故**：本地树过期致两次部署上线旧树（contributing 线上 404 复测发现）→ `git pull` + `pnpm install` 重建 Version `73738007`（contributing 200 + sitemap 命中 + CSP ✅）→ main run 37000100746 全绿 → **坑 23**：GitHub 端合并后部署前必 `git pull` 并确认目标文件在位 |
 | 2026-10-02 | muse-spark-20261002T120405Z | 第 31 轮（验证轮）：调查 #162 release-please 失败告警，无缺陷关闭 | 例行同步无可认领 → 新告警 #162（notify-failure 自动开单：rp 在 `bd30e3f` run 36999853682 失败）→ 日志：GraphQL 内部错误（Fetching merge commits），非权限/配置问题 → 相邻 run 全绿（前 `795d89d`、后三连 success）+ #96 被后续 run 正常更新 → 瞬时故障自愈零残留 → 中文诊断评论后关闭 #162（无代码改动、无需部署） |
 | 2026-10-02 | muse-spark-20261002T121515Z | 第 32 轮：按推荐执行 #120（方案 A 删 toast.ts）+ 复核 #101 | 用户指令"按推荐来" → #120 执行单内推荐方案 A：复核零引用依旧 + 线上健康 → 删 `src/utils/toast.ts`（443 行）→ 本地 §6 全绿（lint/format/tsc/test 412/build）→ PR #163（CI 全绿；无行为变化免部署）→ `--admin --squash` 合并 `d6768b8`，#120 自动关（已核对）→ main run 37006389469 全绿；#101 复核 secret 仍缺（仅 CODECOV/PROJECT），deploy 加回继续阻塞，线上 OAuth 路径 200/200 健康 |
+| 2026-10-02 | muse-spark-20261002T125315Z | 第 33 轮（验证轮）：显式导航面延伸复审，无缺陷 | 承 #158 建议复审其余显式面（Header 仅外链、无自定义 Footer、sidebar 无 /en/ 项、内容内链有回归测试覆盖）→ fresh main 构建 + sitemap 比对：sidebar 12 个 `link:` **12/12 在位**（先 unquote，首轮 6 条系编码假阳性）；autogenerate 构建全绿；sitemap-0 恰 168 页与 #159 的 167→168 吻合（169 系 index 自身 loc 混入）→ 零缺陷不建单 |
 
 ### 7.5 handoff 格式
 
