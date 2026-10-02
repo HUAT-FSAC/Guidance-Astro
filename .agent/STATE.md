@@ -3,8 +3,10 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-02T13:32Z ｜ **当前 agent-id：** `muse-spark-20261002T133206Z` ｜ **状态：** 第 34 轮完成（无可选任务验证轮：主干绿+线上健康+audit 干净），进行中（无操作计数 2/5，连两轮验证无缺陷）
-**主干：** `main@a789466`（CI 全绿 run 37009784096；线上 200；`pnpm audit` 0 漏洞）｜ **活跃：** 无 ｜ **开放：** #101（人类配 Secret｜ **开放：** #101（人类配 Secret｜ **开放：** #101（人类配 Secret，仍阻塞）
+**最后更新：** 2026-10-03T01:20Z ｜ **当前 agent-id：** `planner-20261002T171300Z`（**Planning Agent 首次接棒**）｜ **状态：** M1 稳态治理 Milestone 已建立，4 个 `ready` 任务入队
+**主干：** `main@78fec09`（CI 全绿 run 37009784096；线上 200 + CSP nonce；`pnpm audit` 0 漏洞）｜ **活跃：** 无 ｜ **开放 ready：** #164 → #165 → #167（严格串行）、#166（可并行）｜ **阻塞：** #101（人类配 `CLOUDFLARE_API_TOKEN` Secret）
+
+> ⚠️ **本行历史上曾损坏**（三段重复 + 粗体未闭合 + 括号残缺），已于本轮由 Planner 修复。剩余全文件体检见 #166。
 
 > 第 22 轮合并马拉松完成：按用户指令 review+merge 全部 14 PR —— #122→#124→#127→#129→#131→#133→#135→#137 逐个同步 main（records 取分支侧、§7.4 取并集）+ 链顶 #149 一次性带入 #138/#140/#142/#144/#146/#148（被替代 PR #139/#141/#143/#145/#147 已关闭）。`--admin` 合并系人类明确授权 + 每分支 CI 核心 5 项全绿后执行（分支保护的 review 对象 + 永不满足的 `quality-gate` 上下文只能由 admin 绕过，质量本身未绕）。验收：§7.4 共 89 行（基线 71 + 18）、`grep -rn '^<<<<<<<'` 无输出、main run 36863298437 全绿。
 
@@ -23,9 +25,15 @@
 
 ## 开放 issue 现状
 
-- **#101**（P1）：阻塞人类配 `CLOUDFLARE_API_TOKEN` Secret，跳过。
+> 📌 **本节原有的重复 `#101` 条目已于 2026-10-03 由 Planner 去重修复。**
+
+- **#101**（P1 / `status:backlog`）：**唯一长期阻塞项** —— 需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`。复查确认 secret 仍仅 `CODECOV` / `PROJECT`，`deploy` job 加回 `ci-cd.yml` 仍阻塞；线上 OAuth 部署路径健康（200 + CSP nonce）。**配好前不得加回 deploy job**（会重演 `main` 长红）。实现已备好（`8475f88`）。
+- **#164 / #165 / #166 / #167**（2026-10-03 由 Planner 新建，M1 队列，详见 `.agent/PLAN.md` §2.2）：
+    - **#164** P1 `ready` — wrangler 精确 pin 4.136.2 → 4.143.0（修 vite-plugin peer 硬失败；**M1 起点**）
+    - **#165** P1 `ready` — dependabot 9 PR（#106–#114）批量处置，**blocked by #164**
+    - **#167** P2 `ready` — 发布 v1.1.0（合并 release-please PR #96），**blocked by #165**
+    - **#166** P3 `ready` — `.agent` 记录文件损坏体检（**无依赖，可并行**）
 - **#120**：第 32 轮按推荐方案 A 删除并合并关闭。
-- **#101**（P1）：复核 secret 仍仅 CODECOV/PROJECT（`CLOUDFLARE_API_TOKEN` 未配），deploy job 加回仍阻塞；线上 OAuth 路径健康（200/200）。
 - **#121/#123/#125/#126/#128/#130/#132/#134/#136/#138/#140/#142/#144/#146/#148**：第 22 轮已合并关闭（#122/#124/#127/#129/#131/#133/#135/#137 squash 落 main；#139/#141/#143/#145/#147 被链顶 #149 替代关闭，issue 逐一手动关并注明）。
 - **#150/#152**：已合并关闭（body `Closes` 自动关，已核对）。
 - **#154/#156/#158/#160**：第 30 轮已合并关闭（body `Closes` 自动关，已核对）。
@@ -124,16 +132,49 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 新 Execution Agent 规则首轮：无 PLAN.md；唯一开放 issue #101 仍阻塞（secret 复查仍仅 CODECOV/PROJECT）→ 无 ready 任务可选 → 执行健康验证：main CI 全绿（run 37009784096 success）+ 线上 `/` 200 + `pnpm audit --audit-level=moderate` 0 漏洞 → 无需建单（auto-discovered 额度未用），无代码改动。
 
+### 第 35 轮（Planning Agent 首次接棒：建立 PLAN/DECISIONS，M1 稳态治理开队）
+
+**角色转换：** 本棒是**首个 Planning Agent**（此前 34 棒均为 Execution Agent）。此前**无 `PLAN.md`、无 `DECISIONS.md`** —— 路线图与长期决策只散落在 `WORKFLOW §4`/`§7.4` 与 `STATE` 叙述中，无法被机器读取。本棒补齐这两份文件并完成 backlog 治理。
+
+**例行同步**：`git fetch --all --prune` → 树干净 → `main@78fec09` 与 origin 一致（0/0）→ 无 `LOCK`。
+
+**真实状态核实（全部实测，非历史叙述）：**
+
+| 维度       | 结果                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| `main` CI  | run `37009784096` 全绿                                                                                    |
+| 线上       | `/` **200**，`content-security-policy: nonce-` ✅、`cache-control: private, no-cache, must-revalidate` ✅ |
+| 供应链     | `pnpm audit` 0 漏洞                                                                                       |
+| 开放 issue | 仅 **#101**（阻塞人类 Secret）                                                                            |
+| 开放 PR    | 11 个，**9 个 dependabot（2026-09-28 起静置 5 天）+ #97 metrics + #96 release**                           |
+| 看板       | `WORKFLOW §4` T-001..T-038 **全部已完成**                                                                 |
+
+**三处实证红灯（本轮核心发现）：**
+
+1. **依赖摄入近停摆（P1）** —— 9 个 dependabot PR 静置 5 天，`dependabot.yml` 的 `open-pull-requests-limit: 10` 已占 **9 位**。dependabot 每周一扫描，占满后将**无法再上报任何新依赖/安全更新**。这不是「backlog 不整洁」，是**安全更新摄入已近停摆**。
+2. **wrangler peer 硬失败（P1，且比表面更严重）** —— PR #109（`@astrojs/cloudflare` 14.3.3）解析到 `@cloudflare/vite-plugin@1.62.0`，其 peer 硬断言要求 `wrangler@^4.143.0`，实装 `4.136.2` → Build exit 1（run `37000347238`）。**关键发现：adapter 声明的是浮动 `^1.53.0`（14.3.2 与 14.3.3 完全相同）**，故**任何刷新 lockfile 的操作都会在 package.json 未改的情况下让 main 构建失败** —— 当前仅靠 `pnpm-lock.yaml` 的既有 pin 保护。D-003 的「人工同步」不变量是脆弱的。另：PR #107 只把 wrangler 提到 `4.138.0 < 4.143.0`，**单独或与 #109 同合都不能解决**。
+3. **发版停滞（P2）** —— release-please PR #96（v1.1.0）开放 11 天、`MERGEABLE/BEHIND`；`gh release list` 最新仍 `v1.0.2`。约两周变更未进任何 tag。
+4. **记录损坏（P3）** —— `STATE.md:7` 三段重复 + 粗体未闭合 + 括号残缺；「开放 issue 现状」中 `#101` 重复两次。**本棒已修**（属 Planner 记录维护本职），剩余体检见 #166。
+
+**本棒产出：** 新建 `.agent/PLAN.md`（阶段判定 + M1 路线图 + 明确放弃方向）、`.agent/DECISIONS.md`（D-001..D-009，含从 git 历史与既有轮次**复原**的 8 条长期决策）；新建 issue **#164/#165/#166/#167** 并逐条加 Planner 状态标注（`ready`/认领顺序/依赖/验收重点）；修复 `STATE.md` 损坏行与重复条目。
+
+**未做（有意）：** 不逐个合并 dependabot PR（D-005 先例为批次处置）；不升级 `wrangler` major、不跟进 Starlight ≥0.42（D-003/D-004）；不重开已被既有轮次证明无缺陷的维度（第 20 轮 i18n、第 33 轮导航面 12/12）；不夹带任何功能工作（功能期已结束，见 PLAN §一）。
+
 ## 下一步（给下一棒）
 
-1. **本轮无合并**（验证轮×2累计 1/5）：仅 #101 阻塞；有 ready issue 或新告警时优先处理。
-2. **新候选**：侧边栏 link 解析法可延伸到**导航 nav/页脚/LanguageSwitcher 等其余显式链接面**（第 28 轮只做了 sidebar.mjs）；其余观察项均已清空（workflow 注释经 #148/#156 两轮复审全清；`--max-warnings`/tsc-tests 预防性缺口留人类）。或等人类（#101 Secret、#120 裁决）。
-3. **人类待办**：`PROJECT_TOKEN` 轮换/确认 + projects/1 是否存在；`update-linked-issues` 补权限还是删除；`size:xs` 手工建 label；#101 配 Secret；#120 裁决 toast.ts。（本轮起免 review 自主推进：新 PR 合并无需等待人类指令，但仍需 CI 全绿。）
-4. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + HANDOFF → 检查锁 → 选任务。
-5. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
+1. **认领顺序（严格串行）**：**#164** → **#165** → **#167**；**#166** 无依赖可与任一并行。
+2. **开工前自查**（避免踩已知坑）：
+    - #165 未开工前先确认 **#164 已 close**，否则会把 main 拖进 lockfile 悬崖（#164 正文有完整说明）。
+    - #167 未开工前先确认 **#165 已 close**，先发依赖后发版，避免刚发 v1.1.0 立刻被顶出 v1.1.1。
+3. **D-009 待人类裁决**（见 PLAN §五）：是否授权按 D-005 先例执行 dependabot 批次处置。**未裁决前 #165 不要开工** —— 逐个合并 9 个自动 PR 属无授权触碰。
+4. **Planner 验收纪律（D-006）**：Executor 完成后**留结果评论、不要自行关单**；由 Planner 逐条对照验收标准核对后才关单。
+5. 每轮开始仍按 `docs/WORKFLOW.md:§1/§3`：fetch → pull → 读本文件 + `PLAN.md` + `DECISIONS.md` + HANDOFF → 检查锁 → 选 `ready` 任务（P0>P1>…、Milestone 优先、编号小优先）。
+6. **合并马拉松方法沉淀（第 22 轮）**：独立分支逐个 `merge main`（records 取分支侧、`§7.4` 用行并集脚本合）→ 每分支 CI 核心 5 项绿 → `--admin --squash` 合并；链式堆叠分支只合链顶、其余标 superseded 关；squash 默认消息会带入全部分支 commit subject（含 `fix: #N`，多数 issue 自动关，`docs: #N` 的需手动补关）。
+7. **记录类文件可直推 main（D-008）**；代码/文档修复仍走分支 + PR。
 
 ## 阻塞项
 
-- **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（此前不要把 deploy job 加回 CI）。
-- **#120**：toast.ts 删留二选一，等人类。
-- 人类侧：`PROJECT_TOKEN`、`size:xs` label、`update-linked-issues` 去留（见上）。
+- **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（**配好前不要把 deploy job 加回 CI**）。
+- **D-009 裁决**：dependabot 批次处置是否授权（PLAN §五；默认方案 = 按 D-005 先例执行批次处置）。
+- 人类侧待办（均需凭据/仓库设置，Agent 不可自决）：`PROJECT_TOKEN` 轮换 + `projects/1` 是否存在；`size:xs` 手工建 label（补 `issues: write` 会扩大 `pull_request_target` 权限面，官方警告）；`update-linked-issues` 补权限还是删除。
+- ~~#120~~：已于第 32 轮关闭（toast.ts 删除），不再是阻塞项。
