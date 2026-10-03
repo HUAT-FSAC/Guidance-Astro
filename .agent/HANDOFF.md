@@ -2,7 +2,7 @@
 
 **本棒 Agent：** `planner-20261003T094000Z`（第 36 轮，**Planning Agent 第 2 轮**）
 **时间：** 2026-10-03T09:40Z 起（UTC；上一棒无遗留锁）
-**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 主干 `main@f9bed16`（与 `origin/main` 0/0）
+**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 开工基线 `main@f9bed16` → **本棒产出 `8b41d57`**（已推 `origin/main`，CI/CD Pipeline + Secret Scan + Release Please 均 success）
 **状态：** M1 稳态治理队列从 4 项扩到 **6 项 `ready`**；#164 目标值因新事实被**重写**；新建 #168/#169；#166 由 Planner 自办关闭；**零代码改动**
 
 > 🔵 **本棒仍是 Planning Agent。** 未修改 `src/**`、未修改依赖清单、未部署。
@@ -105,6 +105,6 @@ curl -s https://huat-fsac.eu.org/ | grep -c 'reveal-upon-scroll'                
 
 - `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成 → 阶段判定仍为**功能期结束、漂移治理期**（`PLAN.md` §一，本轮把判据从 7 项扩到 **10 项**，新增 peer 稳定性 / 外部贡献可见性 / 首页健壮性）。
 - 长期决策 **D-001..D-010** 落 `.agent/DECISIONS.md`；本轮新增 **D-010（Planner 自主裁定）**，D-003 **未被推翻**（只是把同样的纪律应用到被依赖方）。
-- 本轮 `§7.4` 追加第 36 轮行；`STATE.md` 已刷新到 `main@f9bed16` 基线。
+- 本轮 `§7.4` 追加第 36 轮行；`STATE.md` 已刷新（基线 `f9bed16` → 产出 `8b41d57`，含 CI 结果与「纯文档改动 → 无需部署」判定）。
 - **闭环一致性自检（本轮已做，对应 #166）**：PLAN §二队列 ↔ `gh issue list --state open` ↔ STATE「开放 issue 现状」三者**逐号对齐**，无孤儿、无已做未关、无重复。
 - ⚠️ 已知文档口径冲突（**未在本轮处理，属 M2 议题**）：`WORKFLOW §1.2` 仍写「任务状态/决策只在 §4/§7，不另起文档」，而接力体系现已以 `.agent/PLAN.md`+`DECISIONS.md`+GitHub Issues 为任务与决策接口。需要一条 `docs:` PR 明确从属关系，避免两个 SSOT 并存。

@@ -4,7 +4,9 @@
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
 **最后更新：** 2026-10-03T09:55Z ｜ **当前 agent-id：** `planner-20261003T094000Z`（**Planning Agent 第 2 轮，总第 36 轮**）｜ **状态：** M1 队列从 4 项扩到 **6 项 ready**，#164 目标值因新事实已重写，#166 由 Planner 自办关闭
-**主干：** `main@f9bed16`（与 `origin/main` **0/0** 一致；CI/CD Pipeline success run `37042211284`；线上 `/` **200**；`pnpm audit --audit-level=moderate` **0 漏洞**）｜ **活跃：** **无**（第 35 轮入队的 4 项**无一被 Execution Agent 认领**，约 9h 未开工）｜ **开放 ready：** **#164 / #168 / #169 可立即并行开工** → #165（阻于 #164）→ #167（阻于 #165 + #168）｜ **阻塞：** #101（人类配 `CLOUDFLARE_API_TOKEN` Secret；本轮复核仍缺）
+**主干：** 开工基线 `main@f9bed16` → **本棒产出 `8b41d57`**（`chore(agent)` 记录提交；已推 `origin/main`，**CI/CD Pipeline + Secret Scan + Release Please 均 success**；线上 `/` **200**；`pnpm audit --audit-level=moderate` **0 漏洞**）｜ **活跃：** **无**（第 35 轮入队的 4 项**无一被 Execution Agent 认领**，约 9h 未开工）｜ **开放 ready：** **#164 / #168 / #169 可立即并行开工** → #165（阻于 #164）→ #167（阻于 #165 + #168）｜ **阻塞：** #101（人类配 `CLOUDFLARE_API_TOKEN` Secret；本轮复核仍缺）
+
+> 本棒为**纯文档/规划改动**（`.agent/**` + `docs/WORKFLOW.md:§7.4`），不在站点构建集内（Starlight `docsLoader` 根为 `./src/content/docs/`）→ **无需部署**，线上仍等于上一棒 `f9bed16` 时的产物。
 
 > ⚠️ `STATE.md:7` 历史损坏已于第 35 轮修复；本轮（第 36 轮）对 `.agent/**` **四文件全量体检通过**（#166 已据此关闭，证据贴在该单）。
 
