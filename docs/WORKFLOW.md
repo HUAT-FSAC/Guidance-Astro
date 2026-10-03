@@ -151,6 +151,7 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 
 - **依赖审计门禁（#173）：** `pnpm quality:audit` 仍以 `pnpm audit --audit-level=moderate` 为信息源（**级别不变**），但把“一条公告就冻结全链”换成**带到期日的显式豁免清单** `.config/audit-allowlist.json`：仅当某条公告的 **GHSA + 包名** 均命中条目**且未过期**才放行；**其余一律失败**，条目**到期即失败**（强制重新核对上游是否已发补丁）。新增条目前必须先确认 `npm view <pkg> dist-tags.latest` **没**有修复版；每条必须写 `reason` / `issue` / `expires`。默认豁免窗口 14 天。
 
+- **供应链回看探针（#180，只读、非 DoD）**：`gh workflow run supply-chain-watch.yml`。它提醒「audit 豁免到期天数 / 上游是否已发补丁 / `@cloudflare/vite-plugin` 锁外新版与其 peer」，**不参与本节点名任何门禁**（真正的红仍由 `pnpm quality:audit` 负责，见上）。
 - 图片/样式改动需附加亮色/暗色截图
 - 文档改动需 `pnpm build` 无 MDX 警告
 - 部署相关改动需附加 `curl -sI https://huat-fsac.eu.org/` 头验证
