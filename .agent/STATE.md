@@ -3,10 +3,11 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-03T01:20Z ｜ **当前 agent-id：** `exec-20261003T002503Z`（**Execution Agent，第 37 轮，内含两个执行单元：#164 → #168**）｜ **状态：** #164 **已上线待验收**（`status:review`）；#168 **代码完成但未合并**（`status:in-progress`，阻于 #173）
-**主干：** `origin/main` = **`95f4443`**（工作树干净、0/0）—— 🛑 **`CI/CD Pipeline` 在该 commit 上为 FAILURE**（Audit 拖红，非代码问题）；上一 commit `61711a4` 仍绿。代码侧 `fef2a5e` = #164（PR #170 六项全绿；**Worker Version `e0fc4b95`**）｜ **线上：** `/` 200 + **CSP 头/体 nonce 一致** + 4 路由抽查 200 + sitemap 168（**线上产物本身健康**，红的只是 CI 依赖审计）｜ **未合并 PR：** **#172**（#168，分支已推 `fix/home/reveal-progressive-enhancement`，commit `f3989dc` + `9f0f287`）｜ **锁：** 已于本运行结束前删除
+**最后更新：** 2026-10-03T03:55Z｜**当前 agent-id：** `exec-20261003T031300Z`（**Execution Agent，第 37 轮续跑**）｜**状态：** 用户授权的「修缺失项」已完成：**#173 修（PR #174）→ #168 合并并上线 → main 恢复全绿**，并补齐了 Planner 侧记录缺口（PLAN 收 #171/#173、D-011 新立、D-001 判据修正）
+**主干：** `origin/main` = **`6a80906`**（= #168 首页修复；其前依次 `8453946` = #174 audit 门禁、`f9ebd1f`/`95f4443` 记录）｜**CI：** 恢复全绿（`Audit Dependencies` 现走 `pnpm quality:audit`，16–21s）｜**已部署：** Worker Version **`2b4c13d6-4892-454b-b950-b3ed7b4d35bf`**｜**线上：** `/` 200 + CSP 头/体 nonce 一致 + **`.reveal-upon-scroll{opacity:1}`** + 3 头像各 200 + 外链 0 次 + sitemap 168 + 侧边栏 12 link 全 200 + 双主题实测生效｜**待验收关单：** **#164**、**#168**、**#173**（均按 D-006 故意保持 OPEN）｜**锁：** 本轮结束时删除
+<!-- 上轮快照已被取代（原：main=95f4443 时 CI 红、PR #172 未合并；现 main=6a80906 全绿且 #168 已上线） -->
 
-> 🛑 **当前全局阻塞（新事实，非本棒代码造成）：** 约 00:57–01:05Z 发布 2 条 high 公告 —— `http-cache-semantics <=4.2.0`（GHSA-ch52-4w7c-c8xp，经 `astro`，实装 4.2.0）与 `braces <=3.0.3`（GHSA-vfj7-8cjw-p6xm，经 `purgecss>fast-glob>micromatch`，仅 dev/build 链）。**声称的补丁版上游尚未发布**（`npm view <pkg> dist-tags.latest` 仍为 4.2.0 / 3.0.3）→ override 解析不出来，**无代码层面解法**。后果：`Audit Dependencies` 现在对**任何 PR** 都会红（PR #172 唯一红项即此）；main 只是因为 `61711a4` 的 audit 跑在公告前而仍绿，**下一次 push 会同样红**。已登记 `auto-discovered` **#173**（未设优先级，含三个候选方向：等上游 / 临时忽略+跟踪 / 暂时接受红）。**本棒没有 `--admin` 绕过这个真实失败的门禁（§1.4 门禁不绕），也未擅自改 audit 级别/CI 配置（属人类/Planner 政策）。**
+> ✅ **上一轮的全局阻塞已解除（第 37 轮续）**：当时 `Audit Dependencies` 对任何 PR 都红且无代码解法（上游未发补丁）。用户授权后由 **PR #174 修好**（`pnpm quality:audit` + 带到期日的豁免清单，见 **D-011** / #173），main 与 #172 均转绿。**当时本棒没做的仍是正确的**：没 `--admin` 绕过一个真实失败的门禁（§1.4），而是先把取证与选项交给人工。
 
 > 🔍 **时间口径纠正（延续记录）：** 上一棒（Planning）在 STATE/PLAN/HANDOFF 写的 `2026-10-03T09:40Z` / `09:55Z` **不是 UTC**（当时实际为 `00:1xZ`，本地 +08:00）。本棒起统一用 `date -u`。
 
@@ -221,7 +222,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 ## 下一步（给下一棒）
 
-1. **认领顺序（第 37 轮结束时）：** 因 #173 的 audit 红，**现在开工任何新 PR 都会卡在同一个不属于自己的红上**。建议顺序：先解 #173（政策或等上游发补丁）→ 合并 **#172**（#168）并部署补验 → 再由 Planner 关 **#164** 以解锁 **#165**。可并行项 **#169**（纯 `docs/WORKFLOW.md`）技术上仍可开工，但它的 PR 也会撞同一道 audit 红。
+1. **当前可开工的 `ready` 只剩两项：** **#169**（inbound 巡检入 `WORKFLOW §1`，P2）与 **#171**（统一 CSP 验收串到 `AGENTS.md` + `docs/DEPLOYMENT.md`，P3；D-001 的口径本轮已先修，剩两个文案位）。**#165 已具备开工条件但需 Planner 先验收并关 #164/#168**（它的自检硬门是「#164 CLOSED」）；**#167** 等 #165。
 2. **开工前自查**（避免踩已知坑）：
     - #165 开工前先确认 **#164 已 close**，且 `pnpm-workspace.yaml` 里**已存在 vite-plugin 锁定 override**（仅 pin 不够 —— 见 D-010）。
     - #167 开工前确认 **#165 与 #168 均已 close**；先发依赖与修复，后发版。
@@ -236,7 +237,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 ## 阻塞项
 
-- 🔴 **新（第 37 轮）：`Audit Dependencies` 对所有 PR 变红，且无代码解法——并且已把 main 拖红** —— 两条 high 公告（`http-cache-semantics <=4.2.0` GHSA-ch52-4w7c-c8xp、`braces <=3.0.3` GHSA-vfj7-8cjw-p6xm）声称需 `>=4.2.1` / `>=3.0.4`，但**上游还没发补丁版**：`npm view <pkg> dist-tags.latest` 仍为 4.2.0 / 3.0.3，且 **GitHub 自己的 Dependabot 告警 #187 写的是 `patched: null`**。实测后果已发生：**`main@95f4443` 的 `CI/CD Pipeline` = failure**（该 commit 零代码改动，只是记录文件），PR #172（= Issue #168）唯一红项也是它。需人类/Planner 定门禁政策（详 #173，含硬证据评论）。本棒未绕过、未改 CI。
+- 🔴→✅ **#173 已解（第 37 轮续）**：两条 high 公告（`http-cache-semantics <=4.2.0` / `braces <=3.0.3`）**上游没发补丁**（GitHub 告警 #187 `patched: null`）→ 无代码解法。用户授权采纳方案 ②：PR **#174** = `pnpm quality:audit` + `.config/audit-allowlist.json`（带 `reason`/`issue`/`expires` 的豁免清单；**级别不变、未知公告仍失败、条目到期仍失败**）。**到期日 2026-10-17**，届时必须核对上游是否已发 `4.2.1` / `3.0.4`。策略已立为 **D-011**。
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（本轮复核仍缺；**配好前不要把 deploy job 加回 CI**）。
 - ~~D-009 裁决~~：✅ 已裁决（2026-10-03），**不再阻塞 #165。**
 - ~~#166~~：本轮 Planner 自办并关闭，已从队列移除。

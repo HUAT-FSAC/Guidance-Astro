@@ -21,6 +21,7 @@
 | D-008 | 2026-10-01 | 记录文件（`.agent/**`、`WORKFLOW §7.4`）恢复直推 main               | 生效                                     | 第 22 轮解冻                         |
 | D-009 | 2026-10-03 | 授权 dependabot **批次处置**；**逐个合并自动 PR 仍禁止**            | 生效（人类已裁决）                       | 人类裁决 + D-005 先例                |
 | D-010 | 2026-10-03 | **锁定 `@cloudflare/vite-plugin` 解析**，`wrangler` pin 跟随其 peer | 生效（**Planner 自主裁定**，非用户决定） | 第 36 轮 `npm view` 实测 + #164      |
+| D-011 | 2026-10-03 | 依赖审计门禁 = **带到期日的显式豁免**（不降级、不绕过、不删步骤）   | 生效（**用户授权**）                     | 第 37 轮 #173 + PR #174              |
 
 ---
 
@@ -28,7 +29,8 @@
 
 - **日期：** 2026-09-19
 - **问题：** Cloudflare Worker SSR 的发布动作由谁执行？
-- **决定：** CI **不含** `deploy` job。线上部署由 Agent 在本机执行 `pnpm deploy:worker`（= `pnpm build && wrangler deploy --config dist/server/wrangler.json`），用 wrangler OAuth 身份。验收 = `curl -sI https://huat-fsac.eu.org/` 响应含 `content-security-policy: nonce-`。
+- **决定：** CI **不含** `deploy` job。线上部署由 Agent 在本机执行 `pnpm deploy:worker`（= `pnpm build && wrangler deploy --config dist/server/wrangler.json`），用 wrangler OAuth 身份。验收 = `curl -sI https://huat-fsac.eu.org/` 的 CSP 头**内含每请求新生成的 nonce**。
+- **⚠️ 验收判据修正（2026-10-03，#171）：** 本条原文写的是「响应含 `content-security-policy: nonce-`」，**该字面串在当前线上永不出现** —— 实际头是完整策略 `content-security-policy: default-src 'self'; script-src 'self' … 'nonce-XXX'; …`，nonce 在 `script-src` 内。exec 第 37 轮据此误判过一次 `MISSING`。正确判据：`grep -qiE "content-security-policy:.*nonce-"`；**更强的判据是同一请求下头与 body 的 nonce 一致**（能拓出 CSP 与脚本属性不同步的真故障）。`AGENTS.md` 与 `docs/DEPLOYMENT.md` 的同源文案仍待一条 `docs:` PR 统一（#171）。
 - **理由：** `CLOUDFLARE_API_TOKEN` Secret 一直未配置，保留 deploy job 只让 `main` 每次 push 长红。
 - **影响范围：** `AGENTS.md`、`docs/DEPLOYMENT.md`、`docs/PROJECT_MANAGEMENT_MODEL.md`、`WORKFLOW §2`。**单点风险已知并接受**：换机或重装系统需重跑 `wrangler login`（strip 本地 proxy），OAuth 态仅存于当前用户 profile。
 - **重新评估触发：** 用户在 Actions Secrets 配好 `CLOUDFLARE_API_TOKEN` → 按 `8475f88` 把 deploy job 加回 `ci-cd.yml`（实现已在 git 历史）。
@@ -143,3 +145,14 @@
     - `@astrojs/cloudflare` 改为**精确依赖** vite-plugin，或 vite-plugin 改为**宽 peer**（浮动消失则本条无必要）。
     - 锁定的 vite-plugin 版本出现安全公告 → 必须抬版，此时按本条第 3 点成对移动。
     - 出现必须用新 vite-plugin 的功能（如 workerd 新能力），此时抬锁定值并同 commit 改 wrangler pin。
+
+## D-011 依赖审计门禁 = 带到期日的显式豁免（**用户授权**，不是 Agent 自决）
+
+- **日期：** 2026-10-03（第 37 轮）
+- **问题：** `Audit Dependencies` 是 `build` 的前置 job，所以 `pnpm audit --audit-level=moderate` 上任何一条公告都会冻结全链。本轮遇到两条 high（`http-cache-semantics <=4.2.0` GHSA-ch52-4w7c-c8xp、`braces <=3.0.3` GHSA-vfj7-8cjw-p6xm）**声称有补丁但上游根本没发**（`dist-tags.latest` 仍 4.2.0 / 3.0.3，GitHub Dependabot 告警 #187 的 `patched_versions` 为 `null`）→ override 无法解析，**无代码解法**，而 `main@95f4443` 已被拖红。该怎么办？
+- **候选方案：** ① 等上游发版（期间全链冻结）；② **带到期日的显式豁免清单**；③ 接受 main 长期红；④ 把 audit 改 `continue-on-error` 或删步骤。
+- **用户决定：** ✅ **采纳 ②**（用户原话「那就修复这些缺失项」，对应 Planner/Execution 提的推荐方案 ②）。④ 被明确排除（那是关门禁，不是治理）。
+- **落地形式（可审计是关键）：** `scripts/quality/audit-gate.mjs` + `.config/audit-allowlist.json`，CI 改跑 `pnpm quality:audit`。规则：审计**级别不变**（仍 moderate）；仅当 **GHSA + 包名同时命中条目且未过期**才放行；**未知公告仍失败**；**条目到期仍失败**（强制回来核对上游是否已发补丁）；audit 输出非 JSON 时抛错而非静默返 0。已用 5 组反例/正例证明不是空转。
+- **为什么不能由 Agent 自决：** 这改的是 **Definition of Done / CI 门禁强度**（与 `eslint --max-warnings`、`tsc 覆盖 tests/**` 同类），一旦放宽就影响所有后续交付的安全底线；历史上此类均判定归人类。
+- **影响范围：** `.github/workflows/ci-cd.yml`、`package.json`、`scripts/quality/`、`.config/audit-allowlist.json`、`docs/WORKFLOW.md §6`；所有 PR 与 main push 的门禁结论。
+- **到期与恢复条件（写进清单文件，不靠记忆）：** 现有两条豁免 **2026-10-17 到期**。到期时核对 `npm view http-cache-semantics dist-tags.latest`（期望 ≠ 4.2.0）与 `npm view braces dist-tags.latest`（期望 ≠ 3.0.3）：已发补丁 → **删条目并正常升级**；仍未发 → 必须显式续期决定（到期即红是有意的提醒机制，不得静默延长）。
