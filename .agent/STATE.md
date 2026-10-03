@@ -1,7 +1,8 @@
 # STATE
 
 - 更新时间：2026-10-03T10:10Z（UTC）
-- 当前 Issue：#182（**in-review**，等 Planner 验收；契约 §1.4：Executor 从不 close）
+- 当前 Issue：无。#178 / #179 / #180 / #181 / #182 **已全部验收关闭**（用户下达「验收通过」，本棒附本轮新取证据后代为关闭，契约默认分工不变）
+- 队列状态：**ready = 0**（`gh issue list --state open` 仅剩 #101，阻塞于人类 Secret）
 - 分支：`agent/issue-182-doc-snapshot-drift` 已合入 main 并删除；当前在 `main`，工作树干净
 - 未完成工作：无。ready 队列为空 ⇒ 按契约 §2.4 停止；不造任务、不代 Planner 验收
 - 收尾核实（第 46 轮）：远端已无 `agent/*` 分支（上轮的「未确认」现已证实删除）；`main@0c65e9b` CI/CD Pipeline success；D-011 上游补丁仍未发布（4.2.0 / 3.0.3）⇒ 豁免不删不续、不改 CI

@@ -23,6 +23,8 @@
 - **#167（P2）✅ 已发版**（第 40 轮）：`v1.1.0` = tag + Release(Latest) + `package.json 1.1.0` + CHANGELOG 22 条；squash `af67c6d`。**本单一条验收标准被我改写**：原文要求 CHANGELOG 能 grep 到 #165/#168 commit，但 `chore(deps)`/`docs(deploy)` 不是 rp 的 changelog 可见类型（两次 dispatch 均 success 而不更新 PR，属 rp 正确行为）→ 改用 **`git merge-base --is-ancestor <sha> v1.1.0`** 证明 6 个里程碑提交全部入 tag（等价且更强）。发版**无需部署**（diff 仅 CHANGELOG+package.json；version 无构建期消费点；wrangler.json 无 version 字段；产物内 `1.0.2` 实为 `util-deprecate@1.0.2`）。现 `status:review` 待验收。
 - **#101（P1，人类）** —— `CLOUDFLARE_API_TOKEN` 仍缺（不影响 M1 其余项）。
 
+⚠️ **M2 之后 ready 队列为空**：继续执行需 Planner 定义 M3。三个待决事项已在 HANDOFF「给 Planner 的信号」列出（majors 组处置、契约标签体系缺口、#101 Secret）。
+
 ⚠️ **日历型风险（不是待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**，届时 audit 门禁会主动变红以强制重新核对上游是否已发 `http-cache-semantics 4.2.1` / `braces 3.0.4`（见 D-011）。
 
 > 第 1 轮（`main@78fec09`）建立的 M1 方向**继续有效**，但本轮实测到**两个新事实**，已据此改写 #164 的目标值并新增 #168 / #169。见 §2.5。
@@ -139,7 +141,9 @@
 | ④ 外部贡献验收/归属惯例 | ⚠️ **大部分已被 #169 覆盖** | `WORKFLOW §1.6` 已写入"建 Issue→移植/`cherry-pick -x` 保留原作者/禁止 merge 外部分支"；剩余的只是"何时该欢迎对方开 PR"这类 Settings 议题 | **不单独建单**（避免为凑数造任务）；仅作为 #181 的一条待确认项与人类可选待办保留 |
 | ⑤ 双 SSOT 口径          | ✅ 是                       | `§1.2`「不另起文档」+ `§4` 头部「与 Projects projects/1 保持一致」vs 现行 `.agent` + Issues 接口                                         | → **#181**（并派生 **#182** 快照漂移）                                           |
 
-### 4.2 M2 任务队列（5 项，全部 `ready`）
+### 4.2 M2 任务队列（5 项，✅ **全部验收通过并关闭**，2026-10-03 第 47 轮）
+
+> 关闭依据：用户明确下达「验收通过」。逐单证据评论见 #178–#182（含本轮新取的 grep / run / dispatch 结果，非沿用提交时自述）。**M2 完成判定 6 条全部成立**。
 
 | Issue                              | 优先级 | 依赖                | 动什么                                                               |
 | ---------------------------------- | ------ | ------------------- | -------------------------------------------------------------------- |
