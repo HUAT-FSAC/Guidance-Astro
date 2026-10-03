@@ -16,6 +16,26 @@
 3. **小步提交：** 每个任务独立分支、独立 PR，PR 描述必须关联看板任务编号（`Closes #xxx` 或 `Ref: WORKFLOW-Tx`）。
 4. **门禁不绕：** 未通过 `§6 质量门禁` 不得标记 Done，不直接 push 到 `main`。
 5. **多 Agent 互斥：** 同一任务同一时间只允许一个 Agent 认领（见 `§7`）。
+6. **入站远程巡检（inbound）：** 「同步远程」不等于「追平 `origin`」。**每一轮开工必须逐 remote 列出「对方有、我没有」的提交**，输出非空则**必须**登记为以下三者之一（写进 `.agent/STATE.md` 或建/更新 Issue），**不允许无声略过**：
+
+    ```bash
+    git fetch --all --prune
+    for r in $(git remote); do
+        [ "$r" = origin ] && continue
+        echo "== inbound $r/main =="; git log --oneline "HEAD..$r/main" 2>/dev/null
+    done
+    ```
+
+    外部工作的进入路径：**一律「建 Issue → 按 Issue 移植/重放」（例：`git cherry-pick -x <sha>` 保留原作者）**，**禁止直接 `merge` 外部分支** —— 协作方 fork 通常落后主干，直接 merge 会带回已删除的文件与旧路径（实证：`wsyhuat` fork 仍含已删的 `src/utils/toast.ts` 与 `contributing.md` 旧位置）。**本条只写在本节**，其它章节只引用不复制。
+
+    ⚠️ **已知局限（第 38 轮实测写入，避免后人重复踩坑）**：上面的 SHA 差集**会对已移植的工作持续误报**。原因：本仓用 squash 合入（如 `f98be0d` → `6a80906`），原提交永远不是 `HEAD` 的祖先；而 `git cherry` 的 patch-id 也因 squash 改变了 diff 上下文而**不匹配**（两条手段均实测报 `+`）。所以登记时**必须写下吸收后的 commit SHA**（形如「`f98be0d` → 已 squash 为 `6a80906`」），并用**内容级终判**确认无残留差异：
+
+    ```bash
+    # 对该 remote 声称改动的文件做内容级比对（输出为空 = 已吸收）
+    git diff --stat main <remote>/main -- <被改路径...>
+    ```
+
+    反方向若显示 remote 缺少 main 已有的内容（如 `toast.ts` 在 fork 侧仍存在），那是**对落后**而不是分叉，不得因此反向引入。
 
 > 违反以上任一条，视为无效产出，需回滚重做。
 
