@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.0.2...v1.1.0) (2026-10-03)
+
+
+### Features
+
+* [#119](https://github.com/HUAT-FSAC/Guidance-Astro/issues/119) 新增 public/robots.txt（全站允许抓取 + Sitemap 声明） ([2a905d0](https://github.com/HUAT-FSAC/Guidance-Astro/commit/2a905d01b9b3516d5c0126300173b14caedaab12))
+* **i18n:** 项目看板接入双语并修复英文站 CTA 跳中文页 ([10ee793](https://github.com/HUAT-FSAC/Guidance-Astro/commit/10ee793dfb3643d4aa39d81c8f3090ec731c02e2))
+
+
+### Bug Fixes
+
+* [#116](https://github.com/HUAT-FSAC/Guidance-Astro/issues/116) 补全 sitemap（8 → 167 条 URL，剔除 302 跳转桩） ([751607a](https://github.com/HUAT-FSAC/Guidance-Astro/commit/751607aa66242672c40b7b4dca99dfd354d95650))
+* [#117](https://github.com/HUAT-FSAC/Guidance-Astro/issues/117) 修复内容页 16 处失效内部链接，redirects 抽模块并新增链接完整性回归测试 ([748a3cb](https://github.com/HUAT-FSAC/Guidance-Astro/commit/748a3cbe7e08c02a5dd0def2cafc9542186ba40c))
+* [#118](https://github.com/HUAT-FSAC/Guidance-Astro/issues/118) 纠偏 .gitignore 英文归档忽略规则：src/content/docs/en/archive/ 恢复为 src/pages/en/archive/ ([03dc7c7](https://github.com/HUAT-FSAC/Guidance-Astro/commit/03dc7c76779de101c40073da0bb9834b3de8c3ef))
+* [#121](https://github.com/HUAT-FSAC/Guidance-Astro/issues/121) 提升 brace-expansion/fast-uri override 下限修复 pnpm audit 5 漏洞 ([#122](https://github.com/HUAT-FSAC/Guidance-Astro/issues/122)) ([bf23da7](https://github.com/HUAT-FSAC/Guidance-Astro/commit/bf23da746a94aa5f787a9dcf6b74e3e6c7167dd6))
+* [#134](https://github.com/HUAT-FSAC/Guidance-Astro/issues/134) quality:lighthouse 脚本对齐 CI dlx@0.15.1 + 恢复 lighthouserc error 0.80 底线（清重复键）+ ARCHITECTURE 口径 ([#135](https://github.com/HUAT-FSAC/Guidance-Astro/issues/135)) ([1e4b613](https://github.com/HUAT-FSAC/Guidance-Astro/commit/1e4b613cb8d1d915522cc42751274b63f2bafb99))
+* [#148](https://github.com/HUAT-FSAC/Guidance-Astro/issues/148) 禁用 project-automation 两个失效 job（milestone 永不运行 + 状态更新空转） ([#149](https://github.com/HUAT-FSAC/Guidance-Astro/issues/149)) ([35e1abc](https://github.com/HUAT-FSAC/Guidance-Astro/commit/35e1abc09ebbd7aa8df5a6e0e7eed056ea1a8833))
+* [#152](https://github.com/HUAT-FSAC/Guidance-Astro/issues/152) format:check 覆盖剩余 hook 范围并归一 2 存量 ([#153](https://github.com/HUAT-FSAC/Guidance-Astro/issues/153)) ([9e41da7](https://github.com/HUAT-FSAC/Guidance-Astro/commit/9e41da7847caaa37da554a8ee640dc3c632b2ecb))
+* [#154](https://github.com/HUAT-FSAC/Guidance-Astro/issues/154) LHCI numberOfRuns 1→3（assert 取中位数，抑制单次冷机抖动） ([#155](https://github.com/HUAT-FSAC/Guidance-Astro/issues/155)) ([4e8c362](https://github.com/HUAT-FSAC/Guidance-Astro/commit/4e8c3628ceec9d9408bff1bd9cfa0d0c249899ee))
+* [#158](https://github.com/HUAT-FSAC/Guidance-Astro/issues/158) 侧边栏「内容贡献指南」404：contributing.md 移入内容集合并修 4 处过期引用 ([#159](https://github.com/HUAT-FSAC/Guidance-Astro/issues/159)) ([bd30e3f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/bd30e3f1f5a539d6862efa58ed05c0c2a90e840d))
+* [#160](https://github.com/HUAT-FSAC/Guidance-Astro/issues/160) 提升 devalue override 下限修复 pnpm audit 6 漏洞（3 high） ([#161](https://github.com/HUAT-FSAC/Guidance-Astro/issues/161)) ([795d89d](https://github.com/HUAT-FSAC/Guidance-Astro/commit/795d89d03b54f4c739abb42509e3f91014bfb83a))
+* **a11y:** 装饰图标批量屏蔽读屏、导航补激活态、移除链接上的 button 角色 ([614b375](https://github.com/HUAT-FSAC/Guidance-Astro/commit/614b375fb909e1683aaada1acf0a97be633bddf5))
+* **ci:** audit 门禁改为带到期日的显式豁免 ([#174](https://github.com/HUAT-FSAC/Guidance-Astro/issues/174)) ([8453946](https://github.com/HUAT-FSAC/Guidance-Astro/commit/845394638b82d1220e1ef21ca3f2976e18294ad9))
+* **deps:** bump postcss-selector-parser past DoS range and align peer deps ([f2cd284](https://github.com/HUAT-FSAC/Guidance-Astro/commit/f2cd284113a5bfe069cb40ba218e00b0b37d7ea8))
+* **deps:** bump undici override past DoS range to 7.29.1 ([b5e9172](https://github.com/HUAT-FSAC/Guidance-Astro/commit/b5e917253b55578432c40c6022a9b81cbdbb1e84))
+* **deps:** 锁定 @cloudflare/vite-plugin 解析并成对提升 wrangler pin 至 4.147.0 ([#164](https://github.com/HUAT-FSAC/Guidance-Astro/issues/164)) ([fef2a5e](https://github.com/HUAT-FSAC/Guidance-Astro/commit/fef2a5ea8cdf4f70952853a22667677652e93989))
+* **home:** 首页 reveal 改为渐进增强、消除 stagger 层叠冲突、贡献者头像本地化 ([#168](https://github.com/HUAT-FSAC/Guidance-Astro/issues/168)) ([6a80906](https://github.com/HUAT-FSAC/Guidance-Astro/commit/6a80906568e3a067aa2d6e871f0f95fa9bd30103))
+* **security:** 移除冗余 X-Frame-Options，frame-src 放行 bilibili 播放器 ([a267be1](https://github.com/HUAT-FSAC/Guidance-Astro/commit/a267be1e82a3fc4e82eab7ba50f718804929bfd4)), closes [#104](https://github.com/HUAT-FSAC/Guidance-Astro/issues/104)
+* **stats:** ssr 输出真值替代 0+ 占位，js 渐进增强保留计数动画 ([3e51b2a](https://github.com/HUAT-FSAC/Guidance-Astro/commit/3e51b2a256c4b35c03e334619745dfd36a740da7)), closes [#99](https://github.com/HUAT-FSAC/Guidance-Astro/issues/99)
+
+
+### Performance Improvements
+
+* **assets:** hero 回退改用 1440 变体，删除 12 张无引用原图 ([f17bbaa](https://github.com/HUAT-FSAC/Guidance-Astro/commit/f17bbaafbc01d32173281352874d49b50d050ab9)), closes [#103](https://github.com/HUAT-FSAC/Guidance-Astro/issues/103)
+* **assets:** markdown 图片补懒加载、移除死集成与冗余大图 ([d572d8f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/d572d8f79d7d1626cc637c816615d05a3bab220b))
+
 ## [1.0.2](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.0.1...v1.0.2) (2026-09-22)
 
 ### Documentation
