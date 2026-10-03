@@ -1,38 +1,75 @@
+# 依赖更新策略（M2-A / Issue #178）
+# - groups: 让同一 ecosystem 的 minor+patch 合成一个 PR，major 另开一组 ——
+#   把开放 PR 数从 O(依赖数) 降到 O(组数)，避免重演「9 个 PR 抢 package.json + pnpm-lock.yaml
+#   同两个文件 → 占满 open-pull-requests-limit → 安全更新无法上报」（M1 的 #165 起因）。
+# - 分组只作用于 version-updates；security-updates 保持不分组，安全修复不该等批次。
+# - 下面两段 ignore（wrangler major / starlight >=0.42）是 D-003 与 D-004 的决定，
+#   dependabot 先求值 ignore 再分组，因此被忽略项不会因 patterns: ['*'] 重新进入 PR。
+# - 若分组 PR 抬了 wrangler：按 D-010 成对不变量检查 @cloudflare/vite-plugin 的 peer
+#   与 pnpm-workspace.yaml 的锁定值是否需要一起动。
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "09:00"
-      timezone: Asia/Shanghai
-    open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - npm
-    commit-message:
-      prefix: chore
-      include: scope
-    ignore:
-      # wrangler 保持精确 pin（@cloudflare/vite-plugin peer 依赖需同步升级），major 需人工复核
-      - dependency-name: wrangler
-        update-types:
-          - version-update:semver-major
-      # Starlight 0.42+ 引入 satteri WASI 依赖，rolldown/workerd 构建链无法解析（T-026 实测 + PR#89 CI 复现），待上游修复
-      - dependency-name: "@astrojs/starlight"
-        versions: [">=0.42.0"]
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "09:00"
-      timezone: Asia/Shanghai
-    open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - github-actions
-    commit-message:
-      prefix: chore
-      include: scope
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: '09:00'
+          timezone: Asia/Shanghai
+      open-pull-requests-limit: 10
+      labels:
+          - dependencies
+          - npm
+      commit-message:
+          prefix: chore
+          include: scope
+      groups:
+          minor-and-patch:
+              applies-to: version-updates
+              patterns:
+                  - '*'
+              update-types:
+                  - minor
+                  - patch
+          majors:
+              applies-to: version-updates
+              patterns:
+                  - '*'
+              update-types:
+                  - major
+      ignore:
+          # wrangler 保持精确 pin（@cloudflare/vite-plugin peer 依赖需同步升级），major 需人工复核
+          - dependency-name: wrangler
+            update-types:
+                - version-update:semver-major
+          # Starlight 0.42+ 引入 satteri WASI 依赖，rolldown/workerd 构建链无法解析（T-026 实测 + PR#89 CI 复现），待上游修复
+          - dependency-name: '@astrojs/starlight'
+            versions: ['>=0.42.0']
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: '09:00'
+          timezone: Asia/Shanghai
+      open-pull-requests-limit: 10
+      labels:
+          - dependencies
+          - github-actions
+      commit-message:
+          prefix: chore
+          include: scope
+      groups:
+          minor-and-patch:
+              applies-to: version-updates
+              patterns:
+                  - '*'
+              update-types:
+                  - minor
+                  - patch
+          majors:
+              applies-to: version-updates
+              patterns:
+                  - '*'
+              update-types:
+                  - major
