@@ -28,6 +28,12 @@
 4. **squash 之后 inbound 巡检必然误报**（`HEAD..wsyhuat/main` 与 `git cherry` 都不准）→ 用内容级 `git diff --stat main wsyhuat/main -- <路径>` 终判，别每轮重新 triage。
 5. 沙箱里 `pnpm install` 下载新包需要写 `~/.local/share/pnpm/store/v11`；只读环境会报 `ERR_SQLITE_ERROR`（**别把 store 挪进工作区**，会 purge node_modules 重下 ~950 包）。
 
+## 第 46 轮补充核实（新增）
+
+- 上轮标注「未确认」的临时分支删除：`git ls-remote --heads origin refs/heads/agent/*` 为空 ⇒ 确已清理，无残留、未误删他人分支。
+- 主干：`main@0c65e9b` 的 CI/CD Pipeline = success。
+- D-011 回看：`http-cache-semantics` 仍 4.2.0、`braces` 仍 3.0.3 ⇒ 补丁未发布，**不要**提前删豁免或改 CI；到期 2026-10-17 时按 ENV/HANDOFF 流程显式决策。
+
 ## 给下一棒的第一步建议
 
 `git fetch --all --prune && git pull --rebase` → 查 `.agent/LOCK`（应无锁）→ 跑 §1.6 inbound 巡检并按 ENV §5 的标签映射理解状态 → 读 `PLAN.md §四`（M2 全绿交付）→ **若无 ready 则直接结束并提示 Planner 介入**；有则按 §2.3 领取（分支名用 `agent/issue-<N>-<slug>`）。
