@@ -213,3 +213,4 @@
 
 - **#101**（`blocked`）：外部阻塞——需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 51 轮 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`），非产品取舍、非 Agent 可自解。
 - **#197**（`needs-info`）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。
+- **#200**（`needs-info`，第 51 轮 `auto-discovered`）：i18n 覆盖（en/zh 键数不对称 382/381 + 42 个含硬编码中文组件）——“哪些串应本地化 / en 站是否要求全覆盖”属内容取舍。**默认：不阻塞，先置 needs-info**，待分桶调研产出后由 Planner 据内容策略裁定或就“en 全覆盖与否”向用户提一次批量问题。

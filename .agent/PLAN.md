@@ -4,9 +4,9 @@
 > **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-*）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 
-**最后核实：** 2026-10-03T15:43Z（`date -u`）｜**核实基线：** `main@c851586`（第 50 轮规划提交；其下为批次 `4bec1e9` + release `cbad0cf` = tag `v1.2.0`，工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 51 轮（无新鲜 LOCK，Executor 未运行；本轮为稳态巡检——无 in-review 待验收、ready 队列合法为空，完成对 audit 到期项与 #101 Secret 的只读前瞻核对）
+**最后核实：** 2026-10-03T15:43Z（`date -u`）｜**核实基线：** `main@c851586`（第 50 轮规划提交；其下为批次 `4bec1e9` + release `cbad0cf` = tag `v1.2.0`，工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 51 轮（无新鲜 LOCK，Executor 未运行；本轮为稳态巡检 + 经用户提示扩充 backlog——无 in-review 待验收，新建 #198 ready / #199 blocked / #200 needs-info，并完成 audit 到期项与 #101 Secret 的只读前瞻核对）
 
-> **第 51 轮判定：** 自第 50 轮后**无任何新事件**——无新 in-review、无新 dependabot 扫描（下次 weekly 在周一 09:00）、inbound `wsyhuat` 无未移植提交（仅历史已吸收的 `f98be0d`/`d89b87e`，squash 差集失真）。ready 队列**合法保持 0**（M3 事件驱动，不凑数）。前瞻核对（只读）：`http-cache-semantics` latest 仍 `4.2.0`、`braces` latest 仍 `3.0.3`——两条公告**上游仍未发补丁**，故 2026-10-17 豁免到期将**按 D-011 设计主动变红**强制复核，当前无提前删条目机会，不建单。#101 Secret 复核仍缺 `CLOUDFLARE_API_TOKEN`。
+> **第 51 轮判定：** 自第 50 轮后**无新事件触发**（无新 in-review、无新 dependabot 扫描、inbound `wsyhuat` 无未移植提交）。本轮经用户提示扩充 backlog：把三项**真实、有证据、此前仅散见于散文**的站桩事项提升为独立 Issue —— **#198（ready・P3、ROADMAP §3 漂移回填）/ #199（blocked・P2、audit 豁免到期跟踪）/ #200（needs-info・P3、i18n 覆盖调研）**。ready 队列从 0 → **1（#198）**。前瞻核对（只读）：`http-cache-semantics` latest 仍 `4.2.0`、`braces` latest 仍 `3.0.3`——两条公告**上游仍未发补丁**，故 2026-10-17 到期将**按 D-011 设计主动变红**强制复核（由 #199 承载）。#101 Secret 复核仍缺 `CLOUDFLARE_API_TOKEN`。
 
 > **第 50 轮判定（历史）：** **M3 首批 ready 队列（#192 发版 v1.2.0 / #193 批次摄入 #187）已全链路交付并验收关闭**；majors 组（#186/#195）按 D-015 一律暂缓。
 
@@ -185,19 +185,19 @@
 
 ### 5.2 M3 执行队列（给 Executor 的建议顺序）
 
-**当前 ready 队列 = 0。** 首批两单已由 Executor 第 49 轮交付、第 50 轮 Planner **独立复核**验收并关闭：
+**当前 ready 队列 = 1（#198）。** 首批两单已由 Executor 第 49 轮交付、第 50 轮 Planner 验收并关闭（✅ #192 发版 v1.2.0 / ✅ #193 批次处置 #187）。
 
-- ✅ **#192** 发布 v1.2.0（tag `v1.2.0`=`cbad0cf`，四方 + `--is-ancestor dde2d4b v1.2.0` 均核，main CI 绿）
-- ✅ **#193** 批次处置 minor-and-patch #187（批次 `4bec1e9`，D-010 不变量守住——workers-types 未降级；#187 关闭非合并；已部署 `1b0df471` + CSP 头/体 nonce 一致）
+1. **#198**（P3，`ready`）回填 `docs/ROADMAP.md §3` 与实况的漂移（§3.3 覆盖率/路由级预算、§3.2 i18n 表述已被 T-025/T-026/T-028 完成，需就地标注依据）。纯文档、无产品取舍、不碰红线，已过 §4.2 门禁。
 
-> M3 是**事件驱动**的稳态循环，**无预置 ready**（不凑数）。下一个 ready 会在下列事件发生时由 Planner 据实建单：① dependabot 下次 weekly 扫描产出新的 minor-and-patch 分组 PR；② 2026-10-17 audit 豁免到期核对；③ 用户/安全触发的功能或依赖事项。
+> M3 仍是**事件驱动**的稳态循环（不凑数）。本轮（第 51 轮）经用户提示“可多写几个 issue”，Planner 把三项**真实且有证据、此前只散见于 PLAN/D-011 散文**的站桩事项提升为独立 Issue：#198（ready）、#199（blocked 到期跟踪）、#200（needs-info 调研）。后续仍按事件新增。
 
 ### 5.3 M3 已知阻塞与依赖
 
 - **#101**（P1，`blocked`，人类）：恢复 CI 自动部署需配 `CLOUDFLARE_API_TOKEN` Secret；本轮 `gh api .../actions/secrets` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`，阻塞继续有效。本地 OAuth 部署可用，不阻塞交付。
 - ✅ **#194 已关闭**（第 50 轮）：majors 组 #186（actions v7）/ #195（npm majors，含 typescript 6→7 + workers-types 降级，取代 #188）→ 一律**暂缓**，处置记入 **D-015**（延续 D-003/D-004）；两个 majors PR 保持开放作 standing reminder，不阻塞 minor-and-patch。若用户要采纳任一项，另立 ready 单。
 - **#197**（P3，`needs-info`）：release-please Release PR 的 PR 级 CI 靠手工 `update-branch` 触发（GITHUB_TOKEN 链式抑制，#192 实证）；是否配 PAT/App 令牌自动化 = CI 改造 + 需人类 Secret，**默认 C（不改）**，等发版频率信号。
-- ⏰ **日历风险（非待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**（剩 ~14 天）；#180 只读探针会在到期前主动告警。**第 51 轮只读前瞻核对**：`npm view` 取 `http-cache-semantics` = `4.2.0`、`braces` = `3.0.3`，均**仍处 vulnerable 区间、上游未发补丁** → 到期时若仍无补丁，须按 D-011 做**显式续期决定**（不得静默延长）；若届时已有补丁则删条目并正常升级。不提前建单，等 10-17 事件触发。
+- ⏰ **#199**（P2，`blocked`）：**2026-10-17 audit 豁免到期核对**——将 D-011 的有日期义务从散文提升为独立跟踪单（blocked-on-date，未提前执行）。**第 51 轮只读前瞻核对**：`npm view` 取 `http-cache-semantics` = `4.2.0`、`braces` = `3.0.3`，均**仍处 vulnerable 区间、上游未发补丁** → 到期时若仍无补丁需按 D-011 **显式续期**（不得静默延长）；若已有补丁则删条目并正常升级。#180 只读探针会在到期前告警。
+- **#200**（P3，`needs-info`，`auto-discovered`）：第 51 轮巡检发现 `en.json`/`zh.json` 键数不对称（382 vs 381）且 42 个 `src/components` 文件含硬编码中文——属第 20/25/28 轮未覆盖的新发现。因“哪些串应本地化”含内容/产品判断，不入 ready；待分桶调研（只读报告）后决定是否另立实现单。
 
 ### 5.4 M3 明确不做
 
