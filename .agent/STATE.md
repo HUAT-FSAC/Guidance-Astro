@@ -3,10 +3,12 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-03T00:55Z ｜ **当前 agent-id：** `exec-20261003T002503Z`（**Execution Agent，总第 37 轮**）｜ **状态：** **#164 已实现并上线**（`main@fef2a5e`），已转 `status:review` 待 Planner 验收关单（D-006）
-**主干：** 开工基线 `main@c70636c` → **代码 `fef2a5e`**（PR #170 squash，CI 含 Quality Gate 全绿）→ 本棒 `chore(agent)` 状态提交（分开）｜ **已部署：** `pnpm deploy:worker`，Worker Version `e0fc4b95-beb1-46eb-a5c1-4feac4b29dfd`｜ **线上：** `/` **200** + CSP 头/体 **nonce 逐请求一致** + 抽查 4 路由全 200 + 线上 sitemap **168 页** ｜ **活跃：** 无（#164 已交回；下一个认领 **#168**）｜ **开放 ready：** **#168 / #169 可立即开工**；**#165 仍不动工** —— 本单自检清单硬门是「#164 已 CLOSED」，而它按 D-006 故意保持 open 等 Planner｜ **锁：** `.agent/LOCK` = `exec-20261003T002503Z`（本棒持有，结束时删除）
+**最后更新：** 2026-10-03T01:20Z ｜ **当前 agent-id：** `exec-20261003T002503Z`（**Execution Agent，第 37 轮，内含两个执行单元：#164 → #168**）｜ **状态：** #164 **已上线待验收**（`status:review`）；#168 **代码完成但未合并**（`status:in-progress`，阻于 #173）
+**主干：** `origin/main` = **`61711a4`**（代码 `fef2a5e` = #164；PR #170 六项全绿；**Worker Version `e0fc4b95`**）｜ **线上：** `/` 200 + **CSP 头/体 nonce 一致** + 4 路由抽查 200 + sitemap 168 ｜ **未合并 PR：** **#172**（#168，分支已推 `fix/home/reveal-progressive-enhancement`，commit `f3989dc` + `9f0f287`）｜ **锁：** 本棒持有，运行结束删除
 
-> 🔍 **时间口径纠正（本棒发现）：** 上一棒（Planning）在 STATE/PLAN/HANDOFF 写的 `2026-10-03T09:40Z` / `09:55Z` **不是 UTC**（实际当时为 `00:1xZ`，本地 +08:00）。本棒起的记录统一用真实 UTC。建议 Planner 后续统一该字段口径（时钟源：`date -u`）。
+> 🛑 **当前全局阻塞（新事实，非本棒代码造成）：** 约 00:57–01:05Z 发布 2 条 high 公告 —— `http-cache-semantics <=4.2.0`（GHSA-ch52-4w7c-c8xp，经 `astro`，实装 4.2.0）与 `braces <=3.0.3`（GHSA-vfj7-8cjw-p6xm，经 `purgecss>fast-glob>micromatch`，仅 dev/build 链）。**声称的补丁版上游尚未发布**（`npm view <pkg> dist-tags.latest` 仍为 4.2.0 / 3.0.3）→ override 解析不出来，**无代码层面解法**。后果：`Audit Dependencies` 现在对**任何 PR** 都会红（PR #172 唯一红项即此）；main 只是因为 `61711a4` 的 audit 跑在公告前而仍绿，**下一次 push 会同样红**。已登记 `auto-discovered` **#173**（未设优先级，含三个候选方向：等上游 / 临时忽略+跟踪 / 暂时接受红）。**本棒没有 `--admin` 绕过这个真实失败的门禁（§1.4 门禁不绕），也未擅自改 audit 级别/CI 配置（属人类/Planner 政策）。**
+
+> 🔍 **时间口径纠正（延续记录）：** 上一棒（Planning）在 STATE/PLAN/HANDOFF 写的 `2026-10-03T09:40Z` / `09:55Z` **不是 UTC**（当时实际为 `00:1xZ`，本地 +08:00）。本棒起统一用 `date -u`。
 
 > 上一棒为纯文档/规划改动（无需部署）；**本棒含依赖与部署链改动，已实部署并复验**，线上现为 `fef2a5e` 产物（wrangler 4.147.0 + vite-plugin 1.62.5）。
 
@@ -18,7 +20,8 @@
 
 ## 当前活跃任务
 
-- **#164（本棒已完成 → `status:review`，未关单）**：锁定 `@cloudflare/vite-plugin`（有界 override `1.62.5`）+ `wrangler` pin `4.136.2 → 4.147.0`。代码 commit `3218dc9` → squash 落 `main` = **`fef2a5e`**（PR **#170**，六项全绿含 QualityGate 4m42s）→ **已部署**（Version `e0fc4b95`）。验收证据逐条贴在 Issue 评论。**故意未关单**：合并按钮用了不触发 closing keyword 的 squash 标题（仓库惯例 `fix: #N` 会被 GitHub 自动关单，那会绕过 D-006）。
+- **#168（本棒第二单元：代码完成，PR #172 未合并）** — 分支 `fix/home/reveal-progressive-enhancement`，commit `f3989dc`（**cherry-pick 自协作方 `f98be0d`，author 保留 `wsy-huat`**）+ `9f0f287`（回归守卫）。三缺陷全修 + 本地全绿（**416 tests / 97 e2e**，均为基线+新增；并已实测「同一用例对修复前 main 基线会失败」）。**阻于 #173 的 audit 红，未绕过。** 详细结果与未验项（线上头像 200 / 部署 / 亮暗截图）在其 Issue 评论。
+- **#164（本棒第一单元已完成 → `status:review`，未关单）**：锁定 `@cloudflare/vite-plugin`（有界 override `1.62.5`）+ `wrangler` pin `4.136.2 → 4.147.0`。代码 commit `3218dc9` → squash 落 `main` = **`fef2a5e`**（PR **#170**，六项全绿含 QualityGate 4m42s）→ **已部署**（Version `e0fc4b95`）。验收证据逐条贴在 Issue 评论。**故意未关单**：合并按钮用了不触发 closing keyword 的 squash 标题（仓库惯例 `fix: #N` 会被 GitHub 自动关单，那会绕过 D-006）。
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
 - **#154/#156/#158/#160**（均已关，第 30 轮合并，细见下）：① #161 → 部署；② #159 → 部署；③ #155；④ #157。body `Closes` 自动关已核对；线上 Version `73738007`。
 - **#120**（P3，本轮结清）：用户指令"按推荐来" → 执行单内推荐方案 A（删）：删前复核全仓 `utils/toast` 零引用依旧 + 线上 200/200 健康 → `git rm src/utils/toast.ts`（443 行）→ 本地 §6 全绿（lint/format/tsc/test 412/build）→ **PR #163**（CI 全绿；删除无行为变化，**无需部署**）→ `--admin --squash` 合并，body `Closes` 自动关 #120（已核对）。
@@ -218,7 +221,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 ## 下一步（给下一棒）
 
-1. **认领顺序（第 37 轮更新）：** **#164 已完成**（已上线，待 Planner 验收关单）。可立即开工：**#168**（首页缺陷，P1）与 **#169**（纯文档，P2）。**#165 不得开工** —— 它的开工自检硬门是「#164 已 CLOSED」，而 #164 按 D-006 故意保持 open（代码已落 `main`，只等关单）。链：**#165 → #167**；**#168 → #167**。
+1. **认领顺序（第 37 轮结束时）：** 因 #173 的 audit 红，**现在开工任何新 PR 都会卡在同一个不属于自己的红上**。建议顺序：先解 #173（政策或等上游发补丁）→ 合并 **#172**（#168）并部署补验 → 再由 Planner 关 **#164** 以解锁 **#165**。可并行项 **#169**（纯 `docs/WORKFLOW.md`）技术上仍可开工，但它的 PR 也会撞同一道 audit 红。
 2. **开工前自查**（避免踩已知坑）：
     - #165 开工前先确认 **#164 已 close**，且 `pnpm-workspace.yaml` 里**已存在 vite-plugin 锁定 override**（仅 pin 不够 —— 见 D-010）。
     - #167 开工前确认 **#165 与 #168 均已 close**；先发依赖与修复，后发版。
@@ -233,6 +236,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 ## 阻塞项
 
+- 🔴 **新（第 37 轮）：`Audit Dependencies` 对所有 PR 变红，且无代码解法** —— 两条 high 公告（`http-cache-semantics <=4.2.0` GHSA-ch52-4w7c-c8xp、`braces <=3.0.3` GHSA-vfj7-8cjw-p6xm）声称需 `>=4.2.1` / `>=3.0.4`，但**上游还没发补丁版**（`npm view <pkg> dist-tags.latest` 仍 4.2.0 / 3.0.3）→ override 无法解析。直接受害者：PR **#172**（= Issue **#168**）。需人类/Planner 定门禁政策（详 #173）。本棒未绕过、未改 CI。
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（本轮复核仍缺；**配好前不要把 deploy job 加回 CI**）。
 - ~~D-009 裁决~~：✅ 已裁决（2026-10-03），**不再阻塞 #165。**
 - ~~#166~~：本轮 Planner 自办并关闭，已从队列移除。
