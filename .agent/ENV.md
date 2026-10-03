@@ -33,7 +33,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 ```
 
 **基线（2026-10-03T09:55Z 在 `agent/issue-182-…` 分支实测，用于判断"是否真的跑了用例"）**：
-`test:run` = **436 passed / 40 files**（构成：原 412/38 + #173 audit-gate 13 + #168 scroll-reveal 4 + #180 supply-chain-watch 7）；`test:e2e` = **97 passed**；`dist/client/sitemap-0.xml` = **168 页**；`dependabot` 开放 PR = 3（#186-#188，分组生效）。
+`test:run` = **436 passed / 40 files**（构成：原 412/38 + #173 audit-gate 13 + #168 scroll-reveal 4 + #180 supply-chain-watch 7）；`test:e2e` = **97 passed**；`dist/client/sitemap-0.xml` = **168 页**；`dependabot` 开放 PR（2026-10-03 第 49 轮后）= 2 个 majors（#186/#188）—— minor-and-patch 组 #187 已按 D-014=A 批次处置（`4bec1e9`）关闭。
 ⚠️ 本文件早期版本把基线写成 429/39（漏算 #180 的 7 条），已于 #182 同轮以实测修正 —— 记此教训：**基线数字也必须来自当轮真实运行，不能沿用记忆。**
 
 ## 3. 部署与线上验收
