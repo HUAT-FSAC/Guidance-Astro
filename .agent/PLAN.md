@@ -4,9 +4,11 @@
 > **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-*）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 
-**最后核实：** 2026-10-03T13:35Z（`date -u`）｜**核实基线：** `main@66f4c0a`（含 release `cbad0cf` = tag `v1.2.0` + 批次 `4bec1e9`）｜**核实人：** Planning Agent 第 50 轮（无新鲜 LOCK，Executor 未运行；本轮独立复核后验收关 #192/#193、关闭 #194、新建 #197）
+**最后核实：** 2026-10-03T15:43Z（`date -u`）｜**核实基线：** `main@c851586`（第 50 轮规划提交；其下为批次 `4bec1e9` + release `cbad0cf` = tag `v1.2.0`，工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 51 轮（无新鲜 LOCK，Executor 未运行；本轮为稳态巡检——无 in-review 待验收、ready 队列合法为空，完成对 audit 到期项与 #101 Secret 的只读前瞻核对）
 
-> **第 50 轮判定：** **M3 首批 ready 队列（#192 发版 v1.2.0 / #193 批次摄入 #187）已全链路交付并验收关闭**；majors 组（#186/#195）按 D-015 一律暂缓。ready 队列现空（事件驱动），下一个就绪项由扫描/到期/用户需求触发时据实建单。
+> **第 51 轮判定：** 自第 50 轮后**无任何新事件**——无新 in-review、无新 dependabot 扫描（下次 weekly 在周一 09:00）、inbound `wsyhuat` 无未移植提交（仅历史已吸收的 `f98be0d`/`d89b87e`，squash 差集失真）。ready 队列**合法保持 0**（M3 事件驱动，不凑数）。前瞻核对（只读）：`http-cache-semantics` latest 仍 `4.2.0`、`braces` latest 仍 `3.0.3`——两条公告**上游仍未发补丁**，故 2026-10-17 豁免到期将**按 D-011 设计主动变红**强制复核，当前无提前删条目机会，不建单。#101 Secret 复核仍缺 `CLOUDFLARE_API_TOKEN`。
+
+> **第 50 轮判定（历史）：** **M3 首批 ready 队列（#192 发版 v1.2.0 / #193 批次摄入 #187）已全链路交付并验收关闭**；majors 组（#186/#195）按 D-015 一律暂缓。
 
 > ⏱ **时间口径统一：** 本行与 §2.5 中先前记录的 `09:40Z` / `09:55Z` 实际是本地 +08:00 而非 UTC（已由 exec 第 37 轮发现并纠正）。**从现在起所有 `.agent` 时间字段一律 `date -u` 的 UTC**，不再混用本地时区。
 
@@ -195,7 +197,7 @@
 - **#101**（P1，`blocked`，人类）：恢复 CI 自动部署需配 `CLOUDFLARE_API_TOKEN` Secret；本轮 `gh api .../actions/secrets` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`，阻塞继续有效。本地 OAuth 部署可用，不阻塞交付。
 - ✅ **#194 已关闭**（第 50 轮）：majors 组 #186（actions v7）/ #195（npm majors，含 typescript 6→7 + workers-types 降级，取代 #188）→ 一律**暂缓**，处置记入 **D-015**（延续 D-003/D-004）；两个 majors PR 保持开放作 standing reminder，不阻塞 minor-and-patch。若用户要采纳任一项，另立 ready 单。
 - **#197**（P3，`needs-info`）：release-please Release PR 的 PR 级 CI 靠手工 `update-branch` 触发（GITHUB_TOKEN 链式抑制，#192 实证）；是否配 PAT/App 令牌自动化 = CI 改造 + 需人类 Secret，**默认 C（不改）**，等发版频率信号。
-- ⏰ **日历风险（非待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**（剩 ~14 天）；#180 只读探针会在到期前主动告警。届时核对 `http-cache-semantics`/`braces` 上游是否已发补丁（见 D-011），**不得静默延长**。
+- ⏰ **日历风险（非待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**（剩 ~14 天）；#180 只读探针会在到期前主动告警。**第 51 轮只读前瞻核对**：`npm view` 取 `http-cache-semantics` = `4.2.0`、`braces` = `3.0.3`，均**仍处 vulnerable 区间、上游未发补丁** → 到期时若仍无补丁，须按 D-011 做**显式续期决定**（不得静默延长）；若届时已有补丁则删条目并正常升级。不提前建单，等 10-17 事件触发。
 
 ### 5.4 M3 明确不做
 

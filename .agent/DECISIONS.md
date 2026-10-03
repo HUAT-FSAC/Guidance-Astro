@@ -207,6 +207,9 @@
 - **由谁定：** Planning Agent 自主裁定。「暂缓」= 维持现状、零动作、完全可逆；真正越红线的是「采纳」，那需用户决定。未上升为 Decision Gate。若用户希望采纳某项 majors，可随时覆盖本决策。
 - **重新评估触发（任一成立即重开）：** ① 某功能确需 TS7 / workerd 新能力；② 旧版 action 出安全公告；③ TS7 生态稳定且经一次专项兼容验证；④ 用户主动要求跟进。
 
-## 未决（本轮无）
+## 未决（第 51 轮巡检：无新增 pending）
 
-本轮无 pending 决策项（D-014 已由用户定 A、D-015 由 Planner 自主裁定）。唯一需用户拍板的开放事项是外部阻塞 **#101**（`CLOUDFLARE_API_TOKEN` Secret），非产品取舍。
+本轮（第 51 轮稳态巡检）**无新 pending 决策项**；D-014（用户定 A）、D-015（Planner 自主裁定暂缓）均维持生效。需用户拍板的开放事项无变化：
+
+- **#101**（`blocked`）：外部阻塞——需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 51 轮 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`），非产品取舍、非 Agent 可自解。
+- **#197**（`needs-info`）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。
