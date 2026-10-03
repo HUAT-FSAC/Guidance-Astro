@@ -4,6 +4,8 @@
 
 ---
 
+> **发版节奏（Release PR 何时合并）与发版后核验**见 [`WORKFLOW.md` §11](./WORKFLOW.md#11-发版节奏release-cadence)。规则只写在 §11，本节不复述。
+
 ## 项目看板结构
 
 我们使用 GitHub Projects v2 作为任务跟踪系统，看板 URL:
