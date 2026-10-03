@@ -4,7 +4,7 @@
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
 **最后更新：** 2026-10-03T01:20Z ｜ **当前 agent-id：** `exec-20261003T002503Z`（**Execution Agent，第 37 轮，内含两个执行单元：#164 → #168**）｜ **状态：** #164 **已上线待验收**（`status:review`）；#168 **代码完成但未合并**（`status:in-progress`，阻于 #173）
-**主干：** `origin/main` = **`61711a4`**（代码 `fef2a5e` = #164；PR #170 六项全绿；**Worker Version `e0fc4b95`**）｜ **线上：** `/` 200 + **CSP 头/体 nonce 一致** + 4 路由抽查 200 + sitemap 168 ｜ **未合并 PR：** **#172**（#168，分支已推 `fix/home/reveal-progressive-enhancement`，commit `f3989dc` + `9f0f287`）｜ **锁：** 本棒持有，运行结束删除
+**主干：** `origin/main` = **`95f4443`**（工作树干净、0/0）—— 🛑 **`CI/CD Pipeline` 在该 commit 上为 FAILURE**（Audit 拖红，非代码问题）；上一 commit `61711a4` 仍绿。代码侧 `fef2a5e` = #164（PR #170 六项全绿；**Worker Version `e0fc4b95`**）｜ **线上：** `/` 200 + **CSP 头/体 nonce 一致** + 4 路由抽查 200 + sitemap 168（**线上产物本身健康**，红的只是 CI 依赖审计）｜ **未合并 PR：** **#172**（#168，分支已推 `fix/home/reveal-progressive-enhancement`，commit `f3989dc` + `9f0f287`）｜ **锁：** 已于本运行结束前删除
 
 > 🛑 **当前全局阻塞（新事实，非本棒代码造成）：** 约 00:57–01:05Z 发布 2 条 high 公告 —— `http-cache-semantics <=4.2.0`（GHSA-ch52-4w7c-c8xp，经 `astro`，实装 4.2.0）与 `braces <=3.0.3`（GHSA-vfj7-8cjw-p6xm，经 `purgecss>fast-glob>micromatch`，仅 dev/build 链）。**声称的补丁版上游尚未发布**（`npm view <pkg> dist-tags.latest` 仍为 4.2.0 / 3.0.3）→ override 解析不出来，**无代码层面解法**。后果：`Audit Dependencies` 现在对**任何 PR** 都会红（PR #172 唯一红项即此）；main 只是因为 `61711a4` 的 audit 跑在公告前而仍绿，**下一次 push 会同样红**。已登记 `auto-discovered` **#173**（未设优先级，含三个候选方向：等上游 / 临时忽略+跟踪 / 暂时接受红）。**本棒没有 `--admin` 绕过这个真实失败的门禁（§1.4 门禁不绕），也未擅自改 audit 级别/CI 配置（属人类/Planner 政策）。**
 
@@ -236,7 +236,7 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 ## 阻塞项
 
-- 🔴 **新（第 37 轮）：`Audit Dependencies` 对所有 PR 变红，且无代码解法** —— 两条 high 公告（`http-cache-semantics <=4.2.0` GHSA-ch52-4w7c-c8xp、`braces <=3.0.3` GHSA-vfj7-8cjw-p6xm）声称需 `>=4.2.1` / `>=3.0.4`，但**上游还没发补丁版**（`npm view <pkg> dist-tags.latest` 仍 4.2.0 / 3.0.3）→ override 无法解析。直接受害者：PR **#172**（= Issue **#168**）。需人类/Planner 定门禁政策（详 #173）。本棒未绕过、未改 CI。
+- 🔴 **新（第 37 轮）：`Audit Dependencies` 对所有 PR 变红，且无代码解法——并且已把 main 拖红** —— 两条 high 公告（`http-cache-semantics <=4.2.0` GHSA-ch52-4w7c-c8xp、`braces <=3.0.3` GHSA-vfj7-8cjw-p6xm）声称需 `>=4.2.1` / `>=3.0.4`，但**上游还没发补丁版**：`npm view <pkg> dist-tags.latest` 仍为 4.2.0 / 3.0.3，且 **GitHub 自己的 Dependabot 告警 #187 写的是 `patched: null`**。实测后果已发生：**`main@95f4443` 的 `CI/CD Pipeline` = failure**（该 commit 零代码改动，只是记录文件），PR #172（= Issue #168）唯一红项也是它。需人类/Planner 定门禁政策（详 #173，含硬证据评论）。本棒未绕过、未改 CI。
 - **#101**：需人类配 `CLOUDFLARE_API_TOKEN` Secret（本轮复核仍缺；**配好前不要把 deploy job 加回 CI**）。
 - ~~D-009 裁决~~：✅ 已裁决（2026-10-03），**不再阻塞 #165。**
 - ~~#166~~：本轮 Planner 自办并关闭，已从队列移除。

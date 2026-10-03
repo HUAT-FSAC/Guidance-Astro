@@ -38,7 +38,7 @@
 
 ## 四、当前 commit / 远程 / 线上
 
-- `origin/main` = **`61711a4`**（`fef2a5e` 代码 + 记录）；main CI 三项在 00:57Z **全 success**。
+- `origin/main` = **`95f4443`**（工作树干净、与 origin 0/0）。⚠️ **`CI/CD Pipeline` 在该 commit 已 FAILURE** —— 即 §五 的 audit 红已从「将来会挡 PR」变成**主干事实**（该 commit 零代码改动，只动记录文件）；上一 commit `61711a4` 仍绿。GitHub Dependabot 告警 **#187** 显示 `http-cache-semantics` high、**`patched: null`**。
 - 线上 = `fef2a5e` 产物：`/` `HTTP/2 200`、HSTS、`cache-control: private, no-cache, must-revalidate`；抽查 4 路由 200；sitemap **168**；**CSP 头与 body 的 nonce 同一请求一致**且逐请求变（27 个 inline script）。
 - ⚠️ `AGENTS.md` 的验收字面串 `content-security-policy: nonce-` **永不匹配**（本棒据此误判过一次 MISSING）→ 已建 **#171**；改用 `content-security-policy:.*nonce-` 或头/体一致判据。
 - 未合并：PR **#172**（#168）。未部署：#168 的改动。
