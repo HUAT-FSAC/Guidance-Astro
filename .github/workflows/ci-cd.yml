@@ -1,186 +1,188 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main]
 
 jobs:
-  lint:
-    name: Lint and Format
-    runs-on: ubuntu-latest
+    lint:
+        name: Lint and Format
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Run ESLint
-        run: pnpm lint
+            - name: Run ESLint
+              run: pnpm lint
 
-      - name: Check theme text contrast tokens
-        run: pnpm quality:theme
+            - name: Check theme text contrast tokens
+              run: pnpm quality:theme
 
-      - name: Check formatting
-        run: pnpm format:check
+            - name: Check formatting
+              run: pnpm format:check
 
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
+    typecheck:
+        name: Type Check
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Run type check
-        run: pnpm exec tsc --noEmit
+            - name: Run type check
+              run: pnpm exec tsc --noEmit
 
-  test:
-    name: Tests
-    runs-on: ubuntu-latest
+    test:
+        name: Tests
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Run tests
-        run: pnpm test:coverage
+            - name: Run tests
+              run: pnpm test:coverage
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v7
-        continue-on-error: true
-        with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
+            - name: Upload coverage
+              uses: codecov/codecov-action@v7
+              continue-on-error: true
+              with:
+                  files: ./coverage/lcov.info
+                  fail_ci_if_error: false
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
-  audit:
-    name: Audit Dependencies
-    runs-on: ubuntu-latest
+    audit:
+        name: Audit Dependencies
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Run pnpm audit
-        run: pnpm audit --audit-level=moderate
+            - name: Run audit gate
+              # #173: pnpm audit @ moderate + 带到期日的显式豁免清单（.config/audit-allowlist.json）。
+              # 未知公告仍失败；条目到期也失败。级别与旧行为一致。
+              run: pnpm quality:audit
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: [lint, test, typecheck, audit]
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        needs: [lint, test, typecheck, audit]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Build project
-        run: pnpm build
+            - name: Build project
+              run: pnpm build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: dist
-          path: dist
-          retention-days: 7
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v7
+              with:
+                  name: dist
+                  path: dist
+                  retention-days: 7
 
-  quality-gate:
-    name: Quality Gate (E2E/LHCI/Budget)
-    runs-on: ubuntu-latest
-    needs: build
+    quality-gate:
+        name: Quality Gate (E2E/LHCI/Budget)
+        runs-on: ubuntu-latest
+        needs: build
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: dist
-          path: dist
+            - name: Download build artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  name: dist
+                  path: dist
 
-      - name: Run bundle budget check
-        run: pnpm quality:bundle
+            - name: Run bundle budget check
+              run: pnpm quality:bundle
 
-      - name: Run route-level budget check
-        run: pnpm quality:routes
+            - name: Run route-level budget check
+              run: pnpm quality:routes
 
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
+            - name: Install Playwright browser
+              run: pnpm exec playwright install --with-deps chromium
 
-      - name: Verify dist contents
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Dist directory listing:"
-          ls -la dist/client/ | head -n 20
-          echo "---"
-          ls -la dist/server/ | head -n 10
-          test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
-        shell: bash
+            - name: Verify dist contents
+              run: |
+                  echo "Current directory: $(pwd)"
+                  echo "Dist directory listing:"
+                  ls -la dist/client/ | head -n 20
+                  echo "---"
+                  ls -la dist/server/ | head -n 10
+                  test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
+              shell: bash
 
-      - name: Run E2E tests (full suite)
-        env:
-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
-          PLAYWRIGHT_REUSE_SERVER: 'false'
-          PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
-        run: pnpm exec playwright test --config=.config/playwright.config.ts
+            - name: Run E2E tests (full suite)
+              env:
+                  PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
+                  PLAYWRIGHT_REUSE_SERVER: 'false'
+                  PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
+              run: pnpm exec playwright test --config=.config/playwright.config.ts
 
-      - name: Run Lighthouse CI
-        run: |
-          pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
-          pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+            - name: Run Lighthouse CI
+              run: |
+                  pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
+                  pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
+              env:
+                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
-  # deploy job 已于 2026-09-19 移出 CI:Cloudflare API Token Secret 暂不配置,
-  # 留在流水线里只会让每次 push 的 main 长红。线上部署改由 Agent/维护者在
-  # 本机执行 `pnpm deploy:worker`(wrangler OAuth),命令与验收见 docs/DEPLOYMENT.md。
-  preview:
-    name: Preview Build
-    runs-on: ubuntu-latest
-    needs: [build, quality-gate]
+    # deploy job 已于 2026-09-19 移出 CI:Cloudflare API Token Secret 暂不配置,
+    # 留在流水线里只会让每次 push 的 main 长红。线上部署改由 Agent/维护者在
+    # 本机执行 `pnpm deploy:worker`(wrangler OAuth),命令与验收见 docs/DEPLOYMENT.md。
+    preview:
+        name: Preview Build
+        runs-on: ubuntu-latest
+        needs: [build, quality-gate]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
 
-      - name: Setup Node & pnpm
-        uses: ./.github/actions/setup
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: dist
-          path: dist
+            - name: Download build artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  name: dist
+                  path: dist
 
-      - name: Run bundle budget check
-        run: pnpm quality:bundle
+            - name: Run bundle budget check
+              run: pnpm quality:bundle
 
-      - name: Check dist contents
-        run: |
-          echo "Dist directory contents:"
-          ls -la dist/client/
-          echo "---"
-          ls -la dist/server/
-          test -f dist/server/entry.mjs || (echo "Missing dist/server/entry.mjs" && exit 1)
-          test -f dist/server/wrangler.json || (echo "Missing dist/server/wrangler.json" && exit 1)
-          echo "Build artifacts look good"
-        shell: bash
+            - name: Check dist contents
+              run: |
+                  echo "Dist directory contents:"
+                  ls -la dist/client/
+                  echo "---"
+                  ls -la dist/server/
+                  test -f dist/server/entry.mjs || (echo "Missing dist/server/entry.mjs" && exit 1)
+                  test -f dist/server/wrangler.json || (echo "Missing dist/server/wrangler.json" && exit 1)
+                  echo "Build artifacts look good"
+              shell: bash
