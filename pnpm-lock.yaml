@@ -42,7 +42,7 @@ importers:
         version: 0.9.10(prettier@3.9.8)(typescript@6.0.3)
       '@astrojs/cloudflare':
         specifier: ^14.3.2
-        version: 14.3.2(@types/node@24.13.3)(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(wrangler@4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3))(yaml@2.9.0)
+        version: 14.3.2(@types/node@24.13.3)(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(wrangler@4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3))(yaml@2.9.0)
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
@@ -73,13 +73,13 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^5.20260922.1
-        version: 5.20261002.1
+        version: 5.20260930.1
       '@commitlint/cli':
         specifier: ^21.2.2
         version: 21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
       '@commitlint/config-conventional':
-        specifier: ^21.2.2
-        version: 21.2.2
+        specifier: ^21.2.3
+        version: 21.2.3
       '@fullhuman/postcss-purgecss':
         specifier: ^8.0.0
         version: 8.0.0(postcss@8.5.23)
@@ -130,7 +130,7 @@ importers:
         version: 4.1.11(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(jsdom@30.1.0)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))
       wrangler:
         specifier: 4.147.0
-        version: 4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3)
+        version: 4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3)
 
 packages:
 
@@ -489,16 +489,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@5.20261002.1':
-    resolution: {integrity: sha512-4DJVJoQrKkB/Q1IJJE5hd793Nupqmn2J+zuikAh2isHq/1s44G5drucgL/RtCa7/7UeJ3y6J7cmhrCZcIVfNVg==}
+  '@cloudflare/workers-types@5.20260930.1':
+    resolution: {integrity: sha512-ZUHwK/kG4GD6owwHY+Le+QYq/LO+R0f8b51cE3+IXe4bcKefKWIVYYqsUrKwSTo9su1LSIxKEfqui4r7LrxU1Q==}
 
   '@commitlint/cli@21.2.2':
     resolution: {integrity: sha512-a+6hQxIxnpdvSvS2apvttPNbEliYsVC3PqFYDiiB2kjbwIsQsj1urvQ4Tkf70pKYozPalKAuRQmm/GHwndduqA==}
     engines: {node: '>=22.12.0'}
     hasBin: true
 
-  '@commitlint/config-conventional@21.2.2':
-    resolution: {integrity: sha512-NxA37SZviusFUEYOQZ5hNnZ1h7O/KiemPkxjOlpzKJNnWxThiwc6/SaZhaPa8fyLvfRBAywhQhJJk8XESHWlpQ==}
+  '@commitlint/config-conventional@21.2.3':
+    resolution: {integrity: sha512-EP2n5DN2GwRWNVrLX0Jx3mpQlW5PfFi9HnD9OJ8hN/H0xFqpCFyHeGDhg+0P8/21iMMcdkcQgbNqmVklebqYsQ==}
     engines: {node: '>=22.12.0'}
 
   '@commitlint/config-validator@21.2.0':
@@ -559,6 +559,10 @@ packages:
 
   '@commitlint/types@21.2.0':
     resolution: {integrity: sha512-7zVFCDB2reMvJH5dmbKnOQPjZEvjdJTH8jc0U/PIPU1r3/+vf5pD1HlfitV2MWsWXrvu7u39iY1lyLUPOaN0Gw==}
+    engines: {node: '>=22.12.0'}
+
+  '@commitlint/types@21.2.3':
+    resolution: {integrity: sha512-sGEA473TlCvhCGNoTBY9OXZVWdscIXdGt0dm8EpB+2MRfmt8LNh/X56P/T3nCtEB+eH5qGEa3odphSAoUxSfSQ==}
     engines: {node: '>=22.12.0'}
 
   '@conventional-changelog/git-client@3.1.2':
@@ -4444,15 +4448,15 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
-  '@astrojs/cloudflare@14.3.2(@types/node@24.13.3)(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(wrangler@4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3))(yaml@2.9.0)':
+  '@astrojs/cloudflare@14.3.2(@types/node@24.13.3)(astro@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(wrangler@4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3))(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.11.0
       '@astrojs/underscore-redirects': 1.0.4
-      '@cloudflare/vite-plugin': 1.62.5(@types/node@24.13.3)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(wrangler@4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3))
+      '@cloudflare/vite-plugin': 1.62.5(@types/node@24.13.3)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(wrangler@4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3))
       astro: 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0)
       piccolore: 0.1.3
       vite: 8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0)
-      wrangler: 4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3)
+      wrangler: 4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3)
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
@@ -4821,14 +4825,14 @@ snapshots:
     optionalDependencies:
       workerd: 1.20261001.1
 
-  '@cloudflare/vite-plugin@1.62.5(@types/node@24.13.3)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(wrangler@4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3))':
+  '@cloudflare/vite-plugin@1.62.5(@types/node@24.13.3)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0))(wrangler@4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3))':
     dependencies:
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261001.1)
       miniflare: 5.20261001.0-alpha(@types/node@24.13.3)
       unenv: 2.0.0-rc.24
       vite: 8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.0)
       workerd: 1.20261001.1
-      wrangler: 4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3)
+      wrangler: 4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3)
       ws: 8.21.0
     transitivePeerDependencies:
       - '@types/node'
@@ -4850,11 +4854,11 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20261001.1':
     optional: true
 
-  '@cloudflare/workers-types@5.20261002.1': {}
+  '@cloudflare/workers-types@5.20260930.1': {}
 
   '@commitlint/cli@21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@6.0.3)':
     dependencies:
-      '@commitlint/config-conventional': 21.2.2
+      '@commitlint/config-conventional': 21.2.3
       '@commitlint/format': 21.2.2
       '@commitlint/lint': 21.2.2
       '@commitlint/load': 21.2.2(@types/node@24.13.3)(typescript@6.0.3)
@@ -4868,9 +4872,9 @@ snapshots:
       - conventional-commits-parser
       - typescript
 
-  '@commitlint/config-conventional@21.2.2':
+  '@commitlint/config-conventional@21.2.3':
     dependencies:
-      '@commitlint/types': 21.2.0
+      '@commitlint/types': 21.2.3
       conventional-changelog-conventionalcommits: 10.4.0
 
   '@commitlint/config-validator@21.2.0':
@@ -4957,6 +4961,11 @@ snapshots:
       escalade: 3.2.0
 
   '@commitlint/types@21.2.0':
+    dependencies:
+      conventional-commits-parser: 7.1.2
+      picocolors: 1.1.1
+
+  '@commitlint/types@21.2.3':
     dependencies:
       conventional-commits-parser: 7.1.2
       picocolors: 1.1.1
@@ -8987,7 +8996,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20261001.1
       '@cloudflare/workerd-windows-64': 1.20261001.1
 
-  wrangler@4.147.0(@cloudflare/workers-types@5.20261002.1)(@types/node@24.13.3):
+  wrangler@4.147.0(@cloudflare/workers-types@5.20260930.1)(@types/node@24.13.3):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261001.1)
@@ -8998,7 +9007,7 @@ snapshots:
       unenv: 2.0.0-rc.24
       workerd: 1.20261001.1
     optionalDependencies:
-      '@cloudflare/workers-types': 5.20261002.1
+      '@cloudflare/workers-types': 5.20260930.1
       fsevents: 2.3.3
     transitivePeerDependencies:
       - '@types/node'
