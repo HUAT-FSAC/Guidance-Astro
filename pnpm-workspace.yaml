@@ -38,3 +38,8 @@ overrides:
   "flatted@<3.4.2": ">=3.4.2"
   "nanoid@<3.3.18": "~3.3.18"
   "@humanfs/node@<0.16.8": ">=0.16.8"
+  # #164 / D-010：@astrojs/cloudflare 声明浮动 `@cloudflare/vite-plugin: ^1.53.0`，
+  # 而 vite-plugin 对 wrangler 有构建期硬 peer 断言且下限逐发布日棘轮（1.62.0→^4.143.0 …
+  # 1.62.5→^4.147.0）。锁定解析结果，使「刷新 lockfile 就构建失败」不再依赖人工记忆同步。
+  # ⚠️ 与 package.json 的 `wrangler` 精确 pin 是成对不变量，必须同 commit 移动。
+  "@cloudflare/vite-plugin@^1.53.0": "1.62.5"
