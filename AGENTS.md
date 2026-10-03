@@ -1,7 +1,7 @@
 ## 开发流程锚定（Agent 必读）
 
-> **单一事实来源：`docs/WORKFLOW.md`**
-> 开始任何任务前，必须完整读取 `docs/WORKFLOW.md` 的 `§1 锚定规则` + `§3 工作流` + `§4 任务看板`，并全程遵循 `§6 质量门禁` 与 `§7 多 Agent 协作协议`。结束任务后回写 `docs/WORKFLOW.md:§4/§7.4`。
+> **流程的单一事实来源：`docs/WORKFLOW.md`**（任务与验收 = GitHub Issues；路线 = `.agent/PLAN.md`；长期决策 = `.agent/DECISIONS.md`。载体分工见 `WORKFLOW.md §1.2`）
+> 开始任何任务前，必须完整读取 `docs/WORKFLOW.md` 的 `§1 锚定规则` + `§3 工作流` + `§4 任务看板`，并全程遵循 `§6 质量门禁` 与 `§7 多 Agent 协作协议`。结束任务后回写 `docs/WORKFLOW.md:§7.4` 与 `.agent/STATE.md` / `.agent/HANDOFF.md`，并把执行结果写回对应 Issue（**`§4` 是历史冻结看板，不再新增行**；载体分工见 `WORKFLOW.md §1.2`）。
 
 <!-- OPENWIKI:START -->
 
