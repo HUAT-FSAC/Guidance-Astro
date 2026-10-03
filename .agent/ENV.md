@@ -9,6 +9,6 @@
 - 远程（`git remote -v` 实测）：`origin` = `HUAT-FSAC/Guidance-Astro`（主干）；`wsyhuat` = `wsyhuat/Guidance-Astro`（**协作方 fork**，需每轮巡检 inbound，见 #169）
 - Actions Secrets（`gh api .../actions/secrets` 实测）：仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；**无 `CLOUDFLARE_API_TOKEN`**（#101 阻塞根因）
 - 其他门禁（CI 同款）：pnpm audit --audit-level=moderate、pnpm quality:bundle、pnpm quality:theme、pnpm quality:routes
-- 部署：push main 后本机执行 `pnpm deploy:worker`，验 `curl -sI https://huat-fsac.eu.org/` 含 `content-security-policy: nonce-`
+- 部署：push main 后本机执行 `pnpm deploy:worker`；线上验收 = `curl -sI https://huat-fsac.eu.org/` 的 CSP 头内含每请求新生成的 `'nonce-…'`（判据 `grep -qiE "content-security-policy:.*nonce-"`；字面串 `content-security-policy: nonce-` 永不匹配，见 #171 / D-001），更强的判据是同一请求下头与体 nonce 一致
 - 探测于 2026-09-29T23:43Z，agent glm-5.3-flash-20260929T234352Z
 - 复核于 2026-10-03T09:55Z，agent planner-20261003T094000Z（更正 token scopes；补 second remote 与 Secrets 实测值。其余条目本轮未重测，仍沿用原探测结果）
