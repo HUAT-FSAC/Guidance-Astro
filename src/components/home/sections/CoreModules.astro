@@ -56,8 +56,8 @@ const groups = groupLinks.map((group, index) => ({
 
 <section class="groups-section" aria-label={t.coreModules.ariaLabel}>
     <div class="groups-grid">
-        {groups.map((group, i) => (
-            <a href={group.link} class="group-card reveal-upon-scroll stagger-item" style={`transition-delay: ${i * 0.08}s;`}>
+        {groups.map((group) => (
+            <a href={group.link} class="group-card stagger-item">
                 <div class="group-icon">
                     {group.icon === 'eye' && (
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>

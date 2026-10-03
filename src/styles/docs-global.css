@@ -868,24 +868,32 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 }
 
 /* ==================== 渐显排版动效 (Scroll Reveal Animations) ==================== */
+/* 默认可见：无 JS / 脚本异常 / 观察器失败时不会永久停留在 opacity:0（避免内容"消失"）。
+   仅当脚本确认元素离屏时才标记 data-visible="false" 隐藏，进入视口后翻转为 "true" 渐显。 */
 .reveal-upon-scroll {
-    opacity: 0;
-    transform: translateY(40px);
+    opacity: 1;
+    transform: none;
     transition:
         opacity 0.8s var(--fs-ease-out),
         transform 0.8s var(--fs-ease-out);
     will-change: opacity, transform;
 }
 
-[data-visible='true'].reveal-upon-scroll {
+.reveal-upon-scroll[data-visible='false'] {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.reveal-upon-scroll[data-visible='true'] {
     opacity: 1;
     transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .reveal-upon-scroll {
+    .reveal-upon-scroll,
+    .reveal-upon-scroll[data-visible='false'] {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
         transition: none;
     }
 
@@ -931,11 +939,11 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 
 /* ==================== Emil Kowalski 动画工具类 ==================== */
 
-/* Stagger 动画 - 列表项依次进入 */
+/* Stagger 动画 - 列表项依次进入
+   默认可见（动画仅作增强）：即使动画不支持或运行失败，也不会停留在 opacity:0 */
 .stagger-item {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: staggerFadeIn 0.3s var(--ease-out) forwards;
+    opacity: 1;
+    animation: staggerFadeIn 0.3s var(--ease-out) backwards;
 }
 
 .stagger-item:nth-child(1) {
@@ -964,9 +972,9 @@ starlight-tabs [role='tab'][aria-selected='true'] {
 }
 
 @keyframes staggerFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    from {
+        opacity: 0;
+        transform: translateY(8px);
     }
 }
 

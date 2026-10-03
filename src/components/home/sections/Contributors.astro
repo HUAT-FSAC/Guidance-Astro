@@ -30,21 +30,21 @@ const identities: ContributorIdentity[] = [
     {
         name: 'Kerwin',
         handle: 'zhangjszs',
-        avatar: 'https://avatars.githubusercontent.com/u/122247373?v=4',
+        avatar: '/assets/avatars/kerwin.jpg',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=zhangjszs&backgroundColor=transparent',
         github: 'https://github.com/zhangjszs',
     },
     {
         name: 'NekoRectifier',
         handle: 'nekorect',
-        avatar: 'https://avatars.githubusercontent.com/u/167241872?v=4',
+        avatar: '/assets/avatars/nekorect.jpg',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=nekorect&backgroundColor=transparent',
         github: 'https://github.com/nekorect',
     },
     {
         name: 'wsy-huat',
         handle: 'wsyhuat',
-        avatar: 'https://avatars.githubusercontent.com/u/213669467?v=4',
+        avatar: '/assets/avatars/wsyhuat.jpg',
         fallbackAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=wsyhuat&backgroundColor=transparent',
         github: 'https://github.com/wsyhuat',
     },
@@ -67,7 +67,7 @@ const contributors = identities.map((identity, index) => ({
         <div class="contributors-grid">
             {
                 contributors.map((c) => (
-                    <div class="contributor-card reveal-upon-scroll">
+                    <div class="contributor-card">
                         <div class="card-glow" aria-hidden="true" />
                         <div class="contributor-avatar-wrapper">
                             <img
