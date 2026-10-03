@@ -53,18 +53,18 @@
 
 ## 2. 技术栈快照
 
-| 层        | 选型                                                              | 关键文件                                                                      | 备注                                        |
-| --------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
-| 框架      | **Astro 7.3.3** (`output: 'server'`)                              | [`astro.config.mjs:67`](../astro.config.mjs)                                  | SSR,默认零 JS                               |
-| 适配器    | `@astrojs/cloudflare`                                             | `astro.config.mjs:68`                                                         | 编译期图片 (`imageService: 'compile'`)      |
-| 文档主题  | **Starlight 0.41.11**                                             | `src/content.config.ts`                                                       | i18n/搜索/侧边栏/TOC                        |
-| 部署      | **Cloudflare Workers SSR**                                        | [`dist/server/wrangler.json`](../dist/server/wrangler.json)                   | `pnpm deploy:worker`                        |
-| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                            | `pnpm-workspace.yaml`                                                         | 依赖白名单见 `onlyBuiltDependencies`        |
-| 测试      | **Vitest 4.1** + **Playwright 1.63**                              | `vitest.config.ts`（转调 `.config/vitest.config.ts`）/ `playwright.config.ts` | 覆盖率阈值 80/80/80/80                      |
-| 质量      | ESLint 10 + Prettier 3 + Husky 9 + commitlint 21 + lint-staged 17 | `.config/*`                                                                   | 提交时 ESLint + Prettier 走 lint-staged     |
-| 分析/告警 | Umami + Feishu/WeCom Webhook                                      | `src/config/monitoring.ts`                                                    | `checkPerformanceAndAlert`                  |
-| 搜索      | Pagefind                                                          | 由 Starlight 自动集成                                                         | `pnpm build` 后注入 `dist/client/pagefind/` |
-| PWA       | 手写 Service Worker + manifest                                    | `public/sw.js` / `public/manifest.json`                                       | 智能缓存策略(见 `_headers`)                 |
+| 层        | 选型                                                                 | 关键文件                                                                      | 备注                                        |
+| --------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| 框架      | **Astro 7.x**（精确版本以 `package.json` 为准） (`output: 'server'`) | [`astro.config.mjs:67`](../astro.config.mjs)                                  | SSR,默认零 JS                               |
+| 适配器    | `@astrojs/cloudflare`                                                | `astro.config.mjs:68`                                                         | 编译期图片 (`imageService: 'compile'`)      |
+| 文档主题  | **Starlight 0.41.11**                                                | `src/content.config.ts`                                                       | i18n/搜索/侧边栏/TOC                        |
+| 部署      | **Cloudflare Workers SSR**                                           | [`dist/server/wrangler.json`](../dist/server/wrangler.json)                   | `pnpm deploy:worker`                        |
+| 包管理    | **pnpm 11.22** + `pnpm-workspace.yaml`                               | `pnpm-workspace.yaml`                                                         | 依赖白名单见 `onlyBuiltDependencies`        |
+| 测试      | **Vitest 4.1** + **Playwright 1.63**                                 | `vitest.config.ts`（转调 `.config/vitest.config.ts`）/ `playwright.config.ts` | 覆盖率阈值 80/80/80/80                      |
+| 质量      | ESLint 10 + Prettier 3 + Husky 9 + commitlint 21 + lint-staged 17    | `.config/*`                                                                   | 提交时 ESLint + Prettier 走 lint-staged     |
+| 分析/告警 | Umami + Feishu/WeCom Webhook                                         | `src/config/monitoring.ts`                                                    | `checkPerformanceAndAlert`                  |
+| 搜索      | Pagefind                                                             | 由 Starlight 自动集成                                                         | `pnpm build` 后注入 `dist/client/pagefind/` |
+| PWA       | 手写 Service Worker + manifest                                       | `public/sw.js` / `public/manifest.json`                                       | 智能缓存策略(见 `_headers`)                 |
 
 > 详细选型理由:见 [`docs/adr/001-astro-starlight-tech-stack.md`](./adr/001-astro-starlight-tech-stack.md)。
 
