@@ -6,6 +6,8 @@ Production: [https://huat-fsac.eu.org](https://huat-fsac.eu.org) — zone route 
 
 ---
 
+> **发版节奏与发版后核验**见 [`WORKFLOW.md` §11](./WORKFLOW.md#11-发版节奏release-cadence)（唯一权威位，此处不复制规则）。
+
 ## Architecture
 
 - `astro.config.mjs:67-68` `output: 'server'` + `adapter: cloudflare({ imageService: 'compile' })`

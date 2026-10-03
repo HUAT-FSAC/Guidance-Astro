@@ -37,6 +37,8 @@
 
     反方向若显示 remote 缺少 main 已有的内容（如 `toast.ts` 在 fork 侧仍存在），那是**对落后**而不是分叉，不得因此反向引入。
 
+7. **发版时机不请示：** Release PR 何时合并按 `§11` 的三档执行（patch 即时 / minor 随 Milestone / **major 必须等人类**）；发版后按 `§11.2` 做四方一致性 + 祖先判定核验。
+
 > 违反以上任一条，视为无效产出，需回滚重做。
 
 ---
@@ -354,3 +356,45 @@ Handoff: T-xxx 已完成阶段3，分支 feat/xxx，待 Review
 ## 10. Prompt（复制即用，见下方交付物）
 
 > 完整 Prompt 已单独交付，粘贴给任意 AI 即可让其锚定本文档工作。见本次回答的 `Prompt` 区块。
+
+---
+
+## 11. 发版节奏（Release Cadence）
+
+> 本节的规则**只写在这里**（唯一权威位）。`docs/DEPLOYMENT.md` 与 `docs/PROJECT_MANAGEMENT_MODEL.md` 只放指向本节的链接，不复制正文 —— 复制就会产生第二套说法，正是 M1 里 #166/#171/#181 反复在收拾的那类口径漂移。
+> 政策来源 `.agent/DECISIONS.md` **D-012**（Planner 裁定，可回退：删本节即回到"每次问人"）。
+
+### 11.1 三档合并时机（Agent 可自主执行，不必每次请示）
+
+| 档位      | 判定条件                                                    | 何时合并 rp 的 Release PR                                     |
+| --------- | ----------------------------------------------------------- | ------------------------------------------------------------- |
+| **patch** | Release PR 只含 `fix:` / `fix(deps):` / `perf:` / `revert:` | **CI 全绿后即合并**（配合 D-002 免 review），不等 Milestone   |
+| **minor** | Release PR 含 `feat:`（不含 `BREAKING CHANGE`）             | **随当前 Milestone 收尾时合并**，避免同一里程碑内反复抬小版本 |
+| **major** | 含 `BREAKING CHANGE` 或 `feat!:` / `fix!:`                  | ⛔ **一律停下等人类**，不得自动或自主合并、不得手工改版本号   |
+
+补充约束：
+
+- 一次 patch 发版后若紧接着又来 patch，允许连发；但**同一天内不重复发同一档**（避免版本噪音）。
+- 不追溯补发中间版本，不为"看起来有版本"而制造空发版。
+- rp 未自动更新 Release PR **不是故障**：`chore(deps)` / `docs:` / `test:` 不是 rp 的 changelog 可见类型，它会正确地保持原状（#167 实测）。
+
+### 11.2 发版后必须做的核验（两步，缺一不可）
+
+1. **四方一致性**：tag、GitHub Release、`package.json` 的 `version`、`CHANGELOG.md` 的对应小节，四处版本号必须一致。
+2. **包含关系用祖先判定，不用 CHANGELOG 文本**：
+
+```bash
+git fetch -q --tags origin
+gh release list --limit 1                       # 期望：新版本 = Latest
+node -p "require('./package.json').version"     # 期望：新版本
+grep -m1 "^## \[<新版本>\]" CHANGELOG.md         # 期望：命中
+for c in <本里程碑的全部合入 commit>; do
+    git merge-base --is-ancestor "$c" v<新版本> && echo "$c ✅ in tag" || echo "$c ❌ MISSING"
+done
+```
+
+⚠️ **禁止**把「CHANGELOG 里能否 grep 到某个 commit」当作"该变更是否已发布"的判据：`chore(deps)`、`docs:` 这类提交 rp 根本不写进 CHANGELOG，用这条判据会**永远得出错误结论**（#167 的实际教训）。祖先判定才是可判定的。
+
+### 11.3 是否需要重新部署
+
+发版本身通常**不需要**部署，但必须验证而非假设：`gh pr diff <release PR> --name-only` 若只含 `CHANGELOG.md` + `package.json`，且 `package.json` 的 version 无构建期消费点（`astro.config.mjs` / `src/**` grep 无命中）、`wrangler.json` 无 `version` 字段 ⇒ 无需部署。**注意产物里搜到的旧版本号可能是第三方依赖的路径注释**（#167 实测命中的是 `node_modules/.pnpm/util-deprecate@1.0.2`），不要据此误判为需要部署。
