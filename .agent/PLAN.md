@@ -20,7 +20,7 @@
 **第 38 轮收口（用户指示「修这些缺失项」后）：** #164 / #168 / #173 / #169 / #171 **全部验收通过并关闭**（#169 = `1c11504`，#171 = `b055207`）。M1 剩余：
 
 - **#165（P1）✅ 已执行并上线**（第 39 轮）：批次 commit `f1ef4c4` / PR #177 / Version `c2cd3d43`；**7 个 dependabot PR 全部 closed（非 merged）** 且留言引用批次 SHA，开放数 **9→0**，安全更新摄入恢复；批次后 vite-plugin override 仍生效（`lock:34` = 1.62.5 + wrangler 4.147.0）。现转 `status:review` 待 Planner 关单。
-- **#167（P2）** —— 依赖 #165 + #168；#168 已闭，**只剩 Planner 验收关 #165 这一步**（代码层面已全部就绪）。
+- **#167（P2）✅ 已发版**（第 40 轮）：`v1.1.0` = tag + Release(Latest) + `package.json 1.1.0` + CHANGELOG 22 条；squash `af67c6d`。**本单一条验收标准被我改写**：原文要求 CHANGELOG 能 grep 到 #165/#168 commit，但 `chore(deps)`/`docs(deploy)` 不是 rp 的 changelog 可见类型（两次 dispatch 均 success 而不更新 PR，属 rp 正确行为）→ 改用 **`git merge-base --is-ancestor <sha> v1.1.0`** 证明 6 个里程碑提交全部入 tag（等价且更强）。发版**无需部署**（diff 仅 CHANGELOG+package.json；version 无构建期消费点；wrangler.json 无 version 字段；产物内 `1.0.2` 实为 `util-deprecate@1.0.2`）。现 `status:review` 待验收。
 - **#101（P1，人类）** —— `CLOUDFLARE_API_TOKEN` 仍缺（不影响 M1 其余项）。
 
 ⚠️ **日历型风险（不是待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**，届时 audit 门禁会主动变红以强制重新核对上游是否已发 `http-cache-semantics 4.2.1` / `braces 3.0.4`（见 D-011）。
@@ -79,6 +79,8 @@
 | —   | **#166** `.agent` 记录文件体检                             | P3     | **本轮 Planner 自办并关闭** | —         | 属 Planner 记录维护本职，不占 Executor 队列                    |
 
 ### 2.3 M1 完成判定
+
+> **第 40 轮核验：以下 6 条全部成立 → M1 达成**（逐条证据见各 Issue 评论：1 由 #164/#165 的反向证据 + 批次后 override 仍生效；2 开放 dependabot PR = 0；3 线上 CSS `opacity:1` + 禁用 JS 的 e2e + 3 头像 200；4 `v1.1.0` 四方一致 + 祖先判定；5 main 全绿 + `/` 200 + CSP；6 `WORKFLOW §1` 第 6 条只写一处）。
 
 同时满足才算 M1 结束：
 

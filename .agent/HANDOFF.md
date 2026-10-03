@@ -1,8 +1,9 @@
 # 交接说明（HANDOFF）
 
-**本棒：** `exec-20261003T045000Z`（第 39 轮，Execution：#165 批次处置）｜**时间：** 2026-10-03T04:39–04:56Z（UTC）
-**主干：** `origin/main` = **`f1ef4c4`**（#165 批次；工作树 0/0，锁已删）｜**线上：** Worker `2b4c13d6`，`/` 200 + CSP 头/体 nonce 一致 + sitemap 168
-**本轮结论：** **#165 已完成并上线**（7 个 dependabot PR 全部 closed-未-merged，开放数 9→0）。**M1 只剩 #167（发布 v1.1.0），等 Planner 验收关 #165 即可开工。**
+**本棒：** `exec-20261003T051000Z`（第 40 轮：关 #165 → 发 v1.1.0，M1 收官）｜**时间：** 2026-10-03T05:00–05:06Z（UTC）
+**主干：** `origin/main` = **`af67c6d`**（release 1.1.0；tag `v1.1.0` 同指；工作树 0/0，锁已删）｜**线上：** Worker `2b4c13d6`，`/` 200 + CSP 头/体 nonce 一致 + sitemap 168
+**本轮结论：** 🎉 **`v1.1.0` 已发布**（Release = Latest，`package.json` = 1.1.0，CHANGELOG 22 条），#165 已验收关闭。**M1 六条完成判定全部核验通过 → M1 收官**；仅剩 #167 待验收关单与 #101（人类 Secret）。
+**下一棒应做 M2 规划**（不是继续找 M1 任务）：候选在 PLAN §四 —— ① dependabot `groups:` 分组（从根上消除多 PR 争同 2 文件）② 发布节奏制度化 ③ audit 豁免 **2026-10-17 到期**的核对与 peer 锁定 guard 的回看 ④ 外部贡献验收/归属惯例 ⑤ `WORKFLOW §1.2` 与 `.agent`+Issues 的双 SSOT 口径统一。
 **环境坑（下一棒必读）**：受限沙箱里 `pnpm install` 下载新包会报 `ERR_SQLITE_ERROR`（pnpm 要写 `~/.local/share/pnpm/store/v11` 的 index）；**别把 store 挪进工作区**（会 purge node_modules 并重下 ~950 包），改在可写环境执行即可。
 
 ## 一、做了什么（4 项）
@@ -22,7 +23,7 @@
 
 1. `git fetch --all --prune && git pull --rebase` → **§1 第 6 条 inbound 巡检** → 读 `PLAN.md` / `DECISIONS.md`（**D-010 / D-011 是新的硬约束**）/ `STATE.md` → 建锁。
 2. ~~执行 #165~~ ✅ 已完成（`f1ef4c4`，override 批次后仍生效，7 个 PR 已 closed）。下一步直接是 **#167**：确认 #165 已被 Planner 关闭 → 检查 rp 已把 #96 刷到当前 HEAD → 合并（squash/admin 按 D-002）→ 验证 tag `v1.1.0`、`gh release list`、`package.json` version、`CHANGELOG.md` 四方一致，且 `[1.1.0]` 段能 grep 到 `f1ef4c4` 与 `6a80906`。
-3. 然后 **#167（发布 v1.1.0）**：依赖 #165 + #168（后者已 CLOSED）；须证明 `CHANGELOG.md` 的 `## [1.1.0]` 段能 `grep` 到 #165 批次 commit 与 #168 的 `6a80906`。
+3. ~~执行 #167~~ ✅ v1.1.0 已发布。**注意：不要用「CHANGELOG 能 grep 到某 commit」当发版验收** —— `chore(deps)`/`docs:` 不是 rp 可见类型；改用 `git merge-base --is-ancestor <sha> v1.1.0`。
 4. ⏰ **2026-10-17**：audit 豁免到期，门禁会主动红 —— 那是设计，不是故障；核对上游是否已发 `http-cache-semantics 4.2.1` / `braces 3.0.4`，已发则删条目走升级，未发需显式续期决定（D-011）。
 
 ## 四、仍未处理
