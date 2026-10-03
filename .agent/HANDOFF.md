@@ -1,31 +1,72 @@
 # 交接说明（HANDOFF）
 
-**本棒：** `exec-20261003T051000Z`（第 40 轮：关 #165 → 发 v1.1.0，M1 收官）｜**时间：** 2026-10-03T05:00–05:06Z（UTC）
-**主干：** `origin/main` = **`af67c6d`**（release 1.1.0；tag `v1.1.0` 同指；工作树 0/0，锁已删）｜**线上：** Worker `2b4c13d6`，`/` 200 + CSP 头/体 nonce 一致 + sitemap 168
-**本轮结论：** 🎉 **`v1.1.0` 已发布**（Release = Latest，`package.json` = 1.1.0，CHANGELOG 22 条），#165 已验收关闭。**M1 六条完成判定全部核验通过 → M1 收官**；仅剩 #167 待验收关单与 #101（人类 Secret）。
-**下一棒应做 M2 规划**（不是继续找 M1 任务）：候选在 PLAN §四 —— ① dependabot `groups:` 分组（从根上消除多 PR 争同 2 文件）② 发布节奏制度化 ③ audit 豁免 **2026-10-17 到期**的核对与 peer 锁定 guard 的回看 ④ 外部贡献验收/归属惯例 ⑤ `WORKFLOW §1.2` 与 `.agent`+Issues 的双 SSOT 口径统一。
-**环境坑（下一棒必读）**：受限沙箱里 `pnpm install` 下载新包会报 `ERR_SQLITE_ERROR`（pnpm 要写 `~/.local/share/pnpm/store/v11` 的 index）；**别把 store 挪进工作区**（会 purge node_modules 并重下 ~950 包），改在可写环境执行即可。
+**本棒：** `planner-20261003T073200Z`（第 41 轮，**Planning Agent 第 3 轮**）｜**时间：** 2026-10-03T07:32–07:40Z（UTC，`date -u`）
+**主干：** `origin/main` = **`a6443d1`**（CI/CD Pipeline **success**）｜**最新 tag：** `v1.1.0`（GitHub Release = Latest）｜**线上：** Worker `c2cd3d43`，`/` 200 + CSP 头/体 nonce 一致 + sitemap 168
+**本轮结论：** ✅ **M1 收官**（#164/#165/#166/#167/#168/#169/#171/#173 全闭，仅 #101 等人类配 Secret）→ 🆕 **M2 稳态防复发开局**：GitHub Milestone #1（due 2026-10-24）+ **5 个 `ready` 单 #178–#182**
+**锁：** 无（Planning 轮不占执行锁；本棒零代码改动、未部署）
 
-## 一、做了什么（4 项）
+> **下一棒（Execution）第一步见 §三。**
 
-1. **#171 → PR #175 → `b055207`**：CSP 验收判据统一。实际错源 **4 处**（`AGENTS.md:22`、`WORKFLOW:50` §3 阶段5 DoD、`DEPLOYMENT:24/67`），比建单时列的多两处；判据改为 `grep -qiE "content-security-policy:.*nonce-"`，并新增**同一请求头/体 nonce 一致**的强判据脚本，**已对生产实测通过**。历史快照未改（不伪造）。
-2. **#169 → PR #176 → `1c11504`**：`WORKFLOW §1` 第 6 条「入站远程巡检」（只写一处）。
-3. **Planner 验收关闭 #164 / #168 / #173**，各贴逐条对照表（证据在其 Issue）。
-4. **#165 前提修正**：正文顶部加 callout —— dependabot 已自关 #107/#110，**实际 7 个 PR 而非 9**；其硬门「#164 CLOSED」已满足 → **`ready`**。另修 `.agent/ENV.md` 的同源错句、PLAN §2.0 收口、`§7.4` 追加（108 → 109）。
+---
 
-## 二、本轮最有价值的发现（下一棒直接用）
+## 一、本轮做了什么
 
-**「按 SHA 差集检测外部工作」在本仓不可用。** 跑自己新写的规则命令时发现：已 squash 进 `6a80906` 的 `f98be0d` 仍出现在 `HEAD..wsyhuat/main`，而 `git cherry -v` **也报 `+`**（squash 改动了 diff 上下文 → patch-id 变）。⇒ 已把规避法写进 §1 规则：登记**吸收后的 SHA** + 用 `git diff --stat main <remote>/main -- <被改路径>` 做**内容级终判**（实测输出为空 = 已吸收）；反向缺内容（如 fork 仍有 `toast.ts`）是**对落后**，不得反向引入。
+1. **验收并关闭 #167**（M1 最后一单）：核 `af67c6d`（发版）与 `a6443d1`（记录）的 main CI 均 success、Release `v1.1.0` = Latest、四方一致（tag / release / `package.json` 1.1.0 / CHANGELOG 22 条）。关闭评论里明确认可执行方**纠正了 Planner 自设的一条不可达验收标准**（详见 §五.1）。
+2. **逐条重新核实用户给的 5 个 M2 候选**（不继承旧结论，全部现场取证）：
+    - ① dependabot **至今没有 `groups:`**（`.github/dependabot.yml` 两块 `schedule: weekly` + `open-pull-requests-limit: 10`）→ 真缺口；
+    - ② rp 链路本身健康（本次自动打 tag + Release），缺的是**「Release PR 何时合并」的规则**（#96 曾积压 12 天）→ 真缺口，政策先记 **D-012**；
+    - ③ `pnpm-workspace.yaml:45` 锁 `1.62.5` 无抬版触发器；`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**，目前只能"撞红才发现" → 真缺口；
+    - ④ 外部贡献验收/归属：**大部分已被 #169 落地的 `WORKFLOW §1.6` 覆盖**（建 Issue 移植、`cherry-pick -x` 保留原作者、禁止 merge 外部分支）⇒ **不为凑数单独建单**，只作为 #181 的附带项与人类可选 Settings 待办；
+    - ⑤ `WORKFLOW §1.2`「不另起文档」+ `§4` 头部「与 Projects `projects/1` 保持一致」与现行 `.agent` + Issues 接口**实测仍冲突** → 真缺口，并派生快照漂移项。
+3. **产出**：Milestone #1 + **#178 #179 #180 #181 #182**；`PLAN.md`（§一 改为「M1 已收官、现处 M2」、**新增 §四 M2 全章**、§五 加 5.1 结论）；`DECISIONS.md` **新增 D-012**；`STATE.md` 刷新；`WORKFLOW §7.4` 追加（111 → 112，只增不减）。
 
-其它已入库的判据（都实测过）：部署验收用**头/体 nonce 一致**；sitemap 计数用 `grep -o | wc -l`（单行 XML，`grep -c` 恒为 1）；Playwright 测 `opacity:0` 必须用 `toHaveCSS`（`toBeVisible()` 测不出）。
+## 二、M2 ready 队列（执行方看这张表即可开工）
+
+| 顺位 | Issue                             | 优先级 | 前置 / 文件冲突                                                                                                                     |
+| ---- | --------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| ①    | **#178** dependabot `groups:`     | P2     | 无前置；只动 `.github/dependabot.yml`。⚠️ 有**延迟判据**：合并后须在 **10-06 周一扫描之后**回单留言实测分组效果，缺留言只算部分完成 |
+| ①′   | **#180** 只读供应链探针           | P2     | 无前置；新增 workflow + `§6` 一行。**边界：绝不得 gate 任何交付**（不接进 `ci-cd.yml`、不做 required check）                        |
+| ①″   | **#179** 发版节奏成文（落 D-012） | P2     | 无前置；动 `WORKFLOW` + `DEPLOYMENT` + `PROJECT_MANAGEMENT_MODEL`（后两者只引用）⇒ 与 #181/#182 **同文件串行**                      |
+| ②    | **#181** 消除双 SSOT              | P2     | 动 `WORKFLOW §1.2` / `§4` 头部 / `AGENTS.md` 锚定段                                                                                 |
+| ③    | **#182** 快照与 OAuth 跨平台路径  | P3     | **blocked by #181**（同文件）                                                                                                       |
+
+**建议顺序：** #178 ∥ #180 ∥ #179 → #181 → #182。
 
 ## 三、下一棒第一步
 
-1. `git fetch --all --prune && git pull --rebase` → **§1 第 6 条 inbound 巡检** → 读 `PLAN.md` / `DECISIONS.md`（**D-010 / D-011 是新的硬约束**）/ `STATE.md` → 建锁。
-2. ~~执行 #165~~ ✅ 已完成（`f1ef4c4`，override 批次后仍生效，7 个 PR 已 closed）。下一步直接是 **#167**：确认 #165 已被 Planner 关闭 → 检查 rp 已把 #96 刷到当前 HEAD → 合并（squash/admin 按 D-002）→ 验证 tag `v1.1.0`、`gh release list`、`package.json` version、`CHANGELOG.md` 四方一致，且 `[1.1.0]` 段能 grep 到 `f1ef4c4` 与 `6a80906`。
-3. ~~执行 #167~~ ✅ v1.1.0 已发布。**注意：不要用「CHANGELOG 能 grep 到某 commit」当发版验收** —— `chore(deps)`/`docs:` 不是 rp 可见类型；改用 `git merge-base --is-ancestor <sha> v1.1.0`。
-4. ⏰ **2026-10-17**：audit 豁免到期，门禁会主动红 —— 那是设计，不是故障；核对上游是否已发 `http-cache-semantics 4.2.1` / `braces 3.0.4`，已发则删条目走升级，未发需显式续期决定（D-011）。
+1. `git fetch --all --prune && git pull --rebase` → 跑 `WORKFLOW §1.6` 的 inbound 巡检 → 读 `PLAN.md §四` + `DECISIONS.md`（**D-011 到期机制、D-012 发版节奏是本轮新增硬约束**）→ `STATE.md` → 建锁 → 认领 #178 或 #180。
+2. ⚠️ inbound 巡检**本轮实测仍有输出**（`f98be0d`、`d89b87e`）——那是 squash 导致的**已知误报**，处置办法见 §1.6 的"已知局限"：登记吸收后的 SHA + 用 `git diff --stat main <remote>/main -- <路径>` 做内容级终判（实测已为空 = 无未吸收内容）。**不要每轮重复 triage 它。**
+3. ⏰ **2026-10-17 之前**做一次 D-011 核对：`npm view http-cache-semantics dist-tags.latest`、`npm view braces dist-tags.latest`（期望 ≠ `4.2.0` / `3.0.3`）。已发补丁 → 删豁免条目并正常升级；仍未发 → **需要一次显式续期决定（那是真正的 Decision Gate，不得静默延长）**。
+4. 之后若出现 `feat:` 级变更：按 D-012，**minor 随 Milestone 收尾再发版**，不必立刻合并 Release PR。
 
-## 四、仍未处理
+## 四、仍未处理（都不属于 M2 ready）
 
-**#101**（人类配 `CLOUDFLARE_API_TOKEN`，不阻塞 M1）。另有两条**未建单**的观察（供 Planner 判断是否值得建）：① `AGENTS.md` 称 wrangler OAuth 态「仅存于当前 Windows 用户 profile」，但本机（Linux）实际在 `/home/kerwin/.config/.wrangler/config/default.toml` 且可用 —— 该表述会误导下一棒以为需要重新 `wrangler login`；② `docs/WORKFLOW.md §1.2` 的「任务状态/决策只写在 §4/§7，不另起文档」与现行 `.agent/PLAN.md`+`DECISIONS.md`+GitHub Issues 接口仍冲突（已记为 M2 议题）。
+- **#101**：等人类配 `CLOUDFLARE_API_TOKEN`（配好前不要把 deploy job 加回 `ci-cd.yml`）。
+- 人类可选：`PROJECT_TOKEN` 值/权限复核、`size:xs` label、`update-linked-issues` 去留、是否把协作方贡献改成正式 fork PR 流程（**默认维持现状**：fork 直提 + Planner 巡检 + 建单移植）。
+
+## 五、纪律与判据（本轮实测得出，别再犯）
+
+1. **发版验收禁止用「CHANGELOG 能否 grep 到某 commit」**：`chore(deps)` / `docs:` 不是 release-please 的 changelog 可见类型，该判据**在设计上不可满足**。正确做法 = `git merge-base --is-ancestor <sha> <tag>` + 四方核验。
+2. **rp `workflow_dispatch` 后 PR 无变化不是失败**（那是它判定"无 changelog 可见新提交"的正确行为），别去改 commit 前缀骗过它。
+3. `pnpm update <pkg>` 会连带改写 `package.json` 的声明范围；真·全新解析探针要用只放 3 个配置文件的隔离目录，且**不能加 `--ignore-workspace`**（会跳过 overrides）。
+4. 受限沙箱里 `pnpm install` 下载新包会报 `ERR_SQLITE_ERROR`（写 `~/.local/share/pnpm/store/v11`）；**别把 store 挪进工作区**（会 purge `node_modules` 重下 ~950 包）。
+5. 部署验收判据：`content-security-policy:.*nonce-`（字面串 `content-security-policy: nonce-` 永不匹配，#171）；更强的是同一请求**头/体 nonce 一致**。sitemap 计数用 `grep -o '<loc>' | wc -l`。
+6. 只读探针类改动不要接进主 CI。`gh` 传 milestone 用**标题**不是编号；建 milestone 的到期字段是 `due_on`。
+
+## 六、关键命令速查
+
+```bash
+git fetch --all --prune && git pull --rebase
+for r in $(git remote); do [ "$r" = origin ] && continue; echo "== inbound $r/main =="; git log --oneline "HEAD..$r/main" 2>/dev/null; done
+git diff --stat main wsyhuat/main -- src/utils/scroll-reveal.ts src/styles/docs-global.css   # 内容级终判（空=已吸收）
+
+export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
+export npm_config_verify_deps_before_run=false          # 规避沙箱 deps-status 竞态
+pnpm quality:audit && pnpm peers check
+npm view http-cache-semantics dist-tags.latest; npm view braces dist-tags.latest        # D-011 到期核对
+npm view @cloudflare/vite-plugin dist-tags.latest peerDependencies.wrangler               # D-010 抬版核对
+python3 -c "import yaml;yaml.safe_load(open('.github/dependabot.yml'))"                  # #178 用
+mise exec -- pnpm test:run   # 基线 429 passed (39 files)
+pnpm test:e2e                # 基线 97 passed
+gh pr list --state open --author app/dependabot --json number --jq 'length'   # 基线 0
+```

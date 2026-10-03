@@ -156,3 +156,16 @@
 - **为什么不能由 Agent 自决：** 这改的是 **Definition of Done / CI 门禁强度**（与 `eslint --max-warnings`、`tsc 覆盖 tests/**` 同类），一旦放宽就影响所有后续交付的安全底线；历史上此类均判定归人类。
 - **影响范围：** `.github/workflows/ci-cd.yml`、`package.json`、`scripts/quality/`、`.config/audit-allowlist.json`、`docs/WORKFLOW.md §6`；所有 PR 与 main push 的门禁结论。
 - **到期与恢复条件（写进清单文件，不靠记忆）：** 现有两条豁免 **2026-10-17 到期**。到期时核对 `npm view http-cache-semantics dist-tags.latest`（期望 ≠ 4.2.0）与 `npm view braces dist-tags.latest`（期望 ≠ 3.0.3）：已发补丁 → **删条目并正常升级**；仍未发 → 必须显式续期决定（到期即红是有意的提醒机制，不得静默延长）。
+
+## D-012 发版节奏（**Planner 自主裁定**，成文由 M2-B / #179 承担）
+
+- **日期：** 2026-10-03（第 41 轮，M2 开局）
+- **问题：** release-please 会自动开 Release PR，但**没人规定何时合并**，导致 v1.1.0 的 PR #96 从 2026-09-22 开到 2026-10-03（12 天）无人推进。M1 靠人工推动解决一次，机制仍缺。
+- **决定：** 三档默认，Agent 可自主执行：
+    1. **patch**（只有 `fix:`/`perf:`/`fix(deps):` 等）：rp 开出的 Release PR 在 **CI 全绿后即可由 Agent 直接合并**（配合 D-002 免 review），无需等 Milestone 收尾；
+    2. **minor**（有 `feat:`）：**随 Milestone 收尾合并**，避免同一里程碑内反复抬小版本；
+    3. **major / BREAKING CHANGE**：**一律停下等人类**，不得自动合并、不得改版本号。
+- **发版后强制动作：** 四方核验（tag / `gh release list` / `package.json` version / CHANGELOG 段落）+ **`git merge-base --is-ancestor <里程碑提交> <tag>`** 证明包含关系；**禁止**用「CHANGELOG 能否 grep 到某 commit」当判据（`chore(deps)`/`docs:` 不是 rp 可见类型，该判据在设计上不可满足 —— #167 实测教训）。
+- **为何不算用户决策：** 完全可逆（不合即可，版本线不受损；最坏情况回到"积压"现状），不涉产品结构，且 D-002 已给出"CI 绿即可自主推进"的授权边界。唯一新约束是 major 必须停 —— 那是**收紧**而非放宽。
+- **影响范围：** 每次 rp Release PR 的处理；`WORKFLOW` 新增「发版节奏」节；`DEPLOYMENT.md` / `PROJECT_MANAGEMENT_MODEL.md` 的发布小节（只引用）。
+- **重新评估触发：** ① 出现需要"发布即公告外部用户"的节奏需求（则改为固定日历发版）；② rp 改为自动合并（需另立调查，属 CI 改造）；③ 一次 patch 即时发版造成噪音或版本膨胀 ⇒ 收紧为每周最多一次。
