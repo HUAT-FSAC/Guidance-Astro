@@ -21,7 +21,7 @@ Production: [https://huat-fsac.eu.org](https://huat-fsac.eu.org) — zone route 
 
 ```bash
 pnpm deploy:worker   # ≡ pnpm build && wrangler deploy --config dist/server/wrangler.json
-curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy   # 必须含 nonce-
+curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy   # 必须内含每请求新生成的 'nonce-…'（在 script-src 里）
 ```
 
 ### Restoring GitHub Actions auto-deploy
@@ -64,7 +64,7 @@ Agent 已通过 `wrangler whoami`（OAuth `zcw85590@gmail.com` / `Iridite`）登
 # Agent 自动执行（已写入 AGENTS.md 发布与部署）
 pnpm deploy:worker
 # ≡ pnpm build && wrangler deploy --config dist/server/wrangler.json
-curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy # 必须含 nonce-
+curl -sI https://huat-fsac.eu.org/ | grep -i content-security-policy # 必须内含 'nonce-…'（判据：grep -qiE "content-security-policy:.*nonce-"；字面串 content-security-policy: nonce- 永不匹配，见 #171）
 ```
 
 人工兜底（Agent 未登录或 CI Secrets 缺失）：
@@ -107,6 +107,17 @@ curl -sI https://huat-fsac.eu.org/ | grep -i cache-control
 | `content-security-policy` | absent                        | present, contains `'nonce-…'`        |
 | HTML `cache-control`      | `public, s-maxage=…`          | `private, no-cache, must-revalidate` |
 | HTML source               | no `nonce=`                   | inline `<script nonce="…">`          |
+
+> ⚠️ **验收口径提醒（#171）**：nonce **不是** CSP 头的整个值，而是包在 `script-src` 里的 `'nonce-XXX'` token。
+> 因此旧文档中「响应含 `content-security-policy: nonce-`」这类字面判定在任何版本下都不会命中，**不要拿它当部署失败的依据**。
+> 最可靠的验收是【同一请求】下头与体的 nonce 一致：
+>
+> ```bash
+> curl -s -D h.txt -o b.html https://huat-fsac.eu.org/
+> HN=$(grep -i '^content-security-policy:' h.txt | grep -o "'nonce-[^']*'" | tr -d "'" | sed 's/^nonce-//')
+> BN=$(grep -o 'nonce="[^"]*"' b.html | head -1 | sed 's/nonce="//;s/"//')
+> [ -n "$HN" ] && [ "$HN" = "$BN" ] && echo "NONCE_MATCH ✅" || echo "FAIL ❌"
+> ```
 
 If `curl -sI https://huat-fsac.pages.dev/` returns 404, it is expected — SSR HTML is only served by the Worker.
 
