@@ -1,0 +1,33 @@
+name: Supply Chain Watch
+
+# 只读探针（Issue #180）。**不是质量门禁**：不接进 ci-cd.yml、不设 required check、
+# 脚本自身恒 exit 0、job 亦 continue-on-error —— 它的产出只是提前提醒：
+#   · .config/audit-allowlist.json 的豁免还剩几天 / 是否已过期（D-011）
+#   · 上游是否已发布被声称的补丁版（若是，应删豁免并升级）
+#   · @cloudflare/vite-plugin 锁外最新版及其 wrangler peer（D-010 抬版回看）
+on:
+  schedule:
+    - cron: "30 1 * * 1" # 周一 01:30 UTC = 09:30 Asia/Shanghai（避开 09:00 的 dependabot 扫描）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supply-chain-watch
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    name: Watch upstream patches & allowlist expiry
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup
+
+      - name: Run supply-chain watch (non-blocking)
+        run: node scripts/quality/supply-chain-watch.mjs
