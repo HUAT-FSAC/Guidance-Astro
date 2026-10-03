@@ -4,9 +4,9 @@
 > **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-*）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 
-**最后核实：** 2026-10-03T10:50Z（`date -u`）｜**核实基线：** `main@c908e45`（第 47 轮 M2 五单已全部关闭；本轮实测 main CI/CD Pipeline = success、线上 `/` 200 + CSP nonce 在位）｜**核实人：** Planning Agent 第 48 轮（无新鲜 LOCK，Executor 未运行）
+**最后核实：** 2026-10-03T13:35Z（`date -u`）｜**核实基线：** `main@66f4c0a`（含 release `cbad0cf` = tag `v1.2.0` + 批次 `4bec1e9`）｜**核实人：** Planning Agent 第 50 轮（无新鲜 LOCK，Executor 未运行；本轮独立复核后验收关 #192/#193、关闭 #194、新建 #197）
 
-> **第 48 轮判定：** **M1、M2 均已收官**（M2 = Milestone #1，open=0/closed=5，本轮已关闭该 milestone）。项目进入 **M3 稳态运营** —— 运行 M1/M2 建成的机器，而非再造机制。本轮据实新建 Milestone #2（M3）并填入 2 个 ready + 1 个 needs-info。
+> **第 50 轮判定：** **M3 首批 ready 队列（#192 发版 v1.2.0 / #193 批次摄入 #187）已全链路交付并验收关闭**；majors 组（#186/#195）按 D-015 一律暂缓。ready 队列现空（事件驱动），下一个就绪项由扫描/到期/用户需求触发时据实建单。
 
 > ⏱ **时间口径统一：** 本行与 §2.5 中先前记录的 `09:40Z` / `09:55Z` 实际是本地 +08:00 而非 UTC（已由 exec 第 37 轮发现并纠正）。**从现在起所有 `.agent` 时间字段一律 `date -u` 的 UTC**，不再混用本地时区。
 
@@ -172,7 +172,7 @@
 
 ---
 
-## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15
+## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15｜进度：首批 2 / 2 交付并验收
 
 **为什么是 M3：** M1 清积压、M2 建防复发机器，两者均已收官。本轮实测确认**机器已在运转**：dependabot 分组生效（10 项更新 = 3 个 PR）、rp 已自动开出 v1.2.0、供应链探针已上线。M3 不是再造机制，而是**周期性运转这些机制**并处理它们暴露出的真实事项。
 
@@ -183,22 +183,25 @@
 
 ### 5.2 M3 执行队列（给 Executor 的建议顺序）
 
-1. **#192** 发布 v1.2.0：合并 rp PR #185（P2，`ready`）—— D-012 三档中的 `minor`，随 M2 收尾合并，Agent 自主执行不请示。
-2. **#193** 批次处置 dependabot minor-and-patch 分组 #187（P3，`ready`）—— sitemap/sharp/workers-types/lint-staged 4 项，按 D-005/D-009 批次处置；`chore(deps)` 不触发 rp 发版，属静默卫生。
+**当前 ready 队列 = 0。** 首批两单已由 Executor 第 49 轮交付、第 50 轮 Planner **独立复核**验收并关闭：
 
-> 顺序建议：先 #192（Milestone 收尾点已到，rp PR 就绪），再 #193（摄入后为未来版本累积内容）。二者无文件冲突可并行，但发版先做更贴合 D-012 的「随 Milestone 收尾」语义。
+- ✅ **#192** 发布 v1.2.0（tag `v1.2.0`=`cbad0cf`，四方 + `--is-ancestor dde2d4b v1.2.0` 均核，main CI 绿）
+- ✅ **#193** 批次处置 minor-and-patch #187（批次 `4bec1e9`，D-010 不变量守住——workers-types 未降级；#187 关闭非合并；已部署 `1b0df471` + CSP 头/体 nonce 一致）
+
+> M3 是**事件驱动**的稳态循环，**无预置 ready**（不凑数）。下一个 ready 会在下列事件发生时由 Planner 据实建单：① dependabot 下次 weekly 扫描产出新的 minor-and-patch 分组 PR；② 2026-10-17 audit 豁免到期核对；③ 用户/安全触发的功能或依赖事项。
 
 ### 5.3 M3 已知阻塞与依赖
 
 - **#101**（P1，`blocked`，人类）：恢复 CI 自动部署需配 `CLOUDFLARE_API_TOKEN` Secret；本轮 `gh api .../actions/secrets` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`，阻塞继续有效。本地 OAuth 部署可用，不阻塞交付。
-- **#194**（P3，`needs-info`）：majors 组 #186（actions v7）/ #188（typescript 6→7，门禁已 FAILURE）—— §1.8 红线相邻（重大依赖引入 / CI 流程），**默认暂缓**（与 D-003/D-004 同调），不入 ready。
+- ✅ **#194 已关闭**（第 50 轮）：majors 组 #186（actions v7）/ #195（npm majors，含 typescript 6→7 + workers-types 降级，取代 #188）→ 一律**暂缓**，处置记入 **D-015**（延续 D-003/D-004）；两个 majors PR 保持开放作 standing reminder，不阻塞 minor-and-patch。若用户要采纳任一项，另立 ready 单。
+- **#197**（P3，`needs-info`）：release-please Release PR 的 PR 级 CI 靠手工 `update-branch` 触发（GITHUB_TOKEN 链式抑制，#192 实证）；是否配 PAT/App 令牌自动化 = CI 改造 + 需人类 Secret，**默认 C（不改）**，等发版频率信号。
 - ⏰ **日历风险（非待办，是到期机制）**：`.config/audit-allowlist.json` 两条豁免 **2026-10-17 到期**（剩 ~14 天）；#180 只读探针会在到期前主动告警。届时核对 `http-cache-semantics`/`braces` 上游是否已发补丁（见 D-011），**不得静默延长**。
 
 ### 5.4 M3 明确不做
 
 - ❌ 不做新功能/页面/内容（M1 结论仍有效：功能期已结束，新增需人类发起）。
-- ❌ 不在 D-014 裁定前把 minor-and-patch 摄入改为直接合并 auto PR（默认维持批次处置 = 选项 A）。
-- ❌ 不擅自跟进 majors（#186/#188），红线相邻须显式复核。
+- ❌ 不将 minor-and-patch 摄入改为直接合并 auto PR（D-014 已由用户定 A：维持批次处置，#193 已按此落地）。
+- ❌ 不自动采纳 majors（#186 actions v7 / #195 typescript 6→7）——D-015 已裁定一律暂缓；采纳属 §1.8 红线相邻，需用户决定。
 - ❌ 不引入任何把「回看探针」变成阻塞门禁的改动（延续 #180 的非门禁契约）。
 
 ### 5.5 下一阶段去向
