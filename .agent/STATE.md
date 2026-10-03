@@ -3,10 +3,12 @@
 > 本文件由“时间流接力开发”的每一棒追加/更新，与 `docs/WORKFLOW.md:§4/§7.4` 保持一致。
 > 只记录进度/下一步/阻塞，不复制看板全表。**详细交接与命令速查见 `.agent/HANDOFF.md`。**
 
-**最后更新：** 2026-10-03T09:55Z ｜ **当前 agent-id：** `planner-20261003T094000Z`（**Planning Agent 第 2 轮，总第 36 轮**）｜ **状态：** M1 队列从 4 项扩到 **6 项 ready**，#164 目标值因新事实已重写，#166 由 Planner 自办关闭
-**主干：** 开工基线 `main@f9bed16` → **本棒产出 `8b41d57`**（`chore(agent)` 记录提交；已推 `origin/main`，**CI/CD Pipeline + Secret Scan + Release Please 均 success**；线上 `/` **200**；`pnpm audit --audit-level=moderate` **0 漏洞**）｜ **活跃：** **无**（第 35 轮入队的 4 项**无一被 Execution Agent 认领**，约 9h 未开工）｜ **开放 ready：** **#164 / #168 / #169 可立即并行开工** → #165（阻于 #164）→ #167（阻于 #165 + #168）｜ **阻塞：** #101（人类配 `CLOUDFLARE_API_TOKEN` Secret；本轮复核仍缺）
+**最后更新：** 2026-10-03T00:55Z ｜ **当前 agent-id：** `exec-20261003T002503Z`（**Execution Agent，总第 37 轮**）｜ **状态：** **#164 已实现并上线**（`main@fef2a5e`），已转 `status:review` 待 Planner 验收关单（D-006）
+**主干：** 开工基线 `main@c70636c` → **代码 `fef2a5e`**（PR #170 squash，CI 含 Quality Gate 全绿）→ 本棒 `chore(agent)` 状态提交（分开）｜ **已部署：** `pnpm deploy:worker`，Worker Version `e0fc4b95-beb1-46eb-a5c1-4feac4b29dfd`｜ **线上：** `/` **200** + CSP 头/体 **nonce 逐请求一致** + 抽查 4 路由全 200 + 线上 sitemap **168 页** ｜ **活跃：** 无（#164 已交回；下一个认领 **#168**）｜ **开放 ready：** **#168 / #169 可立即开工**；**#165 仍不动工** —— 本单自检清单硬门是「#164 已 CLOSED」，而它按 D-006 故意保持 open 等 Planner｜ **锁：** `.agent/LOCK` = `exec-20261003T002503Z`（本棒持有，结束时删除）
 
-> 本棒为**纯文档/规划改动**（`.agent/**` + `docs/WORKFLOW.md:§7.4`），不在站点构建集内（Starlight `docsLoader` 根为 `./src/content/docs/`）→ **无需部署**，线上仍等于上一棒 `f9bed16` 时的产物。
+> 🔍 **时间口径纠正（本棒发现）：** 上一棒（Planning）在 STATE/PLAN/HANDOFF 写的 `2026-10-03T09:40Z` / `09:55Z` **不是 UTC**（实际当时为 `00:1xZ`，本地 +08:00）。本棒起的记录统一用真实 UTC。建议 Planner 后续统一该字段口径（时钟源：`date -u`）。
+
+> 上一棒为纯文档/规划改动（无需部署）；**本棒含依赖与部署链改动，已实部署并复验**，线上现为 `fef2a5e` 产物（wrangler 4.147.0 + vite-plugin 1.62.5）。
 
 > ⚠️ `STATE.md:7` 历史损坏已于第 35 轮修复；本轮（第 36 轮）对 `.agent/**` **四文件全量体检通过**（#166 已据此关闭，证据贴在该单）。
 
@@ -16,6 +18,7 @@
 
 ## 当前活跃任务
 
+- **#164（本棒已完成 → `status:review`，未关单）**：锁定 `@cloudflare/vite-plugin`（有界 override `1.62.5`）+ `wrangler` pin `4.136.2 → 4.147.0`。代码 commit `3218dc9` → squash 落 `main` = **`fef2a5e`**（PR **#170**，六项全绿含 QualityGate 4m42s）→ **已部署**（Version `e0fc4b95`）。验收证据逐条贴在 Issue 评论。**故意未关单**：合并按钮用了不触发 closing keyword 的 squash 标题（仓库惯例 `fix: #N` 会被 GitHub 自动关单，那会绕过 D-006）。
 - **#150/#152**（均已关）：#151/#153 经人类 review（chat 明确"没问题，继续"）后 `--admin --squash` 合并（分支保护 review 对象 + 永不满足的 `quality-gate` 上下文，只能 admin；两 PR CI 事先全绿含 QualityGate）；body `Closes` 自动关（`docs:`/`fix:` 均生效，已核对 #150/#152 closed）。
 - **#154/#156/#158/#160**（均已关，第 30 轮合并，细见下）：① #161 → 部署；② #159 → 部署；③ #155；④ #157。body `Closes` 自动关已核对；线上 Version `73738007`。
 - **#120**（P3，本轮结清）：用户指令"按推荐来" → 执行单内推荐方案 A（删）：删前复核全仓 `utils/toast` 零引用依旧 + 线上 200/200 健康 → `git rm src/utils/toast.ts`（443 行）→ 本地 §6 全绿（lint/format/tsc/test 412/build）→ **PR #163**（CI 全绿；删除无行为变化，**无需部署**）→ `--admin --squash` 合并，body `Closes` 自动关 #120（已核对）。
@@ -187,9 +190,35 @@ PR #159 CI 首跑 **Audit Dependencies 红** → 提取日志实锤 devalue 6 �
 
 **本棒产出：** Issue — 重写 #164（标题+正文）、新建 #168/#169、改 #167 依赖段、给 #164/#165/#167/#168/#169 各留一条 Planner 标注、关闭 #166；文档 — `PLAN.md`（阶段表 +3 行、M1 队列 4→6、新增 §2.4 修正表、§三 新增一类、§四 +2 候选、§五记 D-010、§六 +3 放弃方向）、`DECISIONS.md`（+D-010）、`STATE.md`（本节）、`HANDOFF.md`（全量重写）；`WORKFLOW §7.4` 追加第 36 轮行。**零代码改动**（未碰 `src/**`、未碰依赖清单）。
 
+### 第 37 轮（Execution Agent：#164 实现 + 上线 + 交回验收）
+
+**同步/锁：** `fetch --all --prune` → 工作树干净 → `main@c70636c` 与 `origin/main` 0/0 → 无 LOCK → 以 `set -C` 原子建锁 `exec-20261003T002503Z`。
+
+**开工前环境/前提复核：** node 22.23.2 + pnpm 11.22.0 就维；**`wrangler whoami` 已登录**（账号 `Iridite` = `bfdcbff6cfe16d2b9bd657593ba88f5f`，与 `wrangler.json` 的 `account_id` 一致）→ 部署验收可执行；`npm view` 复核 #164 前提**仍成立**（vite-plugin latest `1.62.5` / peer `^4.147.0` / wrangler latest `4.147.0` / adapter `14.3.3` 仍声明 `^1.53.0`）→ 按目标值开工，无需停下重定目标。
+
+**实现（仅 3 个文件）：** `pnpm-workspace.yaml` 新增 `"@cloudflare/vite-plugin@^1.53.0": "1.62.5"` + `package.json` wrangler `4.136.2 → 4.147.0` + lock 重解析。**未碰 `src/**`、未碰测试、未碰 `dependabot.yml`。**
+
+**过程中遇到并自修的三个问题（均为真实错误，非顺利一次过）：**
+
+1. **`wrangler@4.147.0` 带出新的 unmet peer**：它要求 `@cloudflare/workers-types ^5.20261001.1`（原实装 `5.20260922.1`）。属 pin 跳 11 个 minor 的必然连带 → 按**既有声明范围**重新解析（lock 落 `5.20261002.1`），`pnpm peers check` 转为无告警。
+2. **我误读了 `pnpm update` 的副作用**：它连带把 `package.json` 的声明范围改成了 `^5.20261002.1`，我一度当成「只动 lock」。看 `git show --stat` 发现 package.json 有 4 行变更才捕获 → **已回改 + amend**，最终净 diff = package.json **1 行** + workspace 5 行 + lock；回改后 tsc/build/test 全部**重跑取新证**（未沿用旧结果）。
+3. **反向探针两次踩坑**：① 第一次用了 `--ignore-workspace`，该 flag **会跳过 `pnpm-workspace.yaml` 的 overrides**，测的其实是「无 override」（失误但意外留下对照数据）；② 在仓库内删 lock 跑 `pnpm install --lockfile-only` 得到「Already up to date」（pnpm 从 node_modules 复原，**不是真重新解析**）。→ 改用只含 3 个配置文件的隔离目录（无 node_modules/lock）才得到真证据。
+
+**反向证据结论：** 无 override → vite-plugin 浮到 `1.62.4`（同时 adapter 浮 14.3.3、astro 浮 7.3.5）；有 override → **恰为 `1.62.5`**。浮轮是真的，且确实被堵住。
+
+**门禁（逐项真实退出码 + 内容核对，日志存 `.tmp/gates/`）：** lint / format:check / tsc / audit 均 0；**test:run 412 passed (38 files)**；**test:e2e 95 passed**；build `[build] Complete!` 产出 entry.mjs 5665B；quality:bundle/theme/routes 三条均打印 passed；sitemap **168** 页。❗ 退出码 0 不等于成功，因此额外核了用例数与产物存在性；链式命令中 pnpm 的 deps-status 竞态会造成假失败（两次），均单命令复跑证实为 exit 0。
+
+**交付：** PR **#170**（CI 六项全绿，含 Quality Gate 4m42s + Preview Build）→ `--squash --admin` 合入 = **`fef2a5e`** → `git pull` + `pnpm install --frozen-lockfile`（exit 0）+ 确认目标文件在位 → `pnpm deploy:worker` → Version **`e0fc4b95`**。
+
+**线上验收：** `/` `HTTP/2 200` + HSTS + `cache-control: private, no-cache, must-revalidate`；抽查 `/`、`/docs-center/contributing/`、`/en/`、`/team/` 全 200；线上 sitemap 168；**CSP 头与 body 的 nonce 同一请求完全一致**（`Pllzey9SojRCh9kjt7_s3g`）、两次请求 nonce 不同、首页 27 个 inline script 均带 nonce。
+
+**新发现（已建 `auto-discovered` Issue #171，未定优先级）：** `AGENTS.md` / `DEPLOYMENT.md` / D-001 写的验收串 `content-security-policy: nonce-` **在当前线上永不匹配**（实为完整策略内嵌 `'nonce-…'`）。本棒据该字面判据得到过 `MISSING` 误判 —— 差点误报部署失败。建议改用 `content-security-policy:.*nonce-`，更强的判据是**头/体 nonce 一致**。
+
+**未做（有意）：** 不改 #164 的产品优先级/Milestone；**不关单**（D-006，因此合并时刻意避免 squash 标题命中 closing keyword）；不动 `src/**`；不顺手做 #168/#169 的代码（各自独立执行单元）；不开工 #165（其自检硬门未满足）。
+
 ## 下一步（给下一棒）
 
-1. **认领顺序（本轮重排）：** 可开工的三个 = **#164**（依赖链起点）、**#168**（首页缺陷，与 #164 零文件重叠）、**#169**（纯文档）。串行链：**#164 → #165 → #167**；**#168 → #167**。
+1. **认领顺序（第 37 轮更新）：** **#164 已完成**（已上线，待 Planner 验收关单）。可立即开工：**#168**（首页缺陷，P1）与 **#169**（纯文档，P2）。**#165 不得开工** —— 它的开工自检硬门是「#164 已 CLOSED」，而 #164 按 D-006 故意保持 open（代码已落 `main`，只等关单）。链：**#165 → #167**；**#168 → #167**。
 2. **开工前自查**（避免踩已知坑）：
     - #165 开工前先确认 **#164 已 close**，且 `pnpm-workspace.yaml` 里**已存在 vite-plugin 锁定 override**（仅 pin 不够 —— 见 D-010）。
     - #167 开工前确认 **#165 与 #168 均已 close**；先发依赖与修复，后发版。

@@ -1,110 +1,88 @@
 # 交接说明（HANDOFF）
 
-**本棒 Agent：** `planner-20261003T094000Z`（第 36 轮，**Planning Agent 第 2 轮**）
-**时间：** 2026-10-03T09:40Z 起（UTC；上一棒无遗留锁）
-**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 开工基线 `main@f9bed16` → **本棒产出 `8b41d57`**（已推 `origin/main`，CI/CD Pipeline + Secret Scan + Release Please 均 success）
-**状态：** M1 稳态治理队列从 4 项扩到 **6 项 `ready`**；#164 目标值因新事实被**重写**；新建 #168/#169；#166 由 Planner 自办关闭；**零代码改动**
+**本棒 Agent：** `exec-20261003T002503Z`（第 37 轮，**Execution Agent**）
+**时间：** 2026-10-03T00:25Z 起（UTC；开工无遗留锁）
+**仓库 / 分支：** `HUAT-FSAC/Guidance-Astro` ｜ 开工基线 `main@c70636c` → **代码 `fef2a5e`**（已推 `origin/main`）
+**状态：** **#164 完成并已上线**（PR #170 squash，CI 全绿含 Quality Gate；Worker Version `e0fc4b95`）；已转 `status:review` **等 Planner 验收关单**（D-006，本棒未关单）
+**锁：** `.agent/LOCK` = `exec-20261003T002503Z`（本棒仍在持有，准备接下一个 Issue）
 
-> 🔵 **本棒仍是 Planning Agent。** 未修改 `src/**`、未修改依赖清单、未部署。
-> **下一棒（Execution Agent）开工顺序：**
-> `git fetch --all --prune` → `git pull --rebase` → **inbound remote 巡检（见 §六，本轮新增）** → 读 `.agent/PLAN.md` + `.agent/DECISIONS.md`（**D-001..D-010 是硬约束，先读**）+ `.agent/STATE.md` + `.agent/ENV.md` + 本文件 → 检查 `.agent/LOCK` → 从 §二 认领**一个**任务。
+> **下一棒第一步：** `git fetch --all --prune && git pull --rebase` → **inbound 巡检**（§六）→ 读本文件 + `PLAN.md` + `DECISIONS.md`（D-001..D-010 是硬约束）+ `STATE.md` → 查锁。
+> 若你是 Planner：本棒产出需你验收的是 **#164**（证据在其 Issue 评论）与需要你治理的 **#171**（`auto-discovered`，未定优先级）。
 
 ---
 
-## 一、本棒做了什么（第 36 轮：Planning Agent 第 2 轮）
+## 一、本棒做了什么（#164，单一执行单元）
 
-1. **例行同步**：`fetch --all --prune` → 工作区干净 → `main@f9bed16` 与 origin 一致（0/0）→ 无 LOCK → 无需 pull。
-2. **执行验收：结论是「无可验收项」**。第 35 轮入队的 #164/#165/#166/#167 **全部仍 `status:backlog`、无 assignee、无执行评论**，`f9bed16` 后零新 commit。队列不是被做坏了，是**没人接棒**（约 9h）。
-3. **实测发现两个会改变路线的新事实**（详见 `STATE.md` 第 36 轮）：
-    - **#164 的目标值已失效** —— `@cloudflare/vite-plugin` 一周连发 6 版，`wrangler` peer 从 `^4.143.0` 棘轮到 **`^4.147.0`**；adapter 的 `^1.53.0` 浮动范围在 `14.3.2`/`14.3.3`/`latest` 完全相同。
-    - **协作方 fork 里有无人认领的线上缺陷修复** —— `wsyhuat/main` 的 `f98be0d`（2026-10-02T07:55Z），修首页可见性 / 层叠冲突 / 境外头像三件事，`.agent` 与 Issue **零记录**，静置约 12h。
-4. **产出**：重写 **#164**（标题 + 正文）、新建 **#168**（P1）与 **#169**（P2）、给 **#167** 正文加 `#168` 依赖边、给 #164/#165/#167/#168/#169 各留 Planner 标注、**关闭 #166**（Planner 自有文件的体检属本职，不占执行队列）；落盘 **D-010**；刷新 `PLAN.md` / `STATE.md` / 本文件；`WORKFLOW §7.4` 追加第 36 轮行。
-5. **本轮复核（不是叙述，是实测）**：`main` CI/CD Pipeline success（run `37042211284`）／线上 `/` **200**／`pnpm audit --audit-level=moderate` **0 漏洞**／Actions Secrets 仍仅 `CODECOV_TOKEN`+`PROJECT_TOKEN`（#101 阻塞有效）／`gh release list` 仍 `v1.0.2`／开放 PR 11 个。
+1. **前提复核**：`wrangler whoami` 在本机（Linux）**已登录**（`Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`，与 `wrangler.json` 的 `account_id` 一致）→ 部署链可用。`npm view` 复核 #164 前提**仍成立**（vite-plugin latest `1.62.5`、peer `^4.147.0`、wrangler latest `4.147.0`、adapter `14.3.3` 仍声明浮动 `^1.53.0`）→ 按目标值执行，无需停下重定目标。
+2. **改动（只 3 个文件）**：`pnpm-workspace.yaml` 增有界 override `"@cloudflare/vite-plugin@^1.53.0": "1.62.5"`；`package.json` `wrangler` `4.136.2 → 4.147.0`（无 caret）；`pnpm-lock.yaml` 重解析。**未碰 `src/**` / 测试 / `dependabot.yml`。**
+3. **连带必要修改**：`wrangler@4.147.0` 新要求 `@cloudflare/workers-types ^5.20261001.1`（原 `5.20260922.1`）→ 按其**既有声明范围**重解析，lock 落 `5.20261002.1`，声明范围未改（版本决策留给 #165 / PR #110）。
+4. **PR #170 → `--squash --admin` 合并 = `fef2a5e`**；部署 `pnpm deploy:worker` → Version `e0fc4b95`；线上复验（见 §四）。
 
-## 二、当前 ready 队列（M1 稳态治理，6 项）
+## 二、本棒没做什么（有意）
 
-```
-[#164] 锁定 vite-plugin + wrangler→4.147.0  ──▶  [#165] dependabot 批次处置  ──▶  [#167] 发布 v1.1.0
-                                                                              ▲            ──┘
-[#168] 首页可见性 / 层叠冲突 / 头像外链（无前置，与 #164 零文件重叠可并行）──┘
-[#169] inbound 巡检入 WORKFLOW §1（无前置，纯文档）
-```
+- **没关 #164**（D-006）。合并时刻意使用**不触发 closing keyword** 的 squash 标题 `fix(deps): … (#164)`，因为仓库惯例 `fix: #N` 会让 GitHub 自动关单、绕过 Planner 验收。**如果你要恢复旧惯例，请显式说明。**
+- **没开工 #165**：它的开工自检硬门是「`gh issue view 164 --json state` == CLOSED」，#164 现在仍是 OPEN（在 `status:review`）。代码已落 `main`，只差 Planner 关单这一步。
+- **没动 #168 / #169**：那是独立执行单元，不在本 commit 范围。
+- **没改任何文档口径**（CSP 判据问题只建单 #171，未顺手改 `AGENTS.md`/`DEPLOYMENT.md`）。
 
-| 顺位 | Issue | 优先级 | 依赖      | 一句话                                                              |
-| ---- | ----- | ------ | --------- | ------------------------------------------------------------------- |
-| ①    | #164  | P1     | 无        | 有界 override 锁 vite-plugin + `wrangler` pin `4.147.0`（成对）     |
-| ①′   | #168  | P1     | 无        | 首页无 JS 不可见 + stagger/reveal 冲突 + 境外头像（移植 `f98be0d`） |
-| ①″   | #169  | P2     | 无        | `WORKFLOW §1` 补 inbound remote 巡检（纯文档，走 PR）               |
-| ②    | #165  | P1     | #164      | dependabot 9 PR（#106–#114）批次处置，解除限流 9/10                 |
-| ③    | #167  | P2     | #165,#168 | 合并 rp PR #96，发布 v1.1.0                                         |
+## 三、验证结果（真实，含我犯过的错）
 
-**认领前必查（防踩已知坑）：**
+| 项                                         | 结果                                                                                                                    |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `pnpm peers check`                         | `No peer dependency issues found`（修 workers-types 前是 unmet peer）                                                   |
+| lint / format:check / tsc --noEmit / audit | 全部 exit 0（audit：`No known vulnerabilities found`）                                                                  |
+| `pnpm test:run`                            | **412 passed (38 files)**，与基线一致，无用例减少                                                                       |
+| `pnpm test:e2e`                            | **95 passed**，与基线一致                                                                                               |
+| `pnpm build`                               | exit 0，`[build] Complete!`，`dist/server/entry.mjs` 5665B                                                              |
+| quality:bundle / theme / routes            | 三条均打印 passed                                                                                                       |
+| sitemap                                    | 本地与线上均 **168 页**                                                                                                 |
+| **反向证据**                               | 无 override → vite-plugin 浮 **1.62.4**（adapter 14.3.3、astro 7.3.5 也浮）；有 override → **恰 1.62.5** ⇒ 浮动确被堵住 |
 
-- #165 开工前：确认 **#164 已 close** 且 `pnpm-workspace.yaml` 里**已有 vite-plugin 锁定 override**（光抬 pin 不够，见 D-010）。
-- #167 开工前：确认 **#165 与 #168 都已 close**（先发依赖与修复，后发版；v1.1.0 不应带已知缺陷）。
-- #168 与 #164 **可安全并行**（Planner 已核文件集不重叠：#168 动 `src/components/home/sections/**`、`src/styles/**`、`src/utils/**`、`public/assets/avatars/**`、`tests/**`；#164 只动 `package.json`/`pnpm-lock.yaml`/`pnpm-workspace.yaml`）。但 **#164/#165/#168 各自都要部署 → 部署必须串行，后部署者先 `git pull`**（第 30 轮事故坑）。
+**我犯过并自修的三个错（留给下一棒避坑）：**
 
-**D-006 纪律：** Executor 完成后**留结果评论、不要自行关单**；由 Planner 逐条对照验收标准核对后关单。
+1. `pnpm update <pkg>` **会连带改写 package.json 的声明范围**。我一开始把它当成「只动 lock」，靠 `git show --stat` 看到 package.json 有 4 行变更才发现 → 回改 + amend。**别用 `pnpm update` 去动一个你不想改声明的包**；要浮动只改 lock，就用隔离目录做解析后手工比对。
+2. 反向探针**不能用 `--ignore-workspace`**（它会跳过 `pnpm-workspace.yaml` 的 `overrides`，测出来的其实是「无 override」）。
+3. 在**仓库内**删 lock 跑 `pnpm install --lockfile-only` 会得到 `Already up to date` —— pnpm 从 `node_modules` 复原，**不是真重新解析**。做全新解析要在一个只放 `package.json`/`pnpm-workspace.yaml`/`.npmrc`、无 `node_modules`、无 lock 的目录里跑。
+4. （环境噪音）链式命令里 pnpm 的 deps-status 检查偶发抛栈失败，两次都被 `tail` 掩盖；单命令重跑 + 看真实退出码即为 exit 0。**管道后的 `$?` 是 `tail` 的退出码，不是被测命令的。**
 
-## 三、下一棒要注意的关键事实（本轮新发现）
+## 四、当前 commit / 远程 / 线上
 
-1. **⚠️ peer 是逐发布日棘轮，不是静态阈值。** `@cloudflare/vite-plugin` 1.62.0→1.62.5（9/28–10/2）把 `wrangler` 下限从 `^4.143.0` 抬到 `^4.147.0`。**任何「照着旧 Issue 里的数字执行」的做法都可能已经过期** —— 动手前先 `npm view` 复核，若与 Issue 正文不一致：**停下留评论，不要自行改路线**（版本路线归 Planner）。
-2. **`main` 现在绿是因为 lockfile 挡住了。** 实测 `pnpm-lock.yaml:463` 钉 vite-plugin `1.54.8`（peer `^4.131.1`，wrangler `4.136.2` 满足）。一旦重新解析（#165 批次、`pnpm update`）就浮到 `1.62.5` → 需 `^4.147.0`。
-3. **`pnpm-workspace.yaml` 里 `minimumReleaseAge: 0`** → 无发布年龄保护，解析必然取最新。这是棘轮能立刻命中本仓库的原因，别误以为有护栏。
-4. **协作方 fork 不是视觉分叉，只是携带修复。** Planner 实测 `git diff HEAD f98be0d` 的 `src/**` 差异**恰好等于**该 commit 的 4 个文件；但 fork 整体落后两周（仍含已删的 `src/utils/toast.ts`、`contributing.md` 旧路径、旧 workflow）→ **禁止 `merge wsyhuat/main`，只取单个 commit。**
-5. **`f98be0d` 会让 `tests/unit/scroll-reveal.test.ts` 现有 2 条用例失败**（`:25-36` 断言必被 observe、`:38-46` 断言未相交不显）。jsdom 的 `getBoundingClientRect()` 返回全 0 → 新逻辑判定为近视口立即显现。**这是预期，不是回归**：按新语义改写用例，不要为了让旧断言过而把实现改回「默认隐藏」。
-6. **首页 25 个 reveal 区块在服务端 HTML 里没有 `data-visible`**（实测），CSS 默认 `opacity:0`（`docs-global.css:871-883`）—— 这是 #168 的核心证据，也是新增 e2e（禁用 JS）断言的依据。
+- 代码：`3218dc9`（分支）→ squash **`fef2a5e`** = `origin/main`（本文件与 STATE 的状态提交在其后，分开提交）。
+- PR #170：Audit / Lint / Type / Tests / Build / **Quality Gate(4m42s)** / Preview Build 全 SUCCESS。
+- 线上（`fef2a5e` 产物）：`/` `HTTP/2 200`、`cache-control: private, no-cache, must-revalidate`、HSTS preload、`server: cloudflare`；抽查 `/`、`/docs-center/contributing/`、`/en/`、`/team/` 全 200；sitemap 168。
+- **CSP 真判据**：同一请求下头 `'nonce-Pllzey9SojRCh9kjt7_s3g'` 与 body `nonce="Pllzey9SojRCh9kjt7_s3g"` **一致**；两次请求 nonce 不同；首页 27 个 inline script 均带 nonce。
+- ⚠️ main 的 push CI run 在本棒结束时 `CI/CD Pipeline` 仍 `in_progress`（Secret Scan、Release Please 已 success）。**下一棒先确认 `fef2a5e` 的 main run 全绿再继续。**
 
-## 四、Decision Gate 结果与剩余阻塞
+## 五、风险与后续注意
 
-- ✅ **本轮不存在需要用户裁决的开放 Decision Gate。** M1 全部 6 项均可由既有事实执行。
-- ✅ **D-010 已由 Planner 自主裁定**（锁定 vite-plugin + wrangler pin 跟随 peer）。若不同意：**回退成本 = 删一条 `pnpm-workspace.yaml` override + revert 一个 pin 行**。
-- ✅ **D-009 已裁决（2026-10-03）**：授权 dependabot 批次处置；**逐个合并自动 PR 仍禁止**，不得 `--admin` 单独 merge 任何 dependabot PR。
-- **#101**：配 `CLOUDFLARE_API_TOKEN`（Actions Secrets）。**配好前不要把 deploy job 加回 CI**；实现已备好（`8475f88`）。
-- 人类侧（**均不阻塞 M1**）：`PROJECT_TOKEN` 值/权限复核 + `projects/1` 是否存在；`size:xs` 手工建 label；`update-linked-issues` 去留；是否把协作方贡献改为正式 fork PR 流程（默认方案：保持「fork 直提 + Planner 巡检 + 建单移植」）。
+1. **wrangler 跨 11 个 minor** 已实部署，deploy 行为无差异（`393 modules / 6974.05 KiB`，startup 15ms，bindings 不变）；但若后续 deploy 出错，第一个怀疑对象仍是 wrangler 版本而非代码。
+2. **给 #165**：`@cloudflare/workers-types` 实装已到 `5.20261002.1`，**dependabot PR #110（目标 `5.20260929.1`）已落后于实装** → 批次处置时应按「已被取代」留言关闭，勿并入批次；批次解析后须复验 override 仍生效（贴 `pnpm list @cloudflare/vite-plugin --depth=1`），因为 adapter→14.3.3 会重新触发对 `^1.53.0` 的解析。
+3. **D-010 现在是有牙齿的**：`pnpm-workspace.yaml:45` 的 override 与 `package.json` 的 wrangler pin 必须**成对移动**，任何一方单独改动都可能重新打开浮轮。
+4. **#171（auto-discovered）**：`AGENTS.md`/`DEPLOYMENT.md`/D-001 的验收串 `content-security-policy: nonce-` **永不匹配**，建议改判据并把「头/体 nonce 一致」纳入部署验收。未定优先级，交 Planner。
+5. **时间口径**：上一棒在 `.agent` 写的 `09:40Z`/`09:55Z` 不是 UTC（实为 `00:1xZ`）。本棒起用 `date -u`。建议 Planner 统一。
 
-## 五、注意事项 / 坑（执行相关精简版，全量见 git 历史）
-
-1. **依赖链串行**：#164 → #165 → #167；#168 → #167（见 §二）。
-2. **部署前必 `git pull`** 并确认目标文件在位（第 30 轮两次上线旧树的事故）。
-3. **`pnpm` 不在裸 PATH**：同命令内 export 或用 `mise exec -- pnpm`；跨 shell 不继承 PATH，**commit 前须同命令内 export**，否则 husky 拦 commit。
-4. **本地门禁清单必须含 `pnpm audit`**（CI 第 2 job；公告随时发布，#160 教训）。
-5. **override 必须是有界区间**（D-007）：禁裸 `>=X`；本轮新增的 vite-plugin 锁定也适用同纪律。
-6. **gh label 名错会整体失败不建单**（`priority:p2` 不是 `P2`），建单后回查；comment 反引号用 `--body-file`。
-7. **sitemap 比对先 unquote**（percent-encoding 假阳性）；计数只取 sitemap-0（169 是混入 sitemap-index 自身）。
-8. **记录类文件（`.agent/\*\*`、`WORKFLOW §7.4`）可直推 main**（D-008）；**代码与文档修复仍走分支 + PR**。
-9. **锁协议**：超 30min 可接管；正常结束删锁；锁不提交。
-10. **关单纪律**：Executor 不关单（D-006）；Planner 验收后关。
-11. **§7.4 追加是历史行不可删**（本棒 104 → 105 行；上一棒遗留的「103」计数已不准，本轮实测为 104）。
-12. **`src/styles/**` 是 §7.3 高冲突文件**；同窗口勿与他人并行动它（#168 独占中）。
-
-## 六、关键命令速查
+## 六、命令速查（新增两条：反向解析探针 + CSP 头/体一致性）
 
 ```bash
 git fetch --all --prune && git pull --rebase
-
-# ★ 本轮新增：inbound remote 巡检（发现协作方工作；输出非空必须登记，不得无声略过）
-for r in $(git remote); do
-    [ "$r" = origin ] && continue
-    echo "== inbound $r/main =="; git log --oneline "HEAD..$r/main" 2>/dev/null
-done
-
-cat .agent/PLAN.md .agent/DECISIONS.md .agent/STATE.md .agent/HANDOFF.md
-mise exec -- pnpm audit --audit-level=moderate
-gh issue list --state open --json number,title,labels --jq '.[] | "#\(.number) \(.title)"'
-gh pr list --state open --author "app/dependabot" --json number --jq 'length'   # 限流占用计数
-npm view @cloudflare/vite-plugin dist-tags.latest peerDependencies.wrangler      # ★ 动手前复核 peer
-npm view wrangler dist-tags.latest
-gh api repos/HUAT-FSAC/Guidance-Astro/actions/secrets --jq '.secrets[].name'     # #101 复核
+for r in $(git remote); do [ "$r" = origin ] && continue; echo "== inbound $r/main =="; git log --oneline "HEAD..$r/main" 2>/dev/null; done
 export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
-curl -s -o /dev/null -w "%{http_code}\n" https://huat-fsac.eu.org/
-curl -s https://huat-fsac.eu.org/ | grep -c 'reveal-upon-scroll'                 # #168 基线=25
+
+mise exec -- pnpm peers check                      # ★ 依赖改动后必查（wrangler 会带出 workers-types peer）
+npm view @cloudflare/vite-plugin dist-tags.latest peerDependencies.wrangler   # ★ 动手前复核 peer
+
+# 真·全新解析探针（必须在隔离目录；勿加 --ignore-workspace，它会跳过 overrides）
+mkdir -p .tmp/probe && cp package.json pnpm-workspace.yaml .npmrc .tmp/probe/ && cd .tmp/probe && pnpm install --lockfile-only --ignore-scripts
+
+# CSP 部署验收（强判据：同一请求的头/体 nonce 一致）
+curl -s -D .tmp/h.txt -o .tmp/b.html https://huat-fsac.eu.org/
+HN=$(grep -i '^content-security-policy:' .tmp/h.txt | grep -o "'nonce-[^']*'" | tr -d "'" | sed 's/^nonce-//')
+BN=$(grep -o 'nonce="[^"]*"' .tmp/b.html | head -1 | sed 's/nonce="//;s/"//'); [ "$HN" = "$BN" ] && echo NONCE_MATCH
+grep -o "<loc>" <(curl -s https://huat-fsac.eu.org/sitemap-0.xml) | wc -l     # 应为 168（勿用 grep -c，XML 是单行）
 ```
 
-## 七、与看板 / 前一棒的一致性
+## 七、与规划侧的一致性
 
-- `docs/WORKFLOW.md:§4` T-001..T-038 全部已完成 → 阶段判定仍为**功能期结束、漂移治理期**（`PLAN.md` §一，本轮把判据从 7 项扩到 **10 项**，新增 peer 稳定性 / 外部贡献可见性 / 首页健壮性）。
-- 长期决策 **D-001..D-010** 落 `.agent/DECISIONS.md`；本轮新增 **D-010（Planner 自主裁定）**，D-003 **未被推翻**（只是把同样的纪律应用到被依赖方）。
-- 本轮 `§7.4` 追加第 36 轮行；`STATE.md` 已刷新（基线 `f9bed16` → 产出 `8b41d57`，含 CI 结果与「纯文档改动 → 无需部署」判定）。
-- **闭环一致性自检（本轮已做，对应 #166）**：PLAN §二队列 ↔ `gh issue list --state open` ↔ STATE「开放 issue 现状」三者**逐号对齐**，无孤儿、无已做未关、无重复。
-- ⚠️ 已知文档口径冲突（**未在本轮处理，属 M2 议题**）：`WORKFLOW §1.2` 仍写「任务状态/决策只在 §4/§7，不另起文档」，而接力体系现已以 `.agent/PLAN.md`+`DECISIONS.md`+GitHub Issues 为任务与决策接口。需要一条 `docs:` PR 明确从属关系，避免两个 SSOT 并存。
+- `PLAN.md` §2.2 的 M1 任务 1（#164）**已交付待验收**；`DECISIONS.md` **D-010** 已在本单落地为代码事实（D-003 未被推翻）。
+- 下一棒可执行：`ready` = **#168（P1）**、**#169（P2）**；`blocked` = **#165**（等 Planner 关 #164）、**#167**（等 #165 + #168）。
+- `docs/WORKFLOW.md:§7.4` 已追加第 37 轮行（只增不减）。
