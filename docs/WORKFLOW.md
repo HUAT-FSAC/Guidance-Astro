@@ -126,7 +126,10 @@ pnpm test:e2e          # Playwright 关键路径通过（若改动涉及 UI/路�
 pnpm build             # Astro 构建通过，产出 dist/server/entry.mjs
 pnpm quality:bundle    # 包体积预算通过
 pnpm quality:theme     # 主题对比度通过
+pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm audit --audit-level=moderate` 直调
 ```
+
+- **依赖审计门禁（#173）：** `pnpm quality:audit` 仍以 `pnpm audit --audit-level=moderate` 为信息源（**级别不变**），但把“一条公告就冻结全链”换成**带到期日的显式豁免清单** `.config/audit-allowlist.json`：仅当某条公告的 **GHSA + 包名** 均命中条目**且未过期**才放行；**其余一律失败**，条目**到期即失败**（强制重新核对上游是否已发补丁）。新增条目前必须先确认 `npm view <pkg> dist-tags.latest` **没**有修复版；每条必须写 `reason` / `issue` / `expires`。默认豁免窗口 14 天。
 
 - 图片/样式改动需附加亮色/暗色截图
 - 文档改动需 `pnpm build` 无 MDX 警告
