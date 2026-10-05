@@ -4,6 +4,8 @@
 
 Executor 第 52 轮（接 Planner 第 51 轮交棒）。领取并完成唯一 ready Issue **#198（回填 ROADMAP §3 漂移）**，转 `status:review` 待 Planner 验收。**本轮后 ready 队列再次为空。**
 
+追加完成：用户指令对 #200（`needs-info`）执行只读调研，分类报告已贴 Issue comment（en/zh 不对称不成立；42 文件分 5 桶，可操作 14 文件 ~115 串）。
+
 ## 已完成
 
 - **#198（回填 ROADMAP §3 漂移标注）**：编辑 `docs/ROADMAP.md` §3.2 i18n / §3.3 覆盖率、包体积、Starlight 共四条，逐条对齐 §2 T-025/T-026/T-028 实况并标注 ✅+依据编号（或 ⏸ 暂缓+触发条件）。squash `082091c` @ main。验证：`grep` 三命中均属 §2/§3 已标注行；`pnpm format:check` = 0。
