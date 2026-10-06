@@ -192,6 +192,15 @@ test.describe('导航功能', () => {
         await expect(page.locator('h1#_top')).toBeVisible()
     })
 
+    test('英文文档页面包屑显示英文标签', async ({ page }) => {
+        await page.goto('/en/archive/general/ros-installing/')
+        const crumbs = page.locator('nav.breadcrumbs')
+        await expect(crumbs).toBeVisible()
+        await expect(crumbs).toHaveAttribute('aria-label', 'Breadcrumbs')
+        await expect(crumbs).toContainText('Documentation Archive')
+        await expect(crumbs).not.toContainText(/[\u4e00-\u9fff]/)
+    })
+
     test('首页 CTA 按钮可点击', async ({ page }) => {
         await page.goto('/')
         const cta = page.locator('.hero-cta').first()
