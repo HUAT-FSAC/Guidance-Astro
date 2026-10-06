@@ -2,17 +2,6 @@
     "$comment": "Audit gate allowlist — consumed by scripts/quality/audit-gate.mjs (pnpm quality:audit, CI job 'Audit Dependencies'). An advisory passes ONLY if it matches both `ghsa` and `package` here AND `expires` has not passed. Never add an entry while a patched version exists upstream — check `npm view <package> dist-tags.latest` first. Expired entries fail the build on purpose.",
     "entries": [
         {
-            "ghsa": "GHSA-ch52-4w7c-c8xp",
-            "package": "http-cache-semantics",
-            "severity": "high",
-            "vulnerable": "<=4.2.0",
-            "patchedClaimed": ">=4.2.1",
-            "reason": "No upstream patch published yet: npm dist-tags.latest is still 4.2.0 and GitHub Dependabot alert #187 reports patched_versions = null. Reached only via astro's dependency chain (SSR runtime), so the only available action is to wait; an override to >=4.2.1 would not resolve.",
-            "issue": "https://github.com/HUAT-FSAC/Guidance-Astro/issues/173",
-            "added": "2026-10-03",
-            "expires": "2026-10-17"
-        },
-        {
             "ghsa": "GHSA-vfj7-8cjw-p6xm",
             "package": "braces",
             "severity": "high",
