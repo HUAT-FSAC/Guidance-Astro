@@ -1,13 +1,18 @@
 # STATE
 
-- 更新时间：2026-10-06T04:33Z（UTC，`date -u`）
-- 当前 Issue：无。ready 队列为空，本轮未领取。#198（回填 ROADMAP §3）仍 `status:review`，待 Planner 验收（未 reopen）。
-- 队列状态：**ready = 0**。#199 `blocked`（10-17 到期，剩 11 天）；#200 / #197 `needs-info`；#101 `blocked`（待人类 Secret）。
-- 分支：`main`（与 origin 同步，工作树干净）。无临时分支。
-- 未完成工作：无 in-progress 可恢复 ⇒ 按契约 §2.4「ready 队列空」停止。
-- 最近提交：`91dd48e` chore(agent): #200 调研报告（第 52 轮 Executor）← `55db6e2` 第 52 轮收尾 ← `082091c` docs: #198。
-- inbound 巡检（§1.6）：`wsyhuat/main` 相对 HEAD 有 2 提交（`f98be0d` home 卡片修复 / `d89b87e` merge upstream）。内容级 `git diff --stat main wsyhuat/main -- <f98be0d 路径>` 为空，且 squash 后的 `6a80906` 是 `main` 祖先 ⇒ `f98be0d` **已吸收**（squash 致 SHA 差集误报，符 §1.6 第 38 轮实测）；`d89b87e` 系 fork 追平我方 upstream（fork 仍含已删 `toast.ts`、缺 `audit-gate.mjs` 等）= **对落后非分叉**。本轮无外部工作需移植。
-- 已知环境限制：见 `.agent/ENV.md §4`。
-- 待 Planner：① 验收 #198；② M3 事件驱动，视情补 ready 队列；③ #199 临期（10-17）准备决策。
+- 更新时间：2026-10-06T09:00Z（UTC，`date -u`）
+- 当前 Issue：无 in-progress。本轮交付 **#201**（`fix(deps)` http-cache-semantics 4.3.0 + 删豁免条目）与 **#203**（`fix(i18n)` 面包屑本地化），两者均已转 `status:review` 并附执行报告；**未 close**（契约 §1.4）。
+- 队列状态：ready 现存 **#204**（P3，未领取，见 HANDOFF「为何未领」）；#201/#203 = in-review 积压 2；#199 `blocked`（10-17 到期，剩 11 天）；#200/#197 `needs-info`；#101 `blocked`（待人类 Secret）；**新增 `auto-discovered` #205**（3 条新公告 ⇒ `quality:audit` 与 `main` CI 红）。
+- ⛔ **主干门禁当前为红（非本轮造成）**：`main@234b15f` run `37435336214` 的 `Audit Dependencies` failure（`smol-toml` GHSA-r4xh-jqrq-34v2 / `source-map-js` GHSA-68fv-2mgg-jv7q / `postcss-selector-parser` GHSA-rj75-hqrm-r3gf），`Build`/`Quality Gate` 被 `needs: audit` 冻结。已用「未改动树对照组」实证明与 #201/#203 无因果 ⇒ 依 `WORKFLOW §1` 第 4 条「门禁不绕」**两分支均未合入 main、未部署**。
+- 分支（均已 push，待 Planner 合并）：
+    - `agent/issue-201-http-cache-semantics-upgrade` @ `5faaf8b`
+    - `agent/issue-203-breadcrumbs-i18n` @ `0054bd6`
+    - 两者文件零重叠，可任意顺序合并；建议先处置 #205 恢复绿。
+- 未完成工作：无 in-progress 可恢复。#204 有意保持 ready 未领取（避免 `main → #203 → #204` 未合并分支叠分支）。
+- 最近提交：`5faaf8b` fix(deps) #201（分支）← `0054bd6` fix(i18n) #203（分支）← `234b15f` chore(agent) 第 54 轮（main HEAD，未变）。
+- 基线提示：`main` 仍为 `test:run 436/40` · `test:e2e 97`；#203 分支实测 **442/41** · **98**。合并后需回填 `.agent/ENV.md §2`（本轮未改，因数字尚不代表 main）。
+- inbound 巡检（§1.6）：`wsyhuat/main` 相对 HEAD 仍 2 提交（`f98be0d` / `d89b87e`）。内容级 `git diff --stat main wsyhuat/main -- src/components/home/sections/{TeamMembers,Contributors}.astro` **输出为空** + `git merge-base --is-ancestor 6a80906 main` 成立 ⇒ `f98be0d` **已吸收**；`d89b87e` 系 fork 追平我方 upstream = **对落后非分叉**。本轮无外部工作需移植。
+- 已知环境限制：见 `.agent/ENV.md §4`；本轮新增实测：pnpm store 在 `~/.local/share/pnpm/store/v11` ⇒ `pnpm update` 下载新包必须跑在可写 `~` 的环境（沙箱内会 `ERR_SQLITE_ERROR`）。
+- 待 Planner：① 验收 #201 / #203（各含逐条核对表）；② **处置 #205**（3 条新公告：2 条在 semver 内、1 条跨 major 需 override 判断）以恢复 main 绿；③ 合并两分支 + `pnpm deploy:worker` + CSP 复验（两单各自欠的最后一条验收标准都系于此）；④ #199 临期（10-17）决策；⑤ 决定 #204 与 #203 的串行/合并时机。
 - 待人类：#101（`CLOUDFLARE_API_TOKEN`）；⏰ 2026-10-17 audit 豁免到期（#173 / D-011 / #199）。
 - LOCK：本轮收尾删除。
