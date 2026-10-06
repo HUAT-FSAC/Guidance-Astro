@@ -6,7 +6,7 @@
 
 **最后核实：** 2026-10-06T08:03Z（`date -u`）｜**核实基线：** `main@a042744`（第 53 轮 Executor 稳态巡检提交；工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 54 轮（无新鲜 LOCK，Executor 未运行；本轮验收关闭 #198、据 #200 分桶报告拆分后续、并提前触发 #199 到期核对——发现 http-cache-semantics 上游已发补丁，新建 ready #201 + needs-info #202 + pending D-016）
 
-> **第 54 轮判定：** ① **验收关闭 #198**（ROADMAP §3 漂移回填，三条标准均以独立复跑证据判定通过）。② **处置 #200 分桶报告**：en/zh「差 1」经键集比对**不成立**；Bucket C(a11y)/D(英文站可见)/E(灰色地带) 分层。③ **提前复核 #199（原定 10-17）**：`http-cache-semantics` 上游 latest 已由 4.2.0 → **4.3.0**（补丁已发布，满足 astro `^4.2.0`），按 D-011「已发补丁→删条目并升级」拆出 **ready #201**（升级 + 删豁免条目，收紧门禁·可逆·非红线）；`braces` 仍 3.0.3 无补丁 → #199 范围收敛为 braces-only，保持 `blocked`。④ **新建 #202（needs-info）+ D-016（pending）**：英文站 i18n 本地化投入范围属产品取舍，默认 A（修 C+D 缺陷类），裁定前不入 ready。**ready 队列 = 1（#201）**（事件驱动，因上游发补丁这一新事件补入）。
+> **第 54 轮判定：** ① **验收关闭 #198**（ROADMAP §3 漂移回填，三条标准均以独立复跑证据判定通过）。② **处置 #200 分桶报告**：en/zh「差 1」经键集比对**不成立**；Bucket C(a11y)/D(英文站可见)/E(灰色地带) 分层。③ **提前复核 #199（原定 10-17）**：`http-cache-semantics` 上游 latest 已由 4.2.0 → **4.3.0**（补丁已发布，满足 astro `^4.2.0`），按 D-011「已发补丁→删条目并升级」拆出 **ready #201**（升级 + 删豁免条目，收紧门禁·可逆·非红线）；`braces` 仍 3.0.3 无补丁 → #199 范围收敛为 braces-only，保持 `blocked`。④ **新建 #202（needs-info）+ D-016（pending）**：英文站 i18n 本地化投入范围属产品取舍。**⑤ 用户同轮裁定 D-016 = A**（只修 Bucket C a11y + D 英文站可见，E 暂缓）→ D-016 转正式、#202 拆为 **#203/#204 ready** 后关闭。**ready 队列 = 3（#201/#203/#204）**（两起真实事件/裁决驱动：上游发补丁 + 用户采纳 i18n 修复）。
 
 > **第 51 轮判定：** 自第 50 轮后**无新事件触发**（无新 in-review、无新 dependabot 扫描、inbound `wsyhuat` 无未移植提交）。本轮经用户提示扩充 backlog：把三项**真实、有证据、此前仅散见于散文**的站桩事项提升为独立 Issue —— **#198（ready・P3、ROADMAP §3 漂移回填）/ #199（blocked・P2、audit 豁免到期跟踪）/ #200（needs-info・P3、i18n 覆盖调研）**。ready 队列从 0 → **1（#198）**。前瞻核对（只读）：`http-cache-semantics` latest 仍 `4.2.0`、`braces` latest 仍 `3.0.3`——两条公告**上游仍未发补丁**，故 2026-10-17 到期将**按 D-011 设计主动变红**强制复核（由 #199 承载）。#101 Secret 复核仍缺 `CLOUDFLARE_API_TOKEN`。
 
@@ -176,7 +176,7 @@
 
 ---
 
-## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15｜进度：首批 2/2 + #198/#200 已关；ready #201 待执行
+## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15｜进度：首批 2/2 + #198/#200/#202 已关；ready #201/#203/#204 待执行
 
 **为什么是 M3：** M1 清积压、M2 建防复发机器，两者均已收官。本轮实测确认**机器已在运转**：dependabot 分组生效（10 项更新 = 3 个 PR）、rp 已自动开出 v1.2.0、供应链探针已上线。M3 不是再造机制，而是**周期性运转这些机制**并处理它们暴露出的真实事项。
 
@@ -187,13 +187,13 @@
 
 ### 5.2 M3 执行队列（给 Executor 的建议顺序）
 
-**当前 ready 队列 = 1（#201）。** 首批两单已由 Executor 第 49 轮交付、第 50 轮验收关闭；#198（第 51 轮建单）已由第 52 轮 Executor 交付、**第 54 轮 Planner 验收关闭**。
+**当前 ready 队列 = 3（#201 → #203 → #204）。** 首批两单已由第 50 轮验收关闭；#198（第 51 轮建单）已由第 52 轮交付、**第 54 轮 Planner 验收关闭**。
 
-1. **#201**（P2，`ready`）升级 `http-cache-semantics` 至 `4.3.0` 并删除对应 audit 豁免条目。事件驱动新事实：上游已发补丁（第 54 轮复核）。纯 lock 升级 + 删配置、收紧门禁、完全可逆、不触红线，已过 §4.2 门禁；因触及 SSR 运行时依赖链，验收含 `quality:audit`/`build`/`test:run` + 线上 CSP 复验（D-001）。
+1. **#201**（P2，`ready`）升级 `http-cache-semantics` 至 `4.3.0` 并删除对应 audit 豁免条目。事件驱动新事实：上游已发补丁（第 54 轮复核）。纯 lock 升级 + 删配置、收紧门禁、完全可逆、不触红线；因触及 SSR 运行时依赖链，验收含 `quality:audit`/`build`/`test:run` + 线上 CSP 复验（D-001）。
+2. **#203**（P2，`ready`）本地化英文站全站面包屑 `Breadcrumbs.astro` 的 `pathLabels` + 其 aria-label（D-016=A 拆出；独占整个 Breadcrumbs 文件）。
+3. **#204**（P3，`ready`）本地化其余 Bucket C aria-label + Bucket D 剩余可见文案（与 #203 串行，不碰 Breadcrumbs）。
 
-> **事件驱动策略（第 54 轮）：** #198 关闭后 ready 一度归 0；本轮因 `http-cache-semantics` 上游发补丁这一**新事件**补入 #201，符合「M3 事件驱动・零预置」（不凑数）。
-
-> M3 仍是**事件驱动**的稳态循环（不凑数）。第 54 轮处置：#198 已关闭；#200 调研单已关闭并拆出 #201（ready）/ #202（needs-info）；#199 范围收敛为 braces-only。后续仍按事件新增。
+> **第 54 轮事件（两起）：** ① `http-cache-semantics` 上游发补丁 → 补入 #201；② 就 D-016（i18n 本地化范围）**用户同轮裁定 A**（只修缺陷类）→ 从 #200 分桶拆出 **#203/#204 ready**（Bucket E 未选→不建单）。两者都是**真实事件/裁决**驱动，非凑数。
 
 ### 5.3 M3 已知阻塞与依赖
 
@@ -201,8 +201,8 @@
 - ✅ **#194 已关闭**（第 50 轮）：majors 组 #186（actions v7）/ #195（npm majors，含 typescript 6→7 + workers-types 降级，取代 #188）→ 一律**暂缓**，处置记入 **D-015**（延续 D-003/D-004）；两个 majors PR 保持开放作 standing reminder，不阻塞 minor-and-patch。若用户要采纳任一项，另立 ready 单。
 - **#197**（P3，`needs-info`）：release-please Release PR 的 PR 级 CI 靠手工 `update-branch` 触发（GITHUB_TOKEN 链式抑制，#192 实证）；是否配 PAT/App 令牌自动化 = CI 改造 + 需人类 Secret，**默认 C（不改）**，等发版频率信号。
 - ⏰ **#199**（P2，`blocked`）：**2026-10-17 audit 豁免到期核对（已收敛为 braces-only）**。第 54 轮提前复核：`http-cache-semantics` 上游已发补丁（→拆入 ready #201）；`braces` 仍 `3.0.3`・**无补丁** → 到期时若仍无补丁需按 D-011 **显式续期**（不得静默延长），若已发补丁则删条目并升级。#180 只读探针会在到期前告警。
-- ✅ **#200 已关闭**（第 54 轮）：i18n 分桶调研报告已交付（en/zh「差 1」经键集比对**不成立**；A 注释/B zh-only 无需动，C a11y・D 英文站可见・E 灰色地带）。i18n 实现拆→ **#202（needs-info）**，受 **D-016（pending）**约束。（#201 属 audit 豁免处置，与本单无关。）
-- **#202**（P3，`needs-info`，`auto-discovered`）：英文站 i18n 本地化实现——待 **D-016** 裁定覆盖范围（默认 A：修 Bucket C+D 缺陷类）后拆出 ready 实现单；裁定前不入 ready。
+- ✅ **#200 已关闭**（第 54 轮）：i18n 分桶调研报告已交付（en/zh「差 1」经键集比对**不成立**；A 注释/B zh-only 无需动，C a11y・D 英文站可见・E 灰色地带）。据用户裁定的 D-016=A，实现拆入 **#203/#204**（经 #202 承载，#202 已关）。（#201 属 audit 豁免处置，与本单无关。）
+- ✅ **#202 已关闭**（第 54 轮）：D-016 已由用户同轮裁定 A（只修缺陷类）→ 拆出 **#203（ready）/ #204（ready）**；Bucket E（Giscus 未激活/TeamNews chrome）未选→不建单。
 
 ### 5.4 M3 明确不做
 
@@ -221,9 +221,9 @@ M3 是**开放式稳态循环**，无「做完即停」的终线：只要项目�
 
 ### 6.1 当前结论（第 54 轮）
 
-本轮**无阻塞 #201 交付的 Decision Gate**（#201 为上游发补丁触发的 audit 豁免处置，收紧门禁·可逆·非红线，Planner 直接置 ready）。
+本轮**无阻塞交付的 Decision Gate**：#201（audit 豁免处置）、#203/#204（i18n 本地化）均已可直接执行。
 
-**需用户确认的 pending 项 = D-016**（英文站 i18n 本地化**投入范围**）：推荐与默认均为 **A（只修 Bucket C a11y + Bucket D 英文站可见缺陷；E 暂缓）**，**不阻塞 #201**——受其约束的 #202 置 `needs-info`，裁定（或默认转正）后才拆 ready 实现单。上一轮 pending **D-014 已由用户定 A 转正式**（见 §六历史段）。
+**上一轮 pending D-016 已由用户同轮裁定 A 并转正式**（英文站 i18n 本地化只修缺陷类：Bucket C a11y + Bucket D 可见文案，Bucket E 暂缓）→ 拆出 #203/#204。**当前无开放 pending**；需用户的仅余阻塞型外部项 **#101**（`CLOUDFLARE_API_TOKEN` Secret）与默认不改的 #197。
 
 > **历史（第 41/2 轮）结论：** M1/M2 均无开放 Decision Gate；peer 棘轮（D-010）、首页缺陷等均为低风险高可逆的工程判断，Planner 自行裁定。**若不同意 D-010，回退成本 = 删一条 override + revert 一个 pin 行。**
 
