@@ -2,13 +2,17 @@
 /**
  * 导航栏主题切换按钮 - 简洁版
  * 仅切换亮暗模式，不显示颜色选择菜单
+ * aria-label 按当前 locale 从 `src/content/i18n/{zh,en}.json` 取词（#204 / D-016）
  */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n'
+
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
 ---
 
 <button
     class="nav-theme-toggle"
     type="button"
-    aria-label="切换主题"
+    aria-label={t.accessibility.toggleTheme}
     data-nav-theme-toggle
 >
     <span class="icon-sun">

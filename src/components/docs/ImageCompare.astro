@@ -2,7 +2,12 @@
 /**
  * 图片对比滑块组件
  * 拖动滑块对比两张图片的前后效果
+ * 标签默认值按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `docs.imageCompare` 取词（#204 / D-016）
  */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n';
+
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname));
+const compare = t.docs.imageCompare;
 
 interface Props {
     /** 左侧图片（"之前"） */
@@ -22,9 +27,9 @@ interface Props {
 const {
     beforeSrc,
     afterSrc,
-    beforeLabel = '之前',
-    afterLabel = '之后',
-    alt = '图片对比',
+    beforeLabel = compare.before,
+    afterLabel = compare.after,
+    alt = compare.alt,
     initialPosition = 50
 } = Astro.props;
 ---

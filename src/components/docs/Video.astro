@@ -1,4 +1,10 @@
 ---
+/**
+ * 视频组件
+ * 回退文案按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `docs.video` 取词（#204 / D-016）
+ */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n';
+
 interface Props {
   src: string;
   type?: 'webm' | 'mp4';
@@ -16,6 +22,7 @@ const {
   loop = false,
   muted = false
 } = Astro.props;
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname));
 ---
 
 <div class="video-container">
@@ -28,7 +35,7 @@ const {
     muted={muted}
   >
     <source src={src} type={`video/${type}`} />
-    您的浏览器不支持 video 标签。
+    {t.docs.video.fallback}
   </video>
 </div>
 

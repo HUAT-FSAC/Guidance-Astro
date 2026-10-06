@@ -2,14 +2,21 @@
 /**
  * 错误边界组件
  * 捕获子组件中的错误，显示友好的错误信息
- * 
+ *
  * @example
  * ```astro
  * <ErrorBoundary fallback="加载失败" showErrorDetails={true}>
  *     <MyComponent />
  * </ErrorBoundary>
  * ```
+ *
+ * 文案按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `errors.boundary` 取词（#204 / D-016）；
+ * 客户端脚本所需的串经容器上的 `data-error-texts` 传入，避免把词表打进客户端 bundle。
  */
+import { getLocaleFromPath, getTranslations } from "../utils/i18n";
+
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname));
+const boundaryTexts = t.errors.boundary;
 
 interface Props {
     /** 错误时显示的提示信息 */
@@ -20,38 +27,44 @@ interface Props {
     allowRecover?: boolean;
 }
 
-const { 
-    fallback = "组件加载失败，请刷新页面重试。", 
+const {
+    fallback = boundaryTexts.defaultFallback,
     showErrorDetails = false,
-    allowRecover = true 
+    allowRecover = true
 } = Astro.props;
 ---
 
 <slot />
 
-<div id="error-boundary" class="error-boundary" style="display: none;" data-allow-recover={allowRecover}>
+<div
+    id="error-boundary"
+    class="error-boundary"
+    style="display: none;"
+    data-allow-recover={allowRecover}
+    data-error-texts={JSON.stringify(boundaryTexts)}
+>
     <div class="error-container">
-        <div class="error-badge" id="error-badge">可恢复</div>
+        <div class="error-badge" id="error-badge">{boundaryTexts.badgeRecoverable}</div>
         <div class="error-icon" id="error-icon">⚠️</div>
-        <h2 class="error-title" id="error-title">出错了</h2>
+        <h2 class="error-title" id="error-title">{boundaryTexts.title}</h2>
         <p class="error-message">{fallback}</p>
         {showErrorDetails && (
             <div class="error-details">
-                <h3>错误详情</h3>
+                <h3>{boundaryTexts.detailsTitle}</h3>
                 <pre id="error-stack" class="error-stack"></pre>
             </div>
         )}
         <div class="error-actions">
             {allowRecover && (
                 <button class="error-recover" id="error-recover-btn">
-                    🔄 尝试恢复
+                    🔄 {boundaryTexts.tryRecover}
                 </button>
             )}
             <button class="error-retry" onclick="window.location.reload()">
-                刷新页面
+                {boundaryTexts.reloadPage}
             </button>
             <button class="error-report" id="error-report-btn">
-                📝 报告问题
+                📝 {boundaryTexts.report}
             </button>
         </div>
     </div>
@@ -62,7 +75,26 @@ const {
 
     // 错误分类
     type ErrorSeverity = 'recoverable' | 'fatal';
-    
+
+    // 客户端所需的本地化文案（SSR 经容器 data-error-texts 注入，取不到时保持 DOM 原文案）
+    type BoundaryTexts = Partial<Record<
+        | 'badgeRecoverable' | 'badgeFatal' | 'title' | 'titleFatal'
+        | 'reportSubject' | 'reportErrorLabel' | 'reportPageLabel'
+        | 'reportTimeLabel' | 'reportBrowserLabel' | 'unknownError',
+        string
+    >>;
+
+    function readBoundaryTexts(): BoundaryTexts {
+        try {
+            const raw = document.getElementById("error-boundary")?.getAttribute("data-error-texts");
+            return raw ? (JSON.parse(raw) as BoundaryTexts) : {};
+        } catch {
+            return {};
+        }
+    }
+
+    const boundaryTexts = readBoundaryTexts();
+
     function classifyError(error: ErrorInfo): ErrorSeverity {
         // 网络错误和图片错误通常可恢复
         if (error.type === ErrorType.NETWORK_ERROR || error.type === ErrorType.IMAGE_ERROR) {
@@ -112,14 +144,20 @@ const {
         const recoverBtn = document.getElementById("error-recover-btn");
         
         if (severity === 'fatal') {
-            if (badge) { badge.textContent = '严重错误'; badge.classList.add('fatal'); }
+            if (badge) {
+                if (boundaryTexts.badgeFatal) badge.textContent = boundaryTexts.badgeFatal;
+                badge.classList.add('fatal');
+            }
             if (icon) icon.textContent = '💥';
-            if (title) title.textContent = '发生严重错误';
+            if (title && boundaryTexts.titleFatal) title.textContent = boundaryTexts.titleFatal;
             if (recoverBtn) recoverBtn.style.display = 'none';
         } else {
-            if (badge) { badge.textContent = '可恢复'; badge.classList.remove('fatal'); }
+            if (badge) {
+                if (boundaryTexts.badgeRecoverable) badge.textContent = boundaryTexts.badgeRecoverable;
+                badge.classList.remove('fatal');
+            }
             if (icon) icon.textContent = '⚠️';
-            if (title) title.textContent = '出错了';
+            if (title && boundaryTexts.title) title.textContent = boundaryTexts.title;
             if (recoverBtn) recoverBtn.style.display = 'inline-flex';
         }
 
@@ -143,12 +181,12 @@ const {
 
     // 报告问题按钮
     document.getElementById("error-report-btn")?.addEventListener("click", () => {
-        const subject = encodeURIComponent('网站错误报告');
+        const subject = encodeURIComponent(boundaryTexts.reportSubject ?? '');
         const body = encodeURIComponent(
-            `错误信息:\n${currentError?.message || '未知错误'}\n\n` +
-            `页面: ${window.location.href}\n` +
-            `时间: ${new Date().toISOString()}\n` +
-            `浏览器: ${navigator.userAgent}`
+            `${boundaryTexts.reportErrorLabel ?? ''}:\n${currentError?.message || boundaryTexts.unknownError || ''}\n\n` +
+            `${boundaryTexts.reportPageLabel ?? ''}: ${window.location.href}\n` +
+            `${boundaryTexts.reportTimeLabel ?? ''}: ${new Date().toISOString()}\n` +
+            `${boundaryTexts.reportBrowserLabel ?? ''}: ${navigator.userAgent}`
         );
         window.open(`mailto:support@huat-fsac.eu.org?subject=${subject}&body=${body}`, '_blank');
     });
