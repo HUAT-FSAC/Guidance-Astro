@@ -1,19 +1,18 @@
 # STATE
 
-- 更新时间：2026-10-06T09:05Z（UTC，`date -u`）
-- 当前 Issue：无 in-progress。本轮交付 **#201**（`fix(deps)` http-cache-semantics 4.3.0 + 删豁免条目）与 **#203**（`fix(i18n)` 面包屑本地化），两者均已转 `status:review` 并附执行报告；**未 close**（契约 §1.4）。
-- 队列状态：ready 现存 **#204**（P3，未领取，见 HANDOFF「为何未领」）；#201/#203 = in-review 积压 2；#199 `blocked`（10-17 到期，剩 11 天）；#200/#197 `needs-info`；#101 `blocked`（待人类 Secret）；**新增 `auto-discovered` #205**（3 条新公告 ⇒ `quality:audit` 与 `main` CI 红）。
-- ⛔ **主干门禁当前为红（非本轮造成）**：`main@234b15f` run `37435336214` 的 `Audit Dependencies` failure（`smol-toml` GHSA-r4xh-jqrq-34v2 / `source-map-js` GHSA-68fv-2mgg-jv7q / `postcss-selector-parser` GHSA-rj75-hqrm-r3gf），`Build`/`Quality Gate` 被 `needs: audit` 冻结。已用「未改动树对照组」实证明与 #201/#203 无因果 ⇒ 依 `WORKFLOW §1` 第 4 条「门禁不绕」**两分支均未合入 main、未部署**。
-- 分支（均已 push，待 Planner 合并）：
-    - `agent/issue-201-http-cache-semantics-upgrade` @ `5faaf8b`
-    - `agent/issue-203-breadcrumbs-i18n` @ `0054bd6`
-    - 两者文件零重叠，可任意顺序合并；建议先处置 #205 恢复绿。
-- 未完成工作：无 in-progress 可恢复。#204 有意保持 ready 未领取（避免 `main → #203 → #204` 未合并分支叠分支）。
-- 最近提交：main = `8edbc83` chore(agent) 第 55 轮收尾（← `234b15f` 第 54 轮）；代码分支 `5faaf8b` #201 / `0054bd6` #203（均未合入 main）。
-- CI 复验（收尾后）：`main@8edbc83` run `37439772218` → Lint/TypeCheck/Tests **success**，`Audit Dependencies` **failure**（#205 那 3 条），Build/QualityGate/Preview skipped。另证：主干红始于 `7e07828`（run `37434447457`，第 54 轮纯文档提交）⇒ 与本轮代码无因果。分支推送不触发 CI（`ci-cd.yml` 仅 main/develop push + PR→main）；已在 #201/#203 各追加一条「CI 核查结果」补充评论。
-- 基线提示：`main` 仍为 `test:run 436/40` · `test:e2e 97`；#203 分支实测 **442/41** · **98**。合并后需回填 `.agent/ENV.md §2`（本轮未改，因数字尚不代表 main）。
-- inbound 巡检（§1.6）：`wsyhuat/main` 相对 HEAD 仍 2 提交（`f98be0d` / `d89b87e`）。内容级 `git diff --stat main wsyhuat/main -- src/components/home/sections/{TeamMembers,Contributors}.astro` **输出为空** + `git merge-base --is-ancestor 6a80906 main` 成立 ⇒ `f98be0d` **已吸收**；`d89b87e` 系 fork 追平我方 upstream = **对落后非分叉**。本轮无外部工作需移植。
-- 已知环境限制：见 `.agent/ENV.md §4`；本轮新增实测：pnpm store 在 `~/.local/share/pnpm/store/v11` ⇒ `pnpm update` 下载新包必须跑在可写 `~` 的环境（沙箱内会 `ERR_SQLITE_ERROR`）。
-- 待 Planner：① 验收 #201 / #203（各含逐条核对表）；② **处置 #205**（3 条新公告：2 条在 semver 内、1 条跨 major 需 override 判断）以恢复 main 绿；③ 合并两分支 + `pnpm deploy:worker` + CSP 复验（两单各自欠的最后一条验收标准都系于此）；④ #199 临期（10-17）决策；⑤ 决定 #204 与 #203 的串行/合并时机。
+- 更新时间：2026-10-07T00:15Z（UTC，`date -u`）
+- 当前 Issue：无 in-progress。本轮交付 **#204**（`fix(i18n)` Bucket C/D 剩余 aria-label 与英文站可见文案，堆叠分支），已转 `status:review` 并附执行报告；**未 close**（契约 §1.4）。
+- 队列状态：**ready 空**；in-review 积压 **3**（#201 / #203 / #204）；#205 `auto-discovered`（**审计失败集 3→4 条**：新增 `sharp` GHSA-wq5f-xc86-pv6w，已评论登记，上游补丁均已发布 ⇒ 按 D-011 均不可加豁免条目）；#199 `blocked`（10-17 到期，剩 10 天）；#197 `needs-info`；#101 `blocked`（待人类 Secret）。
+- ⛔ **主干门禁仍为红（非本轮造成）**：`main@8edbc83` 最后 ci-cd run `37439772218` 的 `Audit Dependencies` failure。本轮在 #204 分支实测失败集 = **4 条外部公告**（smol-toml / source-map-js / postcss-selector-parser / sharp；树内并存 sharp 0.35.4 与 0.35.5）。依 `WORKFLOW §1` 第 4 条「门禁不绕」，本轮同样**未合入 main、未部署**。
+- 分支（均已 push，待 Planner 按序合并）：
+    - `agent/issue-201-http-cache-semantics-upgrade` @ `5faaf8b`（独立，与另两单零文件重叠）
+    - `agent/issue-203-breadcrumbs-i18n` @ `0054bd6`（基于 main）
+    - `agent/issue-204-i18n-bucket-cd` @ `f159158`（**堆叠于 #203 之上**；合并顺序必须 **#203 → #204**，#203 合入后 rebase main 即只含 `f159158`）
+- 未完成工作：无 in-progress 可恢复。#204 代码侧完整，仅「合并+部署+CSP 复验」欠项与 #201/#203 同源（#205 冻结）。
+- 最近提交：main = `020c006`（本轮起点）；本轮代码 `f159158`（#204）在分支上未合入；main 新增本轮 `chore(agent)` 收尾提交。
+- 基线（当轮实测）：#204 分支 `test:run 451/42`（父 #203 分支 442/41 + 本单 9）· `test:e2e 100`（父 98 + 本单 2）· sitemap 168 不变；`main` 仍为 436/40 · 97。**合并 #203/#204 后需回填 `.agent/ENV.md §2`**。
+- inbound 巡检（§1.6）：`wsyhuat/main` 仍仅 `f98be0d` / `d89b87e`，内容级 diff 为空 + `6a80906` 是 main 祖先（复验通过）⇒ 无外部工作需移植。
+- 已知环境限制：见 `.agent/ENV.md §4`。本轮新增实测：**commitlint 拒绝拉丁大写字母开头的 subject**（`fix(i18n): Bucket…` 被 `subject-case` 拒），中文开头即可；**堆叠分支 checkout 会把 `.agent/` 与 `docs/WORKFLOW.md` 回滚到分支基点版本**（round-55 的状态更新只在 main 上），Executor 的状态回写必须在 main 上进行（本轮已照此执行）。
+- 待 Planner：① 处置 **#205（4 条公告口径）** 恢复 main 绿；② 验收 in-review 三单（各附逐条核对表与真实退出码）；③ 按 **#203 → #204** 合并（#201 任意时机）→ `pnpm deploy:worker` → CSP nonce 复验（三单欠的是同一步，一次部署全覆盖）；④ 合并后回填 ENV §2 基线；⑤ #199 临期（10-17）显式决策（braces 仍无补丁，需按 D-011 续期）。
 - 待人类：#101（`CLOUDFLARE_API_TOKEN`）；⏰ 2026-10-17 audit 豁免到期（#173 / D-011 / #199）。
 - LOCK：本轮收尾删除。
