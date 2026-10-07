@@ -4,7 +4,9 @@
 > **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-*）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 
-**最后核实：** 2026-10-06T08:03Z（`date -u`）｜**核实基线：** `main@a042744`（第 53 轮 Executor 稳态巡检提交；工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 54 轮（无新鲜 LOCK，Executor 未运行；本轮验收关闭 #198、据 #200 分桶报告拆分后续、并提前触发 #199 到期核对——发现 http-cache-semantics 上游已发补丁，新建 ready #201 + needs-info #202 + pending D-016）
+**最后核实：** 2026-10-07T04:58Z（`date -u`）｜**核实基线：** `main@c9edc1b`（第 56 轮执行收尾提交；工作树干净、与 origin 同步）｜**核实人：** Planning Agent 第 57 轮（无新鲜 LOCK，Executor 未运行；本轮代码级验收关闭 #201/#203/#204 三单、#205 定级 P1 并改造为处置执行单、新建集成单 #206）
+
+> **第 57 轮判定：** ① **代码级验收并关闭 #201/#203/#204**（三单的 git diff 范围、锁文件版本、豁免清单、grep 复算、`.tmp/gate*-*.log` 门禁日志逐项独立复核属实；各自唯一欠项是同一件事「合并+部署+CSP 复验」，被 #205 冻结按住 → 按 §5.4「剩余量值得单独立项」close 原件 + 建 **#206 集成单**承载）。② **#205 定级 P1（主干阻塞，沿用 #173 先例）并改造为处置执行单（ready）**：本轮 `npm view` 复核 4 条公告（smol-toml/source-map-js/postcss-selector-parser/sharp）上游补丁**全部已发布** ⇒ 按 D-011 一律升级/override（postcss-selector-parser 跨 major 走 D-007 有界 override），**不新增豁免**。③ **执行队列 = 2（#205 → #206）**，均 P1；#206 含合并顺序 #201→#203→#204、一次部署覆盖三单欠项、ENV §2 基线回填、§11.1 patch 档合并 rp Release PR。④ #199 前瞻复核（10-17 到期）：`braces` latest 仍 `3.0.3` 无补丁 ⇒ 到期按 D-011 显式续期；`http-cache-semantics` `4.3.0` 已由 #201 分支解决（待合并）。in-review 积压 3 → **0**。
 
 > **第 54 轮判定：** ① **验收关闭 #198**（ROADMAP §3 漂移回填，三条标准均以独立复跑证据判定通过）。② **处置 #200 分桶报告**：en/zh「差 1」经键集比对**不成立**；Bucket C(a11y)/D(英文站可见)/E(灰色地带) 分层。③ **提前复核 #199（原定 10-17）**：`http-cache-semantics` 上游 latest 已由 4.2.0 → **4.3.0**（补丁已发布，满足 astro `^4.2.0`），按 D-011「已发补丁→删条目并升级」拆出 **ready #201**（升级 + 删豁免条目，收紧门禁·可逆·非红线）；`braces` 仍 3.0.3 无补丁 → #199 范围收敛为 braces-only，保持 `blocked`。④ **新建 #202（needs-info）+ D-016（pending）**：英文站 i18n 本地化投入范围属产品取舍。**⑤ 用户同轮裁定 D-016 = A**（只修 Bucket C a11y + D 英文站可见，E 暂缓）→ D-016 转正式、#202 拆为 **#203/#204 ready** 后关闭。**ready 队列 = 3（#201/#203/#204）**（两起真实事件/裁决驱动：上游发补丁 + 用户采纳 i18n 修复）。
 
@@ -176,7 +178,7 @@
 
 ---
 
-## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15｜进度：首批 2/2 + #198/#200/#202 已关；ready #201/#203/#204 待执行
+## 五、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-15｜进度：首批 2/2 + #198/#200/#201/#202/#203/#204 已关；ready 队列 = #205 → #206
 
 **为什么是 M3：** M1 清积压、M2 建防复发机器，两者均已收官。本轮实测确认**机器已在运转**：dependabot 分组生效（10 项更新 = 3 个 PR）、rp 已自动开出 v1.2.0、供应链探针已上线。M3 不是再造机制，而是**周期性运转这些机制**并处理它们暴露出的真实事项。
 
@@ -187,20 +189,26 @@
 
 ### 5.2 M3 执行队列（给 Executor 的建议顺序）
 
-**当前 ready 队列 = 3（#201 → #203 → #204）。** 首批两单已由第 50 轮验收关闭；#198（第 51 轮建单）已由第 52 轮交付、**第 54 轮 Planner 验收关闭**。
+**当前 ready 队列 = 2（#205 → #206）。** #201/#203/#204 已由第 57 轮代码级验收关闭（唯一欠项「合并+部署+CSP 复验」转入 #206）；#198/#200/#202 此前已关。
 
-1. **#201**（P2，`ready`）升级 `http-cache-semantics` 至 `4.3.0` 并删除对应 audit 豁免条目。事件驱动新事实：上游已发补丁（第 54 轮复核）。纯 lock 升级 + 删配置、收紧门禁、完全可逆、不触红线；因触及 SSR 运行时依赖链，验收含 `quality:audit`/`build`/`test:run` + 线上 CSP 复验（D-001）。
-2. **#203**（P2，`ready`）本地化英文站全站面包屑 `Breadcrumbs.astro` 的 `pathLabels` + 其 aria-label（D-016=A 拆出；独占整个 Breadcrumbs 文件）。
-3. **#204**（P3，`ready`）本地化其余 Bucket C aria-label + Bucket D 剩余可见文案（与 #203 串行，不碰 Breadcrumbs）。
+1. **#205**（P1，`ready`）升级 4 条公告依赖至已修补版本（smol-toml / source-map-js / sharp 直升；postcss-selector-parser 跨 major 走 D-007 有界 override），恢复 `quality:audit` 与 main CI 绿。D-011 事件驱动：4 条补丁均已发布（第 57 轮复核）。
+2. **#206**（P1，`ready`，依赖 #205）集成清偿单：按 **#201 → #203 → #204** 顺序合并三分支（#204 堆叠于 #203 之上，rebase 后单增量）→ `pnpm deploy:worker` → CSP nonce 复验（**一次部署覆盖三单的共同欠项**）→ ENV §2 基线回填 → §11.1 patch 档自主合并 rp 的 v1.2.1 Release PR。
 
-> **第 54 轮事件（两起）：** ① `http-cache-semantics` 上游发补丁 → 补入 #201；② 就 D-016（i18n 本地化范围）**用户同轮裁定 A**（只修缺陷类）→ 从 #200 分桶拆出 **#203/#204 ready**（Bucket E 未选→不建单）。两者都是**真实事件/裁决**驱动，非凑数。
+> **第 57 轮事件：** in-review 积压 3 单全部代码级验收关闭；主干红（#205）成为唯一吞吐瓶颈，处置路径已定级放行。
+
+### 给 Executor 的指令
+
+先 #205（独立分支 → PR 级 CI 全绿 → 合入 main），后 #206（#201 → #203 → #204 顺序合并 + 一次部署覆盖三单欠项）；两单均已过 §4.2 门禁，按序执行即可。
 
 ### 5.3 M3 已知阻塞与依赖
 
 - **#101**（P1，`blocked`，人类）：恢复 CI 自动部署需配 `CLOUDFLARE_API_TOKEN` Secret；本轮 `gh api .../actions/secrets` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`，阻塞继续有效。本地 OAuth 部署可用，不阻塞交付。
 - ✅ **#194 已关闭**（第 50 轮）：majors 组 #186（actions v7）/ #195（npm majors，含 typescript 6→7 + workers-types 降级，取代 #188）→ 一律**暂缓**，处置记入 **D-015**（延续 D-003/D-004）；两个 majors PR 保持开放作 standing reminder，不阻塞 minor-and-patch。若用户要采纳任一项，另立 ready 单。
 - **#197**（P3，`needs-info`）：release-please Release PR 的 PR 级 CI 靠手工 `update-branch` 触发（GITHUB_TOKEN 链式抑制，#192 实证）；是否配 PAT/App 令牌自动化 = CI 改造 + 需人类 Secret，**默认 C（不改）**，等发版频率信号。
-- ⏰ **#199**（P2，`blocked`）：**2026-10-17 audit 豁免到期核对（已收敛为 braces-only）**。第 54 轮提前复核：`http-cache-semantics` 上游已发补丁（→拆入 ready #201）；`braces` 仍 `3.0.3`・**无补丁** → 到期时若仍无补丁需按 D-011 **显式续期**（不得静默延长），若已发补丁则删条目并升级。#180 只读探针会在到期前告警。
+- **#205**（P1，`ready`，第 57 轮由 auto-discovered 改造为处置执行单）：4 条外部公告令 audit 门禁与 main CI 变红（2026-10-06 起），处置路径 = 全部升级/override（补丁均已发布），不新增豁免。**当前唯一吞吐瓶颈**。
+- **#206**（P1，`ready`，依赖 #205）：集成清偿单（合并三分支 + 部署 + CSP 复验 + ENV 回填 + v1.2.1 Release PR）。
+- ⏰ **#199**（P2，`blocked`）：**2026-10-17 audit 豁免到期核对（已收敛为 braces-only）**。第 57 轮复核 `braces` latest 仍 `3.0.3`・**无补丁** → 到期时若仍无补丁需按 D-011 **显式续期**（不得静默延长），若已发补丁则删条目并升级。`http-cache-semantics` 一侧已由 #201 解决（其分支待 #206 合并）。#180 只读探针会在到期前告警。
+- ✅ **#201/#203/#204 已关闭**（第 57 轮，代码级验收部分通过）：三单交付经独立复核属实（diff 范围/锁版本/豁免清单/grep/门禁日志）；唯一共同欠项「合并+部署+CSP 复验」由 #206 承载，Executor 在各单的欠项清偿评论为终验依据。
 - ✅ **#200 已关闭**（第 54 轮）：i18n 分桶调研报告已交付（en/zh「差 1」经键集比对**不成立**；A 注释/B zh-only 无需动，C a11y・D 英文站可见・E 灰色地带）。据用户裁定的 D-016=A，实现拆入 **#203/#204**（经 #202 承载，#202 已关）。（#201 属 audit 豁免处置，与本单无关。）
 - ✅ **#202 已关闭**（第 54 轮）：D-016 已由用户同轮裁定 A（只修缺陷类）→ 拆出 **#203（ready）/ #204（ready）**；Bucket E（Giscus 未激活/TeamNews chrome）未选→不建单。
 
@@ -219,11 +227,9 @@ M3 是**开放式稳态循环**，无「做完即停」的终线：只要项目�
 
 ## 六、Decision Gate（历史决策留痕，权威定义见 `.agent/DECISIONS.md`）
 
-### 6.1 当前结论（第 54 轮）
+### 6.1 当前结论（第 57 轮）
 
-本轮**无阻塞交付的 Decision Gate**：#201（audit 豁免处置）、#203/#204（i18n 本地化）均已可直接执行。
-
-**上一轮 pending D-016 已由用户同轮裁定 A 并转正式**（英文站 i18n 本地化只修缺陷类：Bucket C a11y + Bucket D 可见文案，Bucket E 暂缓）→ 拆出 #203/#204。**当前无开放 pending**；需用户的仅余阻塞型外部项 **#101**（`CLOUDFLARE_API_TOKEN` Secret）与默认不改的 #197。
+本轮**无新 Decision Gate**：#205 的处置是 D-011 既定机制的直接适用（4 条公告补丁均已发布 → 升级/override，不新增豁免），无需用户裁决；#206 的集成顺序属工程安排。**当前无开放 pending**；需用户的仅余阻塞型外部项 **#101**（`CLOUDFLARE_API_TOKEN` Secret）与默认不改的 #197。
 
 > **历史（第 41/2 轮）结论：** M1/M2 均无开放 Decision Gate；peer 棘轮（D-010）、首页缺陷等均为低风险高可逆的工程判断，Planner 自行裁定。**若不同意 D-010，回退成本 = 删一条 override + revert 一个 pin 行。**
 
