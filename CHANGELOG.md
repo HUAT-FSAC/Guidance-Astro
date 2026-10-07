@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.0...v1.2.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* **deps:** 升级 4 条公告依赖至已修补版本，恢复 audit 门禁绿 ([#207](https://github.com/HUAT-FSAC/Guidance-Astro/issues/207)) ([979f50d](https://github.com/HUAT-FSAC/Guidance-Astro/commit/979f50d21c3243996eb52e119616fc193040cc87)), closes [#205](https://github.com/HUAT-FSAC/Guidance-Astro/issues/205)
+* **deps:** 升级 http-cache-semantics 至 4.3.0 并删除 audit 豁免条目 ([5faaf8b](https://github.com/HUAT-FSAC/Guidance-Astro/commit/5faaf8b2bb350ac975a8667fb32245e33ba2bf5e)), closes [#201](https://github.com/HUAT-FSAC/Guidance-Astro/issues/201)
+* **i18n:** 剩余 aria-label 与英文站可见文案按 locale 取词（Bucket C/D） ([f159158](https://github.com/HUAT-FSAC/Guidance-Astro/commit/f159158475aa52e3b16b27fb9a55935f52380cfe)), closes [#204](https://github.com/HUAT-FSAC/Guidance-Astro/issues/204)
+* **i18n:** 面包屑标签与 aria-label 迁入 i18n 并按 locale 取词 ([0054bd6](https://github.com/HUAT-FSAC/Guidance-Astro/commit/0054bd6f2ea4fd409f7611fd3789a7380b01d926)), closes [#203](https://github.com/HUAT-FSAC/Guidance-Astro/issues/203)
+
 ## [1.2.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.1.0...v1.2.0) (2026-10-03)
 
 
