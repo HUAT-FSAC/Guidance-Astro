@@ -1,10 +1,17 @@
 ---
+/**
+ * B 站视频组件
+ * iframe 标题回退值按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `docs.video` 取词（#204 / D-016）
+ */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n'
+
 interface Props {
     bvid: string
     title?: string
 }
 
 const { bvid, title } = Astro.props
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
 ---
 
 <div class="bilibili-video">
@@ -12,7 +19,7 @@ const { bvid, title } = Astro.props
         src={`//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0`}
         scrolling="no"
         allowfullscreen="true"
-        title={title || 'B 站视频'}></iframe>
+        title={title || t.docs.video.bilibili}></iframe>
     {title && <p class="video-title">{title}</p>}
 </div>
 

@@ -2,17 +2,22 @@
 /**
  * 图片灯箱组件
  * 为文档中的图片提供点击放大查看功能
+ * aria-label 按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `docs.lightbox` 取词（#204 / D-016）
  */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n'
+
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
+const lightbox = t.docs.lightbox
 ---
 
-<div class="lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="图片预览">
-    <button class="lightbox-close" aria-label="关闭" type="button">&times;</button>
-    <button class="lightbox-nav lightbox-prev" aria-label="上一张" type="button">
+<div class="lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label={lightbox.dialog}>
+    <button class="lightbox-close" aria-label={lightbox.close} type="button">&times;</button>
+    <button class="lightbox-nav lightbox-prev" aria-label={lightbox.prev} type="button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
             <path d="M15 18l-6-6 6-6"/>
         </svg>
     </button>
-    <button class="lightbox-nav lightbox-next" aria-label="下一张" type="button">
+    <button class="lightbox-nav lightbox-next" aria-label={lightbox.next} type="button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
             <path d="M9 18l6-6-6-6"/>
         </svg>

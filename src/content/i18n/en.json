@@ -179,7 +179,24 @@
             "telegram": "Telegram",
             "email": "Email",
             "qrcodeTitle": "Share via WeChat QR Code",
-            "qrcodeHint": "Open WeChat and scan to share with friends"
+            "qrcodeHint": "Open WeChat and scan to share with friends",
+            "sharePage": "Share this page"
+        },
+        "lightbox": {
+            "dialog": "Image preview",
+            "close": "Close",
+            "prev": "Previous image",
+            "next": "Next image"
+        },
+        "readingTime": "About {n} min read",
+        "imageCompare": {
+            "before": "Before",
+            "after": "After",
+            "alt": "Image comparison"
+        },
+        "video": {
+            "fallback": "Your browser does not support the video tag.",
+            "bilibili": "Bilibili video"
         },
         "breadcrumbs": {
             "ariaLabel": "Breadcrumbs",
@@ -261,7 +278,24 @@
         "serverErrorMessage": "Sorry, something went wrong on our end. Please try again later.",
         "rateLimit": "Too many requests. Please try again later.",
         "unauthorized": "Not logged in or session expired",
-        "forbidden": "No permission to perform this action"
+        "forbidden": "No permission to perform this action",
+        "boundary": {
+            "defaultFallback": "Component failed to load. Please refresh the page and try again.",
+            "badgeRecoverable": "Recoverable",
+            "badgeFatal": "Fatal error",
+            "title": "Something went wrong",
+            "titleFatal": "A critical error occurred",
+            "detailsTitle": "Error details",
+            "tryRecover": "Try to recover",
+            "reloadPage": "Reload page",
+            "report": "Report issue",
+            "reportSubject": "Website error report",
+            "reportErrorLabel": "Error message",
+            "reportPageLabel": "Page",
+            "reportTimeLabel": "Time",
+            "reportBrowserLabel": "Browser",
+            "unknownError": "Unknown error"
+        }
     },
     "pwa": {
         "offline": "You are currently offline",
@@ -463,6 +497,13 @@
     },
     "showcase": {
         "ariaLabel": "Feature Modules",
+        "cars": {
+            "yearTabsAria": "Select racing car year",
+            "carAlt": "{year} Racing Car {nickname}",
+            "coreTech": "Core Technology",
+            "seasonResults": "Season Results",
+            "evolution": "Technical Evolution"
+        },
         "modules": [
             {
                 "title": "Autonomous Driving Lab",

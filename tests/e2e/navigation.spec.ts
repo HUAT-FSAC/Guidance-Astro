@@ -201,6 +201,35 @@ test.describe('导航功能', () => {
         await expect(crumbs).not.toContainText(/[\u4e00-\u9fff]/)
     })
 
+    test('英文页 chrome aria-label 与可见文案为英文（#204）', async ({ page }) => {
+        await page.goto('/en/archive/general/ros-installing/')
+        // a11y：导航栏主题切换按钮 + 图片灯箱（PageFrame 全局渲染）
+        await expect(page.locator('button[data-nav-theme-toggle]').first()).toHaveAttribute(
+            'aria-label',
+            'Toggle theme'
+        )
+        const lightbox = page.locator('#imageLightbox')
+        await expect(lightbox).toHaveAttribute('aria-label', 'Image preview')
+        await expect(lightbox.locator('.lightbox-close')).toHaveAttribute('aria-label', 'Close')
+        await expect(lightbox.locator('.lightbox-prev')).toHaveAttribute(
+            'aria-label',
+            'Previous image'
+        )
+        // 可见文案：阅读时间徽章（MarkdownContent 渲染 ReadingProgress）
+        const badge = page.locator('#readingTimeBadge')
+        await expect(badge).toContainText(/min read/)
+        await expect(badge).not.toContainText(/[\u4e00-\u9fff]/)
+    })
+
+    test('中文页 chrome aria-label 保持中文（#204）', async ({ page }) => {
+        await page.goto('/docs-center/')
+        await expect(page.locator('button[data-nav-theme-toggle]').first()).toHaveAttribute(
+            'aria-label',
+            '切换主题'
+        )
+        await expect(page.locator('#imageLightbox')).toHaveAttribute('aria-label', '图片预览')
+    })
+
     test('首页 CTA 按钮可点击', async ({ page }) => {
         await page.goto('/')
         const cta = page.locator('.hero-cta').first()

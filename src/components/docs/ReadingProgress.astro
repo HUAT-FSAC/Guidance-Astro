@@ -2,7 +2,9 @@
 /**
  * 阅读进度组件
  * 显示顶部进度条和预计阅读时间
+ * 阅读时间文案按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `docs.readingTime` 取词（#204 / D-016）
  */
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n';
 
 interface Props {
     /** 文档内容（用于计算阅读时间） */
@@ -12,6 +14,7 @@ interface Props {
 }
 
 const { content = '', wordsPerMinute = 300 } = Astro.props;
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname));
 
 // 计算预计阅读时间
 function calculateReadingTime(text: string, wpm: number): number {
@@ -49,7 +52,7 @@ const readingTime = calculateReadingTime(content, wordsPerMinute);
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        <span>约 {readingTime} 分钟阅读</span>
+        <span>{t.docs.readingTime.replace('{n}', String(readingTime))}</span>
         <span class="progress-percent" id="progressPercent">0%</span>
     </div>
 </div>

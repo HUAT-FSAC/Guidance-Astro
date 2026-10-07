@@ -2,14 +2,20 @@
 /**
  * 赛车展示组件
  * 年份 Tab 切换 + 参数卡片 + 技术亮点 + 赛绩 + 演进时间线
+ * UI 串按当前 locale 从 `src/content/i18n/{zh,en}.json` 的 `showcase.cars` 取词（#204 / D-016）
+ * 车辆数据本身（描述/参数/成绩等）属 zh-only 数据（Bucket B），不在本地化范围
  */
 import { carsData, techEvolution } from '../../data/cars';
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n';
+
+const t = getTranslations(getLocaleFromPath(Astro.url.pathname));
+const cars = t.showcase.cars;
 ---
 
 <div class="cars-showcase" id="cars-showcase">
 
     <!-- 年份 Tab 导航 -->
-    <div class="year-tabs" role="tablist" aria-label="选择赛车年份">
+    <div class="year-tabs" role="tablist" aria-label={cars.yearTabsAria}>
         {carsData.map((car, i) => (
             <button
                 class={`year-tab ${i === 0 ? 'active' : ''}`}
@@ -38,7 +44,7 @@ import { carsData, techEvolution } from '../../data/cars';
                 <div class="car-image-wrap">
                     <img
                         src={car.image}
-                        alt={`${car.year} 赛车 ${car.nickname}`}
+                        alt={cars.carAlt.replace('{year}', String(car.year)).replace('{nickname}', car.nickname)}
                         loading={i === 0 ? 'eager' : 'lazy'}
                         class="car-image"
                     />
@@ -69,7 +75,7 @@ import { carsData, techEvolution } from '../../data/cars';
 
             <!-- 技术亮点 -->
             <div class="highlights-section">
-                <h3 class="section-title">核心技术</h3>
+                <h3 class="section-title">{cars.coreTech}</h3>
                 <div class="highlights-grid">
                     {car.highlights.map(h => (
                         <div class="highlight-card">
@@ -86,7 +92,7 @@ import { carsData, techEvolution } from '../../data/cars';
             <!-- 赛季成绩 -->
             {car.achievements.length > 0 && (
                 <div class="achievements-section">
-                    <h3 class="section-title">赛季成绩</h3>
+                    <h3 class="section-title">{cars.seasonResults}</h3>
                     <div class="achievements-list">
                         {car.achievements.map(a => (
                             <div class="achievement-item">
@@ -105,7 +111,7 @@ import { carsData, techEvolution } from '../../data/cars';
 
     <!-- 技术演进时间线 -->
     <div class="evolution-section">
-        <h3 class="section-title">技术演进</h3>
+        <h3 class="section-title">{cars.evolution}</h3>
         <div class="evolution-track">
             {techEvolution.map((node, i) => (
                 <div class="evolution-node">
