@@ -217,9 +217,10 @@
 - **交付影响：** 据 A 拆分 **#203（ready・P2：Breadcrumbs 全站英文面包屑）** + **#204（ready・P3：Bucket C aria-label + Bucket D 剩余可见文案）**；**Bucket E 不建单**（用户未选 B）。#202（决策承载单）目的达成→关闭。
 - **重新评估触发：** 若后续用户改采 B（补 Bucket E）或英文站定位发生变化，则重评本地化范围。
 
-## 未决（第 54 轮：D-016 已由用户同轮裁定 A 并拆单）
+## 未决（第 60 轮刷新）
 
-本轮 **D-016 已转正式（用户选 A）**，并拆出 #203/#204 ready。仍需用户拍板的开放事项：
+无 pending 决策（D-001..D-016 全部生效）。仍开放的**人类侧事项**（非产品取舍，Agent 不可自解）：
 
-- **#101**（`blocked`）：外部阻塞——需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 54 轮 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`），非产品取舍、非 Agent 可自解。
-- **#197**（`needs-info`）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。
+- **#101**（`blocked`）：需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 60 轮 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）。
+- **#197**（`needs-info`，P3）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。第 60 轮已补录第 58 轮实测：同基 Release PR 的 `update-branch` 失效（already up-to-date）+ 空提交触发法有效（#208 实证，squash 后不入 main）。
+- ⏰ **2026-10-17** braces 豁免到期（#173/#199/D-011）：第 60 轮前瞻 `npm view braces` latest 仍 `3.0.3` 无补丁 → 到期按 D-011 **显式续期**（机制性决策，D-011 已授权框架，无需再问用户；不得静默延长）。
