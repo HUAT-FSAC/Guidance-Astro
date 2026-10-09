@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-03T09:50Z（UTC，`date -u`）· 探测者 `executor-exec-20261003T0950Z`
+> 最近更新：2026-10-09T14:32Z（UTC，`date -u`）· 探测者 `executor-20261009T134841Z`（本轮仅刷新头部戳 + §2 基线溯源标注 + §4 补两条实测限制；其余命令未重测，语义不变）
 
 ## 1. 工具链（实测）
 
@@ -46,15 +46,18 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 
 ## 4. 已知环境限制与规避（都是本会话踩过的）
 
-| 限制                   | 现象                                                                                                                      | 规避                                                                                               |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| 沙箱下 `~` 只读        | `pnpm install` 下载**新**包时报 `[ERR_SQLITE_ERROR] unable to open database file`（要写 `~/.local/share/pnpm/store/v11`） | 在允许写 `~` 的环境执行该步；**不要**把 store 挪进工作区（会 purge `node_modules` 并重下 ~950 包） |
-| pnpm deps-status 竞态  | 链式命令里 `pnpm <script>` 偶发抛栈失败，且管道后 `$?` 取到的是 `tail` 的退出码                                           | `export npm_config_verify_deps_before_run=false`；退出码必须由被测命令单独产出                     |
-| `/tmp` 只读            | 备份/探针文件写不进 `/tmp`                                                                                                | 用仓库内 gitignored 的 `.tmp/`                                                                     |
-| heredoc 转义           | `\!` 被写进源码（`!==`、`feat!:`）造成语法错；双引号串内嵌裸双引号会让整段 python 失败                                    | 写完必查 `grep -c '\\!'`；用书名号「」代替内嵌 `"`                                                 |
-| jsdom 几何为零         | `getBoundingClientRect()` 返回全 0 ⇒ 依赖 `bottom > 0` 的逻辑被误判；旧断言对新实现同样通过（零守卫力）                   | 单测必须显式打桩 `getBoundingClientRect`                                                           |
-| Playwright 可见性语义  | `toBeVisible()` 认为 `opacity:0` 仍"可见"                                                                                 | 断言 computed 样式：`toHaveCSS('opacity','1')`                                                     |
-| squash 使 SHA 差集失真 | `HEAD..wsyhuat/main` 与 `git cherry` 都会把**已移植**的提交报成未吸收                                                     | 登记吸收后的 SHA + 内容级 `git diff --stat main <remote>/main -- <路径>` 终判                      |
+| 限制                   | 现象                                                                                                                                                      | 规避                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 沙箱下 `~` 只读        | `pnpm install` 下载**新**包时报 `[ERR_SQLITE_ERROR] unable to open database file`（要写 `~/.local/share/pnpm/store/v11`）                                 | 在允许写 `~` 的环境执行该步；**不要**把 store 挪进工作区（会 purge `node_modules` 并重下 ~950 包） |
+| pnpm deps-status 竞态  | 链式命令里 `pnpm <script>` 偶发抛栈失败，且管道后 `$?` 取到的是 `tail` 的退出码                                                                           | `export npm_config_verify_deps_before_run=false`；退出码必须由被测命令单独产出                     |
+| `/tmp` 只读            | 备份/探针文件写不进 `/tmp`                                                                                                                                | 用仓库内 gitignored 的 `.tmp/`                                                                     |
+| heredoc 转义           | `\!` 被写进源码（`!==`、`feat!:`）造成语法错；双引号串内嵌裸双引号会让整段 python 失败                                                                    | 写完必查 `grep -c '\\!'`；用书名号「」代替内嵌 `"`                                                 |
+| jsdom 几何为零         | `getBoundingClientRect()` 返回全 0 ⇒ 依赖 `bottom > 0` 的逻辑被误判；旧断言对新实现同样通过（零守卫力）                                                   | 单测必须显式打桩 `getBoundingClientRect`                                                           |
+| Playwright 可见性语义  | `toBeVisible()` 认为 `opacity:0` 仍"可见"                                                                                                                 | 断言 computed 样式：`toHaveCSS('opacity','1')`                                                     |
+| squash 使 SHA 差集失真 | `HEAD..wsyhuat/main` 与 `git cherry` 都会把**已移植**的提交报成未吸收                                                                                     | 登记吸收后的 SHA + 内容级 `git diff --stat main <remote>/main -- <路径>` 终判                      |
+| markdown 表格列宽      | 手写/改写表格列宽不符合 prettier 规范 → `pnpm format:check` FAIL，lint-staged 还会重排**整表**导致同表所有行以 ± 成对出现在 diff 里，易误判为「改了别行」 | 改表格后先 `pnpm exec prettier --write <file>`，再用**去空白后逐行 diff** 判定真实内容差异         |
+| bash 双引号内反引号    | `gh issue comment --body "…\`docs/x.md\`…"`会把反引号内容当命令执行（报`Permission denied`），评论里留下空洞                                              | 长正文用 heredoc（`<<'EOF'`）或写文件后 `gh issue comment --body-file`                             |
+| `gh pr checks` 退出码  | 全部 check settled 后退出码非零，轮询脚本易误判为「仍在跑」                                                                                               | 以 check 的 `conclusion` 字段判定，不看退出码                                                      |
 
 ## 5. 协作约定（本仓库现状 vs 契约）
 
