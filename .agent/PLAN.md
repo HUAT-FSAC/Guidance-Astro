@@ -5,7 +5,7 @@
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-017，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-09T15:45Z（`date -u`）｜**核实基线：** `main@6e32d7a`（与 origin 同步）｜**核实人：** Planning Agent 第 64 轮（无新鲜 LOCK，Executor 第 63 轮后未运行）
+**最后核实：** 2026-10-09T15:55Z（`date -u`）｜**核实基线：** `main@56250bb`（与 origin 同步，CI 双绿）｜**核实人：** Planning Agent 第 64 轮（无新鲜 LOCK，Executor 第 63 轮后未运行）
 
 > **第 64 轮判定：** ① 无 LOCK、无 in-progress ⇒ Executor 未运行，无现场可干预。② **#210 验收通过并关闭**（5 条标准全部独立取证：`git show b2baab2` 单文件 17+/13-、PR #211 MERGED 全 check pass、main ci-cd @ `b2baab2` success、本轮亲跑 grep 三条过期引用 0 命中且 D-004 标注逐字未动）⇒ ready 与 in-review 双清零；M3 进度按 GitHub milestone API 实测修正为 **10 closed / 3 open**（原记 8/3 系 closed 计数漂移；3 open = #212/#199/#197，#101 不在 M3）。③ **新发现建 #212（ready・P2・M3）**：metrics 采集器（`35e1abc`/#149 起新 schema）与看板组件（仍消费旧 schema）不一致，bot PR #97 按现状合入即 `Object.values(undefined)` 构建失败且 GITHUB_TOKEN 建 PR 不触发 CI（同 #197 根因）；已在 PR #97 留保护性暂缓评论。④ backlog：#199 braces latest 仍 3.0.3（10-17 剩 8 天，到期按 D-011 显式续期、不提前建单）；#197 默认 C 无新信号；#101 复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN` ⇒ blocked 有效；#209/#186 majors 按 D-015 暂缓；inbound 无新工作；无重复/无长期饥饿。⑤ **§7.4 结构漂移定夺 = 移回表格**：第 58–63 轮 8 条记录原被追加在文件末尾 §11.3 之后（紧跟段落无空行、渲染不成表格），本轮整批移入 §7.4 表格末尾（纯格式搬迁、去空白 diff 取证内容逐字未动），节标题补防复发约定。⑥ pending 清零；执行队列 = **1（#212）**。
 
@@ -23,7 +23,7 @@
 2. minor-and-patch 分组按既定手法（D-014 批次处置）摄入、开放 dependabot PR 不逼近 `open-pull-requests-limit` —— ✅（#187/#196 批次先例；当前开放 PR 仅 majors 组 2 个 + automation 1 个）。
 3. majors 组有明确处置结论 —— ✅ D-015 暂缓（#186/#209 为 standing reminder）。
 4. 2026-10-17 audit 豁免到期前完成核对与显式决策 —— ⏳ 剩 8 天（本轮前瞻：braces 仍无补丁，latest 3.0.3）。
-5. main CI 全绿、线上 `/` 200 + CSP nonce —— ✅ 本轮复验（run `37949256727` @ `6e32d7a` 全 success；第 63 轮线上 nonce 头/体一致）。
+5. main CI 全绿、线上 `/` 200 + CSP nonce —— ✅ 本轮复验（main 最新两个 run `37951937411` @ `bee6859` 与 `37952295923` @ `56250bb` 均 success；线上 `/` HTTP/2 200 + 每请求新 nonce 只读抽查通过）。
 
 ### 2.2 执行队列（当前 = 1）
 
