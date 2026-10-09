@@ -24,7 +24,7 @@ Executor 第 63 轮为**零交付巡检轮**（结论：无 Issue 可执行）�
 ## 验证情况
 
 - 本地实跑（main@`9b98cfe`，零代码改动，证据 `.tmp/gate63/*.log`）：lint 0 · format:check 0 · tsc 0 · test:run 451 passed / 42 files · build 0 · bundle 0 · theme 0 · routes 0 · audit 0（豁免仅 braces）· test:e2e 100 passed · sitemap 168。
-- CI：main ci-cd run `37944789509` success（PR 无新增，无 PR 侧 CI 需等）。
+- CI：本轮提交 `2a33233` 的 main ci-cd run `37947764966` success（6 job 全 pass：Lint and Format / Audit Dependencies / Type Check / Tests / Build / Quality Gate）；上一提交 run `37944789509` 亦 success（三轮连续绿）。无 PR 侧 CI 需等（零代码改动、无分支）。
 - 线上：`/` 200 + CSP 单请求 nonce 头体一致 PASS；零代码改动 ⇒ 未部署、未发版（线上仍为第 62 轮 Version `94687dfe`）。
 - 未跑 / 未做：无代码改动故无分支与 PR；`pnpm install` 未跑（lock 未变，CI 已覆盖）。
 
