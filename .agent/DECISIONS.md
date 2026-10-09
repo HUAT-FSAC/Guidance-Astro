@@ -232,10 +232,10 @@
 - **默认方案：** A（用户不回复时照常稳态巡检；连续 3 轮无答复且无异常 → 按 §6.3 默认转正）。
 - **重新评估触发：** 用户给出任一方向；车队素材到位；og:image 触发条件命中；10-17 到期决策完成后的 M3 收官评估。
 
-## 未决（第 61 轮·D-017 同轮裁定后刷新）
+## 未决（第 64 轮刷新）
 
-无 pending 决策（D-001..D-017 全部生效，D-017 用户同轮选 A=维持稳态）。仍开放的**人类侧事项**（非产品取舍，Agent 不可自解）：
+无 pending 决策（D-001..D-017 全部生效，D-017 用户 2026-10-08 选 A=维持稳态）。仍开放的**人类侧事项**（非产品取舍，Agent 不可自解）：
 
-- **#101**（`blocked`）：需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 60 轮 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）。
+- **#101**（`blocked`）：需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 60、64 轮两度 `gh api` 复核均仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）。
 - **#197**（`needs-info`，P3）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。第 60 轮已补录第 58 轮实测：同基 Release PR 的 `update-branch` 失效（already up-to-date）+ 空提交触发法有效（#208 实证，squash 后不入 main）。
-- ⏰ **2026-10-17** braces 豁免到期（#173/#199/D-011）：第 60 轮前瞻 `npm view braces` latest 仍 `3.0.3` 无补丁 → 到期按 D-011 **显式续期**（机制性决策，D-011 已授权框架，无需再问用户；不得静默延长）。
+- ⏰ **2026-10-17** braces 豁免到期（#173/#199/D-011）：第 63、64 轮两度实测 `npm view braces` latest 仍 `3.0.3` 无补丁（剩 8 天）→ 到期按 D-011 **显式续期**（机制性决策，D-011 已授权框架，无需再问用户；不得静默延长）。
