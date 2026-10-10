@@ -1,37 +1,37 @@
 {
-    "generatedAt": "2026-10-10T03:14:50.777Z",
+    "generatedAt": "2026-10-10T04:00:17.010Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 2.09,
-        "prCycleTimeDays": 0.59,
+        "prCycleTimeDays": 0.57,
         "issueCloseRatePercent": 109.59,
         "prMergeRatePercent": 50,
-        "ciSuccessRatePercent": 58,
+        "ciSuccessRatePercent": 54,
         "wipIssueCount": 1,
         "reviewIssueCount": 0,
         "backlogIssueCount": 2
     },
     "counts": {
         "openIssueCount": 4,
-        "openPullRequestCount": 3,
+        "openPullRequestCount": 4,
         "openedIssuesInWindow": 73,
         "closedIssuesInWindow": 80,
-        "openedPullRequestsInWindow": 82,
-        "mergedPullRequestsInWindow": 41,
+        "openedPullRequestsInWindow": 84,
+        "mergedPullRequestsInWindow": 42,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 14
     },
     "samples": {
         "latestIssueUpdatedAt": "2026-10-09T15:21:46.000Z",
-        "latestMergedPullRequestAt": "2026-10-09T14:18:26.000Z"
+        "latestMergedPullRequestAt": "2026-10-10T03:57:39.000Z"
     },
     "summary": {
         "totalIssues": 87,
         "closedIssues": 83,
         "openIssues": 4,
-        "ciPassRate": 58
+        "ciPassRate": 54
     },
     "byStatus": {
         "backlog": 0,
@@ -75,6 +75,18 @@
     },
     "recentActivity": [
         {
+            "type": "pr",
+            "title": "chore(main): release 1.2.2",
+            "status": "open",
+            "updatedAt": "2026-10-10T03:58:14.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "fix(metrics): 采集器输出看板超集 schema，修复合入即构建失败",
+            "status": "merged",
+            "updatedAt": "2026-10-10T03:57:39.000Z"
+        },
+        {
             "type": "issue",
             "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
             "status": "open",
@@ -109,18 +121,6 @@
             "title": "合并 #201/#203/#204 三分支并完成部署、CSP 复验与 ENV 基线回填",
             "status": "closed",
             "updatedAt": "2026-10-08T11:31:25.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-07T07:28:05.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "本地化其余 aria-label(a11y) 与英文站可见 UI 文案（Bucket C/D 剩余）",
-            "status": "closed",
-            "updatedAt": "2026-10-07T07:25:29.000Z"
         }
     ]
 }
