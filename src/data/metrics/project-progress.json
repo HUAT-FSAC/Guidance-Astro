@@ -1,83 +1,126 @@
 {
-    "generatedAt": "2026-04-06T08:00:00.000Z",
+    "generatedAt": "2026-10-10T03:14:50.777Z",
+    "repository": "HUAT-FSAC/Guidance-Astro",
+    "windowDays": 30,
+    "status": "ok",
+    "metrics": {
+        "issueLeadTimeDays": 2.09,
+        "prCycleTimeDays": 0.59,
+        "issueCloseRatePercent": 109.59,
+        "prMergeRatePercent": 50,
+        "ciSuccessRatePercent": 58,
+        "wipIssueCount": 1,
+        "reviewIssueCount": 0,
+        "backlogIssueCount": 2
+    },
+    "counts": {
+        "openIssueCount": 4,
+        "openPullRequestCount": 3,
+        "openedIssuesInWindow": 73,
+        "closedIssuesInWindow": 80,
+        "openedPullRequestsInWindow": 82,
+        "mergedPullRequestsInWindow": 41,
+        "ciRunsInWindow": 50,
+        "ciFailedRunsInWindow": 14
+    },
+    "samples": {
+        "latestIssueUpdatedAt": "2026-10-09T15:21:46.000Z",
+        "latestMergedPullRequestAt": "2026-10-09T14:18:26.000Z"
+    },
     "summary": {
-        "totalIssues": 25,
-        "closedIssues": 18,
-        "openIssues": 7,
-        "ciPassRate": 85
+        "totalIssues": 87,
+        "closedIssues": 83,
+        "openIssues": 4,
+        "ciPassRate": 58
     },
     "byStatus": {
-        "backlog": 3,
-        "ready": 2,
-        "inProgress": 4,
-        "review": 2,
-        "blocked": 1,
-        "done": 13
+        "backlog": 0,
+        "ready": 1,
+        "inProgress": 1,
+        "review": 0,
+        "blocked": 2,
+        "done": 83
     },
     "byPriority": {
         "p0": 2,
-        "p1": 8,
-        "p2": 10,
-        "p3": 5
+        "p1": 29,
+        "p2": 21,
+        "p3": 20
     },
     "milestones": [
         {
-            "title": "安全加固与性能优化",
-            "description": "修复 CSP 问题，添加 API 限流，优化加载性能",
-            "status": "in-progress",
-            "completionRate": 75,
-            "dueDate": "2026-04-15"
+            "title": "M2 稳态防复发（Anti-Drift）",
+            "description": "防止 M1 查出的四类漂移复发：依赖摄入停摆 / 发版积压 / 口径与快照漂移 / 外部贡献不可见；并把 peer 与 audit 两类 guard 变成有日历意识的机制。",
+            "status": "completed",
+            "completionRate": 100,
+            "dueDate": "2026-10-24"
         },
         {
-            "title": "国际化支持",
-            "description": "完成英文站点的翻译工作",
+            "title": "M3 稳态运营（Steady-state Operations）",
+            "description": "运行 M1/M2 建成的稳态机器：周期性摄入 minor-and-patch 依赖、按 D-012 发版、majors 显式复核、供应链探针与 audit 豁免到期核对",
             "status": "in-progress",
-            "completionRate": 40,
-            "dueDate": "2026-05-01"
-        },
-        {
-            "title": "管理后台完善",
-            "description": "实现成员管理编辑功能和个人资料管理",
-            "status": "backlog",
-            "completionRate": 0,
-            "dueDate": "2026-05-15"
-        },
-        {
-            "title": "文档内容扩充",
-            "description": "补充 2025 赛季技术文档",
-            "status": "in-progress",
-            "completionRate": 60,
-            "dueDate": "2026-06-01"
+            "completionRate": 77,
+            "dueDate": "2026-11-14"
         }
     ],
     "qualityMetrics": {
         "lintErrors": 0,
         "typeErrors": 0,
-        "testCoverage": 68,
+        "testCoverage": 95,
         "bundleSize": {
-            "current": 245760,
-            "budget": 512000,
-            "percentage": 48
+            "current": 481393,
+            "budget": 655360,
+            "percentage": 73
         }
     },
     "recentActivity": [
         {
             "type": "issue",
-            "title": "修复 CSP 'unsafe-inline' 安全问题",
-            "status": "closed",
-            "updatedAt": "2026-04-06T10:30:00.000Z"
+            "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
+            "status": "open",
+            "updatedAt": "2026-10-10T03:02:25.000Z"
         },
         {
             "type": "pr",
-            "title": "添加 API 限流保护",
-            "status": "merged",
-            "updatedAt": "2026-04-06T09:15:00.000Z"
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "open",
+            "updatedAt": "2026-10-09T15:21:56.000Z"
         },
         {
             "type": "issue",
-            "title": "统一注册页面前后端验证规则",
+            "title": "刷新 ROADMAP 状态快照：清理对已关闭 #200 的过期引用并更新 §2/§3 摘要时点（季度评审·机械修正部分）",
             "status": "closed",
-            "updatedAt": "2026-04-06T08:45:00.000Z"
+            "updatedAt": "2026-10-09T15:18:29.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "docs: 刷新 ROADMAP 状态快照（季度评审机械修正，Refs #210）",
+            "status": "merged",
+            "updatedAt": "2026-10-09T14:18:29.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
+            "status": "open",
+            "updatedAt": "2026-10-08T11:31:28.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "合并 #201/#203/#204 三分支并完成部署、CSP 复验与 ENV 基线回填",
+            "status": "closed",
+            "updatedAt": "2026-10-08T11:31:25.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-07T07:28:05.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "本地化其余 aria-label(a11y) 与英文站可见 UI 文案（Bucket C/D 剩余）",
+            "status": "closed",
+            "updatedAt": "2026-10-07T07:25:29.000Z"
         }
     ]
 }

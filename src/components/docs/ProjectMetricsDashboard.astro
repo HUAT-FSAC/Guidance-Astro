@@ -25,7 +25,24 @@ const priorityLabel = (key: string): string => (tpm.priority as Record<string, s
 const milestoneLabel = (key: string): string =>
   (tpm.milestoneStatus as Record<string, string>)[key] ?? key;
 
-const { summary, byStatus, byPriority, milestones, qualityMetrics } = projectData;
+// 采集器输出 metrics/counts 新 schema 的超集，本组件消费超集中的看板字段；
+// 防御性回退：数据文件意外缺失字段（如滞留旧 bot 快照）时按空值渲染，
+// 避免 Object.values(undefined) 之类的构建失败（#212）。
+const summary = projectData.summary ?? {
+  totalIssues: 0,
+  closedIssues: 0,
+  openIssues: 0,
+  ciPassRate: 0,
+};
+const byStatus: Record<string, number> = projectData.byStatus ?? {};
+const byPriority: Record<string, number> = projectData.byPriority ?? {};
+const milestones = projectData.milestones ?? [];
+const qualityMetrics = projectData.qualityMetrics ?? {
+  lintErrors: 0,
+  typeErrors: 0,
+  testCoverage: 0,
+  bundleSize: { current: 0, budget: 0, percentage: 0 },
+};
 
 // 状态颜色映射
 const statusColors: Record<string, string> = {
