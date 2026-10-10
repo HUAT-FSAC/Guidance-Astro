@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.1...v1.2.2) (2026-10-10)
+
+
+### Bug Fixes
+
+* **metrics:** 采集器输出看板超集 schema，修复合入即构建失败 ([#213](https://github.com/HUAT-FSAC/Guidance-Astro/issues/213)) ([ca93a6a](https://github.com/HUAT-FSAC/Guidance-Astro/commit/ca93a6a77060b2d7fb74fb7408573015c5c0640f)), closes [#212](https://github.com/HUAT-FSAC/Guidance-Astro/issues/212)
+
 ## [1.2.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.0...v1.2.1) (2026-10-07)
 
 
