@@ -1,45 +1,45 @@
 {
-    "generatedAt": "2026-10-10T04:00:17.010Z",
+    "generatedAt": "2026-10-10T05:51:29.038Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 2.09,
-        "prCycleTimeDays": 0.57,
-        "issueCloseRatePercent": 109.59,
-        "prMergeRatePercent": 50,
-        "ciSuccessRatePercent": 54,
-        "wipIssueCount": 1,
+        "issueLeadTimeDays": 2.07,
+        "prCycleTimeDays": 0.93,
+        "issueCloseRatePercent": 110.96,
+        "prMergeRatePercent": 52.38,
+        "ciSuccessRatePercent": 56,
+        "wipIssueCount": 0,
         "reviewIssueCount": 0,
         "backlogIssueCount": 2
     },
     "counts": {
-        "openIssueCount": 4,
-        "openPullRequestCount": 4,
+        "openIssueCount": 3,
+        "openPullRequestCount": 2,
         "openedIssuesInWindow": 73,
-        "closedIssuesInWindow": 80,
+        "closedIssuesInWindow": 81,
         "openedPullRequestsInWindow": 84,
-        "mergedPullRequestsInWindow": 42,
+        "mergedPullRequestsInWindow": 44,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 14
+        "ciFailedRunsInWindow": 15
     },
     "samples": {
         "latestIssueUpdatedAt": "2026-10-09T15:21:46.000Z",
-        "latestMergedPullRequestAt": "2026-10-10T03:57:39.000Z"
+        "latestMergedPullRequestAt": "2026-09-24T16:26:38.000Z"
     },
     "summary": {
         "totalIssues": 87,
-        "closedIssues": 83,
-        "openIssues": 4,
-        "ciPassRate": 54
+        "closedIssues": 84,
+        "openIssues": 3,
+        "ciPassRate": 56
     },
     "byStatus": {
         "backlog": 0,
         "ready": 1,
-        "inProgress": 1,
+        "inProgress": 0,
         "review": 0,
         "blocked": 2,
-        "done": 83
+        "done": 84
     },
     "byPriority": {
         "p0": 2,
@@ -59,7 +59,7 @@
             "title": "M3 稳态运营（Steady-state Operations）",
             "description": "运行 M1/M2 建成的稳态机器：周期性摄入 minor-and-patch 依赖、按 D-012 发版、majors 显式复核、供应链探针与 audit 豁免到期核对",
             "status": "in-progress",
-            "completionRate": 77,
+            "completionRate": 85,
             "dueDate": "2026-11-14"
         }
     ],
@@ -76,51 +76,51 @@
     "recentActivity": [
         {
             "type": "pr",
-            "title": "chore(main): release 1.2.2",
-            "status": "open",
-            "updatedAt": "2026-10-10T03:58:14.000Z"
+            "title": "[T-038] 站点全量评审收尾：可访问性 / 样式收敛 / 性能 / 死代码清理",
+            "status": "merged",
+            "updatedAt": "2026-10-10T04:19:49.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "[T-001] 恢复自动部署",
+            "status": "merged",
+            "updatedAt": "2026-10-10T04:19:49.000Z"
         },
         {
             "type": "pr",
             "title": "fix(metrics): 采集器输出看板超集 schema，修复合入即构建失败",
             "status": "merged",
-            "updatedAt": "2026-10-10T03:57:39.000Z"
+            "updatedAt": "2026-10-10T04:19:40.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-10T04:17:01.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(main): release 1.2.2",
+            "status": "merged",
+            "updatedAt": "2026-10-10T04:13:00.000Z"
         },
         {
             "type": "issue",
             "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
-            "status": "open",
-            "updatedAt": "2026-10-10T03:02:25.000Z"
+            "status": "closed",
+            "updatedAt": "2026-10-10T04:12:47.000Z"
         },
         {
             "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
-            "status": "open",
-            "updatedAt": "2026-10-09T15:21:56.000Z"
+            "status": "merged",
+            "updatedAt": "2026-10-10T04:05:07.000Z"
         },
         {
             "type": "issue",
             "title": "刷新 ROADMAP 状态快照：清理对已关闭 #200 的过期引用并更新 §2/§3 摘要时点（季度评审·机械修正部分）",
             "status": "closed",
             "updatedAt": "2026-10-09T15:18:29.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "docs: 刷新 ROADMAP 状态快照（季度评审机械修正，Refs #210）",
-            "status": "merged",
-            "updatedAt": "2026-10-09T14:18:29.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
-            "status": "open",
-            "updatedAt": "2026-10-08T11:31:28.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "合并 #201/#203/#204 三分支并完成部署、CSP 复验与 ENV 基线回填",
-            "status": "closed",
-            "updatedAt": "2026-10-08T11:31:25.000Z"
         }
     ]
 }
