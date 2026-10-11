@@ -1,14 +1,14 @@
 {
-    "generatedAt": "2026-10-10T05:51:29.038Z",
+    "generatedAt": "2026-10-11T05:45:14.131Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 2.07,
+        "issueLeadTimeDays": 1.98,
         "prCycleTimeDays": 0.93,
-        "issueCloseRatePercent": 110.96,
-        "prMergeRatePercent": 52.38,
-        "ciSuccessRatePercent": 56,
+        "issueCloseRatePercent": 114.29,
+        "prMergeRatePercent": 52.94,
+        "ciSuccessRatePercent": 60,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
         "backlogIssueCount": 2
@@ -16,22 +16,22 @@
     "counts": {
         "openIssueCount": 3,
         "openPullRequestCount": 2,
-        "openedIssuesInWindow": 73,
-        "closedIssuesInWindow": 81,
-        "openedPullRequestsInWindow": 84,
-        "mergedPullRequestsInWindow": 44,
+        "openedIssuesInWindow": 70,
+        "closedIssuesInWindow": 80,
+        "openedPullRequestsInWindow": 85,
+        "mergedPullRequestsInWindow": 45,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 15
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-09T15:21:46.000Z",
-        "latestMergedPullRequestAt": "2026-09-24T16:26:38.000Z"
+        "latestIssueUpdatedAt": "2026-10-03T13:33:35.000Z",
+        "latestMergedPullRequestAt": "2026-10-11T05:26:49.000Z"
     },
     "summary": {
         "totalIssues": 87,
         "closedIssues": 84,
         "openIssues": 3,
-        "ciPassRate": 56
+        "ciPassRate": 60
     },
     "byStatus": {
         "backlog": 0,
@@ -76,6 +76,24 @@
     "recentActivity": [
         {
             "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-11T05:35:35.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
+            "status": "open",
+            "updatedAt": "2026-10-10T08:32:05.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
+            "status": "closed",
+            "updatedAt": "2026-10-10T08:29:08.000Z"
+        },
+        {
+            "type": "pr",
             "title": "[T-038] 站点全量评审收尾：可访问性 / 样式收敛 / 性能 / 死代码清理",
             "status": "merged",
             "updatedAt": "2026-10-10T04:19:49.000Z"
@@ -103,24 +121,6 @@
             "title": "chore(main): release 1.2.2",
             "status": "merged",
             "updatedAt": "2026-10-10T04:13:00.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
-            "status": "closed",
-            "updatedAt": "2026-10-10T04:12:47.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-10T04:05:07.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "刷新 ROADMAP 状态快照：清理对已关闭 #200 的过期引用并更新 §2/§3 摘要时点（季度评审·机械修正部分）",
-            "status": "closed",
-            "updatedAt": "2026-10-09T15:18:29.000Z"
         }
     ]
 }
