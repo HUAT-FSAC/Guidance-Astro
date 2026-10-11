@@ -5,7 +5,9 @@
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-017，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-11T05:14Z（`date -u`）｜**核实基线：** `main@48fc65d`（与 origin 同步，CI success：run `38038520573` @ `48fc65d`）｜**核实人：** Planning Agent 第 67 轮（LOCK 仍过期未删——Executor 第 65 轮收尾遗漏，心跳 04:25Z，第 66/67 轮两度复核仍在；无 in-progress）
+**最后核实：** 2026-10-11T14:15Z（`date -u`）｜**核实基线：** `main@41e5d82`（与 origin 同步，CI success：run `38115331355` @ `41e5d82`）｜**核实人：** Planning Agent 第 69 轮（无 LOCK；无 in-progress；Executor 第 68 轮已正常收尾删锁）
+
+> **第 69 轮判定：** ① **验收队列空**——`status:review` 零命中，无事可验。② **Executor 第 68 轮已正常收尾**：PR #215（bot metrics）已 admin-squash 合入 `c7fcecc`，CI 全绿，线上重部署至 Version `8f01f83c`，CSP/看板页复验 PASS；LOCK 已删，STATE/HANDOFF 已更新。③ **backlog 零变更**：#199（blocked，10-17 到期剩 **6 天**，本轮 `npm view braces` latest 仍 `3.0.3` **第五次实测**无补丁）；#197（needs-info/默认 C，无新信号）；#101（blocked，Secrets 状态未变）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**（一致）。④ **新出现 PR #216**（`chore/update-metrics`，bot 再生，`app/github-actions`）：按 §2.2 触发器 = Executor 顺手处置，PLAN 中指向从 #215 更新为 #216。⑤ 核实基线推进至 `41e5d82`（CI 三连绿 run `38115331355`）。⑥ pending 清零；**执行队列 = 0（诚实空置）**；无 LOCK。
 
 > **第 67 轮判定：** ① **验收队列空**——`status:review` 零命中、`#212` CLOSED 已确认，无事可验（第 66 轮关闭有效，无需复动）。② **backlog 零变更**：#199（blocked，10-17 剩 6 天，本轮 `npm view braces` latest 仍 `3.0.3` 四度实测无补丁，到期按 D-011 显式续期）；#197（needs-info/默认 C，无新信号）；#101（blocked，Actions Secrets 四度 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**（与 PLAN 一致，无漂移）。③ **#215**（bot metrics PR，10-10 05:51Z 生成）仍为单文件数据-only（`project-progress.json` 41+/41-），维持 §2.2 常态处置指令，不单独建单。④ inbound `wsyhuat/main` 仍为已知两提交（`f98be0d` 已吸收、`d89b87e` 系 fork 同步），无新工作；无重复/无 auto-discovered/无长期饥饿。⑤ pending 清零；**执行队列 = 0（诚实空置）**；LOCK 仍在但已过期两轮，Planner 不代删（Executor 所有权，下一棒建锁自然覆盖）。
 
@@ -17,7 +19,7 @@
 
 ## 一、当前方向
 
-功能期早已结束（M1 稳态治理、M2 稳态防复发均已收官）。当前处于 **M3 稳态运营**：让依赖摄入、发版、供应链回看周期性运转，并处理机制暴露出的真实事项。当前开放：日历型事件 **2026-10-17 braces 豁免到期**（#199，剩 6 天）与 bot 按日再生的 metrics PR（当前 **#215**，数据-only，Executor 顺手处置项）；#212（metrics schema 修复）已于第 66 轮验收关闭。方向层已由 **D-017** 裁定维持稳态（用户 2026-10-08 选 A）。
+功能期早已结束（M1 稳态治理、M2 稳态防复发均已收官）。当前处于 **M3 稳态运营**：让依赖摄入、发版、供应链回看周期性运转，并处理机制暴露出的真实事项。当前开放：日历型事件 **2026-10-17 braces 豁免到期**（#199，剩 6 天）与 bot 按日再生的 metrics PR（当前 **#216**，数据-only，Executor 顺手处置项）；#212（metrics schema 修复）已于第 66 轮验收关闭。方向层已由 **D-017** 裁定维持稳态（用户 2026-10-08 选 A）。
 
 ## 二、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-14｜进度：11 closed / 2 open（GitHub milestone API 实测 2026-10-11，open=#199/#197；#101 不在 M3）
 
@@ -37,7 +39,7 @@
 
 - **#199 到期（10-17）**：braces 仍无补丁 → 按 D-011 显式续期（更新 `.config/audit-allowlist.json` 的 `expires` + `reason`，属配置改动，转 ready 执行单）；届时 audit 门禁主动变红属预期机制，不是事故。
 - 每周一 dependabot 扫描（minor-and-patch 分组按 D-014 批次处置；majors 按 D-015 暂缓）。
-- **bot metrics PR 按日再生**（当前 **#215**，10-10 05:51Z 生成，数据-only，单文件 41+/41-）：不单独建单（目标按日漂移），由 Executor 每轮顺手处置——确认 diff 仅为 `project-progress.json` 值漂移、schema 与 main 一致后合入，验证走合入后 main ci-cd（PR 本身不触发 CI，同 #197 根因）；若 diff 越出数据文件则停下报告 Planner。
+- **bot metrics PR 按日再生**（当前 **#216**，10-11 05:51Z 后再生，数据-only，预期单文件值漂移）：不单独建单（目标按日漂移），由 Executor 每轮顺手处置——确认 diff 仅为 `project-progress.json` 值漂移、schema 与 main 一致后合入，验证走合入后 main ci-cd（PR 本身不触发 CI，同 #197 根因）；若 diff 越出数据文件则停下报告 Planner。
 - 用户 / 协作方（inbound 巡检 `wsyhuat`）发起的新需求（D-017 已裁定维持稳态；日后再启方向属用户新指令）。
 
 ### 2.3 已知阻塞与依赖
@@ -47,7 +49,7 @@
 | **#101** CI 自动部署                    | `blocked`（P1）            | **人类**       | 第 60/64/66/67 轮四度 `gh api` 复核：Actions Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`。配好前不得把 deploy job 加回 CI（D-001）；本地 OAuth 部署可用，不阻塞交付 |
 | **#199** braces 豁免到期                | `blocked`（P2）            | 10-17 触发     | `braces` latest 仍 `3.0.3` 无补丁（第 63/64/66/67 轮四度实测）→ 到期按 D-011 显式续期，不得静默延长                                                                  |
 | **#197** rp Release PR 自助 CI          | `needs-info`（P3）         | 默认 C（不改） | 第 60 轮已补录第 58 轮实测（同基 `update-branch` 失效 + 空提交触发法）；第 66 轮再登记第三次实证（#214）；等发版频率信号或人类意愿                                   |
-| **PR #215** metrics 快照（bot）         | 开放待处置                 | **Executor**   | 10-10 生成，单文件数据-only（41+/41-，schema 已兼容）；按 §2.2 触发器指令顺手处置，勿单独建单                                                                        |
+| **PR #216** metrics 快照（bot）         | 开放待处置                 | **Executor**   | 10-11 再生（#215 已处置合入 `c7fcecc`），预期单文件数据-only；按 §2.2 触发器指令顺手处置，勿单独建单                                                                 |
 | **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08） | —              | 维持稳态；Q4 评审仅机械刷新（#210）；详见 `DECISIONS.md` D-017                                                                                                       |
 | #186/#209 majors PR                     | 暂缓（D-015）              | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch                                                                                                               |
 | `size:xs` / `update-linked-issues` 权限 | 仓库设置                   | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）                                                                      |
@@ -84,4 +86,4 @@ M3 是开放式稳态循环，无「做完即停」的终线：只要项目继�
 
 ## 给 Executor 的指令
 
-ready 队列空 ⇒ 预期零交付巡检轮：① 顺手处置 bot metrics PR（当前 #215，数据-only，schema 已兼容，合入后验 main ci-cd，diff 越出数据文件则停下报告）；② 10-17 前后优先配合 #199 到期决策（audit 主动变红属预期机制，按 D-011 显式续期）；③ 收尾务必遵守流程四件套：Issue 内留执行报告（§1.6 模板）、转 `status:review`、**不自行关单**（D-006）、提交 `.agent/` 变更并删 LOCK。
+ready 队列空 ⇒ 预期零交付巡检轮：① 顺手处置 bot metrics PR（当前 #216，预期数据-only，schema 需逐键比对确认，合入后验 main ci-cd，diff 越出数据文件则停下报告）；② 10-17 前后优先配合 #199 到期决策（audit 主动变红属预期机制，按 D-011 显式续期）；③ 收尾务必遵守流程四件套：Issue 内留执行报告（§1.6 模板）、转 `status:review`、**不自行关单**（D-006）、提交 `.agent/` 变更并删 LOCK。
