@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-11T05:35Z（UTC，`date -u`）· 探测者 `executor-opencode-20261011`（第 68 轮：#215 合入后 main@`c7fcecc` build 实测 + 重部署；§2 追加复确认行）
+> 最近更新：2026-10-12T11:25Z（UTC，`date -u`）· 探测者 `executor-opencode-20261012`（第 71 轮：#217 合入后 main@`455b109` build 实测 + 重部署；§2 追加复确认行）
 
 ## 1. 工具链（实测）
 
@@ -44,6 +44,9 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 
 **复确认（2026-10-11T05:35Z 在 main@`c7fcecc` 实测，#215 bot 数据快照合入后；证据 `.tmp/gate68-build.log` + ci-cd run `38114809451`）**：
 `pnpm build` exit 0 · `dist/client/sitemap-0.xml` = **168 页** · main ci-cd 7/7 success · `pnpm deploy:worker` exit 0（Version `8f01f83c`）· CSP 单请求头/体 nonce 一致 PASS · 中英看板页 200。全量单测/e2e 未重跑（变更仅数据 JSON 值漂移，基线 451/42·102 仍有效）。
+
+**复确认（2026-10-12T11:25Z 在 main@`455b109` 实测，#216/#217 bot 数据快照连续合入后；证据 `.tmp/gate71-build.log` + `.tmp/gate71-deploy.log` + ci-cd run `38240769621`）**：
+`pnpm build` exit 0 · `dist/client/sitemap-0.xml` = **168 页** · main ci-cd success（`38240769621`；#216 合入点 `0a29da5` run `38150588726` 亦 success）· `pnpm deploy:worker` exit 0（Version `dacfe595`，一次覆盖两次数据变更）· CSP 单请求头/体 nonce 一致 PASS（`RvyGE3UqRUgC1TS4s_1a1g`）· 中英看板页 200。全量单测/e2e 未重跑（变更仅数据 JSON 值漂移，基线 451/42·102 仍有效）。
 
 ## 3. 部署与线上验收
 
