@@ -1,14 +1,14 @@
 {
-    "generatedAt": "2026-10-11T05:45:14.131Z",
+    "generatedAt": "2026-10-12T05:56:16.014Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 1.98,
-        "prCycleTimeDays": 0.93,
-        "issueCloseRatePercent": 114.29,
-        "prMergeRatePercent": 52.94,
-        "ciSuccessRatePercent": 60,
+        "prCycleTimeDays": 0.92,
+        "issueCloseRatePercent": 119.4,
+        "prMergeRatePercent": 53.49,
+        "ciSuccessRatePercent": 62,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
         "backlogIssueCount": 2
@@ -16,22 +16,22 @@
     "counts": {
         "openIssueCount": 3,
         "openPullRequestCount": 2,
-        "openedIssuesInWindow": 70,
+        "openedIssuesInWindow": 67,
         "closedIssuesInWindow": 80,
-        "openedPullRequestsInWindow": 85,
-        "mergedPullRequestsInWindow": 45,
+        "openedPullRequestsInWindow": 86,
+        "mergedPullRequestsInWindow": 46,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 15
     },
     "samples": {
         "latestIssueUpdatedAt": "2026-10-03T13:33:35.000Z",
-        "latestMergedPullRequestAt": "2026-10-11T05:26:49.000Z"
+        "latestMergedPullRequestAt": "2026-10-11T15:16:26.000Z"
     },
     "summary": {
         "totalIssues": 87,
         "closedIssues": 84,
         "openIssues": 3,
-        "ciPassRate": 60
+        "ciPassRate": 62
     },
     "byStatus": {
         "backlog": 0,
@@ -76,6 +76,24 @@
     "recentActivity": [
         {
             "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-12T03:22:14.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-12T02:51:19.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-11T15:16:38.000Z"
+        },
+        {
+            "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
             "status": "merged",
             "updatedAt": "2026-10-11T05:35:35.000Z"
@@ -103,24 +121,6 @@
             "title": "[T-001] 恢复自动部署",
             "status": "merged",
             "updatedAt": "2026-10-10T04:19:49.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "fix(metrics): 采集器输出看板超集 schema，修复合入即构建失败",
-            "status": "merged",
-            "updatedAt": "2026-10-10T04:19:40.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-10T04:17:01.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(main): release 1.2.2",
-            "status": "merged",
-            "updatedAt": "2026-10-10T04:13:00.000Z"
         }
     ]
 }
