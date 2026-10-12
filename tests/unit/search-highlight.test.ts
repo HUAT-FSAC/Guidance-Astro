@@ -1,6 +1,7 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
 
-import { highlightSearchResults } from '../../src/utils/search-highlight'
+import { highlightSearchResults, initSearchResultHighlight } from '../../src/utils/search-highlight'
 
 describe('search-highlight', () => {
     describe('highlightSearchResults', () => {
@@ -56,6 +57,38 @@ describe('search-highlight', () => {
             expect(highlightSearchResults('sensing and sensors', 'sens')).toBe(
                 '<span class="search-highlight">sens</span>ing and <span class="search-highlight">sens</span>ors'
             )
+        })
+    })
+
+    describe('initSearchResultHighlight', () => {
+        it('highlights matches inside a container', () => {
+            const container = document.createElement('div')
+            container.innerHTML = '<p>hello world</p><p>hello again</p><code>hello</code>'
+            document.body.appendChild(container)
+            initSearchResultHighlight(container, 'hello')
+            expect(container.innerHTML).toContain('search-highlight')
+            container.remove()
+        })
+
+        it('leaves container untouched for empty query or code-only content', () => {
+            const c2 = document.createElement('div')
+            c2.innerHTML = '<p>test</p>'
+            initSearchResultHighlight(c2, '')
+            expect(c2.innerHTML).toBe('<p>test</p>')
+            const c3 = document.createElement('div')
+            c3.innerHTML = '<script>hello</script>'
+            initSearchResultHighlight(c3, 'hello')
+            expect(c3.innerHTML).toContain('<script>')
+            c2.remove()
+            c3.remove()
+        })
+
+        it('highlights bare text nodes without a parent element', () => {
+            const container = document.createElement('div')
+            container.innerHTML = 'hello world'
+            initSearchResultHighlight(container, 'hello')
+            expect(container.innerHTML).toContain('search-highlight')
+            container.remove()
         })
     })
 })

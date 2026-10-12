@@ -1,10 +1,15 @@
-import { describe, expect, it } from 'vitest'
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
     canUseNativeShare,
+    copyToClipboard,
     generateQRCodeDataUrl,
     generateQRCodeUrl,
     generateShareUrl,
+    getPageShareData,
+    nativeShare,
+    openShareWindow,
     type ShareData,
 } from '../../src/utils/share'
 
@@ -96,6 +101,121 @@ describe('share', () => {
         it('should return false in Node environment', () => {
             // navigator.share is not available in Node/jsdom
             expect(canUseNativeShare()).toBe(false)
+        })
+
+        it('should return true when share and canShare are available', () => {
+            // @ts-expect-error: suppress type error
+            navigator.share = () => Promise.resolve()
+            // @ts-expect-error: suppress type error
+            navigator.canShare = () => true
+            expect(canUseNativeShare()).toBe(true)
+            // @ts-expect-error: suppress type error
+            delete navigator.share
+            // @ts-expect-error: suppress type error
+            delete navigator.canShare
+        })
+    })
+
+    describe('nativeShare, clipboard, popup and page data', () => {
+        beforeEach(() => {
+            Object.defineProperty(window, 'location', {
+                value: new URL('https://huat-fsac.eu.org/docs/'),
+                writable: true,
+                configurable: true,
+            })
+            document.head.innerHTML =
+                '<meta property="og:title" content="Test Title"><meta property="og:description" content="desc"><meta property="og:image" content="https://example.com/img.png">'
+            document.title = 'Test'
+        })
+
+        it('nativeShare reports unsupported without navigator.share', async () => {
+            const res = await nativeShare({ url: 'https://example.com', title: 't' })
+            expect(res.success).toBe(false)
+        })
+
+        it('nativeShare resolves success, abort and failure', async () => {
+            // @ts-expect-error: suppress type error
+            navigator.share = vi.fn(() => Promise.resolve())
+            // @ts-expect-error: suppress type error
+            navigator.canShare = () => true
+            const res = await nativeShare({
+                url: 'https://example.com',
+                title: 't',
+                description: 'd',
+            })
+            expect(res.success).toBe(true)
+            // @ts-expect-error: suppress type error
+            navigator.share = vi.fn(() =>
+                Promise.reject(Object.assign(new Error('abort'), { name: 'AbortError' }))
+            )
+            const res2 = await nativeShare({ url: 'https://example.com', title: 't' })
+            expect(res2.message).toContain('取消')
+            // @ts-expect-error: suppress type error
+            navigator.share = vi.fn(() => Promise.reject(new Error('fail')))
+            const res3 = await nativeShare({ url: 'https://example.com', title: 't' })
+            expect(res3.success).toBe(false)
+            // @ts-expect-error: suppress type error
+            delete navigator.share
+            // @ts-expect-error: suppress type error
+            delete navigator.canShare
+        })
+
+        it('copyToClipboard prefers clipboard, falls back to execCommand', async () => {
+            // @ts-expect-error: suppress type error
+            navigator.clipboard = { writeText: vi.fn(() => Promise.resolve()) }
+            const r1 = await copyToClipboard('hello')
+            expect(r1.success).toBe(true)
+            // @ts-expect-error: suppress type error
+            delete navigator.clipboard
+            document.execCommand = vi.fn(() => true) as unknown as typeof document.execCommand
+            const r2 = await copyToClipboard('hello')
+            expect(r2.success).toBe(true)
+            document.execCommand = vi.fn(() => {
+                throw new Error('fail')
+            }) as unknown as typeof document.execCommand
+            // @ts-expect-error: suppress type error
+            navigator.clipboard = { writeText: vi.fn(() => Promise.reject(new Error('fail'))) }
+            const r3 = await copyToClipboard('hello')
+            expect(r3.success).toBe(false)
+            // @ts-expect-error: suppress type error
+            delete navigator.clipboard
+        })
+
+        it('openShareWindow handles email, wechat, popup and blocked popup', () => {
+            const data = { url: 'https://example.com', title: 't' }
+            expect(openShareWindow('email', data).success).toBe(true)
+            expect(openShareWindow('wechat', data).success).toBe(true)
+            const mockPopup = { focus: vi.fn() }
+            // @ts-expect-error: suppress type error
+            window.open = vi.fn(() => mockPopup)
+            Object.defineProperty(window, 'innerWidth', { value: 1024, writable: true })
+            Object.defineProperty(window, 'innerHeight', { value: 768, writable: true })
+            const r = openShareWindow('twitter', data)
+            expect(r.success).toBe(true)
+            expect(mockPopup.focus).toHaveBeenCalled()
+            // @ts-expect-error: suppress type error
+            window.open = vi.fn(() => null)
+            const r2 = openShareWindow('twitter', data)
+            expect(r2.success).toBe(false)
+            // @ts-expect-error: suppress type error
+            delete window.open
+        })
+
+        it('getPageShareData reads og meta and degrades without document', () => {
+            const data = getPageShareData()
+            expect(data.url).toBe('https://huat-fsac.eu.org/docs/')
+            expect(data.title).toBe('Test Title')
+            expect(data.description).toBe('desc')
+            const origDoc = global.document
+            try {
+                // @ts-expect-error: suppress type error
+                delete global.document
+                const d2 = getPageShareData()
+                expect(d2.url).toBe('')
+            } finally {
+                // @ts-expect-error: suppress type error
+                global.document = origDoc
+            }
         })
     })
 })

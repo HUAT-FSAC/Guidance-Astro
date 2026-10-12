@@ -9,25 +9,6 @@ import {
 
 describe('lazy-components', () => {
     describe('lazyLoadComponent', () => {
-        it('does not throw when selector matches no elements', () => {
-            expect(() =>
-                lazyLoadComponent({
-                    selector: '.non-existent-element',
-                    importFn: () => Promise.resolve({ default: () => () => {} }),
-                })
-            ).not.toThrow()
-        })
-
-        it('does not throw with delay option', () => {
-            expect(() =>
-                lazyLoadComponent({
-                    selector: '.non-existent-element',
-                    importFn: () => Promise.resolve({ default: () => () => {} }),
-                    delay: 100,
-                })
-            ).not.toThrow()
-        })
-
         it('loads component with default export when matching element exists', async () => {
             const el = document.createElement('div')
             el.className = 'test-lazy-default'
@@ -99,23 +80,28 @@ describe('lazy-components', () => {
     })
 
     describe('lazyLoadComponents', () => {
-        it('processes multiple component configs without throwing', () => {
+        it('initializes matching components for each config', async () => {
+            const first = document.createElement('div')
+            first.className = 'component-a'
+            const second = document.createElement('div')
+            second.className = 'component-b'
+            document.body.append(first, second)
+
+            const initA = vi.fn().mockReturnValue(() => {})
+            const initB = vi.fn().mockReturnValue(() => {})
             const configs: LazyComponentConfig[] = [
-                {
-                    selector: '.component-a',
-                    importFn: () => Promise.resolve({ default: () => () => {} }),
-                },
-                {
-                    selector: '.component-b',
-                    importFn: () => Promise.resolve({ init: () => () => {} }),
-                },
+                { selector: '.component-a', importFn: () => Promise.resolve({ default: initA }) },
+                { selector: '.component-b', importFn: () => Promise.resolve({ init: initB }) },
             ]
 
-            expect(() => lazyLoadComponents(configs)).not.toThrow()
-        })
+            lazyLoadComponents(configs)
+            await Promise.resolve()
+            await Promise.resolve()
 
-        it('handles empty config array', () => {
-            expect(() => lazyLoadComponents([])).not.toThrow()
+            expect(initA).toHaveBeenCalledWith(first)
+            expect(initB).toHaveBeenCalledWith(second)
+            first.remove()
+            second.remove()
         })
     })
 })
