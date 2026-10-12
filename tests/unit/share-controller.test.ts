@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { initShareMenu, setupShareMenuLifecycle } from '../../src/utils/share-controller'
+import { isComponentInitialized } from '../../src/utils/component-init'
 import * as shareModule from '../../src/utils/share'
 
 describe('share-controller', () => {
@@ -233,7 +234,15 @@ describe('share-controller', () => {
         expect(menu.classList.contains('open')).toBe(false)
     })
 
-    it('setupShareMenuLifecycle initializes properly', () => {
-        expect(() => setupShareMenuLifecycle('#non-existent')).not.toThrow()
+    it('setupShareMenuLifecycle initializes the share menu', () => {
+        container.id = 'share-lifecycle'
+        setupShareMenuLifecycle('#share-lifecycle')
+        expect(isComponentInitialized('#share-lifecycle')).toBe(true)
+        // behavior proof: toggle opens the menu
+        const toggleBtn = container.querySelector('#share-toggle-btn') as HTMLButtonElement
+        const menu = container.querySelector('#share-menu') as HTMLElement
+        toggleBtn.click()
+        expect(menu.classList.contains('open')).toBe(true)
+        document.dispatchEvent(new Event('astro:after-preparation'))
     })
 })

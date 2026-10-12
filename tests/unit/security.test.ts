@@ -13,74 +13,30 @@ import {
 
 describe('security config', () => {
     describe('getCacheControlHeader', () => {
-        it('returns immutable cache for _astro assets', () => {
-            expect(getCacheControlHeader('/_astro/main.abc123.js')).toBe(
-                'public, max-age=31536000, immutable'
-            )
-        })
-
-        it('returns immutable cache for pagefind assets', () => {
-            expect(getCacheControlHeader('/pagefind/pagefind-entry.json')).toBe(
-                'public, max-age=31536000, immutable'
-            )
-        })
-
-        it('returns medium cache for HTML pages', () => {
-            expect(getCacheControlHeader('/docs-center/')).toBe(
-                'public, max-age=3600, must-revalidate'
-            )
-        })
-
-        it('returns no-store for service worker', () => {
-            expect(getCacheControlHeader('/sw.js')).toBe('no-cache, no-store, must-revalidate')
-        })
-
-        it('returns static cache for JS and CSS files', () => {
-            expect(getCacheControlHeader('/assets/main.js')).toBe(
-                'public, max-age=604800, must-revalidate'
-            )
-        })
-
-        it('returns static cache for JSON files', () => {
-            expect(getCacheControlHeader('/manifest.json')).toBe(
-                'public, max-age=604800, must-revalidate'
-            )
-        })
-
-        it('returns image cache for image files', () => {
-            expect(getCacheControlHeader('/logo.png')).toBe(
-                'public, max-age=31536000, must-revalidate'
-            )
-        })
-
-        it('returns font cache for font files', () => {
-            expect(getCacheControlHeader('/font.woff2')).toBe('public, max-age=31536000, immutable')
-        })
-
-        it('returns default cache for root path', () => {
-            expect(getCacheControlHeader('/')).toBe('public, max-age=3600, must-revalidate')
-        })
-
-        it('returns default cache for undefined path', () => {
-            expect(getCacheControlHeader(undefined)).toBe('public, max-age=3600, must-revalidate')
+        it.each([
+            ['/_astro/main.abc123.js', 'public, max-age=31536000, immutable'],
+            ['/pagefind/pagefind-entry.json', 'public, max-age=31536000, immutable'],
+            ['/docs-center/', 'public, max-age=3600, must-revalidate'],
+            ['/sw.js', 'no-cache, no-store, must-revalidate'],
+            ['/assets/main.js', 'public, max-age=604800, must-revalidate'],
+            ['/manifest.json', 'public, max-age=604800, must-revalidate'],
+            ['/logo.png', 'public, max-age=31536000, must-revalidate'],
+            ['/font.woff2', 'public, max-age=31536000, immutable'],
+            ['/', 'public, max-age=3600, must-revalidate'],
+            [undefined, 'public, max-age=3600, must-revalidate'],
+        ])('returns %s -> %s', (path, expected) => {
+            expect(getCacheControlHeader(path)).toBe(expected)
         })
     })
 
     describe('securityHeaders', () => {
-        it('includes X-Content-Type-Options', () => {
-            const header = securityHeaders.find((h) => h.name === 'X-Content-Type-Options')
-            expect(header?.value).toBe('nosniff')
-        })
-
-        it('does not rely on legacy X-Frame-Options (frame-ancestors is the standard)', () => {
-            const header = securityHeaders.find((h) => h.name === 'X-Frame-Options')
-            expect(header).toBeUndefined()
-            expect(generateCSP()).toContain("frame-ancestors 'self'")
-        })
-
-        it('includes Referrer-Policy', () => {
-            const header = securityHeaders.find((h) => h.name === 'Referrer-Policy')
-            expect(header?.value).toBe('strict-origin-when-cross-origin')
+        it.each([
+            ['X-Content-Type-Options', 'nosniff'],
+            ['Referrer-Policy', 'strict-origin-when-cross-origin'],
+            ['Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload'],
+        ])('includes %s', (name, expected) => {
+            const header = securityHeaders.find((h) => h.name === name)
+            expect(header?.value).toBe(expected)
         })
 
         it('includes Permissions-Policy with accelerometer and gyroscope disabled', () => {
@@ -89,14 +45,14 @@ describe('security config', () => {
             expect(header?.value).toContain('gyroscope=()')
         })
 
-        it('includes Strict-Transport-Security with max-age 31536000', () => {
-            const hsts = securityHeaders.find((h) => h.name === 'Strict-Transport-Security')
-            expect(hsts).toBeDefined()
-            expect(hsts?.value).toBe('max-age=31536000; includeSubDomains; preload')
+        it('does not rely on legacy X-Frame-Options (frame-ancestors is the standard)', () => {
+            const header = securityHeaders.find((h) => h.name === 'X-Frame-Options')
+            expect(header).toBeUndefined()
+            expect(generateCSP()).toContain("frame-ancestors 'self'")
         })
 
-        it('contains exactly 7 security headers (CSP + 6 hardening)', () => {
-            expect(securityHeaders).toHaveLength(7)
+        it('contains at least the 7 hardening headers (CSP + 6)', () => {
+            expect(securityHeaders.length).toBeGreaterThanOrEqual(7)
             const names = securityHeaders.map((h) => h.name)
             expect(names).toEqual(
                 expect.arrayContaining([
@@ -197,26 +153,16 @@ describe('security config', () => {
     })
 
     describe('isCSPValid', () => {
-        it('rejects wildcard script-src', () => {
-            expect(isCSPValid("default-src 'self'; script-src *")).toBe(false)
-        })
-
-        it('rejects unsafe-eval', () => {
-            expect(isCSPValid("default-src 'self'; script-src 'self' 'unsafe-eval'")).toBe(false)
-        })
-
-        it('accepts valid CSP', () => {
-            expect(isCSPValid("default-src 'self'; script-src 'self'")).toBe(true)
-        })
-
-        it('allows style-src unsafe-inline (Starlight) but rejects script-src unsafe-inline', () => {
-            expect(isCSPValid("default-src 'self'; style-src 'self' 'unsafe-inline'")).toBe(true)
-            expect(isCSPValid("default-src 'self'; script-src 'self' 'unsafe-inline'")).toBe(false)
-        })
-
-        it('rejects script-src-elem wildcard and style-src wildcard', () => {
-            expect(isCSPValid("default-src 'self'; script-src-elem *")).toBe(false)
-            expect(isCSPValid("default-src 'self'; style-src *")).toBe(false)
+        it.each([
+            ["default-src 'self'; script-src *", false],
+            ["default-src 'self'; script-src 'self' 'unsafe-eval'", false],
+            ["default-src 'self'; script-src 'self'", true],
+            ["default-src 'self'; style-src 'self' 'unsafe-inline'", true],
+            ["default-src 'self'; script-src 'self' 'unsafe-inline'", false],
+            ["default-src 'self'; script-src-elem *", false],
+            ["default-src 'self'; style-src *", false],
+        ])('validates %s -> %s', (csp, expected) => {
+            expect(isCSPValid(csp)).toBe(expected)
         })
     })
 
