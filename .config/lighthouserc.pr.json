@@ -1,0 +1,92 @@
+{
+    "ci": {
+        "collect": {
+            "numberOfRuns": 1,
+            "startServerCommand": "pnpm preview:ssr",
+            "startServerReadyTimeout": 120000,
+            "url": ["http://127.0.0.1:8787/"],
+            "settings": {
+                "chromeFlags": "--no-sandbox --disable-setuid-sandbox"
+            }
+        },
+        "assert": {
+            "assertions": {
+                "categories:performance": [
+                    "error",
+                    {
+                        "minScore": 0.8
+                    }
+                ],
+                "categories:accessibility": [
+                    "warn",
+                    {
+                        "minScore": 0.9
+                    }
+                ],
+                "categories:best-practices": [
+                    "warn",
+                    {
+                        "minScore": 0.9
+                    }
+                ],
+                "categories:seo": [
+                    "warn",
+                    {
+                        "minScore": 0.9
+                    }
+                ],
+                "first-contentful-paint": [
+                    "warn",
+                    {
+                        "maxNumericValue": 2000
+                    }
+                ],
+                "largest-contentful-paint": [
+                    "warn",
+                    {
+                        "maxNumericValue": 2500
+                    }
+                ],
+                "cumulative-layout-shift": [
+                    "warn",
+                    {
+                        "maxNumericValue": 0.1
+                    }
+                ],
+                "interaction-to-next-paint": [
+                    "warn",
+                    {
+                        "maxNumericValue": 200
+                    }
+                ],
+                "interactive": [
+                    "warn",
+                    {
+                        "maxNumericValue": 3000
+                    }
+                ],
+                "resource-summary:script:size": [
+                    "warn",
+                    {
+                        "maxNumericValue": 380000
+                    }
+                ],
+                "resource-summary:stylesheet:size": [
+                    "warn",
+                    {
+                        "maxNumericValue": 140000
+                    }
+                ],
+                "document-title": ["error"],
+                "html-has-lang": ["error"],
+                "image-alt": ["error"],
+                "link-text": ["warn"],
+                "color-contrast": ["warn"]
+            }
+        },
+        "upload": {
+            "target": "filesystem",
+            "outputDir": ".lighthouseci"
+        }
+    }
+}

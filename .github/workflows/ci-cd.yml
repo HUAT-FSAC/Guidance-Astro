@@ -6,6 +6,11 @@ on:
     pull_request:
         branches: [main]
 
+# P0-5: 同分支新提交自动取消旧构建，同分支多次 push 不再全量跑完
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
     lint:
         name: Lint and Format
@@ -82,7 +87,8 @@ jobs:
     build:
         name: Build
         runs-on: ubuntu-latest
-        needs: [lint, test, typecheck, audit]
+        # P0-6: 只等测试与类型（构建输入），lint/audit 并行跑但不阻塞构建
+        needs: [test, typecheck]
 
         steps:
             - name: Checkout code
@@ -101,8 +107,10 @@ jobs:
                   path: dist
                   retention-days: 7
 
-    quality-gate:
-        name: Quality Gate (E2E/LHCI/Budget)
+    # P0-1: 原 quality-gate 单 job 串行（bundle+routes+E2E+LHCI 共 299s）拆为三并行 job，
+    # 耗时取 max 而非 sum；末尾 quality-gate 聚合 job 保留 job id（分支保护 required check）。
+    quality-budget:
+        name: Quality Budget
         runs-on: ubuntu-latest
         needs: build
 
@@ -125,40 +133,15 @@ jobs:
             - name: Run route-level budget check
               run: pnpm quality:routes
 
-            - name: Install Playwright browser
-              run: pnpm exec playwright install --with-deps chromium
-
-            - name: Verify dist contents
-              run: |
-                  echo "Current directory: $(pwd)"
-                  echo "Dist directory listing:"
-                  ls -la dist/client/ | head -n 20
-                  echo "---"
-                  ls -la dist/server/ | head -n 10
-                  test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
-              shell: bash
-
-            - name: Run E2E tests (full suite)
-              env:
-                  PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
-                  PLAYWRIGHT_REUSE_SERVER: 'false'
-                  PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
-              run: pnpm exec playwright test --config=.config/playwright.config.ts
-
-            - name: Run Lighthouse CI
-              run: |
-                  pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
-                  pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
-              env:
-                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-
-    # deploy job 已于 2026-09-19 移出 CI:Cloudflare API Token Secret 暂不配置,
-    # 留在流水线里只会让每次 push 的 main 长红。线上部署改由 Agent/维护者在
-    # 本机执行 `pnpm deploy:worker`(wrangler OAuth),命令与验收见 docs/DEPLOYMENT.md。
-    preview:
-        name: Preview Build
+    quality-e2e:
+        name: Quality E2E
         runs-on: ubuntu-latest
-        needs: [build, quality-gate]
+        needs: build
+        # P0-2: E2E 二分片并行（67s -> 约 35s）；fail-fast:false 让两分片独立上报
+        strategy:
+            fail-fast: false
+            matrix:
+                shard: ['1/2', '2/2']
 
         steps:
             - name: Checkout code
@@ -173,8 +156,111 @@ jobs:
                   name: dist
                   path: dist
 
-            - name: Run bundle budget check
-              run: pnpm quality:bundle
+            # P0-3: 缓存 Playwright 浏览器（~150MB），命中时 install 约 2s（原 19s）
+            # key 绑定 chromium 版本，升级 Playwright 时同步改 key 后缀
+            - name: Cache Playwright browsers
+              uses: actions/cache@v6
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: ${{ runner.os }}-playwright-chromium-1243
+                  restore-keys: |
+                      ${{ runner.os }}-playwright-
+
+            - name: Install Playwright browser
+              run: pnpm exec playwright install --with-deps chromium
+
+            - name: Verify dist contents
+              run: |
+                  echo "Current directory: $(pwd)"
+                  echo "Dist directory listing:"
+                  ls -la dist/client/ | head -n 20
+                  echo "---"
+                  ls -la dist/server/ | head -n 10
+                  test -f dist/server/entry.mjs && echo "dist/server/entry.mjs exists" || echo "dist/server/entry.mjs MISSING"
+              shell: bash
+
+            # P0-7: smoke 先行 fast-fail——冒烟失败则本分片直接停止，不跑全量
+            - name: Run E2E smoke (fast-fail)
+              env:
+                  PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
+                  PLAYWRIGHT_REUSE_SERVER: 'false'
+                  PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
+              run: pnpm exec playwright test smoke.spec.ts --config=.config/playwright.config.ts
+
+            - name: Run E2E tests (shard ${{ matrix.shard }})
+              env:
+                  PLAYWRIGHT_BASE_URL: http://127.0.0.1:8787
+                  PLAYWRIGHT_REUSE_SERVER: 'false'
+                  PLAYWRIGHT_WEB_SERVER_COMMAND: 'pnpm preview:ssr'
+              run: pnpm exec playwright test --config=.config/playwright.config.ts --shard=${{ matrix.shard }}
+
+    quality-lhci:
+        name: Quality LHCI
+        runs-on: ubuntu-latest
+        needs: build
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
+
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
+
+            - name: Download build artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  name: dist
+                  path: dist
+
+            # LHCI 分档：PR 只跑首页 1 URL x 1 次（约 15~30s），main/push 全量 4 URL x 3 次
+            - name: Run Lighthouse CI (PR fast lane)
+              if: github.event_name == 'pull_request'
+              run: |
+                  pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.pr.json
+                  pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.pr.json
+              env:
+                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+            - name: Run Lighthouse CI (full suite)
+              if: github.event_name != 'pull_request'
+              run: |
+                  pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
+                  pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
+              env:
+                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+    # 聚合 job：job id 必须保持 quality-gate（分支保护 required check context），
+    # 本身不跑测试，只等三个并行 job 全绿。
+    quality-gate:
+        name: Quality Gate (E2E/LHCI/Budget)
+        runs-on: ubuntu-latest
+        needs: [quality-budget, quality-e2e, quality-lhci]
+
+        steps:
+            - name: Aggregate quality results
+              run: echo "quality-budget / quality-e2e / quality-lhci all passed"
+
+    # deploy job 已于 2026-09-19 移出 CI:Cloudflare API Token Secret 暂不配置,
+    # 留在流水线里只会让每次 push 的 main 长红。线上部署改由 Agent/维护者在
+    # 本机执行 `pnpm deploy:worker`(wrangler OAuth),命令与验收见 docs/DEPLOYMENT.md。
+    preview:
+        name: Preview Build
+        runs-on: ubuntu-latest
+        # P0-4: 只等 build，与 quality 链路并行；bundle 检查 quality-budget 已跑过，不重复
+        needs: [build]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7.0.1
+
+            - name: Setup Node & pnpm
+              uses: ./.github/actions/setup
+
+            - name: Download build artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  name: dist
+                  path: dist
 
             - name: Check dist contents
               run: |
