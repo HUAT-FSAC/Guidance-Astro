@@ -353,6 +353,7 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 | 2026-10-12 | executor-round-74 | 第 74 轮（Execution·零交付巡检轮）：开工无 LOCK，ready 空、无新 bot PR、HEAD 未变；队列零变更，未重跑验证；零代码改动 | open Issues #199/#197/#101 与开放 PR #186/#209 零变更；inbound 已知两提交无新工作；HEAD 5408401 未变（CI 38256886814 success 沿用）。收尾删 LOCK。
 | 2026-10-12 | opencode/muse-spark | 测试性能基线轮（用户指令）：新建 `docs/TEST_PERF.md` 性能基准——unit 42文件/451用例/100%/3.4s、覆盖率 93.98/84.84/94.73/95.04、E2E 本地 102/102/wall 158s（build 17s）、CI run 38268280414 端到端 408s（Quality Gate 299s：LHCI 186s + E2E 67s）；阶段一审计 D1~D6/R1~R8、阶段二 P0-1~P0-7 diff、阶段三 5 项；已建单 #218（CI P0）#219（测试清理 D1~D6），后续 PR 分支实施，本轮零代码改动 | 测量：test:run×2 + coverage×1 + E2E 全量×1（exit 0）+ gh run 取证；审计经逐项行数/用例数/grep 抽查；git 树仅新增 docs/TEST_PERF.md + 本行，未提交。STATE.md 未动（巡检轮锁归属，见 STATE 接管记录）。 |
 | 2026-10-12 | opencode/muse-spark | 测试性能三 PR 合入（用户指令 merge）：#220 基线文档（`b067fe0`）、#221 CI P0（`07da359`）、#222 测试清理（`d03129f`），均为 squash 合入；分支保护要求 1 review，由用户显式指令以 admin 身份绕过（门禁全绿：三 PR 的 CI 全部 success，证据见 PR 页）；合入后 main 首跑 run 38279113746 success（281s，Quality Gate 199s）；TEST_PERF.md 追加 #218/#219 优化记录两行 + 待办勾选；另建 #223（R1~R8） | CI 实测：408s→281s（-31%）；覆盖率 94.34/85.25/94.73/95.33 四项≥基线；次轮改动仅 docs，无需部署。 |
+| 2026-10-12 | opencode/muse-spark | 测试性能 #223/#224 合入（用户指令 merge）：R2/R3/R6/R7/R8 落地、R1/R4/R5 放弃（实证复核）；PR #224 快车道首跑单次噪声失败（perf/LCP，非产品回归）→ numberOfRuns 1→3 修复后全绿； squash 合入 `92aef95`（admin 绕 review，门禁全绿）；TEST_PERF.md #223 记录行回填 commit | E2E 102→36，本地 wall 158s→8s；覆盖率 94.42/85.31/94.93/95.33；PR 流水线 199s（LHCI 快车道 94s）。次轮改动仅 docs+tests，无需部署。 |
 
 ### 7.5 handoff 格式
 
