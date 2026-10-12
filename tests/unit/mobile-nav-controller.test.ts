@@ -4,6 +4,7 @@ import {
     initMobileNavigation,
     setupMobileNavigationLifecycle,
 } from '../../src/utils/mobile-nav-controller'
+import { isComponentInitialized } from '../../src/utils/component-init'
 
 describe('mobile-nav-controller', () => {
     let root: HTMLElement
@@ -126,7 +127,14 @@ describe('mobile-nav-controller', () => {
         expect(drawer.dataset.open).toBe('false')
     })
 
-    it('setupMobileNavigationLifecycle registers without error', () => {
-        expect(() => setupMobileNavigationLifecycle('[data-mobile-nav]')).not.toThrow()
+    it('setupMobileNavigationLifecycle initializes mobile navigation', () => {
+        setupMobileNavigationLifecycle()
+        expect(isComponentInitialized('[data-mobile-nav]')).toBe(true)
+        // behavior proof: menu button opens the drawer
+        const drawer = root.querySelector('[data-mobile-nav-drawer]') as HTMLElement
+        const menuButton = root.querySelector('[data-mobile-menu-button]') as HTMLButtonElement
+        menuButton.click()
+        expect(drawer.dataset.open).toBe('true')
+        document.dispatchEvent(new Event('astro:after-preparation'))
     })
 })

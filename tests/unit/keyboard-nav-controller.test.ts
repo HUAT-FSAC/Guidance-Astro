@@ -4,6 +4,7 @@ import {
     initKeyboardNavigation,
     setupKeyboardNavLifecycle,
 } from '../../src/utils/keyboard-nav-controller'
+import { isComponentInitialized } from '../../src/utils/component-init'
 
 describe('keyboard-nav-controller', () => {
     let root: HTMLElement
@@ -174,7 +175,9 @@ describe('keyboard-nav-controller', () => {
         expect(navigate).not.toHaveBeenCalled()
     })
 
-    it('setupKeyboardNavLifecycle registers without error', () => {
-        expect(() => setupKeyboardNavLifecycle('[data-keyboard-nav]')).not.toThrow()
+    it('setupKeyboardNavLifecycle initializes keyboard navigation', () => {
+        setupKeyboardNavLifecycle()
+        expect(isComponentInitialized('[data-keyboard-nav]')).toBe(true)
+        document.dispatchEvent(new Event('astro:after-preparation'))
     })
 })

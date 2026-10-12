@@ -2,163 +2,50 @@ import { expect, test } from '@playwright/test'
 
 /**
  * 组件冲突测试套件
- * 验证修复后的组件间协作是否正常
+ * 验证修复后的组件间协作是否正常（按页面合并，单页多断言）
  */
 
-test.describe('主题切换组件', () => {
-    test('首页只显示一个主题切换按钮', async ({ page }) => {
-        await page.goto('/')
-        // 等待页面加载完成
-        await page.waitForLoadState('networkidle')
-
-        // 获取所有主题切换相关元素
-        const themeButtons = await page.locator('.theme-switcher, .theme-toggle-container').count()
-        expect(themeButtons).toBe(1)
-    })
-
-    test('文档页只显示 DocFloatingActions 中的主题切换', async ({ page }) => {
-        await page.goto('/docs-center/')
-        await page.waitForLoadState('networkidle')
-
-        // 验证 DocFloatingActions 存在
-        const fabGroup = await page.locator('.doc-fab-group').count()
-        expect(fabGroup).toBe(1)
-
-        // 验证没有独立的 ThemeSwitcher
-        const themeSwitcher = await page.locator('.theme-switcher').count()
-        expect(themeSwitcher).toBe(0)
-    })
-
-    test('主题切换按钮点击后可切换主题并持久化', async ({ page }) => {
+test.describe('首页组件协作', () => {
+    test('主题切换、进度条、层级与浮动位置一次验证', async ({ page }) => {
         await page.goto('/')
         await page.waitForLoadState('networkidle')
 
-        const initialTheme = await page.evaluate(
-            () => document.documentElement.getAttribute('data-theme') || 'dark'
-        )
+        // 主题按钮唯一，ScrollProgress 唯一且无 ReadingProgress
+        expect(await page.locator('.theme-switcher, .theme-toggle-container').count()).toBe(1)
+        expect(await page.locator('.scroll-progress').count()).toBe(1)
+        expect(await page.locator('.reading-progress-bar').count()).toBe(0)
 
+        // 点击切换主题并持久化
+        const readTheme = () =>
+            page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'dark')
+        const initialTheme = await readTheme()
         await page.click('.theme-toggle')
+        await expect.poll(readTheme).not.toBe(initialTheme)
+        const newTheme = await readTheme()
+        expect(await page.evaluate(() => localStorage.getItem('huat-color-scheme'))).toBe(newTheme)
 
-        await expect
-            .poll(async () => {
-                return page.evaluate(() => document.documentElement.getAttribute('data-theme'))
-            })
-            .not.toBe(initialTheme)
-
-        const newTheme = await page.evaluate(
-            () => document.documentElement.getAttribute('data-theme') || 'dark'
-        )
-        const savedTheme = await page.evaluate(() => localStorage.getItem('huat-color-scheme'))
-        expect(savedTheme).toBe(newTheme)
-    })
-
-    test('主题切换按钮支持键盘激活', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
-
-        const toggle = page.locator('.theme-toggle')
-        await toggle.focus()
-
-        const initialTheme = await page.evaluate(
-            () => document.documentElement.getAttribute('data-theme') || 'dark'
-        )
-
+        // 键盘 Enter 切回
+        await page.locator('.theme-toggle').focus()
         await page.keyboard.press('Enter')
+        await expect.poll(readTheme).not.toBe(newTheme)
 
-        await expect
-            .poll(async () => {
-                return page.evaluate(() => document.documentElement.getAttribute('data-theme'))
-            })
-            .not.toBe(initialTheme)
-    })
-
-    test('主题切换按钮长按后可打开主题色面板并保存颜色', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
-
+        // 长按打开主题色面板并保存颜色
         const toggle = page.locator('.theme-toggle')
         const box = await toggle.boundingBox()
         expect(box).not.toBeNull()
-
         await page.mouse.move(
             (box?.x ?? 0) + (box?.width ?? 0) / 2,
             (box?.y ?? 0) + (box?.height ?? 0) / 2
         )
         await page.mouse.down()
         await page.waitForTimeout(450)
-
         await expect(page.locator('.theme-dropdown[data-open="true"]')).toBeVisible()
-
         await page.mouse.up()
         await page.click('.color-option[data-color="#2ecc71"]')
-
         await expect(page.locator('.theme-dropdown[data-open="true"]')).toHaveCount(0)
+        expect(await page.evaluate(() => localStorage.getItem('huat-theme-color'))).toBe('#2ecc71')
 
-        const savedColor = await page.evaluate(() => localStorage.getItem('huat-theme-color'))
-        expect(savedColor).toBe('#2ecc71')
-    })
-})
-
-test.describe('进度条组件', () => {
-    test('首页只显示 ScrollProgress', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
-
-        // 验证 ScrollProgress 存在
-        const scrollProgress = await page.locator('.scroll-progress').count()
-        expect(scrollProgress).toBe(1)
-
-        // 验证没有 ReadingProgress
-        const readingProgress = await page.locator('.reading-progress-bar').count()
-        expect(readingProgress).toBe(0)
-    })
-
-    test('文档页只显示 ReadingProgress', async ({ page }) => {
-        await page.goto('/docs-center/')
-        await page.waitForLoadState('networkidle')
-
-        // 验证 ReadingProgress 存在
-        const readingProgress = await page.locator('.reading-progress-bar').count()
-        expect(readingProgress).toBe(1)
-
-        // 验证没有 ScrollProgress
-        const scrollProgress = await page.locator('.scroll-progress').count()
-        expect(scrollProgress).toBe(0)
-    })
-
-    test('滚动时进度条会更新', async ({ page }) => {
-        await page.goto('/docs-center/')
-        await page.waitForLoadState('networkidle')
-
-        // 获取初始进度
-        const initialWidth = await page.evaluate(() => {
-            const fill = document.querySelector('.reading-progress-fill') as HTMLElement
-            return fill?.style.width || '0%'
-        })
-
-        // 滚动到页面底部
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
-
-        // 等待滚动完成
-        await page.waitForTimeout(100)
-
-        // 获取滚动后的进度
-        const scrolledWidth = await page.evaluate(() => {
-            const fill = document.querySelector('.reading-progress-fill') as HTMLElement
-            return fill?.style.width || '0%'
-        })
-
-        // 验证进度增加了
-        expect(parseFloat(scrolledWidth)).toBeGreaterThan(parseFloat(initialWidth))
-    })
-})
-
-test.describe('z-index 层级管理', () => {
-    test('浮动按钮层级高于内容但低于模态框', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
-
-        // 获取各元素的 z-index
+        // z-index 层级
         const zIndices = await page.evaluate(() => {
             const themeSwitcher = document.querySelector('.theme-switcher') as HTMLElement
             const particleCanvas = document.querySelector('.particle-canvas') as HTMLElement
@@ -170,38 +57,13 @@ test.describe('z-index 层级管理', () => {
                 mobileNav: mobileNav ? getComputedStyle(mobileNav).zIndex : null,
             }
         })
-
-        // 验证 z-index 使用了 CSS 变量
         expect(zIndices.themeSwitcher).toBe('1000')
         expect(zIndices.particleCanvas).toBe('1')
         expect(zIndices.mobileNav).toBe('100')
-    })
 
-    test('灯箱组件层级最高', async ({ page }) => {
-        await page.goto('/docs-center/')
-        await page.waitForLoadState('networkidle')
-
-        // 获取灯箱 z-index
-        const lightboxZIndex = await page.evaluate(() => {
-            const lightbox = document.querySelector('.lightbox') as HTMLElement
-            return lightbox ? getComputedStyle(lightbox).zIndex : null
-        })
-
-        // 验证灯箱层级为 10000
-        expect(lightboxZIndex).toBe('10000')
-    })
-})
-
-test.describe('浮动按钮位置', () => {
-    test('首页浮动按钮不重叠', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
-
-        // 滚动页面使返回顶部按钮可见
+        // 浮动按钮不重叠
         await page.evaluate(() => window.scrollTo(0, 500))
         await page.waitForTimeout(100)
-
-        // 获取各按钮位置
         const positions = await page.evaluate(() => {
             const themeSwitcher = document.querySelector('.theme-switcher') as HTMLElement
             const backToTop = document.querySelector('.back-to-top') as HTMLElement
@@ -221,8 +83,6 @@ test.describe('浮动按钮位置', () => {
                     : null,
             }
         })
-
-        // 验证位置不重叠（垂直方向有间距）
         if (positions.themeSwitcher && positions.backToTop) {
             const verticalDistance = Math.abs(
                 positions.themeSwitcher.bottom - positions.backToTop.bottom
@@ -230,12 +90,39 @@ test.describe('浮动按钮位置', () => {
             expect(verticalDistance).toBeGreaterThanOrEqual(60) // 至少 60px 间距
         }
     })
+})
 
-    test('文档页浮动按钮位置正确', async ({ page }) => {
+test.describe('文档页组件协作', () => {
+    test('浮动组、进度条、灯箱层级与位置一次验证', async ({ page }) => {
         await page.goto('/docs-center/')
         await page.waitForLoadState('networkidle')
 
-        // 获取浮动按钮组位置
+        // DocFloatingActions 唯一且无独立 ThemeSwitcher；ReadingProgress 唯一且无 ScrollProgress
+        expect(await page.locator('.doc-fab-group').count()).toBe(1)
+        expect(await page.locator('.theme-switcher').count()).toBe(0)
+        expect(await page.locator('.reading-progress-bar').count()).toBe(1)
+        expect(await page.locator('.scroll-progress').count()).toBe(0)
+
+        // 滚动时进度条更新
+        const readWidth = () =>
+            page.evaluate(() => {
+                const fill = document.querySelector('.reading-progress-fill') as HTMLElement
+                return fill?.style.width || '0%'
+            })
+        const initialWidth = await readWidth()
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+        await page.waitForTimeout(100)
+        const scrolledWidth = await readWidth()
+        expect(parseFloat(scrolledWidth)).toBeGreaterThan(parseFloat(initialWidth))
+
+        // 灯箱层级最高
+        const lightboxZIndex = await page.evaluate(() => {
+            const lightbox = document.querySelector('.lightbox') as HTMLElement
+            return lightbox ? getComputedStyle(lightbox).zIndex : null
+        })
+        expect(lightboxZIndex).toBe('10000')
+
+        // 浮动按钮组位置
         const fabPosition = await page.evaluate(() => {
             const fabGroup = document.querySelector('.doc-fab-group') as HTMLElement
             return fabGroup
@@ -245,8 +132,6 @@ test.describe('浮动按钮位置', () => {
                   }
                 : null
         })
-
-        // 验证位置正确
         expect(fabPosition).not.toBeNull()
         expect(fabPosition?.bottom).toBe(32) // 2rem = 32px
         expect(fabPosition?.right).toBe(32) // 2rem = 32px

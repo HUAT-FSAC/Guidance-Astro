@@ -5,6 +5,7 @@ import {
     resolveLocalizedPath,
     setupLanguageSwitcherLifecycle,
 } from '../../src/utils/language-switcher-controller'
+import { isComponentInitialized } from '../../src/utils/component-init'
 import * as a11yModule from '../../src/utils/accessibility'
 
 describe('language-switcher-controller', () => {
@@ -180,9 +181,14 @@ describe('language-switcher-controller', () => {
         })
     })
 
-    describe('setupLanguageSwitcherLifecycle', () => {
-        it('registers lifecycle without error', () => {
-            expect(() => setupLanguageSwitcherLifecycle('[data-language-switcher]')).not.toThrow()
-        })
+    it('setupLanguageSwitcherLifecycle initializes the switcher', () => {
+        setupLanguageSwitcherLifecycle()
+        expect(isComponentInitialized('[data-language-switcher]')).toBe(true)
+        // behavior proof: toggle opens the menu
+        const toggle = root.querySelector('[data-language-toggle]') as HTMLButtonElement
+        const menu = root.querySelector('[data-language-menu]') as HTMLElement
+        toggle.click()
+        expect(menu.dataset.open).toBe('true')
+        document.dispatchEvent(new Event('astro:after-preparation'))
     })
 })
