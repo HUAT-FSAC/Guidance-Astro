@@ -5,7 +5,9 @@
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-017，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-12T11:55Z（`date -u`）｜**核实基线：** `main@2d503e5`（与 origin 同步，CI success：run `38244560466` @ `2d503e5`）｜**核实人：** Planning Agent 第 70 轮（无 LOCK；无 in-progress；Executor 第 71–73 轮均已正常收尾删锁）
+**最后核实：** 2026-10-13T14:30Z（`date -u`）｜**核实基线：** `main@e7faa76`（与 origin 同步，CI success：run `38411697708`）｜**核实人：** Planning Agent 第 77 轮（无 LOCK；Executor 第 75/76 轮均已正常收尾删锁）
+
+> **第 77 轮判定：** ① **验收队列空**——`status:review` 零命中，无事可验（第 75 轮 #226 系无单常态处置，不适用验收流，轨迹在 PR 评论 + HANDOFF）。② **#225 定级拆分**：阶段三伞单拆为 4 ready（#227 smoke 命令 / #228 flaky 治理 / #229 时长告警 / #230 编写规范，均为 P3，逐个过 4.2 门禁）+ 1 backlog（#231 LHCI 移出 PR，CI 信号取舍需用户定夺，默认维持现状），#225 互链后关闭。③ **backlog 零变更**：#199（blocked，10-17 到期剩 **4 天**）；#197（needs-info/默认 C）；#101（blocked，Secrets 六度复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**。④ `flaky` 标签已建（供 #228）；`gh issue create --milestone 2` 报 not found（milestone 经 API #2 实存，CLI 取值口径待查——新单暂不挂 milestone）。⑤ pending 清零；**执行队列 = 4（#227–#230）**；无 LOCK。
 
 > **第 70 轮判定：** ① **验收队列空**——`status:review` 零命中，无事可验。② **Executor 三轮追认**：第 70 轮（#216 合入 `0a29da5` 后中断，遗留过期锁）由第 71 轮接管收尾（确认 #216 CI success run `38150588726` + 处置 #217 合入 `455b109` + run `38240769621` success + 重部署 Version `dacfe595` + CSP/看板页复验）；第 72/73 轮为零交付巡检轮（主干双绿、队列零变更）。③ **backlog 零变更**：#199（blocked，10-17 到期剩 **5 天**，本轮 `npm view braces` latest 仍 `3.0.3` **第七次实测**无补丁）；#197（needs-info/默认 C，无新信号）；#101（blocked，Actions Secrets 五度 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**（一致）。④ **bot metrics PR 链已收敛**：#215/#216/#217 均已处置合入，当前无开放 bot PR；下一个预期明日再生，维持 §2.2 常态处置指令。⑤ 本轮线上只读抽查：`/` 200 + CSP 每请求新 nonce（`nonce-5D0-jIoM…`，与上轮不同值）。⑥ pending 清零；**执行队列 = 0（诚实空置）**；无 LOCK。⑦ **补记 §7.4 缺失的第 68/69 轮两行**（本轮凭 commit/PR/CI 证据补录，标注来源）。⑧ 回应 Executor"降低巡检频率"建议：巡检由用户指令驱动、不自行停跑；记录噪音接受为审计成本，轻量轮次合并为单行记录即可。
 
@@ -30,12 +32,19 @@
 1. v1.2.x 发布且四方一致 —— ✅ **v1.2.1 已达成**（Release=tag=`package.json`=CHANGELOG，祖先判定通过，PR #208 squash）。
 2. minor-and-patch 分组按既定手法（D-014 批次处置）摄入、开放 dependabot PR 不逼近 `open-pull-requests-limit` —— ✅（#187/#196 批次先例；当前开放 PR 仅 majors 组 2 个 + automation 1 个）。
 3. majors 组有明确处置结论 —— ✅ D-015 暂缓（#186/#209 为 standing reminder）。
-4. 2026-10-17 audit 豁免到期前完成核对与显式决策 —— ⏳ 剩 6 天（本轮前瞻：braces 仍无补丁，latest 3.0.3）。
+4. 2026-10-17 audit 豁免到期前完成核对与显式决策 —— ⏳ 剩 4 天（braces 仍无补丁预期，到期按 D-011 显式续期）。
 5. main CI 全绿、线上 `/` 200 + CSP nonce —— ✅ 本轮复验（HEAD `48fc65d` ci-cd run `38038520573` success；线上部署 Version `5fdc53fc` 由第 65 轮双请求 nonce 一致验过，本轮未重复部署）。
 
-### 2.2 执行队列（当前 = 0）
+### 2.2 执行队列（当前 = 4）
 
-**ready 队列空置**（#212 已于第 66 轮验收关闭）。这是真实状态而非疏漏：M3 剩余工作均为日历触发型（10-17 到期决策 / 每周一 dependabot 扫描 / bot 按日 metrics PR），无一满足「现在即可执行」的 ready 门禁。按文件头纪律，不为填 2–5 区间制造任务。
+1. #227 `test:e2e:smoke` 快捷命令（P3，约 10 分钟量级）
+2. #230 测试编写规范成文（P3，纯文档）
+3. #228 flaky 治理（P3，需改 CI + stale）
+4. #229 时长预算告警（P3，新脚本 + 定时 workflow）
+
+（顺序建议：先快后慢；#228 与 #229 无依赖可并行，但同一轮内 Executor 串行执行。）
+
+**ready 队列 4 个**（#227–#230，第 77 轮由 #225 拆分定级，见轮判定②）。M3 其余工作仍为日历触发型（10-17 到期决策 / 每周一 dependabot 扫描 / bot 按日 metrics PR），触发口径不变。
 
 持续触发器（满足其一即建/转 ready 或按指令顺手处置）：
 
@@ -88,4 +97,4 @@ M3 是开放式稳态循环，无「做完即停」的终线：只要项目继�
 
 ## 给 Executor 的指令
 
-ready 队列空 ⇒ 预期零交付巡检轮：① 顺手处置 bot metrics PR（当前无开放，下一个预期明日再生；预期数据-only，schema 需逐键比对确认，合入后验 main ci-cd，diff 越出数据文件则停下报告）；② 10-17 前后优先配合 #199 到期决策（audit 主动变红属预期机制，按 D-011 显式续期）；③ 收尾务必遵守流程四件套：Issue 内留执行报告（§1.6 模板）、转 `status:review`、**不自行关单**（D-006）、提交 `.agent/` 变更并删 LOCK。
+执行队列 4 个 ready（#227→#230→#228→#229 建议顺序）：逐个领取执行，每 Issue 独立分支 `agent/issue-<N>-<短slug>`；收尾遵守流程四件套（Issue 执行报告、转 `status:review`、**不自行关单**、`.agent/` 变更另提）。另：① 新 bot metrics PR 出现则按 §2.2 触发器顺手处置；② #231 未进队列（待用户定夺），不得执行。
