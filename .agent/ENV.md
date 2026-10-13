@@ -72,6 +72,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 | `gh pr checks` 退出码       | 全部 check settled 后退出码非零，轮询脚本易误判为「仍在跑」                                                                                                                | 以 check 的 `conclusion` 字段判定，不看退出码                                                                               |
 | safe-delete shim 拦截 build | CodeBuddy 沙箱 node shim 对 node 进程批量删除设阈值 500，Astro build 清理 `dist/server/.prerender`（~573 文件）报 `SAFE_DELETE_BULK_CONFIRM_REQUIRED`，`pnpm build` exit 1 | 构建命令前 `export CODEBUDDY_SAFE_DELETE_ENABLED=0`（dist 为构建自产 gitignore 产物，清理属构建固有步骤；第 65 轮实测有效） |
 | gh 模板科学计数法           | `gh run list --json databaseId --template '{{.databaseId}}'` 把大整数 ID 渲染成 `3.8023e+10`，拿去 watch/view 报 404                                                       | 取 ID 改用 `--jq '.[0].databaseId'`（输出纯数字）                                                                           |
+| 取 PR 头文件                | `gh api .../contents/<path> -f ref=refs/pull/N/head` 报 404（contents API 不接受 pull ref）                                                                                | `git fetch origin pull/N/head:refs/tmp/prN` 后 `git show refs/tmp/prN:<path>`，用完 `git update-ref -d` 删除临时 ref        |
 
 ## 5. 协作约定（本仓库现状 vs 契约）
 
