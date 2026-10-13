@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-12T05:56:16.014Z",
+    "generatedAt": "2026-10-13T06:46:21.109Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 1.98,
-        "prCycleTimeDays": 0.92,
-        "issueCloseRatePercent": 119.4,
-        "prMergeRatePercent": 53.49,
-        "ciSuccessRatePercent": 62,
+        "issueLeadTimeDays": 0.75,
+        "prCycleTimeDays": 0.87,
+        "issueCloseRatePercent": 95.59,
+        "prMergeRatePercent": 55.06,
+        "ciSuccessRatePercent": 80,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
-        "backlogIssueCount": 2
+        "backlogIssueCount": 3
     },
     "counts": {
-        "openIssueCount": 3,
+        "openIssueCount": 4,
         "openPullRequestCount": 2,
-        "openedIssuesInWindow": 67,
-        "closedIssuesInWindow": 80,
-        "openedPullRequestsInWindow": 86,
-        "mergedPullRequestsInWindow": 46,
+        "openedIssuesInWindow": 68,
+        "closedIssuesInWindow": 65,
+        "openedPullRequestsInWindow": 89,
+        "mergedPullRequestsInWindow": 49,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 15
+        "ciFailedRunsInWindow": 8
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-03T13:33:35.000Z",
-        "latestMergedPullRequestAt": "2026-10-11T15:16:26.000Z"
+        "latestIssueUpdatedAt": "2026-10-12T17:12:25.000Z",
+        "latestMergedPullRequestAt": "2026-10-12T17:05:58.000Z"
     },
     "summary": {
-        "totalIssues": 87,
-        "closedIssues": 84,
-        "openIssues": 3,
-        "ciPassRate": 62
+        "totalIssues": 91,
+        "closedIssues": 87,
+        "openIssues": 4,
+        "ciPassRate": 80
     },
     "byStatus": {
-        "backlog": 0,
+        "backlog": 1,
         "ready": 1,
         "inProgress": 0,
         "review": 0,
         "blocked": 2,
-        "done": 84
+        "done": 87
     },
     "byPriority": {
         "p0": 2,
         "p1": 29,
-        "p2": 21,
-        "p3": 20
+        "p2": 24,
+        "p3": 21
     },
     "milestones": [
         {
@@ -75,52 +75,52 @@
     },
     "recentActivity": [
         {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "type": "issue",
+            "title": "[Task] 测试长效治理：阶段三 5 项跟进（smoke 快捷命令/Flaky 标签/时长告警/编写规范/LHCI 定时化）",
             "status": "open",
-            "updatedAt": "2026-10-12T03:22:14.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-12T02:51:19.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-11T15:16:38.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-11T05:35:35.000Z"
+            "updatedAt": "2026-10-12T17:12:25.000Z"
         },
         {
             "type": "issue",
-            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
-            "status": "open",
-            "updatedAt": "2026-10-10T08:32:05.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "修复 metrics 采集器与看板组件的 schema 不一致：PR #97 现状下合入即构建失败",
+            "title": "[Task] 测试重构 R1-R8：用例参数化/合并/E2E 瘦身（102降至约60）",
             "status": "closed",
-            "updatedAt": "2026-10-10T08:29:08.000Z"
+            "updatedAt": "2026-10-12T17:06:00.000Z"
         },
         {
             "type": "pr",
-            "title": "[T-038] 站点全量评审收尾：可访问性 / 样式收敛 / 性能 / 死代码清理",
+            "title": "[#223] 测试重构 R1-R8：E2E 102降36 + security 表驱动 + lifecycle 升级",
             "status": "merged",
-            "updatedAt": "2026-10-10T04:19:49.000Z"
+            "updatedAt": "2026-10-12T17:05:58.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Task] 测试清理：删除凑覆盖率/重复/弱断言测试 D1-D6（451降至约385用例）",
+            "status": "closed",
+            "updatedAt": "2026-10-12T16:41:01.000Z"
         },
         {
             "type": "pr",
-            "title": "[T-001] 恢复自动部署",
+            "title": "[#219] 测试清理：删除凑覆盖率/重复/弱断言测试 D1~D6",
             "status": "merged",
-            "updatedAt": "2026-10-10T04:19:49.000Z"
+            "updatedAt": "2026-10-12T16:41:00.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-12T16:36:59.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Task] CI P0 加速：Quality Gate 拆分并行 + E2E 分片 + 缓存 + 结构精简",
+            "status": "closed",
+            "updatedAt": "2026-10-12T16:33:38.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "[#218] CI P0 加速：Quality Gate 拆分并行 + E2E 分片 + 缓存",
+            "status": "merged",
+            "updatedAt": "2026-10-12T16:33:37.000Z"
         }
     ]
 }
