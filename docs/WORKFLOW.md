@@ -356,6 +356,8 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 | 2026-10-12 | opencode/muse-spark | 测试性能 #223/#224 合入（用户指令 merge）：R2/R3/R6/R7/R8 落地、R1/R4/R5 放弃（实证复核）；PR #224 快车道首跑单次噪声失败（perf/LCP，非产品回归）→ numberOfRuns 1→3 修复后全绿； squash 合入 `92aef95`（admin 绕 review，门禁全绿）；TEST_PERF.md #223 记录行回填 commit | E2E 102→36，本地 wall 158s→8s；覆盖率 94.42/85.31/94.93/95.33；PR 流水线 199s（LHCI 快车道 94s）。次轮改动仅 docs+tests，无需部署。 |
 | 2026-10-13 | executor-round-75 | 第 75 轮（Execution·单交付巡检轮）：开工无 LOCK、ready 空；顺手处置 bot metrics PR #226（单文件值漂移、schema 逐键一致）admin-squash 合入 `c9dad3e`；合入后 main ci-cd run `38407423674` 11/11 success；重部署 Version `881d293b`，CSP 单请求头/体 nonce 一致 PASS，中英看板页 200；#225 backlog 待 Planner 定级未动；inbound 已知两提交无新工作 | PR 评论已留处置说明；STATE/HANDOFF 重写；收尾删 LOCK。 |
 | 2026-10-13 | executor-round-76 | 第 76 轮（Execution·零交付巡检轮）：开工无 LOCK、ready 空、无新 bot PR、HEAD 未变；队列零变更，未重跑验证；零代码改动 | open Issues #225/#199/#197/#101 与开放 PR #186/#209 零变更；inbound 已知两提交无新工作；HEAD a076f67 未变（CI 38407423674 success + 部署 881d293b 沿用）。收尾删 LOCK。 |
+| 2026-10-13 | planner-round-77 | 第 77 轮（Planning）：验收队列空；#225 定级拆分为 4 ready（#227–#230）+ 1 backlog（#231）后关闭；执行队列 = 4；基线 main@e7faa76【本条为第 78 轮 Planner 依 commit fc50dbb 与 PLAN 第 77 轮判定块补录——本轮次漏写 §7.4】 | `flaky` 标签已建；`gh issue create --milestone 2` 报 not found（CLI 取值口径待查）；#199 剩 4 天（braces 七度实测 3.0.3）；pending 清零。 |
+| 2026-10-14 | planner-round-78 | 第 78 轮（Planning）：验收队列空（review/in-progress 双零，#227–#230 零评论）；ready 队列复核仍合格，执行队列维持 4；新 bot metrics PR #232 登记为顺手处置项；基线 main@fc50dbb | main ci-cd run 38552146163 success；#199 剩 3 天（braces 八度实测仍 3.0.3）；#101 Secrets 六度复核未变；M3 milestone API 11/2 一致；inbound 已知两提交无新工作；#231 pending 第 2 天；无 LOCK。 |
 
 ### 7.5 handoff 格式
 
