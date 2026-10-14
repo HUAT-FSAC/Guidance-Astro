@@ -53,6 +53,7 @@
         "test:run": "vitest run",
         "test:coverage": "vitest run --coverage",
         "test:e2e": "playwright test",
+        "test:e2e:smoke": "playwright test smoke.spec.ts --config=.config/playwright.config.ts",
         "quality:audit": "node scripts/quality/audit-gate.mjs",
         "quality:bundle": "node scripts/quality/check-bundle-budget.mjs",
         "quality:routes": "node scripts/quality/check-route-budget.mjs",
