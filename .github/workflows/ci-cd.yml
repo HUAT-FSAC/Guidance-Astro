@@ -240,6 +240,41 @@ jobs:
             - name: Aggregate quality results
               run: echo "quality-budget / quality-e2e / quality-lhci all passed"
 
+    # #228: quality-e2e / quality-lhci 失败时自动开 flaky-candidate Issue(只上报,不处置)。
+    # 新增 job,不改既有 job id 与 quality-gate 的 needs,分支保护上下文不受影响。
+    report-flaky:
+        name: Report flaky candidate
+        if: failure() && (needs.quality-e2e.result == 'failure' || needs.quality-lhci.result == 'failure')
+        needs: [quality-e2e, quality-lhci]
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+        steps:
+            - name: Open flaky-candidate issue
+              uses: actions/github-script@v9
+              env:
+                  E2E_RESULT: ${{ needs.quality-e2e.result }}
+                  LHCI_RESULT: ${{ needs.quality-lhci.result }}
+              with:
+                  script: |
+                      const failed = []
+                      if (process.env.E2E_RESULT === 'failure') failed.push('quality-e2e')
+                      if (process.env.LHCI_RESULT === 'failure') failed.push('quality-lhci')
+                      const { owner, repo } = context.repo
+                      const title = `[flaky-candidate] ${failed.join(' + ')} 失败(run ${context.runId})`
+                      const body = [
+                          'quality 链路失败自动上报 — 可能是 flaky 抖动,也可能是真实回归,请人工研判。',
+                          '',
+                          `失败 job: ${failed.join(', ')}`,
+                          `- Run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                          `- Commit: ${context.sha}`,
+                          `- 分支: ${context.ref}`,
+                          '',
+                          '研判为抖动:关闭本 Issue(重跑已绿即可);研判为回归:转正式任务单跟进。',
+                          '本 Issue 带 `flaky` 标签,不受 stale 自动关闭打扰。',
+                      ].join('\n')
+                      await github.rest.issues.create({ owner, repo, title, body, labels: ['flaky', 'area:quality', 'area:devops', 'type:task'] })
+
     # deploy job 已于 2026-09-19 移出 CI:Cloudflare API Token Secret 暂不配置,
     # 留在流水线里只会让每次 push 的 main 长红。线上部署改由 Agent/维护者在
     # 本机执行 `pnpm deploy:worker`(wrangler OAuth),命令与验收见 docs/DEPLOYMENT.md。

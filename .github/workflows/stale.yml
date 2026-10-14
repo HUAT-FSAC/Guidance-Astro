@@ -40,6 +40,7 @@ jobs:
             area:devops
             good first issue
             help wanted
+            flaky
           # --- PRs ---
           days-before-pr-stale: 45
           days-before-pr-close: 14
