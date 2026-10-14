@@ -228,3 +228,21 @@ export default {
 | 在 `en/` 加新页但中文没建                                            | 强制要求**双向**同步,或加 `draft: true`             |
 | 把 SVG 直接放 `public/` 引用                                         | 尽量走 `src/assets/`;`public/` 仅放 PWA / 第三方    |
 | 在 frontmatter 写 JSX                                                | frontmatter 只能是 YAML,组件要写在 `---` 下面       |
+
+---
+
+## 9. 测试编写规范
+
+> 来源:`docs/TEST_PERF.md` 阶段一(#219 清理 D1~D6、#223 重构 R1~R8)的血泪教训。
+> 新增测试默认遵守以下 5 条;违反需在 PR 描述中说明理由。
+
+1. **纯函数 / 分支逻辑优先 Vitest** — 能不进浏览器就不进。
+   实例:`tests/unit/sitemap-paths.test.ts:19`(纯函数 `docFilePathToSitePath` 直测,零 fixture)。
+2. **整站扫描类断言禁入 `tests/unit`** — 全站 / 全 `src` 扫描属门禁语义,走 CI quality-gate。
+   反例:`tests/unit/theme-contrast.test.ts:47`(全 `src` 对比度扫描,单用例 188ms;TEST_PERF R5 待迁出)。
+3. **E2E 新增用例必须能回答"为何不能是单元测试"** — 答不上来就降级。
+   实例:`tests/e2e/mobile-header.spec.ts:4`(390px 视口矩阵,必须真浏览器断可见性)。
+4. **覆盖率补测试必须写在归属模块的专文件内** — 禁止新建 `*-boost` 文件凑数。
+   教训:commit `d03129f` 删除 `coverage-boost` / `branch-boost2/3`(空断言、实现细节测试,见 #219)。
+5. **浏览器只用于必须交互 / 整页行为** — 状态码、重定向、静态 DOM 走 `request` 断言或单测。
+   实例:`tests/e2e/navigation.spec.ts:88`(`request.get` 测 302,不开页面渲染)。
