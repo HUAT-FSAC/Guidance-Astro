@@ -4,12 +4,12 @@
 
 ## 今日队列（给 Executor 的建议顺序，4 个 ready）
 
-| #    | 任务                                                    | 优先级 | 状态  |
-| ---- | ------------------------------------------------------- | ------ | ----- |
-| #227 | 新增 `test:e2e:smoke` 本地冒烟快捷命令                  | P3     | ready |
-| #230 | 测试编写规范成文（CONTRIBUTING 补充 5 条规则）          | P3     | ready |
-| #228 | Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免      | P3     | ready |
-| #229 | 测试时长预算告警：check-duration-budget 脚本 + 每周定时 | P3     | ready |
+| #    | 任务                                                    | 优先级 | 状态                                          |
+| ---- | ------------------------------------------------------- | ------ | --------------------------------------------- |
+| #227 | 新增 `test:e2e:smoke` 本地冒烟快捷命令                  | P3     | in-review（PR #233 合入 `a66bf4b`，报告已留） |
+| #230 | 测试编写规范成文（CONTRIBUTING 补充 5 条规则）          | P3     | in-review（PR #234 合入 `f524fad`，报告已留） |
+| #228 | Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免      | P3     | in-progress（分支 `agent/issue-228-flaky`）   |
+| #229 | 测试时长预算告警：check-duration-budget 脚本 + 每周定时 | P3     | ready                                         |
 
 > 另有 bot metrics PR #232（今日再生，单文件数据-only）按 PLAN §2.2 由 Executor 顺手处置，不单独建单。
 
