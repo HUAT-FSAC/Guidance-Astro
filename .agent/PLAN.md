@@ -5,7 +5,9 @@
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-017，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-14T11:15Z（`date -u`）｜**核实基线：** `main@fc50dbb`（与 origin 同步，CI success：run `38552146163`）｜**核实人：** Planning Agent 第 78 轮（无 LOCK；Executor 第 76 轮已正常收尾删锁）
+**最后核实：** 2026-10-15T03:37Z（`date -u`）｜**核实基线：** `main@a7a830b`（与 origin 同步，CI success：run `38670105283`）｜**核实人：** Planning Agent 第 79 轮（无 LOCK；本轮开工位于 Executor 的 `agent/issue-228-flaky` 分支，已切回 main；本仓无 `DIARY/` 目录，昨日输入以 Issue 评论 + `git log` + Issue 状态反推）
+
+> **第 79 轮判定：** ① **验收 #227 / #230 双通过并关闭**——执行报告齐全，独立取证：`a66bf4b`（单文件 package.json +1 行 smoke 脚本，main 第 56 行存在）/ `f524fad`（CONTRIBUTING §9 五条齐全，4 实例文件在 main 均存在），PR #233/#234 均为 MERGED，main ci-cd @ `a7a830b` 三连 success。② **#228 未到验收点**：仍 in-progress（认领 10-14T11:55Z，未满 24h），PR #236 已开、CI 全绿（18 pass + labeler），无执行报告——不干预现场，留待 Executor 收尾。③ **auto-discovered #237 分诊关闭**：run `38560131664` 头 = `32ea624`（#228 验证机制的临时破坏提交，已 revert），系验证 artifact 非真实抖动；机制本身工作符合预期。④ **#231 pending 第 3 天 → 默认转正**：无用户答复，按 §6.3 默认方案（LHCI 保留 PR 快车道）转正式并关闭。⑤ backlog 零变更：#199（blocked，10-17 到期剩 **2 天**，本轮 `npm view braces` latest 仍 `3.0.3` **九度实测**无补丁）；#197（needs-info/默认 C）；#101（blocked，Actions Secrets 七度 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**。⑥ inbound `wsyhuat/main` 仍为已知两提交（`f98be0d`/`d89b87e`，无新工作）。⑦ pending 清零；**执行队列 = #228 收尾 + #229（唯一 ready）**；无 LOCK。
 
 > **第 78 轮判定：** ① **验收队列空**——`status:review` / `status:in-progress` 双零命中，#227–#230 零评论，Executor 自第 77 轮规划后未运行，无事可验（本仓无 `DIARY/` 目录，昨日输入以 `STATE.md`/`HANDOFF.md` + `git log` + Issue 状态反推）。② **ready 队列复核仍合格**：#227–#230 定级有效（正文首行 `ready` + `status:backlog` + P3，范围/验收标准未变），维持执行队列 = 4，顺序沿用 #227→#230→#228→#229。③ **新 bot metrics PR #232**（今日 04:52Z 再生，单文件 `project-progress.json` 44+/44-，checks 未触发符合 #197 根因）：不单独建单，按 §2.2 触发器由 Executor 顺手处置。④ **backlog 零变更**：#199（blocked，10-17 到期剩 **3 天**，本轮 `npm view braces` latest 仍 `3.0.3` **八度实测**无补丁）；#197（needs-info/默认 C）；#101（blocked，Actions Secrets 六度 `gh api` 复核仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）；#231 pending 第 2 天（默认维持现状，未达 3 天转正）；#186/#209 majors 按 D-015 暂缓；M3 milestone API 实测仍 **11 closed / 2 open**。⑤ inbound `wsyhuat/main` 仍为已知两提交（`f98be0d`/`d89b87e`，无新工作）。⑥ pending 清零（#231 除外）；无 LOCK。
 
@@ -25,7 +27,7 @@
 
 ## 一、当前方向
 
-功能期早已结束（M1 稳态治理、M2 稳态防复发均已收官）。当前处于 **M3 稳态运营**：让依赖摄入、发版、供应链回看周期性运转，并处理机制暴露出的真实事项。当前开放：日历型事件 **2026-10-17 braces 豁免到期**（#199，剩 3 天）、阶段三拆分 4 ready（#227–#230）与 bot 按日再生的 metrics PR（#232 今日再生待处置，Executor 顺手处置项）；#212（metrics schema 修复）已于第 66 轮验收关闭。方向层已由 **D-017** 裁定维持稳态（用户 2026-10-08 选 A）。
+功能期早已结束（M1 稳态治理、M2 稳态防复发均已收官）。当前处于 **M3 稳态运营**：让依赖摄入、发版、供应链回看周期性运转，并处理机制暴露出的真实事项。当前开放：阶段三拆分仅剩 #228 收尾（PR #236 CI 全绿待合入）+ #229（ready）；日历型事件 **2026-10-17 braces 豁免到期**（#199，剩 2 天）；#227 / #230 已于第 79 轮验收关闭；#231 默认转正（维持现状）关闭。方向层已由 **D-017** 裁定维持稳态（用户 2026-10-08 选 A）。
 
 ## 二、当前 Milestone：M3 稳态运营（Steady-state Operations）｜GitHub Milestone #2，due 2026-11-14｜进度：11 closed / 2 open（GitHub milestone API 实测 2026-10-12，open=#199/#197；#101 不在 M3）
 
@@ -37,16 +39,12 @@
 4. 2026-10-17 audit 豁免到期前完成核对与显式决策 —— ⏳ 剩 3 天（braces 仍无补丁预期，到期按 D-011 显式续期）。
 5. main CI 全绿、线上 `/` 200 + CSP nonce —— ✅ 本轮复验（HEAD `fc50dbb` ci-cd run `38552146163` success；线上部署 Version `881d293b` 由第 75 轮双请求 nonce 一致验过，本轮 HEAD 仅含 `.agent/` 记录变更未重复部署）。
 
-### 2.2 执行队列（当前 = 4）
+### 2.2 执行队列（当前 = #228 收尾 + 1 ready）
 
-1. #227 `test:e2e:smoke` 快捷命令（P3，约 10 分钟量级）
-2. #230 测试编写规范成文（P3，纯文档）
-3. #228 flaky 治理（P3，需改 CI + stale）
-4. #229 时长预算告警（P3，新脚本 + 定时 workflow）
+1. #228 flaky 治理（P3，Executor 现场：PR #236 CI 全绿 → 合入 + 补执行报告 + 转 `status:review`，**不自行关单**）
+2. #229 时长预算告警（P3，新脚本 + 定时 workflow，本轮唯一新增可执行项）
 
-（顺序建议：先快后慢；#228 与 #229 无依赖可并行，但同一轮内 Executor 串行执行。）
-
-**ready 队列 4 个**（#227–#230，第 77 轮由 #225 拆分定级，见轮判定②）。M3 其余工作仍为日历触发型（10-17 到期决策 / 每周一 dependabot 扫描 / bot 按日 metrics PR），触发口径不变。
+**ready 队列仅剩 #229**（#227/#230 第 79 轮验收关闭；#231 默认转正关闭）。M3 其余工作仍为日历触发型（10-17 到期决策 / 每周一 dependabot 扫描 / bot 按日 metrics PR），触发口径不变。
 
 持续触发器（满足其一即建/转 ready 或按指令顺手处置）：
 
@@ -57,15 +55,15 @@
 
 ### 2.3 已知阻塞与依赖
 
-| 项                                      | 状态                       | 需要谁         | 说明                                                                                                                                                                                         |
-| --------------------------------------- | -------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **#101** CI 自动部署                    | `blocked`（P1）            | **人类**       | 第 60/64/66/67/70 轮五度 + 本轮六度 `gh api` 复核：Actions Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`。配好前不得把 deploy job 加回 CI（D-001）；本地 OAuth 部署可用，不阻塞交付           |
-| **#199** braces 豁免到期                | `blocked`（P2）            | 10-17 触发     | `braces` latest 仍 `3.0.3` 无补丁（第 63/64/66/67/71/77 轮七度 + 本轮八度实测）→ 到期按 D-011 显式续期，不得静默延长                                                                         |
-| **#197** rp Release PR 自助 CI          | `needs-info`（P3）         | 默认 C（不改） | 第 60 轮已补录第 58 轮实测（同基 `update-branch` 失效 + 空提交触发法）；第 66 轮再登记第三次实证（#214）；等发版频率信号或人类意愿                                                           |
-| bot metrics 快照（bot 按日再生）        | 待处置 #232                | **Executor**   | #215→`c7fcecc`、#216→`0a29da5`、#217→`455b109`、#226→`c9dad3e` 均已处置合入并部署（Version `881d293b`）；**#232 今日 04:52Z 再生**（单文件 44+/44-），按 §2.2 触发器指令顺手处置，勿单独建单 |
-| **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08） | —              | 维持稳态；Q4 评审仅机械刷新（#210）；详见 `DECISIONS.md` D-017                                                                                                                               |
-| #186/#209 majors PR                     | 暂缓（D-015）              | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch                                                                                                                                       |
-| `size:xs` / `update-linked-issues` 权限 | 仓库设置                   | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）                                                                                              |
+| 项                                      | 状态                       | 需要谁         | 说明                                                                                                                                                                                              |
+| --------------------------------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **#101** CI 自动部署                    | `blocked`（P1）            | **人类**       | 第 60/64/66/67/70 轮五度 + 第 78 轮六度 + 本轮七度 `gh api` 复核：Actions Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`。配好前不得把 deploy job 加回 CI（D-001）；本地 OAuth 部署可用，不阻塞交付 |
+| **#199** braces 豁免到期                | `blocked`（P2）            | 10-17 触发     | `braces` latest 仍 `3.0.3` 无补丁（第 63/64/66/67/71/77/78 轮八度 + 本轮九度实测）→ 到期按 D-011 显式续期，不得静默延长                                                                           |
+| **#197** rp Release PR 自助 CI          | `needs-info`（P3）         | 默认 C（不改） | 第 60 轮已补录第 58 轮实测（同基 `update-branch` 失效 + 空提交触发法）；第 66 轮再登记第三次实证（#214）；等发版频率信号或人类意愿                                                                |
+| bot metrics 快照（bot 按日再生）        | 已收敛（当前无开放 PR）    | **Executor**   | #215→`c7fcecc`、#216→`0a29da5`、#217→`455b109`、#226→`c9dad3e`、#232→`4ee6a46` 均已处置合入；开放 PR 仅 #236 + majors 2 个。下一个再生仍按 §2.2 触发器顺手处置，不单独建单                        |
+| **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08） | —              | 维持稳态；Q4 评审仅机械刷新（#210）；详见 `DECISIONS.md` D-017                                                                                                                                    |
+| #186/#209 majors PR                     | 暂缓（D-015）              | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch                                                                                                                                            |
+| `size:xs` / `update-linked-issues` 权限 | 仓库设置                   | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）                                                                                                   |
 
 ### 2.4 卫生备注（非任务，不建 Issue）
 
@@ -95,8 +93,8 @@ M3 是开放式稳态循环，无「做完即停」的终线：只要项目继�
 
 ## 五、Decision Gate
 
-当前**无开放 pending**（D-017 已由用户 2026-10-08 同轮裁定 A=维持稳态）；权威定义见 `.agent/DECISIONS.md`（D-001..D-017 全部生效）。历史 Gate 记录（如 D-009 批次处置授权、D-010 vite-plugin 锁定）以 DECISIONS.md 为准，本文件不再复制第二套说法。
+当前**无开放 pending**（#231 于本轮满 3 天按 §6.3 默认转正：LHCI 保留 PR 快车道，维持现状）；权威定义见 `.agent/DECISIONS.md`（D-001..D-017 全部生效）。历史 Gate 记录（如 D-009 批次处置授权、D-010 vite-plugin 锁定）以 DECISIONS.md 为准，本文件不再复制第二套说法。
 
 ## 给 Executor 的指令
 
-执行队列 4 个 ready（#227→#230→#228→#229 建议顺序）：逐个领取执行，每 Issue 独立分支 `agent/issue-<N>-<短slug>`；收尾遵守流程四件套（Issue 执行报告、转 `status:review`、**不自行关单**、`.agent/` 变更另提）。另：① 新 bot metrics PR **#232** 按 §2.2 触发器顺手处置（先验单文件 + schema 逐键比对）；② #231 未进队列（pending 第 2 天，默认维持现状），不得执行。
+执行队列 #228 收尾 + #229：先合入 PR #236（CI 全绿）并补执行报告、转 `status:review`、**不自行关单**，再领取 #229；分支沿用 `agent/issue-<N>-<slug>`，收尾遵守流程四件套（Issue 执行报告、转 review、不自行关单、`.agent/` 变更另提）。#199 未到 10-17 触发日不得提前建单。

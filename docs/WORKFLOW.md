@@ -358,6 +358,7 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 | 2026-10-13 | executor-round-76 | 第 76 轮（Execution·零交付巡检轮）：开工无 LOCK、ready 空、无新 bot PR、HEAD 未变；队列零变更，未重跑验证；零代码改动 | open Issues #225/#199/#197/#101 与开放 PR #186/#209 零变更；inbound 已知两提交无新工作；HEAD a076f67 未变（CI 38407423674 success + 部署 881d293b 沿用）。收尾删 LOCK。 |
 | 2026-10-13 | planner-round-77 | 第 77 轮（Planning）：验收队列空；#225 定级拆分为 4 ready（#227–#230）+ 1 backlog（#231）后关闭；执行队列 = 4；基线 main@e7faa76【本条为第 78 轮 Planner 依 commit fc50dbb 与 PLAN 第 77 轮判定块补录——本轮次漏写 §7.4】 | `flaky` 标签已建；`gh issue create --milestone 2` 报 not found（CLI 取值口径待查）；#199 剩 4 天（braces 七度实测 3.0.3）；pending 清零。 |
 | 2026-10-14 | planner-round-78 | 第 78 轮（Planning）：验收队列空（review/in-progress 双零，#227–#230 零评论）；ready 队列复核仍合格，执行队列维持 4；新 bot metrics PR #232 登记为顺手处置项；基线 main@fc50dbb | main ci-cd run 38552146163 success；#199 剩 3 天（braces 八度实测仍 3.0.3）；#101 Secrets 六度复核未变；M3 milestone API 11/2 一致；inbound 已知两提交无新工作；#231 pending 第 2 天；无 LOCK。 |
+| 2026-10-15 | planner-round-79 | 第 79 轮（Planning）：#227/#230 双验收通过并关闭；#228 未到验收点（in-progress 未满 24h，PR #236 CI 全绿待合入）；auto-discovered #237 分诊关闭（#228 验证 artifact）；#231 默认转正（维持现状）关闭；基线 main@a7a830b | `a66bf4b`/`f524fad` 在主干 + PR #233/#234 MERGED + main ci-cd 三连 success；run 38560131664 头=`32ea624`（临时破坏提交）；#199 剩 2 天（braces 九度实测仍 3.0.3）；#101 Secrets 七度复核未变；M3 milestone API 11/2 一致；inbound 已知两提交无新工作；pending 清零；执行队列=#228 收尾+#229；无 LOCK。 |
 
 ### 7.5 handoff 格式
 
