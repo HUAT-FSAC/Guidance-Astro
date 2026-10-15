@@ -1,0 +1,59 @@
+name: Duration Budget
+
+# #229: 每周核对一次 main ci-cd 流水线耗时（TEST_PERF.md 阶段三第 3 项）。
+# 采集与判定逻辑在 scripts/quality/check-duration-budget.mjs（只读：gh/REST API 取 run/job/step 时长）。
+# 超标时开 [duration-budget] Issue（带 flaky 标签，stale 已豁免该标签 —— #228）。
+# 只上报，不自动优化、不自动重跑；已存在 open 的 [duration-budget] Issue 时改为追加评论，避免每周重复开单。
+
+on:
+  schedule:
+    - cron: '23 3 * * 1' # 每周一 03:23 UTC（避开整点高峰）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  duration-budget:
+    name: Check CI duration budget
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Check duration budget
+        id: budget
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/quality/check-duration-budget.mjs
+
+      - name: Open duration-budget issue
+        if: steps.budget.outputs.exceeded == 'true'
+        uses: actions/github-script@v9
+        env:
+          ISSUE_TITLE: ${{ steps.budget.outputs.issue-title }}
+          ISSUE_BODY: ${{ steps.budget.outputs.issue-body }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            })
+            const existing = openIssues.find((issue) => !issue.pull_request && issue.title.startsWith('[duration-budget]'))
+            if (existing) {
+              const body = ['本周复查仍超标（沿用既有 Issue 追踪，不重复开单）。', '', process.env.ISSUE_BODY].join('\n')
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body })
+              return
+            }
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title: process.env.ISSUE_TITLE,
+              body: process.env.ISSUE_BODY,
+              labels: ['flaky', 'area:quality', 'area:devops', 'type:task'],
+            })
