@@ -1,45 +1,45 @@
 {
-    "generatedAt": "2026-10-14T04:52:11.917Z",
+    "generatedAt": "2026-10-15T04:37:01.126Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.76,
-        "prCycleTimeDays": 0.88,
-        "issueCloseRatePercent": 90.41,
-        "prMergeRatePercent": 64.47,
-        "ciSuccessRatePercent": 80,
-        "wipIssueCount": 0,
+        "issueLeadTimeDays": 0.79,
+        "prCycleTimeDays": 0.82,
+        "issueCloseRatePercent": 94.59,
+        "prMergeRatePercent": 66.25,
+        "ciSuccessRatePercent": 74,
+        "wipIssueCount": 1,
         "reviewIssueCount": 0,
-        "backlogIssueCount": 7
+        "backlogIssueCount": 3
     },
     "counts": {
-        "openIssueCount": 8,
-        "openPullRequestCount": 2,
-        "openedIssuesInWindow": 73,
-        "closedIssuesInWindow": 66,
-        "openedPullRequestsInWindow": 76,
-        "mergedPullRequestsInWindow": 49,
+        "openIssueCount": 5,
+        "openPullRequestCount": 3,
+        "openedIssuesInWindow": 74,
+        "closedIssuesInWindow": 70,
+        "openedPullRequestsInWindow": 80,
+        "mergedPullRequestsInWindow": 53,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 9
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-12T17:12:25.000Z",
-        "latestMergedPullRequestAt": "2026-10-13T13:44:19.000Z"
+        "latestIssueUpdatedAt": "2026-10-13T14:53:34.000Z",
+        "latestMergedPullRequestAt": "2026-10-14T11:52:16.000Z"
     },
     "summary": {
-        "totalIssues": 96,
-        "closedIssues": 88,
-        "openIssues": 8,
-        "ciPassRate": 80
+        "totalIssues": 97,
+        "closedIssues": 92,
+        "openIssues": 5,
+        "ciPassRate": 74
     },
     "byStatus": {
-        "backlog": 5,
+        "backlog": 1,
         "ready": 1,
-        "inProgress": 0,
+        "inProgress": 1,
         "review": 0,
         "blocked": 2,
-        "done": 88
+        "done": 92
     },
     "byPriority": {
         "p0": 2,
@@ -76,51 +76,51 @@
     "recentActivity": [
         {
             "type": "issue",
-            "title": "[Task] 测试长效治理：阶段三 5 项跟进（smoke 快捷命令/Flaky 标签/时长告警/编写规范/LHCI 定时化）",
+            "title": "[Task] LHCI 移出 PR（仅 main + 定时，待定方向）",
             "status": "closed",
-            "updatedAt": "2026-10-13T14:53:44.000Z"
+            "updatedAt": "2026-10-15T03:38:42.000Z"
         },
         {
             "type": "issue",
-            "title": "[Task] LHCI 移出 PR（仅 main + 定时，待定方向）",
-            "status": "open",
-            "updatedAt": "2026-10-13T14:53:34.000Z"
+            "title": "[flaky-candidate] quality-e2e 失败(run 38560131664)",
+            "status": "closed",
+            "updatedAt": "2026-10-15T03:38:41.000Z"
         },
         {
             "type": "issue",
             "title": "[Task] 测试编写规范成文（CONTRIBUTING 补充 5 条规则）",
-            "status": "open",
-            "updatedAt": "2026-10-13T14:53:29.000Z"
+            "status": "closed",
+            "updatedAt": "2026-10-15T03:38:41.000Z"
         },
         {
             "type": "issue",
-            "title": "[Task] 测试时长预算告警：check-duration-budget 脚本 + 每周定时",
+            "title": "[Task] 新增 test:e2e:smoke 本地冒烟快捷命令",
+            "status": "closed",
+            "updatedAt": "2026-10-15T03:38:41.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "[#228] Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免",
             "status": "open",
-            "updatedAt": "2026-10-13T14:53:24.000Z"
+            "updatedAt": "2026-10-14T12:01:03.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "[#228] Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免",
+            "status": "merged",
+            "updatedAt": "2026-10-14T11:52:36.000Z"
         },
         {
             "type": "issue",
             "title": "[Task] Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免",
             "status": "open",
-            "updatedAt": "2026-10-13T14:53:10.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Task] 新增 test:e2e:smoke 本地冒烟快捷命令",
-            "status": "open",
-            "updatedAt": "2026-10-13T14:53:04.000Z"
+            "updatedAt": "2026-10-14T11:48:01.000Z"
         },
         {
             "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
+            "title": "[#230] 测试编写规范成文（CONTRIBUTING 补充 5 条规则）",
             "status": "merged",
-            "updatedAt": "2026-10-13T13:53:47.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Task] 测试重构 R1-R8：用例参数化/合并/E2E 瘦身（102降至约60）",
-            "status": "closed",
-            "updatedAt": "2026-10-12T17:06:00.000Z"
+            "updatedAt": "2026-10-14T11:47:27.000Z"
         }
     ]
 }
