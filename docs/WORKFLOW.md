@@ -363,6 +363,8 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 
 | 2026-10-16 | planner-round-81 | 第 81 轮（Planning）：验收 #228/#229 双通过并关闭；新建 #242 承接 #229 遗留风险；#199 由 blocked 提前一天转 ready；立 D-018 自主续期上限；登记 PR #239 为 D-012 挂起项；基线 main@c2e2f71 | 验收全部独立取证、非采信报告：#228 `gh pr checks 236` 实测 Quality Gate SUCCESS + Report flaky candidate SKIPPED、#237 by `github-actions[bot]` 带 `flaky`、`stale.yml` exempt 含 `flaky`；#229 Planner 亲跑 `--dry-run`（exit 0 · P95 299s<360s）+ 亲跑 env 降阈值（双指标超标）双向复现 + 亲解析 YAML（cron `23 3 * * 1` + dispatch + `issues:write`）。`29b33ad` 的 main run `38751057762` 实测 cancelled（报告未写结论，STATE 已披露，判 incomplete 非失实）。#199 第十次实测 `braces` 仍 `3.0.3`（`time.modified` 2024-09-18）+ `pnpm quality:audit` 亲跑 exit 0 自报 `expires 2026-10-17 (1d)`；实际失效 `2026-10-17T23:59:59Z`（`audit-gate.mjs:63`）⇒ 提前放行避免红 CI 日，续期止于 `2026-10-31`（D-018）。#242 基线 `grep -c '\| -s \|'` = 6（`check-duration-budget.mjs:178` null 渲染）。M3 milestone API 实测 11/2 无漂移；#101 Secrets 八度复核未变；inbound `wsyhuat/main` 仍停 `f98be0d`(10-02)，路径级内容比对确认已吸收、无新工作（首拉 TLS 失败、重试即通）；线上同请求 CSP nonce 一致 PASS + 中英看板页 200。pending 清零（本轮未提问）；执行队列 = #199 → #242；`.agent/LOCK` 仍在（未 git 跟踪，与 STATE「已删」表述不符）；ENV §5 标签表过期（`blocked`/`needs-info`/`priority:p4` 实测均存在）。 |
 
+| 2026-10-16 | planner-round-81b | 第 81 轮追加动作：经用户授权删除 `.agent/LOCK` 残留（上一行记录为「仍在」，本行为同轮后续，历史不覆写） | 删除前二次核对：内容仍为 `{"owner":"executor-codebuddy-glm-20261015","acquired_at":"2026-10-15T05:05Z","issue":228}` 逐字未变、心跳过期 ~2 天、#228 已验收关闭、`ps` 无持有该锁的执行现场 ⇒ 判定安全。该文件**未被 git 跟踪**（`git ls-files` 空），删除后 `git status` 改动文件数 0，故 STATE 第 80 轮「LOCK 已删」的表述差异不体现在任何 diff 里——已在 PLAN §2.4 / TASKS 环境信号同步为「已删除，下轮无需再处理」。契约 1.2 本流程不设锁。 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：

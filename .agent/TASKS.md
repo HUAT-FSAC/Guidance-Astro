@@ -40,4 +40,4 @@
 
 1. **ENV §5 标签表已过期**：该节称 `blocked` / `needs-info` 标签「不存在」、`priority:p4` 缺失，但本轮 `gh api labels` 实测三者**均已在仓库存在**（#199/#101 正带 `blocked`、#197 正带 `needs-info`）。ENV 属 Executor 所有权，Planner 不代改，请下一棒修正该表。
 2. **`wsyhuat` fetch 间歇失败**：本轮首拉报 `GnuTLS recv error (-110)`，重试第 1 次即成功。inbound 巡检必须**重试后**才能下「无新工作」结论，不得把 fetch 失败当成无新工作。
-3. **`.agent/LOCK` 残留仍在**：内容 `{"owner":"executor-codebuddy-glm-20261015","acquired_at":"2026-10-15T05:05Z","issue":228,"heartbeat_at":"2026-10-15T05:05Z"}`（心跳已过期约 2 天）。该文件**未被 git 跟踪**，故 STATE.md 第 80 轮「LOCK：本轮收尾删除」一句与实际不符——属无代码影响的记录笔误（`rm` 未生效或后续又重新出现），不追罚，但下一棒请以 `ls .agent/LOCK` 为准，不要以 STATE 的自述为准。按契约 1.2 本流程**不设锁**，建议用户直接删除该文件；Planner 不代删（属 Executor 现场资产）。
+3. **`.agent/LOCK` 已于第 81 轮删除**（用户授权「建议删除就删除吧」）：删除前内容为 `{"owner":"executor-codebuddy-glm-20261015","acquired_at":"2026-10-15T05:05Z","issue":228,"heartbeat_at":"2026-10-15T05:05Z"}`（心跳过期约 2 天，#228 已关闭），未被 git 跟踪 ⇒ 删除不产生任何 diff。故 STATE.md 第 80 轮「LOCK：本轮收尾删除」与实际不符——属无代码影响的记录笔误，不追罚，但下一棒请以 `ls .agent/LOCK` 为准、不要以 STATE 自述为准。**当前已无 LOCK，下一轮无需再处理**；按契约 1.2 本流程不设锁，今后若再现残留同样按此口径处置。
