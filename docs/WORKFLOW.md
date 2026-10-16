@@ -365,6 +365,8 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 
 | 2026-10-16 | planner-round-81b | 第 81 轮追加动作：经用户授权删除 `.agent/LOCK` 残留（上一行记录为「仍在」，本行为同轮后续，历史不覆写） | 删除前二次核对：内容仍为 `{"owner":"executor-codebuddy-glm-20261015","acquired_at":"2026-10-15T05:05Z","issue":228}` 逐字未变、心跳过期 ~2 天、#228 已验收关闭、`ps` 无持有该锁的执行现场 ⇒ 判定安全。该文件**未被 git 跟踪**（`git ls-files` 空），删除后 `git status` 改动文件数 0，故 STATE 第 80 轮「LOCK 已删」的表述差异不体现在任何 diff 里——已在 PLAN §2.4 / TASKS 环境信号同步为「已删除，下轮无需再处理」。契约 1.2 本流程不设锁。 |
 
+| 2026-10-16 | executor-round-81 | 第 81 轮（Execution·经用户授权由 Planning Agent 临时切换执行角色）：#199 braces 豁免显式续期全程交付——PR #243 squash 合入 `478777d`，转 `status:review` **未自行关单**；同轮连带完成 `.agent/LOCK` 删除的记录同步与 STATE/HANDOFF/DIARY 回写 | 续期依据：2026-10-16T13:56Z 第十一次实测 `npm view braces dist-tags.latest` = `3.0.3` + `braces@latest time.modified` = `2024-09-18`（上游两年无动作）⇒ 走 D-011「仍无补丁 → 显式续期」分支。改动仅 `.config/audit-allowlist.json` 单文件 3 字段（`expires` `2026-10-17`→`2026-10-31`、`reason` 重写含当轮实测证据、`issue` 改指 #199），`ghsa`/`package`/`severity`/`vulnerable`/`patchedClaimed`/`added` 逐字未动，`audit-gate.mjs:149` 仍 `--audit-level=moderate`、`ci-cd.yml:85` audit 步骤未增删。commit 用 `chore(audit):` 以免 rp 抬版本（D-012）。验证：`quality:audit` exit 0（`expires 2026-10-31 (15d)`，3 天内到期提醒命中 0）· `audit-gate.test.ts` 13/13 · `lint`/`format:check`/`test:run` 431 passed 40 files/`build` 全 0 · PR #243 16 项 pass · main @ `478777d` 13 success / 7 skipped / 0 失败。未跑 `test:e2e`（不涉 UI）与 `deploy:worker`（产物不变）。**角色重叠已如实登记**：标准由 Planner 段所写、执行在同一上下文，故不自关单，请下一轮独立取证。D-018 硬墙 `2026-10-31` 不得第三次自主续期，建议提前按 §6.2 带 A/B/C 交用户。推送积压修正：第 80 轮 `c2e2f71` 当时未推 origin，本轮连带推上。 |
+
 ### 7.5 handoff 格式
 
 Agent 交接时，在 PR 评论或本节追加：

@@ -1,26 +1,27 @@
 # TASKS — Issue 本地镜像（Planner 每轮整体重写；权威来源 = GitHub Issue）
 
-> 最后同步：2026-10-16T11:50Z（UTC，`date -u`）｜同步人：Planning Agent 第 81 轮｜HEAD `c2e2f71`
+> 最后同步：2026-10-16T14:12Z（UTC，`date -u`）｜同步人：第 81 轮 Planner 段整体重写 + 执行段按契约 1.6 定向同步 #199 行｜HEAD `478777d`
 > 权威来源 = GitHub Issue（`gh` 可用，本轮实测 token 有效、scopes 含 `repo`/`workflow`）。网络对 `api.github.com` 有间歇性 TLS/EOF 抖动，所有 gh 调用均需重试包裹。
 > `ready` 标签在本仓不存在（ENV §5）⇒ 队列状态以 **Issue 正文首行「队列状态：`ready`」+ `status:backlog`** 为准。
 
 ## 今日队列（给 Executor 的建议顺序）
 
-| #    | 任务                                                       | 优先级 | 状态  | 顺序理由                                                 |
-| ---- | ---------------------------------------------------------- | ------ | ----- | -------------------------------------------------------- |
-| #199 | braces audit 豁免显式续期至 `2026-10-31`（含当轮实测证据） | P2     | ready | 日历硬约束：10-18T00:00Z 起门禁变红，须先落定            |
-| #242 | 真实触发 duration-budget 三条路径复核 + 修样本表 null 渲染 | P3     | ready | 承接 #229 验收遗留风险，须赶在 10-19T03:23Z 定时首轮之前 |
+| #    | 任务                                                       | 优先级 | 状态  | 顺序理由                                             |
+| ---- | ---------------------------------------------------------- | ------ | ----- | ---------------------------------------------------- |
+| #242 | 真实触发 duration-budget 三条路径复核 + 修样本表 null 渲染 | P3     | ready | **死线 2026-10-19T03:23Z**：每周定时首轮之前必须完成 |
 
-> 顺序建议：#199 是单文件配置改动（10 分钟级），先落它可一次性消除日历风险；#242 含代码 PR + CI + 3 次 `workflow_dispatch`，耗时更长，且其「未超标不开单」结论不依赖 #199。两单均无依赖关系。
+> **#199 已于同轮交付并转 `status:review`**（PR #243 squash 合入 `478777d`，main CI 实测 13 success / 7 skipped / 0 失败；执行报告已留 Issue，**未自行关单**，遵守 D-006）。今日队列因此只剩 #242 一项。
+> ⚠️ #199 由 Planning Agent 经用户授权**临时切换执行角色**完成，写验收标准与执行发生在同一上下文 ⇒ 下一轮验收须**独立取证、勿只读报告**（可复现判据都在 Issue 评论里）。
+> 另需顺手处置 bot metrics PR **#241**；**勿合 PR #239**（rp `release 1.3.0` 属 minor，D-012 第 2 档随 Milestone 收尾合并，M3 due 2026-11-14）。
 
 ## 全部开放 Issue
 
-| #    | 标题                                                  | 标签                                          | 状态                                                 |
-| ---- | ----------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------- |
-| #242 | 真实触发 duration-budget 三条路径复核并修正 null 渲染 | P3/quality/devops/task                        | ready（第 81 轮新建）                                |
-| #199 | 核对 braces audit 豁免并按 D-011 做显式决策           | P2/quality/devops/task/risk:medium            | ready（第 81 轮由 blocked 转，提前一天放行）         |
-| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI    | P3/devops/dependencies/risk:medium/needs-info | needs-info（默认 C = 维持手工触发，用户 10-12 确认） |
-| #101 | 恢复 CI 自动部署，消除单机 wrangler OAuth 单点        | P1/devops/task/risk:medium/blocked            | blocked（待人类配 `CLOUDFLARE_API_TOKEN`）           |
+| #    | 标题                                                  | 标签                                          | 状态                                                   |
+| ---- | ----------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| #242 | 真实触发 duration-budget 三条路径复核并修正 null 渲染 | P3/quality/devops/task                        | ready（第 81 轮新建）                                  |
+| #199 | 核对 braces audit 豁免并按 D-011 做显式决策           | P2/quality/devops/task/risk:medium            | **in-review**（`478777d` 在主干，待 Planner 独立验收） |
+| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI    | P3/devops/dependencies/risk:medium/needs-info | needs-info（默认 C = 维持手工触发，用户 10-12 确认）   |
+| #101 | 恢复 CI 自动部署，消除单机 wrangler OAuth 单点        | P1/devops/task/risk:medium/blocked            | blocked（待人类配 `CLOUDFLARE_API_TOKEN`）             |
 
 ## 已关闭（本轮相关）
 
