@@ -7,10 +7,10 @@
             "severity": "high",
             "vulnerable": "<=3.0.3",
             "patchedClaimed": ">=3.0.4",
-            "reason": "No upstream patch published yet: npm dist-tags.latest is still 3.0.3. Reached only through devDependencies (@fullhuman/postcss-purgecss > purgecss > fast-glob > micromatch), i.e. build-time tooling that does not ship into the Worker bundle.",
-            "issue": "https://github.com/HUAT-FSAC/Guidance-Astro/issues/173",
+            "reason": "No upstream patch published yet. Re-checked 2026-10-16T13:56Z (11th measurement, renewal round under #199): npm dist-tags.latest is still 3.0.3 and braces@latest time.modified is 2024-09-18, i.e. no upstream release for ~2 years. Renewed once from 2026-10-17 to 2026-10-31 under D-011; D-018 caps Agent self-renewal at this single extension, so at the next expiry the gate must go red and the decision goes to the user (accept long-term devDependency risk vs. drop braces from the purgecss/postcss chain). Reached only through devDependencies (@fullhuman/postcss-purgecss > purgecss > fast-glob > micromatch), i.e. build-time tooling that does not ship into the Worker bundle.",
+            "issue": "https://github.com/HUAT-FSAC/Guidance-Astro/issues/199",
             "added": "2026-10-03",
-            "expires": "2026-10-17"
+            "expires": "2026-10-31"
         }
     ]
 }
