@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.2...v1.3.0) (2026-10-17)
+
+
+### Features
+
+* **ci:** main 流水线时长预算告警（脚本 + 每周定时开单）([#240](https://github.com/HUAT-FSAC/Guidance-Astro/issues/240)) ([747f059](https://github.com/HUAT-FSAC/Guidance-Astro/commit/747f059c1bead578693d3a649ac3e47d3c20c899)), closes [#229](https://github.com/HUAT-FSAC/Guidance-Astro/issues/229)
+* **ci:** quality 失败自动上报 flaky-candidate + stale 豁免 flaky 标签 ([#236](https://github.com/HUAT-FSAC/Guidance-Astro/issues/236)) ([29b33ad](https://github.com/HUAT-FSAC/Guidance-Astro/commit/29b33ad547ed6f63802b5f1eaac17b08bf5b8a51)), closes [#228](https://github.com/HUAT-FSAC/Guidance-Astro/issues/228)
+
+
+### Bug Fixes
+
+* **ci:** duration-budget 样本表 null 渲染修正 + workflow_dispatch 可选阈值输入 ([#245](https://github.com/HUAT-FSAC/Guidance-Astro/issues/245)) ([88f42e9](https://github.com/HUAT-FSAC/Guidance-Astro/commit/88f42e904b0fe3af28f691be270ad1a8104c420d)), closes [#242](https://github.com/HUAT-FSAC/Guidance-Astro/issues/242)
+
 ## [1.2.2](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.1...v1.2.2) (2026-10-10)
 
 
