@@ -1,46 +1,47 @@
 # TASKS — Issue 本地镜像（Planner 每轮整体重写；权威来源 = GitHub Issue）
 
-> 最后同步：2026-10-16T16:22Z（UTC，`date -u`；本地日期 2026-10-17）｜同步人：第 82 轮 Planner 整体重写｜核实基线 `main@f42acd3`（写入时 HEAD，与 origin 同步 0/0）
+> 最后同步：2026-10-17T12:4xZ（UTC，`date -u`；本地日期 2026-10-17）｜同步人：第 84 轮 Planner 整体重写｜核实基线 `main@fc57b55`（写入时 HEAD，与 origin 同步 0/0；主干 CI 按完整 head SHA：`88f42e9…`/`75ae26c…` 的 `CI/CD Pipeline` 均 success、0 失败）
 > 权威来源 = GitHub Issue（`gh` 可用，本轮实测 token 有效、scopes 含 `repo`/`workflow`）。网络对 `api.github.com` 有间歇性 TLS/EOF 抖动，所有 gh 调用均需重试包裹。
 > `ready` 标签在本仓不存在（沿用 D-013 映射）⇒ 队列状态以 **Issue 正文首行「队列状态：`ready`」+ `status:backlog`** 为准。
 
 ## 今日队列（给 Executor 的建议顺序）
 
-| #    | 任务                                                                                  | 优先级 | 状态      | 顺序理由                                                                                                          |
-| ---- | ------------------------------------------------------------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------- |
-| #242 | 真实触发 duration-budget 三条路径复核并修正样本表 null 渲染                           | P3     | in-review | **已完成待验收（Executor 2026-10-17）**：PR #245 → `88f42e9`；三条路径 Actions 实录；artifact #246 已注明并关闭   |
-| #244 | 移除未使用的 `@fullhuman/postcss-purgecss`，彻底消除 braces 公告并删除 audit 豁免条目 | P2     | in-review | **已完成待验收（Executor 2026-10-17）**：PR #247 → `75ae26c`；`pnpm why braces` 空链路 + `quality:audit` 零豁免绿 |
+| #    | 任务                                                               | 优先级 | 状态                           | 顺序理由                                                                                                                   |
+| ---- | ------------------------------------------------------------------ | ------ | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| #249 | 复核 duration-budget 每周定时首轮（`schedule` 事件）真实结果并留痕 | P3     | ready（**开工条件未到**）      | **唯一在队任务**。⚠️ **`2026-10-19T03:23Z` 之前不要领取**——提前跑取不到 `event=schedule` 的 run。到点后按单内 4 条标准取证 |
+| —    | （顺手项）bot metrics PR **#248** 处置                             | —      | 不建单（PLAN §2.2 常态触发器） | 今日 04:24Z 再生；`files=1` 数据-only 且 schema 逐键一致才合入，验合入后 main CI（完整 SHA 取数）+ 视数据变更重部署        |
 
-> 顺序：先 #242（有日历死线）再 #244（无死线但收益大、成本极低）。
-> **顺手项（不建单）**：① bot metrics PR **#241** 按 §2.2 常态处置；② **`ENV.md §5` 标签表修正**（该表称 `blocked`/`needs-info`/`priority:p4` 不存在，实测三者均存在——ENV 属 Executor 所有权，Planner 已连续两轮指出未代改）；③ **本地分支卫生**：`agent/issue-182-*` / `201-*` / `203-*` 等历史分支残留。
+> 顺序说明：第 84 轮为**验收 + 治理轮**（#242/#244 已验收关闭、队列重建）。今日真实可执行项只有顺手项 #248；**#249 到点（10-19）后再领**。不为凑 2–5 区间制造任务（PLAN 文件头纪律）。
 > **勿合 PR #239**（rp `release 1.3.0` 属 minor，D-012 第 2 档随 Milestone 收尾合并，M3 due 2026-11-14）。
 
 ## 全部开放 Issue
 
-| #    | 标题                                                                                                | 标签                                          | 状态                                                               |
-| ---- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
-| #244 | 移除未使用的 devDependency `@fullhuman/postcss-purgecss`，彻底消除 braces 公告并删除 audit 豁免条目 | P2/quality/devops/task/risk:low               | ready（第 82 轮新建）                                              |
-| #242 | 真实触发 duration-budget 三条路径复核并修正 null 渲染                                               | P3/quality/devops/task                        | ready（第 81 轮新建，本轮复核门禁仍合格）                          |
-| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI                                                  | P3/devops/dependencies/risk:medium/needs-info | needs-info（默认 C = 维持手工触发，用户 10-12 确认）               |
-| #101 | 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                                                      | P1/devops/task/risk:medium/blocked            | blocked（第九度复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`） |
+| #    | 标题                                                             | 标签                                                          | 状态                                                                           | Milestone |
+| ---- | ---------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| #249 | 复核 duration-budget 每周定时首轮（schedule 事件）真实结果并留痕 | P3/status:backlog/area:devops/area:quality/type:task/risk:low | ready（第 84 轮新建；**开工条件 = 2026-10-19T03:23Z 之后**）                   | M3        |
+| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI               | P3/devops/dependencies/risk:medium/needs-info                 | needs-info（默认 C = 维持手工触发，用户 10-12 确认；信号触发型非饥饿）         | M3        |
+| #101 | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点            | P1/devops/task/risk:medium/blocked                            | blocked（**第 84 轮第十度**复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`） | 不在 M3   |
 
-## 已关闭（本轮相关）
+## 本轮关闭（第 84 轮验收）
 
-- **#199 braces audit 豁免续期** —— 第 82 轮验收**通过**并关闭（`status:done`）。六条验收标准全部**独立亲跑复现**（不采信报告）：`git show --stat 478777d` 单文件 3+/3-；diff 仅 `expires`/`reason`/`issue` 三字段；`npm view braces dist-tags.latest` = `3.0.3`（本轮第十二次亲测）＋ `time.modified` = `2024-09-18T05:27:12Z`；`pnpm quality:audit` exit 0 且 `expires 2026-10-31 (15d)`、无 3 天内提醒；`test:run tests/unit/audit-gate.test.ts` 13/13；`audit-gate.mjs:149` 仍 `moderate`、`ci-cd.yml:85` 未增删步骤；PR #243 MERGED（`files=1`）；main `478777d` CI/CD Pipeline success、0 失败。
-    - **记录更正 3 处（不改验收结论，均在验收评论留痕）**：①「13 success / 7 skipped」是 `gh run list` 默认 limit 20 **未按 head SHA 过滤**的结果，按 `head_sha=478777d` 精确统计为 **3 success + 4 skipped + 0 失败（共 7 条 run）**；②「PR #243 checks 16 项全 pass」实测 **17 pass + 8 skipping**；③ 第 81 轮写入的「`audit` 是 `build` 的前置 job」**与实测不符**（`build.needs=[test, typecheck]`，audit 为并行 job，历史上从未前置；「过期会让 run 变红」这一结论不变）。
+- **#242 真实触发 duration-budget 三条路径复核并修正样本表 null 渲染** —— 验收**通过**并关闭（`status:done`，验收评论 `6233882747`）。7 条标准逐条亲跑取证：三条 dispatch run（`38994214652` 默认未超标无单 / `38994266641` 降阈值真实开出 #246 带 `flaky` / `38994309084` 只追加评论 `6228404122`）、`--dry-run` `-s` 计数 = **0**、`?? 360`/`?? 90` 实存（17–18 行）、#246 = `closed/not_planned`、本地门禁亲跑全 0（431/40）、main `88f42e9…` CI **0 失败**、PR #245 = 17 pass/8 skip。**歧义处理 3（关闭 artifact #246）授权有效并追认**，据此**澄清 D-006**（例外限"Planner 单内书面授权 + 非任务类自动化报告单"）。报告无失实。
+- **#244 移除未使用的 `@fullhuman/postcss-purgecss`，彻底消除 braces 公告并删除 audit 豁免条目** —— 验收**通过**并关闭（`status:done`，验收评论 `6233888841`）。8 条标准逐条亲跑：`pnpm why braces` **空** · `grep -rn fullhuman` **exit 1** · `entries: []` 无 braces/GHSA 字样 · `quality:audit` **零豁免 exit 0** · `audit-gate` **13/13** · `audit-level` 仍 `moderate`、`ci-cd.yml` 步骤未增删 · 本地门禁全 0（CSS 250.73KB/JS 219.38KB 与开工前同值）· main `75ae26c…` CI **0 失败**。**歧义处理 1（测试断言放宽）可接受并追认**。记录更正 1 处：PR #247 checks 实为 17 pass + 8 skipping（报告写 16+9，0 fail 不变）。**M3 计数 → 13 closed / 2 open（#249/#197）。**
+- **D-018/D-019 记账完成**：#244 落地 ⇒ `2026-10-31` 硬墙与 A/B/C 提问路径**消解**，DECISIONS.md 已双向更新（D-018「提问路径已消解」/ D-019「条件已满足生效」）。
 
 ## 开放 PR（非任务，供处置参考）
 
-| #    | 标题                                               | 性质                         | 处置口径                                                                                                                                                   |
-| ---- | -------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| #241 | `chore(metrics): update project progress snapshot` | bot 按日再生（10-16 04:30Z） | **Executor 顺手处置**（PLAN §2.2）：本轮实测 `files=1`（`src/data/metrics/project-progress.json` +43/-43）＝数据-only，合入后验 main CI + 视数据变更重部署 |
-| #239 | `chore(main): release 1.3.0`                       | release-please               | **保持 open 不合并**：D-012 规定 minor 随 Milestone 收尾合并（M3 due 2026-11-14）                                                                          |
-| #209 | `chore(deps): bump the majors group`               | dependabot (npm)             | 暂缓（D-015）                                                                                                                                              |
-| #186 | `chore(deps): bump the majors group`               | dependabot (actions)         | 暂缓（D-015）                                                                                                                                              |
+| #    | 标题                                               | 性质                         | 处置口径                                                                                                                       |
+| ---- | -------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| #248 | `chore(metrics): update project progress snapshot` | bot 按日再生（10-17 04:24Z） | **Executor 顺手处置**（PLAN §2.2）：实测 `files=1` 且 schema 与 main 逐键一致才合入 → 验 main CI（完整 SHA）→ 视数据变更重部署 |
+| #239 | `chore(main): release 1.3.0`                       | release-please               | **保持 open 不合并**：D-012 第 2 档「minor 随 Milestone 收尾合并」（M3 due 2026-11-14）                                        |
+| #209 | `chore(deps): bump the majors group`               | dependabot (npm)             | 暂缓（D-015）                                                                                                                  |
+| #186 | `chore(deps): bump the majors group`               | dependabot (actions)         | 暂缓（D-015）                                                                                                                  |
 
 ## 环境信号（需 Executor 注意）
 
-1. **`gh run list` 默认只回 20 条且不按 commit 过滤** —— 本轮实证：`gh run list --json conclusion` 的 13 success / 7 skipped 恰好是默认分页的 20 条，其 `headSha` 横跨 4 个不同提交。**声称"某 commit 的 CI 全绿"时必须用 `--commit`/`head_sha=` 或 `gh api actions/runs?head_sha=<sha>` 精确取数**，否则数字口径失实（第 81 轮执行报告已踩此坑）。
-2. **`ENV.md §5` 标签表仍过期**（连续两轮指出）：实测仓库存在 `blocked`/`needs-info`/`priority:p4`，另新增确认 `risk:low`/`risk:high`/`risk:blocker`/`type:tech-debt` 亦在。请下一棒修正该表，避免后续轮次跳过 `--add-label` 动作。
-3. **`check-duration-budget.mjs --dry-run` 的 `-s` 计数是时间相关的**：#242 正文写的开工基线 `grep -c -- '| -s |'` = **6**（第 81 轮），本轮 Planner 实测为 **2**（旧 run 已滚出样本窗口）。**#242 执行时必须以当轮实测值为开工基线**，验收判据「= 0」不变。
-4. **`wsyhuat` fetch 间歇失败**：必须重试后才下「无新工作」结论；`f98be0d` 触及的 7 路径内容级比对空 diff = 已吸收（本轮复验）。
+1. **`gh api actions/secrets` 不带 repo 路径返回 404**（第 84 轮实测）——须用 `gh api repos/<owner>/<repo>/actions/secrets`；404 ≠「无 secrets」也 ≠「无权限」，勿据此误判 #101 状态。
+2. **CI 计数口径**：`gh run list` 默认只回 20 条且不按 commit 过滤；REST `head_sha=` **只认完整 SHA**（短 SHA 返回空列表）。「某 commit 全绿」断言必须 `gh api "…/actions/runs?head_sha=<full-sha>"` 或 `--commit`。
+3. **`gh issue list --search "[x] in:title"` 非字面匹配**（方括号被当查询语法忽略）：`[duration-budget]` 前缀单的计数须用 `gh api '…/issues?state=all&per_page=100'` + `startswith()`。
+4. **`check-duration-budget.mjs --dry-run` 的 `-s` 计数与 P95 数值随采样窗口漂移**（历史：6→2→1→0）：判据用「当轮计数 = 0 + 同窗口 A/B」，勿与历史绝对值比对。
+5. **`wsyhuat` fetch 间歇失败**：必须重试后才下「无新工作」结论；第 84 轮复核 `f98be0d` 触及路径内容级 `git diff --stat` = 空（已吸收）。
+6. **audit 门禁现为零豁免 100% 严格**（#244 后）：任何新 moderate+ 公告会直接让 `Audit Dependencies` 变红——这是**目标状态**，处置路线见 D-019/D-011/D-018，回滚 `git revert 75ae26c`。
