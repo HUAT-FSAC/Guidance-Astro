@@ -4,11 +4,21 @@ name: Duration Budget
 # 采集与判定逻辑在 scripts/quality/check-duration-budget.mjs（只读：gh/REST API 取 run/job/step 时长）。
 # 超标时开 [duration-budget] Issue（带 flaky 标签，stale 已豁免该标签 —— #228）。
 # 只上报，不自动优化、不自动重跑；已存在 open 的 [duration-budget] Issue 时改为追加评论，避免每周重复开单。
+# #242: workflow_dispatch 暴露可选阈值输入，供人工复核超标开单 / 去重路径（留空 = 脚本默认 360s / 90s）。
 
 on:
   schedule:
     - cron: '23 3 * * 1' # 每周一 03:23 UTC（避开整点高峰）
   workflow_dispatch:
+    inputs:
+      gate-p95-seconds:
+        description: '可选：覆盖 Quality 阶段墙钟 P95 阈值（秒）；留空用脚本默认 360'
+        required: false
+        default: ''
+      e2e-step-seconds:
+        description: '可选：覆盖 E2E 分片 step 阈值（秒）；留空用脚本默认 90'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -27,6 +37,9 @@ jobs:
         id: budget
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          # 空串时脚本按默认阈值处理（parseThreshold 忽略空值）；scheduled 运行恒为空串
+          DURATION_BUDGET_GATE_P95_S: ${{ inputs.gate-p95-seconds }}
+          DURATION_BUDGET_E2E_STEP_S: ${{ inputs.e2e-step-seconds }}
         run: node scripts/quality/check-duration-budget.mjs
 
       - name: Open duration-budget issue
