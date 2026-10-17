@@ -151,7 +151,9 @@ describe('main', () => {
 describe('the real allowlist file', () => {
     it('parses and every entry carries reason + issue + future expiry', () => {
         const entries = loadAllowlist()
-        expect(entries.length).toBeGreaterThan(0)
+        // 允许空豁免清单（#244 后 braces 从依赖树消失，清单按设计为空）：
+        // 空集时下面的逐条校验不执行，非空时断言强度与以往完全一致。
+        expect(Array.isArray(entries)).toBe(true)
         for (const e of entries) {
             expect(e.ghsa).toMatch(/^GHSA-/i)
             expect(e.package).toBeTruthy()
