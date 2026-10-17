@@ -258,11 +258,11 @@
 - **重新评估触发：** ① #244 失败 ⇒ 立即回退到 D-018 的提问路径；② 上游发布 `braces > 3.0.3` ⇒ 走"删条目 + 升级"；③ 用户明确表示要保留该依赖。
 - **第 84 轮更新（条件已满足）：** **#244 验收通过并关闭**（main `75ae26c`）。验证判据五项全部由 Planner 亲跑复现：`pnpm why braces` **空** · `entries: []` 且无 braces/GHSA 字样 · `pnpm quality:audit` **零豁免 exit 0**（`✅ audit clean`，无 `temporarily allowed`）· `audit-gate` 单测 **13/13** · `audit-level` 仍 `moderate`、`ci-cd.yml` 步骤未增删 · `quality:bundle` CSS 250.73 KB / JS 219.38 KB 与改动前**逐项相同**。⇒ **本决策的"取代"条款正式生效**，D-018 提问路径关闭；门禁自此 100% 严格（空豁免清单 = 目标状态），新的 moderate+ 公告会直接让 `Audit Dependencies` 变红，属预期机制而非事故。附带裁定（同轮验收追认）：`audit-gate` 测试中 `expect(entries.length).toBeGreaterThan(0)` → `expect(Array.isArray(entries))` 属**验收标准自身冲突的最小解**，逐条校验循环保留、断言强度对非空条目不减，口径接受（详见 #244 验收评论）。
 
-## 未决（第 84 轮刷新，2026-10-17）
+## 未决（第 86 轮刷新，2026-10-18）
 
-无 pending 决策（D-001..**D-019** 全部生效）。**第 84 轮未向用户提出任何新问题**：昨日两单验收属既定机制内行动；**braces 提问路径已彻底关闭**（#244 验收通过 ⇒ D-019 条件兑现 ⇒ D-018 的 `2026-10-31` 硬墙作废，本文件原列的 ⏰ 事项**不再存在**）。2026-10-12 用户对四个待决策项明确回复"全部默认"：#101 维持单机部署（B）、#197 维持手工触发（C）、majors 继续暂缓、Q4 维持稳态（A）——均为现状确认，无事项变化。仍开放的**人类侧事项**（非产品取舍，Agent 不可自解）：
+无 pending 决策（D-001..**D-019** 全部生效）。**第 86 轮未向用户提出任何新问题**：第 85 轮仅执行 bot metrics 常态处置（#248 → `e82adef`，部署 `82ae7f68`），已由 Planner 独立复核；**braces 提问路径已彻底关闭**（#244 验收通过 ⇒ D-019 条件兑现 ⇒ D-018 的 `2026-10-31` 硬墙作废，本文件原列的 ⏰ 事项**不再存在**）。2026-10-12 用户对四个待决策项明确回复"全部默认"：#101 维持单机部署（B）、#197 维持手工触发（C）、majors 继续暂缓、Q4 维持稳态（A）——均为现状确认，无事项变化。仍开放的**人类侧事项**（非产品取舍，Agent 不可自解）：
 
-- **#101**（`blocked`）：需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 60、64、66、67、70、78 轮六度 + 第 79 轮七度 + 第 82 轮八度 + 第 83 轮沿用 + **本轮第十度** `gh api repos/…/actions/secrets` 复核均仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；⚠️ 口径坑：`gh api actions/secrets` 不带 repo 路径会 **404**，须用 `gh api repos/<owner>/<repo>/actions/secrets`）。
+- **#101**（`blocked`）：需人类在 Actions Secrets 配 `CLOUDFLARE_API_TOKEN`（第 60、64、66、67、70、78 轮六度 + 第 79 轮七度 + 第 82 轮八度 + 第 83/84 轮沿用 + **第 86 轮再次** `gh api repos/…/actions/secrets` 复核均仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；⚠️ 口径坑：`gh api actions/secrets` 不带 repo 路径会 **404**，须用 `gh api repos/<owner>/<repo>/actions/secrets`）。
 - **#197**（`needs-info`，P3）：是否配 PAT/App 令牌自动化 release-please 的 PR 级 CI——属 §1.8 红线相邻（CI 改造）+ 需人类 Secret，**默认 C（不改）**，等发版频率信号成熟再评。空提交触发法已三次实证有效，手工手法目前够用，维持默认 C。
 - ~~⏰ **braces 豁免到期**~~ → **已消解（第 84 轮）**：`.config/audit-allowlist.json` `entries: []`，门禁零豁免全绿，无到期日、无待问取舍。
 - 📌 **PR #239（rp `release 1.3.0`，minor）**：按 **D-012 第 2 档**「minor 随 Milestone 收尾合并」**保持 open**，M3 due `2026-11-14`。非用户决策项，但需在下几轮持续防止误合。
