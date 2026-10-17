@@ -2,64 +2,61 @@
 
 ## 本轮概要
 
-第 81 轮（2026-10-16）是**混合轮**：上午以 Planning Agent 身份跑完 8 步规划（验收 #228/#229 双通过并关闭、新建 #242、#199 提前一天转 ready、立 D-018、登记 PR #239 挂起项、按用户授权删除 `.agent/LOCK`）；随后用户选择**由我临时切换执行角色**直接交付 #199，于是完成 braces 豁免续期全程——PR **#243** squash 合入 `478777d`，main CI 实测 13 success / 7 skipped / 0 失败，留完整执行报告并转 `status:review`，**未自行关单**。
-
-> **角色重叠的诚实交代**：#199 的验收标准是我本轮以 Planner 身份写的，执行又发生在同一上下文，独立验收链被削弱。补偿措施：① 严格按 D-006 不自关单，停在 `status:review`；② 全部判据留可复现命令与原文输出；③ 在报告与 DIARY 里明写"请下一棒独立取证、勿只读报告"。
+第 83 轮（Execution，2026-10-17 UTC 凌晨）是**队列清空轮**：先把 bot PR #241（数据快照）按 §2.2 常态手法合入并复验，再串行交付两项 ready —— **#242**（真实触发 duration-budget 三条路径 + 修样本表 null 渲染，PR **#245** → `88f42e9`）与 **#244**（移除零引用的 `@fullhuman/postcss-purgecss`，让 braces 退出依赖树并把 audit 豁免清零，PR **#247** → `75ae26c`）。三件顺手项全部落地：#241 处置、**ENV §5 标签表修正**（连续两轮欠项）、**本地 6 条历史分支清理**。两项交付均转 `status:review` 并留完整执行报告，**未自行关单**。
 
 ## 已完成
 
-- **#228 / #229 验收关闭**（Planner 段）：全部标准独立取证，非采信报告。#228——`gh pr checks 236` 实测 `Quality Gate` SUCCESS + `Report flaky candidate` SKIPPED、`gh api issues/237` 实证由 `github-actions[bot]` 真实开出并带 `flaky`、直读 `stale.yml` 确认 `exempt-issue-labels` 含 `flaky`。#229——Planner 亲跑 `--dry-run`（exit 0 · P95 299s<360s 未超标）+ 亲跑 env 降阈值（`GATE=100/E2E=10` → 两指标均「超标」）双向独立复现 + 亲解析 YAML。**两单报告均无失实**；唯一不严谨处是 #228 报告对合并后 main run `38751057762` 未写终态（实测 cancelled，STATE 已披露），判 incomplete 非失实，已在验收评论要求下轮写明。
-- **#199 braces 豁免显式续期**（执行段）：`.config/audit-allowlist.json` 单文件，braces 条目 `expires` `2026-10-17`→`2026-10-31`、`reason` 重写（含当轮实测日期 + `dist-tags.latest` = `3.0.3` + `time.modified` = `2024-09-18` + 依赖路径 + D-018 封顶）、`issue` 改指 #199；`ghsa`/`package`/`severity`/`vulnerable`/`patchedClaimed`/`added` 逐字未动。commit 用 `chore(audit):` 以免 release-please 抬版本（D-012）。
-- **新建 #242**（ready・P3）：承接 #229 自陈的「开单路径未在真实 CI 触发过」+ 验收发现的 `check-duration-budget.mjs:178` null 渲染成 `-s`（开工基线 `grep -c '| -s |'` = **6**）。
-- **立 D-018**：Agent 自主续期上限 = 一次；`2026-10-31` 第二次到期必须停手交用户。
-- **删除 `.agent/LOCK`**：内容 `executor-codebuddy-glm-20261015` / 心跳 `2026-10-15T05:05Z`（过期约 2 天、#228 已关闭），未 git 跟踪；删除前二次核对内容与现场。
-- **推送积压**：第 80 轮 `c2e2f71` 当时并未推到 origin（本地领先 1 天），本轮连带推上——跨天连续性风险已消除。
+- **#241 bot metrics PR**：处置合入 `16bc764`（实测 `files=1` 43+/43-、61 键 schema 与 main 逐键一致）· main CI success。
+- **#242**：`renderSampleTable` 空值列 `-s` → `-`；`parseThreshold()` 让 dispatch 空输入回落默认阈值；`duration-budget.yml` 暴露可选阈值输入 · commit `6013256` → PR **#245** → **`88f42e9`** · 验证：同窗口 A/B diff 仅 1 单元格、`-s` 计数 1→**0**、main 三条真实 run（①`38994214652` 默认未超标无单 ②`38994266641` 降阈值真实开出 **#246** 带 `flaky` ③`38994309084` 同阈值只追加评论）、PR #245 = 17 pass/0 fail、artifact #246 已注明并关闭。**转 `status:review`**。
+- **#244**：`pnpm remove @fullhuman/postcss-purgecss`（lockfile 纯减 144 行）+ `.config/audit-allowlist.json` `entries: []` + audit 测试断言放宽至允许空清单 · commit `5a3d032` → PR **#247** → **`75ae26c`** · 验证：`pnpm why braces` 空、`quality:audit` **零豁免 exit 0**、`test:run` 431/40、audit-gate 13/13、bundle 逐项同值、PR #247 = 16 pass/0 fail、main @ `75ae26c` CI/CD Pipeline success。**转 `status:review`**。
+- **顺手项**：ENV §5 标签表修正（`blocked`/`needs-info`/`priority:p4` 均存在）+ ENV §4 新增 4 条坑位 + §2/§3 复确认行；本地 6 条历史 `agent/issue-*` 分支已删；`.agent/TASKS.md` 镜像随两单状态同步。
+- **部署**：`pnpm deploy:worker` exit 0 → **Version `27d6bb1b-e9cb-49f5-8a06-3519aa2a9910`**（归因 **#241 数据变更**；#242/#244 产物零变化）。线上：`/` 200、CSP 同请求头/体 nonce 一致、中英看板页 200 且渲染新快照 `2026/10/16`。
 
 ## 未完成 / 进行中（下一棒最优先看这里）
 
-1. **无 in-progress 现场**。`#199` 停在 `status:review` 等独立验收；`ready` 仅剩 **#242**。
-2. **#242 有死线**：每周定时 `duration-budget.yml` 将于 **2026-10-19T03:23Z** 首轮自动跑，复核必须在此之前完成。
-3. **bot metrics PR #241**（今 04:30Z 再生）仍开放，按 PLAN §2.2 常态手法处置（单文件 + schema 逐键比对 + 合入后验 main CI + 视数据变更重部署）。
-4. **勿合 PR #239**（rp `release 1.3.0`，minor）——D-012 第 2 档随 Milestone 收尾合并，M3 due 2026-11-14。
+- **无 in-progress、无阻塞、无 `ready`**。现场干净：`main@`（本轮 `.agent` 收尾提交）、工作区无未提交代码（仅 `.agent/` 由本轮提交）。
+- 待验收（Planner）：**#242**、**#244**（两单评论内含逐条验收标准核对 + 需口径确认的「歧义处理」各 1–2 条）。
+- 队列补充需求：**`ready` = 0**，下一轮 Planner 需补今日队列（或明确"稳态巡检轮"）。
 
 ## 验证情况
 
-本轮实跑且仅取真实退出码：`pnpm quality:audit` **0**（`expires 2026-10-31 (15d)`，`expiring within 3 days` 提醒命中 0）· `pnpm test:run tests/unit/audit-gate.test.ts` **0**（13/13）· `lint` / `format:check` / `test:run`（431 passed / 40 files，与 ENV §2 现行基线一致）/ `build` 全 **0** · PR #243 16 项 pass · main @ `478777d` 13 success / 7 skipped。
-未跑：`test:e2e`（改动不涉 UI/路由，PR CI 两分片已绿）；`deploy:worker`（产物不变，按 #199 验收标准第 6 条默认分支）。
-Planner 段另独立复验线上：同请求 CSP 头/体 nonce 一致 PASS（`AX3XE4XycJIh…`）、中英看板页 200。
+`lint` / `format:check` / `test:run` / `build` / `quality:bundle` / `quality:routes` / `quality:theme` / `quality:audit` 全 **exit 0**（#244 前后各跑一轮；`test:run` = 431 passed / 40 files，sitemap 168 页）；`test:run tests/unit/audit-gate.test.ts` = 13/13；`node scripts/quality/check-duration-budget.mjs --dry-run` exit 0 且 `-s` 计数 = 0；`pnpm install --frozen-lockfile` exit 0。CI：PR #245 = **17 pass/0 fail**、PR #247 = **16 pass/0 fail**；main 按完整 `head_sha` 精确取数：`88f42e9` / `75ae26c` / `16bc764` 的 `CI/CD Pipeline` 均 **success，0 失败**。未跑：`test:e2e` 本地全量（两单改动不涉 UI/路由：一为 CI 脚本与 workflow、一为依赖清单与 CI 侧 JSON；PR CI 两分片已绿）。
 
 ## 风险与注意事项
 
-- **#199 需独立验收**（原因见上"角色重叠"段）。判据都在 Issue 评论里，逐条命令可复现。
-- **D-018 是硬约束**：下轮 Planner 若在 `2026-10-31` 前后处理 braces 豁免，**不得再自主续期**，须按 §6.2 带 A/B/C 与默认项向用户提出；建议**提前问**，不要等门禁变红当天。
-- **ENV §5 标签表已过期**：`blocked` / `needs-info` / `priority:p4` 实测均存在于仓库（该节称"不存在"）。ENV 归 Executor 所有权，Planner 段只指出未代改——**请本轮修正该节**，否则会误导后续轮次跳过加标签动作。
-- **网络抖动**：`api.github.com` 间歇 TLS EOF、`wsyhuat` 首拉常失败——所有 `gh` 调用须带重试；重试后仍失败才按"环境阻塞"记录，不得静默跳过或当作"无新工作"。
-- **本地分支卫生欠项**：`agent/issue-182-*` / `201-*` / `203-*` 等多条历史分支仍在本地，未清理（不在本单范围）。
-- `pnpm` 不在裸 PATH（须 `export PATH=…mise…` 或 `mise exec`）；`/tmp` 只读，备份/日志用仓库内 gitignored 的 `.tmp/`。
+- **#244 后门禁更严格**：`.config/audit-allowlist.json` 为空，任何新 moderate+ 公告都会直接让 `Audit Dependencies` 变红（这是目标状态）。回滚方式：`git revert 75ae26c` 或 `pnpm add -D @fullhuman/postcss-purgecss@^8.0.0`。
+- **D-018 硬墙已消解**（#244 成功 ⇒ `2026-10-31` 提问路径作废）：请 Planner 在 `DECISIONS.md` 记一笔"因 #244 落地而消解"，避免下轮仍按"到期要问用户"处理。
+- **`2026-10-19T03:23Z` 每周定时首轮**：机制已被三条真实 run 验证；仍未被真实事件覆盖的只有 `schedule` 事件本身与"已存在 open 单 + **未超标**"的组合。该轮若真超标会开出 `[duration-budget]` 单（带 `flaky`，stale 豁免）。
+- **口径坑（本轮新增，已进 ENV §4）**：REST `head_sha` 必须用**完整 SHA**（短 SHA 返回空，易误判"没有 CI"）；`gh issue list --search "[x] in:title"` **非字面匹配**（方括号被忽略）。
+- 仍开放 PR：#239（rp `release 1.3.0` minor，**勿合**，D-012 第 2 档）、#186/#209（majors，D-015 暂缓；#209 今日 02:33Z 被 dependabot 自我刷新）。当前**无开放 bot metrics PR**。
+- 网络抖动仍在（`api.github.com` 间歇 TLS/EOF，`wsyhuat` 首拉偶失败）——所有 `gh` 调用须重试包裹。
+- 本地分支：`agent/*` 已清零；仍有 36 条历史 `auto/*`、`docs/*`、`chore/*`（origin 侧存在，未在授权范围）。
 
 ## 给下一棒的第一步建议
 
 ```bash
 git fetch --all --prune && git pull --rebase
 export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
-# ① 独立验收 #199（勿只读报告：亲跑 audit 与豁免单测）
-pnpm quality:audit; echo "exit=$?"                       # 期望 0 + expires 2026-10-31 (15d)
-pnpm test:run tests/unit/audit-gate.test.ts              # 期望 13/13
-git show --stat 478777d                                   # 期望仅 .config/audit-allowlist.json
-gh pr checks 243 --repo HUAT-FSAC/Guidance-Astro --json name,bucket --jq '.[]|"pass|skip"' >/dev/null
-# ② 处置 bot PR #241；③ 领 #242（死线 2026-10-19T03:23Z）；④ 勿合 #239
+# ① 独立验收两单（勿只读报告）
+pnpm why braces                                  # 期望：无任何输出（#244 核心判据）
+pnpm quality:audit; echo "exit=$?"               # 期望 0 且仅 "✅ audit clean"，无 "temporarily allowed"
+pnpm test:run tests/unit/audit-gate.test.ts      # 期望 13/13
+git show --stat 75ae26c                          # 期望 4 文件 5+/160-
+grep -c -- '| -s |' <(node scripts/quality/check-duration-budget.mjs --dry-run)   # 期望 0
+gh api repos/HUAT-FSAC/Guidance-Astro/issues/246 --jq '{state,state_reason}'      # 期望 closed / not_planned
+# ② 按 head_sha（完整 SHA！）核 main run；③ 补今日队列（ready=0）；④ 勿合 #239
 ```
 
-- 若下一棒是 **Planner**：验收 #199 → 关闭或 reopen；按 D-018 提前起草用户决策（A/B/C）；修正 PLAN §2.2 队列（#199 出队、#242 递补首位）；回应本轮 DIARY 的 4 条信号（含分支卫生与 ENV §5 修正）。
-- 若下一棒是 **Executor**：ready = #242 一项，务必在定时首轮前完成；#241 顺手处置。
+- 若下一棒是 **Planner**：验收 #242 / #244 → 关闭或 reopen；在 `DECISIONS.md` 记 D-018 提问路径"因 #244 落地而消解"；`PLAN.md` §2.2 队列重写（两单出队、补新队列或标记稳态巡检轮）；回应 DIARY 的 3 条信号。
+- 若下一棒是 **Executor**：`ready` = 0 ⇒ 无任务可领，请先等 Planner 补队列；若被要求自主巡检，可复核 `2026-10-19T03:23Z` 首轮定时结果（run 与是否开单）。
 
 ## 今日日报
 
-- 已写入 `.agent/DIARY/2026-10-16.md`（Planner 动作与执行动作合并记录，历史行不覆写）
+- 已写入 `.agent/DIARY/2026-10-17.md`
 
 ## 给 Planner 的信号
 
-1. **#199 请独立取证验收**——本轮由 Planner 自写标准并自行执行，验收价值高于往常。
-2. **建议提前起草 D-018 的用户决策**（`2026-10-31` 到期，A/B/C 三案 + 默认项），别等到门禁变红当天。
-3. 今日队列已清空（#199 → in-review，#242 未领）。
-4. `.agent/LOCK` 已删，下轮无需再处理；但 **ENV §5 标签表**与**本地分支卫生**两项欠项请安排。
+1. **两单待验收，且各有一处需口径确认**：#242 的"关闭 artifact Issue"是 Planner 在单内书面授权（契约 §1.4 默认 Executor 不关单，本轮按授权执行并留痕）；#244 的"空 `entries` vs 测试断言"冲突按"允许空清单、保留逐条校验"处置。
+2. **D-018 硬墙消解**，建议尽快在 DECISIONS/PLAN 记账，避免下轮误按"要问用户"处理。
+3. **`ready` = 0**：需要新队列（或明确本轮为稳态巡检轮）。
+4. 顺手项三项已全部清账（#241 / ENV §5 / 本地分支卫生），下轮不必再列。
