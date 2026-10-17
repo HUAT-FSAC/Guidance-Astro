@@ -9,8 +9,13 @@ import fs from 'node:fs'
 // 阈值取基线的约 1.8x / 2x，给正常抖动留余量；越过阈值说明流水线结构性回退
 // （如 LHCI 全量误入快车道、E2E 分片失效、新增重量级用例），需人工研判而非自动处置。
 // 阈值可用环境变量临时覆盖（与 check-bundle-budget.mjs 同模式），默认值即本常量。
-const GATE_P95_BUDGET_SECONDS = Number(process.env.DURATION_BUDGET_GATE_P95_S ?? 360)
-const E2E_STEP_BUDGET_SECONDS = Number(process.env.DURATION_BUDGET_E2E_STEP_S ?? 90)
+// 空串 / 非法值视为「未覆盖」：workflow_dispatch 未填写的输入会以空串传入（#242 手工复核入口）。
+const parseThreshold = (raw) => {
+    const value = Number(`${raw ?? ''}`.trim())
+    return Number.isFinite(value) && value > 0 ? value : null
+}
+const GATE_P95_BUDGET_SECONDS = parseThreshold(process.env.DURATION_BUDGET_GATE_P95_S) ?? 360
+const E2E_STEP_BUDGET_SECONDS = parseThreshold(process.env.DURATION_BUDGET_E2E_STEP_S) ?? 90
 const DEFAULT_RUNS = 20 // 采样最近 N 次成功 run；P95 需要足够样本才有统计意义
 const QUALITY_JOB_KEYWORD = 'Quality' // ci-cd.yml 中 quality-budget/e2e/lhci/gate 四个 job 名共有的前缀
 const E2E_STEP_PREFIX = 'Run E2E tests (shard' // quality-e2e 矩阵分片步骤（TEST_PERF 基线 46s）
@@ -168,6 +173,9 @@ function percentileNearestRank(sortedAsc, percentile) {
     return sortedAsc[Math.min(rank, sortedAsc.length) - 1]
 }
 
+// 秒数显示：#242 —— 无数据的列渲染 `-`（旧实现渲染成 `-s` 这种假单位）
+const formatSeconds = (value) => (value === null || value === undefined ? '-' : `${value}s`)
+
 function renderSampleTable(samples) {
     const lines = [
         '| run | 触发时间(UTC) | Quality 阶段墙钟 | E2E 分片最长 |',
@@ -175,7 +183,7 @@ function renderSampleTable(samples) {
     ]
     for (const sample of samples) {
         lines.push(
-            `| ${sample.runId} | ${sample.createdAt} | ${sample.gateSeconds ?? '-'}s | ${sample.shardMaxSeconds ?? '-'}s |`
+            `| ${sample.runId} | ${sample.createdAt} | ${formatSeconds(sample.gateSeconds)} | ${formatSeconds(sample.shardMaxSeconds)} |`
         )
     }
     return lines.join('\n')
