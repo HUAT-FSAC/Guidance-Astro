@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-16T04:30:28.526Z",
+    "generatedAt": "2026-10-17T04:24:16.048Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.79,
-        "prCycleTimeDays": 0.8,
-        "issueCloseRatePercent": 94.59,
-        "prMergeRatePercent": 67.47,
-        "ciSuccessRatePercent": 70,
+        "issueLeadTimeDays": 1,
+        "prCycleTimeDays": 0.74,
+        "issueCloseRatePercent": 96.1,
+        "prMergeRatePercent": 67.82,
+        "ciSuccessRatePercent": 64,
         "wipIssueCount": 0,
         "reviewIssueCount": 2,
-        "backlogIssueCount": 2
+        "backlogIssueCount": 1
     },
     "counts": {
-        "openIssueCount": 5,
+        "openIssueCount": 4,
         "openPullRequestCount": 3,
-        "openedIssuesInWindow": 74,
-        "closedIssuesInWindow": 70,
-        "openedPullRequestsInWindow": 83,
-        "mergedPullRequestsInWindow": 56,
+        "openedIssuesInWindow": 77,
+        "closedIssuesInWindow": 74,
+        "openedPullRequestsInWindow": 87,
+        "mergedPullRequestsInWindow": 59,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 8
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-13T14:53:24.000Z",
-        "latestMergedPullRequestAt": "2026-10-15T15:21:13.000Z"
+        "latestIssueUpdatedAt": "2026-10-16T16:24:01.000Z",
+        "latestMergedPullRequestAt": "2026-10-17T02:29:17.000Z"
     },
     "summary": {
-        "totalIssues": 97,
-        "closedIssues": 92,
-        "openIssues": 5,
-        "ciPassRate": 70
+        "totalIssues": 100,
+        "closedIssues": 96,
+        "openIssues": 4,
+        "ciPassRate": 64
     },
     "byStatus": {
         "backlog": 0,
         "ready": 1,
         "inProgress": 0,
         "review": 2,
-        "blocked": 2,
-        "done": 92
+        "blocked": 1,
+        "done": 96
     },
     "byPriority": {
         "p0": 2,
         "p1": 29,
-        "p2": 24,
-        "p3": 26
+        "p2": 25,
+        "p3": 27
     },
     "milestones": [
         {
@@ -59,7 +59,7 @@
             "title": "M3 稳态运营（Steady-state Operations）",
             "description": "运行 M1/M2 建成的稳态机器：周期性摄入 minor-and-patch 依赖、按 D-012 发版、majors 显式复核、供应链探针与 audit 豁免到期核对",
             "status": "in-progress",
-            "completionRate": 85,
+            "completionRate": 86,
             "dueDate": "2026-11-14"
         }
     ],
@@ -75,52 +75,52 @@
     },
     "recentActivity": [
         {
-            "type": "pr",
-            "title": "[#229] 测试时长预算告警：check-duration-budget 脚本 + 每周定时",
-            "status": "merged",
-            "updatedAt": "2026-10-15T15:22:20.000Z"
-        },
-        {
             "type": "issue",
-            "title": "[Task] 测试时长预算告警：check-duration-budget 脚本 + 每周定时",
+            "title": "移除未使用的 devDependency @fullhuman/postcss-purgecss，彻底消除 braces 公告并删除 audit 豁免条目",
             "status": "open",
-            "updatedAt": "2026-10-15T15:22:03.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(main): release 1.3.0",
-            "status": "open",
-            "updatedAt": "2026-10-15T15:21:52.000Z"
+            "updatedAt": "2026-10-17T02:41:54.000Z"
         },
         {
             "type": "pr",
             "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
             "status": "open",
-            "updatedAt": "2026-10-15T14:27:10.000Z"
+            "updatedAt": "2026-10-17T02:33:09.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): 移除零引用的 @fullhuman/postcss-purgecss，braces 退出依赖树并清零 audit 豁免",
+            "status": "merged",
+            "updatedAt": "2026-10-17T02:29:19.000Z"
         },
         {
             "type": "issue",
-            "title": "[Task] Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免",
+            "title": "真实触发 duration-budget 三条路径复核并修正样本表 null 渲染",
             "status": "open",
-            "updatedAt": "2026-10-15T14:25:49.000Z"
+            "updatedAt": "2026-10-17T02:21:15.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[duration-budget] main 流水线时长超标（Quality 阶段 P95 230s > 100s；分片 50s > 10s）",
+            "status": "closed",
+            "updatedAt": "2026-10-17T02:18:14.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(main): release 1.3.0",
+            "status": "open",
+            "updatedAt": "2026-10-17T02:15:53.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "fix(ci): duration-budget 样本表 null 渲染修正 + workflow_dispatch 可选阈值输入",
+            "status": "merged",
+            "updatedAt": "2026-10-17T02:15:24.000Z"
         },
         {
             "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
             "status": "merged",
-            "updatedAt": "2026-10-15T14:24:53.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "[#228] Flaky 治理：CI 失败自动开 flaky Issue + stale 豁免",
-            "status": "merged",
-            "updatedAt": "2026-10-15T14:24:05.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Task] LHCI 移出 PR（仅 main + 定时，待定方向）",
-            "status": "closed",
-            "updatedAt": "2026-10-15T03:38:42.000Z"
+            "updatedAt": "2026-10-17T02:07:59.000Z"
         }
     ]
 }
