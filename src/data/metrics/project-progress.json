@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-17T04:24:16.048Z",
+    "generatedAt": "2026-10-18T04:31:55.262Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 1,
-        "prCycleTimeDays": 0.74,
-        "issueCloseRatePercent": 96.1,
-        "prMergeRatePercent": 67.82,
-        "ciSuccessRatePercent": 64,
+        "prCycleTimeDays": 0.73,
+        "issueCloseRatePercent": 97.44,
+        "prMergeRatePercent": 68.18,
+        "ciSuccessRatePercent": 68,
         "wipIssueCount": 0,
-        "reviewIssueCount": 2,
-        "backlogIssueCount": 1
+        "reviewIssueCount": 0,
+        "backlogIssueCount": 2
     },
     "counts": {
-        "openIssueCount": 4,
+        "openIssueCount": 3,
         "openPullRequestCount": 3,
-        "openedIssuesInWindow": 77,
-        "closedIssuesInWindow": 74,
-        "openedPullRequestsInWindow": 87,
-        "mergedPullRequestsInWindow": 59,
+        "openedIssuesInWindow": 78,
+        "closedIssuesInWindow": 76,
+        "openedPullRequestsInWindow": 88,
+        "mergedPullRequestsInWindow": 60,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 8
+        "ciFailedRunsInWindow": 7
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-16T16:24:01.000Z",
-        "latestMergedPullRequestAt": "2026-10-17T02:29:17.000Z"
+        "latestIssueUpdatedAt": "2026-10-17T12:31:57.000Z",
+        "latestMergedPullRequestAt": "2026-10-17T14:02:43.000Z"
     },
     "summary": {
-        "totalIssues": 100,
-        "closedIssues": 96,
-        "openIssues": 4,
-        "ciPassRate": 64
+        "totalIssues": 101,
+        "closedIssues": 98,
+        "openIssues": 3,
+        "ciPassRate": 68
     },
     "byStatus": {
-        "backlog": 0,
+        "backlog": 1,
         "ready": 1,
         "inProgress": 0,
-        "review": 2,
+        "review": 0,
         "blocked": 1,
-        "done": 96
+        "done": 98
     },
     "byPriority": {
         "p0": 2,
         "p1": 29,
         "p2": 25,
-        "p3": 27
+        "p3": 28
     },
     "milestones": [
         {
@@ -59,7 +59,7 @@
             "title": "M3 稳态运营（Steady-state Operations）",
             "description": "运行 M1/M2 建成的稳态机器：周期性摄入 minor-and-patch 依赖、按 D-012 发版、majors 显式复核、供应链探针与 audit 豁免到期核对",
             "status": "in-progress",
-            "completionRate": 86,
+            "completionRate": 87,
             "dueDate": "2026-11-14"
         }
     ],
@@ -75,10 +75,28 @@
     },
     "recentActivity": [
         {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-17T16:46:19.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "复核 duration-budget 每周定时首轮（schedule 事件）真实结果并留痕",
+            "status": "open",
+            "updatedAt": "2026-10-17T12:32:44.000Z"
+        },
+        {
             "type": "issue",
             "title": "移除未使用的 devDependency @fullhuman/postcss-purgecss，彻底消除 braces 公告并删除 audit 豁免条目",
-            "status": "open",
-            "updatedAt": "2026-10-17T02:41:54.000Z"
+            "status": "closed",
+            "updatedAt": "2026-10-17T12:29:39.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "真实触发 duration-budget 三条路径复核并修正样本表 null 渲染",
+            "status": "closed",
+            "updatedAt": "2026-10-17T12:28:58.000Z"
         },
         {
             "type": "pr",
@@ -94,12 +112,6 @@
         },
         {
             "type": "issue",
-            "title": "真实触发 duration-budget 三条路径复核并修正样本表 null 渲染",
-            "status": "open",
-            "updatedAt": "2026-10-17T02:21:15.000Z"
-        },
-        {
-            "type": "issue",
             "title": "[duration-budget] main 流水线时长超标（Quality 阶段 P95 230s > 100s；分片 50s > 10s）",
             "status": "closed",
             "updatedAt": "2026-10-17T02:18:14.000Z"
@@ -109,18 +121,6 @@
             "title": "chore(main): release 1.3.0",
             "status": "open",
             "updatedAt": "2026-10-17T02:15:53.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "fix(ci): duration-budget 样本表 null 渲染修正 + workflow_dispatch 可选阈值输入",
-            "status": "merged",
-            "updatedAt": "2026-10-17T02:15:24.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-17T02:07:59.000Z"
         }
     ]
 }
