@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-17T14:3xZ（UTC，`date -u`）· 探测者 `executor-round-85`（第 85 轮：#248 顺手处置合入 `e82adef` + 部署 Version `82ae7f68`；§2 追加复确认行、§4 新增 2 条坑位。上一轮：第 83 轮 `executor-opencode-20261017`，修正 §5 标签表 + §4 新增 4 条坑位）
+> 最近更新：2026-10-19T03:35Z（UTC，`date -u`）· 探测者 `executor-round-91`（第 91 轮：核查 #249 定时首轮，排查早间 schedule 4~6h 系统性延迟；§3 更新最近部署 Version 为 `e3e0e0b2`；§4 新增 3 条排坑。上一轮：第 85 轮 `executor-round-85`）
 
 ## 1. 工具链（实测）
 
@@ -62,7 +62,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-    - 最近一次部署：**Version `27d6bb1b-e9cb-49f5-8a06-3519aa2a9910`**（2026-10-17，覆盖 #241 数据快照；CSP 同请求头/体 nonce 一致 `zzQ_GWvUyIU6hWAAxQstHA`）。
+- 最近一次部署：**Version `e3e0e0b2-270f-4fca-ace8-2d947fb3f9c2`**（2026-10-18T11:25:45Z，覆盖 #250 数据快照；CSP 同请求头/体 nonce 一致 `wjL7MHYHw2jUVr0GrqICFQ`）。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
 - sitemap 计数必须用 `grep -o '<loc>' | wc -l`（XML 单行，`grep -c` 恒为 1）。
@@ -91,6 +91,9 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 | git hook 需要 pnpm 在 PATH          | 未 `export PATH=…mise…` 时 `pre-commit` 报 `pnpm: not found`（husky 的 PATH 不含 mise 目录），commit 失败                                                                                   | 提交与门禁命令写在同一条 shell 里先导出 PATH；**不要**用 `--no-verify` 绕过 lint-staged                                     |
 | CSP nonce 分两次 curl 必假 FAIL     | 头/体 nonce 比对若用 `curl -sI` 与 `curl -s` 两次请求取样 → 必然不一致（nonce **每请求**新生成），首验误报部署失败（第 85 轮实测踩中；§3「同一请求」字样存在仍会忘）                        | 单请求取样：`curl -s -D h.txt -o b.html <url>` 后分别 grep 两文件比对                                                       |
 | en 看板页路径保留中文段             | `/en/docs-center/operations-collaboration/…`、`/en/…/operations-and-collaboration/…` 等英文 slug 候选全 **404**；en 页真实路径 = `/en/docs-center/运营与协作/项目进度看板/`（第 85 轮实测） | 中英看板页均直接用中文段路径拼 `/en` 前缀；勿据英文 slug 404 误判站点故障                                                   |
+| Actions workflow_id 取数不过滤      | `gh api "…/actions/runs?workflow_id=<name>"` 返回全仓 1286+ 条 run（不过滤）                                                                                                                | 须先 `…/actions/workflows` 拿数字 id（duration-budget = `385699809`），再查 `…/workflows/<id>/runs`                         |
+| jq 对不存在键渲染 null              | `--jq '.due_date'` 得到 `null` 不能证明字段无值（真实键名是 `due_on`）                                                                                                                      | 断言字段为空前先 `--jq 'keys'` 确认真实键名；跨源比对（REST vs GraphQL）终判                                                |
+| GitHub Actions schedule 系统性延迟  | `schedule:` 定时任务不会在准点准刻触发（早间 UTC 任务实测排队延迟 4~6 小时）                                                                                                                | stale 03:00 实际 07:36-08:30Z，metrics 00:15 实际 04:24-04:52Z；勿因刚过 cron 未见 run 误判为机制被删除或失效               |
 
 ## 5. 协作约定（本仓库现状 vs 契约）
 
