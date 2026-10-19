@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-19T03:35Z（UTC，`date -u`）· 探测者 `executor-round-91`（第 91 轮：核查 #249 定时首轮，排查早间 schedule 4~6h 系统性延迟；§3 更新最近部署 Version 为 `e3e0e0b2`；§4 新增 3 条排坑。上一轮：第 85 轮 `executor-round-85`）
+> 最近更新：2026-10-19T05:35Z（UTC，`date -u`）· 探测者 `executor-round-92`（第 92 轮：#252 顺手处置合入 `1a3b688` + 部署 Version `33724813` + CSP/看板页复验 PASS；上一轮：第 91 轮 `executor-round-91`）
 
 ## 1. 工具链（实测）
 
@@ -62,7 +62,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-- 最近一次部署：**Version `e3e0e0b2-270f-4fca-ace8-2d947fb3f9c2`**（2026-10-18T11:25:45Z，覆盖 #250 数据快照；CSP 同请求头/体 nonce 一致 `wjL7MHYHw2jUVr0GrqICFQ`）。
+- 最近一次部署：**Version `33724813-82eb-4baa-9d1c-2d0d1d6d4d03`**（2026-10-19T05:27:00Z，覆盖 #252 数据快照；CSP 同请求头/体 nonce 一致 `YK8d7QhLXz1--2VNLdlIBg`）。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
 - sitemap 计数必须用 `grep -o '<loc>' | wc -l`（XML 单行，`grep -c` 恒为 1）。
