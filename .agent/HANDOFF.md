@@ -2,76 +2,63 @@
 
 ## 本轮概要
 
-第 92 轮（Execution，2026-10-19 UTC 早上）是**稳态单交付轮**：
+第 94 轮（Execution，2026-10-19 UTC 晚上）是**稳态单交付轮**：
 
-- 开工发现今日 04:39Z 再生的 bot metrics PR **#252**（`chore(metrics): update project progress snapshot`）；
-- 经核查 `files=1`（`src/data/metrics/project-progress.json` 38+/38-），递归对比 schema 与 main **逐键完全一致**（52 个标量与对象键路径前后 0 差异），数据快照生成于 `2026-10-19T04:39:00.131Z`；
-- 按 PLAN §2.2 授权以 `--admin --squash` 合入主干 **`1a3b688`**，并在 PR 内留处置评论 `6260340585`；
-- 主干 CI 按完整 head SHA 取数，`CI/CD Pipeline`（run 39204563583，10/10 jobs）、`Secret Scan`（run 39204563672）、`Release Please`（run 39204563628）均 **success、0 失败**；
-- 本机执行 `pnpm deploy:worker` exit 0 → 部署 Version **`33724813-82eb-4baa-9d1c-2d0d1d6d4d03`**；
-- 线上同请求 CSP 头/体 nonce 一致 PASS（`YK8d7QhLXz1--2VNLdlIBg`），中英进度看板页 200 且渲染新快照 `2026/10/19 04:39:00`；
-- 例行巡检：LOCK 不存在，inbound 已吸收，开放 PR 3 张（#239 勿合 + majors 2 暂缓）；无新 Issue 产生。
+- 按第 93 轮规划指令接管并执行 **#249**（复核 duration-budget 每周定时首轮 schedule 事件真实结果并留痕）；
+- 成功提取首轮真实 schedule run **`39227547586`**（workflow id `385699809`，`event=schedule`），触发时间 `2026-10-19T09:06:16Z`（晚于 03:23Z 约 5.7 小时，系统性延迟后正常触发），status `completed`，conclusion `success`，耗时 41s；
+- 提取 job `117977412637` 关键日志行原文（阈值 Quality P95 360s / 分片 90s、P95 = 220s 未超标、E2E 24s 未超标、结论未超标）；
+- 严格口径核查单数（REST 全量 startswith 过滤）：count = 1，全仓仅存在已关历史单 #246 且 comments 维持 2，未超标结论下未产生新开单且未触碰已关单；
+- 如实判定组合分支 #2（已存在 open 单 + 未超标）为未覆盖（全仓无 open 追踪单，禁止手工造单）；
+- 本地 dry-run 复算 exit 0（样本 20/20，P95 235s 未超标，E2E 最长 23s 未超标）；
+- 契约 §1.7 全字段执行报告已留在 Issue #249 评论 `6271957679`，标签切换为 `status:review`，同步更新 `TASKS.md` 对应行；
+- 例行巡检：LOCK 不存在，inbound 已吸收，开放 PR 3 张（#239 勿合 + majors 2 暂缓）；无新 Issue 产生，无开放 bot PR。
 
 ## 已完成
 
-- **bot metrics PR #252 处置合入**（PLAN §2.2 常态触发器）：
-    - 递归 schema key-by-key 比对 0 差异，`files=1`，`generatedAt: 2026-10-19T04:39:00.131Z`。
-    - squash 合入主干 `1a3b688`。
-    - CI 完整 SHA `1a3b68897831e256dbddf99b9ea0b07282ca6305` 全绿：`CI/CD Pipeline` 10/10 jobs 全 success，`Secret Scan` success，`Release Please` success。
-    - `pnpm deploy:worker` exit 0 → Version `33724813-82eb-4baa-9d1c-2d0d1d6d4d03`。
-    - 线上单请求 CSP 头/体 nonce 一致 PASS（`YK8d7QhLXz1--2VNLdlIBg`）；zh 看板页 200 渲染 `数据更新时间: 2026/10/19 04:39:00`；en 看板页 200 渲染 `Updated: 10/19/2026, 4:39:00 AM`；总任务数 102、完成 98、CI 通过率 66%。
-    - PR 留处置评论 `6260340585`。
-- **顺手项与记录回写**：
-    - `ENV.md §3` 第 65 行更新为 Version `33724813`（2026-10-19T05:27:00Z）。
-    - `docs/WORKFLOW.md §7.4` 追加第 92 轮协作日志。
-    - `STATE.md` 与今日日报追加更新。
+- **#249 复核 duration-budget 每周定时首轮真实结果并留痕（交付转 `status:review`）**：
+    - 真实 run `39227547586`（`event=schedule`）于 `2026-10-19T09:06:16Z` 调度成功 exit 0；
+    - 提取阈值与 P95 220s 及未超标日志原文；
+    - REST 全量 startswith 过滤严格核查单数 count = 1（仅已关历史单 #246 且 comments 维持 2）；
+    - 组合分支 #2 如实判定未覆盖；
+    - Issue #249 留执行报告于评论 `6271957679`，标签切 `status:review`；
+    - `TASKS.md` 对应行同步更新为 `in-review`。
 
 ## 未完成 / 进行中（下一棒最优先看这里）
 
 - **无 in-progress 任务**。
-- **#249（blocked）**：duration-budget 定时首轮复核，截至 05:35Z 尚未有 schedule run 调度生成（早间 4~6h 排队延迟，预计窗口 07:30Z–08:30Z）。
-    - 恢复点：在 `2026-10-19T07:30Z` 之后运行：
-        ```bash
-        gh api "repos/HUAT-FSAC/Guidance-Astro/actions/workflows/385699809/runs?event=schedule" \
-          --jq '.workflow_runs[] | {id: .id, conclusion: .conclusion, created_at: .created_at}'
-        ```
-        一旦查到 schedule run，提取 run id 与关键日志行（`阈值:` / `Quality 阶段墙钟 P95 =` / `结论:`），核对单数后解阻塞转 `status:review` 待验收。
-- **#251（backlog）**：M3 收口发版单，前置依赖未满足（需 #249 验收关闭且 M3 `open=0`）。
+- **#249（status:review）**：待下一轮 Planner 独立验收关闭。关闭后 M3 `open_issues` 将归零（`1 → 0`）。
+- **#251（backlog）**：M3 收口发版单，待下一轮 Planner 验收关闭 #249 并显式关闭 M3 后解除前置（转 `ready`）。
 - **#197（needs-info）**：默认 C，维持现状。
 - **#101（blocked）**：待人类配置 `CLOUDFLARE_API_TOKEN`。
 
 ## 验证情况
 
-- `pnpm deploy:worker` → **exit 0**（含 `pnpm build`，日志在 `.tmp/gate92/deploy.log`）。
-- CI（完整 SHA `1a3b688…`）：CI/CD Pipeline（run 39204563583，10/10 jobs 全绿）/ Secret Scan（run 39204563672）/ Release Please（run 39204563628）均 **success**，0 失败。
-- 线上：同请求单次 curl 头/体 nonce 相等（`YK8d7QhLXz1--2VNLdlIBg`）PASS；zh 看板页 200（`数据更新时间: 2026/10/19 04:39:00`）、en 看板页 200（`Updated: 10/19/2026, 4:39:00 AM`，102 任务、66% CI 通过率新值在位）。
-- 未执行：单测/e2e 本地全量门禁 —— 变更仅为数据 JSON 值漂移，与第 68/71/75/83/85/88 轮同类处置先例一致（build 经部署验证 exit 0、CI 10 jobs 全绿即铁证）。
+- `gh api "repos/HUAT-FSAC/Guidance-Astro/actions/workflows/385699809/runs?event=schedule"` → 退出码 0 · 取得 run `39227547586`（completed/success）。
+- `gh api repos/HUAT-FSAC/Guidance-Astro/actions/jobs/117977412637/logs --allow-escape-sequences` → 退出码 0 · 提取完整阈值、P95 220s 及未超标结论行。
+- `gh api 'repos/HUAT-FSAC/Guidance-Astro/issues?state=all&per_page=100' --jq '[.[] | select(.pull_request == null and (.title | startswith("[duration-budget]")))]'` → 退出码 0 · count = 1（仅历史 #246，comments 2 未增）。
+- `node scripts/quality/check-duration-budget.mjs --dry-run` → 退出码 0 · Quality P95 = 235s，E2E = 23s，未超标。
+- 主干 CI：`16faa6d` 完整 SHA 取数 `CI/CD Pipeline`（run 39281123822）/ `Secret Scan`（run 39281123762）/ `Release Please`（run 39281123915）均 **success**，0 失败。
+- 部署：维持 Version `33724813-82eb-4baa-9d1c-2d0d1d6d4d03`（本轮纯调度取证留痕，无需重部署）。
 
 ## 风险与注意事项
 
-- **Actions 定时延迟窗口**：`duration-budget` cron `23 3 * * 1`（03:23Z）预计在 **07:30Z–08:30Z** 调度。若今日 09:00Z 仍未出现 schedule run，需排查是否有被 GitHub Actions 丢弃。
 - **勿合 PR #239**（D-020：M3 收尾触发 = M3 `open_issues` 归零 + Planner 显式关闭；由 #251 承接）。
 - 开放 PR 现共 3 张：#239（勿合）+ majors 2 张（暂缓）。当前无开放 bot PR。
 
 ## 给下一棒的第一步建议
 
-```bash
-git fetch --all --prune && git pull --rebase
-export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"
-
-# 检查 duration-budget 定时是否已触发（07:30Z 后）：
-gh api "repos/HUAT-FSAC/Guidance-Astro/actions/workflows/385699809/runs?event=schedule" \
-  --jq '.workflow_runs[] | {id: .id, conclusion: .conclusion, created_at: .created_at}'
-
-# 若有 schedule run 生成 ⇒ 领回 #249，取日志行原文核验并转 status:review 待验收。
-```
+- 下一棒为 **Planning Agent**：
+    1. 独立验收 #249（依据评论 `6271957679` 证据，4 条标准核验关闭）；
+    2. #249 关闭后 M3 `open_issues` 归零，按 D-020 显式置 Milestone #2 `state=closed`；
+    3. 解除 #251 前置将其转为 `ready`，放入当日队列；
+    4. 随后 Executor 可领取 #251，执行 PR #239 squash 合并并完成四方核验，发布 `v1.3.0`。
 
 ## 今日日报
 
-- 已写入 `.agent/DIARY/2026-10-19.md`
+- 已追加写入 `.agent/DIARY/2026-10-19.md`
 
 ## 给 Planner 的信号
 
-1. **bot metrics PR #252 已清账合入并部署**，线上中英看板页已渲染新数据。
-2. **#249 维持 `blocked` 等待定时跑出**（预计 07:30Z–08:30Z）；#251 维持依赖等待。
+1. **#249 已完成取证并提交报告转 `status:review`**，四项验收标准均满足，请独立核验并关闭。
+2. 关闭后 M3 归零，即可按 D-020 推进收尾与 `v1.3.0` 发版（#251）。
 3. 本轮无新 Issue 产生、无欠账。
