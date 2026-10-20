@@ -2,10 +2,12 @@
 
 > **本文件回答：** 项目现在处于哪个阶段 / 当前 Milestone 要做什么、为什么 / 什么算完成 / 现在有哪些任务、哪些完成、哪些阻塞 / 下一阶段是什么 / 哪些方向已明确放弃。
 > **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。**不为填队列制造任务。**
-> **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-020，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
+> **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-021，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-20T17:00Z（`date -u`；本地日期 2026-10-21）｜**核实基线：** `main@39231f3`（第 97 轮 `.agent` 收尾提交；与 origin 同步 0/0）｜最近代码 SHA `db31f6f`（rp Release PR #239 发版 `1.3.0`）与 `8d0d75a`（bot PR #253 metrics 快照）｜**核实人：** Planning Agent 第 98 轮（输入 = 仓库现场 + Issue/PR/CI/部署/线上真实状态；`gh` token 实测有效）
+**最后核实：** 2026-10-20T23:38Z（`date -u`；本地日期 2026-10-21）｜**核实基线：** `main@085fb22`（第 98 轮 `.agent` 收尾提交；与 origin 同步 0/0）｜最近代码 SHA `db31f6f`（rp Release PR #239 发版 `1.3.0`）与 `8d0d75a`（bot PR #253 metrics 快照）｜**核实人：** Planning Agent 第 99 轮（同日加跑；输入 = 仓库现场 + Issue/PR/CI/部署/线上真实状态；`gh` token 实测有效）
+
+> **第 99 轮判定（同日加跑，2026-10-21 本地）：** ① **加跑触发＝新事实**：第 98 轮 17:00Z 收尾后，npm 于 **18:30:24Z / 19:48:25Z / 19:51:52Z** 连发 3 条 `launch-editor`/`vite` 公告（`GHSA-587h-7wmj-h5pm` **high**、`GHSA-698v-4r3x-3vcv` medium、`GHSA-r825-w8mm-5pxw` medium）。② **实证 main 潜伏红**：`pnpm quality:audit` 本轮实测 **exit 1**（6 条未覆盖 = 3 GHSA × 2 个 vite 版本）；lock 解析 `vite@8.3.0`（astro / vitest / @astrojs/cloudflare / @cloudflare/vite-plugin）与 `vite@8.1.5`（vite-plugin-purgecss）均在受影响区间；`ci-cd.yml` 的 audit job 无路径过滤 ⇒ 下一次 push（含每轮 `.agent` 提交）必红。第 98 轮「dependabot 开放告警 0 / 稳态全绿」在其取证时点（17:00Z）为真，现已被新公告作废——更正留痕，不回写旧行。③ **建单 #254（P0 · ready · 无 milestone）**：升级 vite 至 ≥8.3.3（registry latest 8.3.4），零豁免；同时记录 Dependabot 安全更新 run `39486965261` **failure**（`security_update_not_possible`：latest-resolvable `8.1.5` / lowest-non-vulnerable `8.1.6` ⇒ 自动化无法自愈，必须人工抬版）与开放告警 #188。④ **验收队列空**：无 `status:review` / `in-progress`；#251 复核 `CLOSED/COMPLETED` + `status:done`；M3 `closed`；`v1.3.0` 仍 Latest；HEAD / 部署 / 线上未变（Version `35127731-f8db-4910-832a-dac8eb5ee098`，单请求 nonce 一致 `qNYK1dXdQVD9zY5yIQyNhQ`）。⑤ **今日执行队列 = 1（#254）**；M4 仍不创建（单点热修无需空 Milestone）。⑥ **立 D-021**：有补丁的安全公告一律升级、不豁免，审计门禁红 = 项目阻塞；semver 兼容范围内的抬版不触发 D-015。⑦ 常驻项：#101 复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`；#197 默认 C；inbound `wsyhuat/main` 7 路径内容级 diff 0；无 LOCK；pending 0、未提问。⑧ bot metrics PR 尚未再生（预期 `2026-10-21T04:3xZ`），到点按 §2.2 常态处置。
 
 > **第 98 轮判定：** ① **无新执行轮次可验收**——第 97 轮（2026-10-20T13:39Z）关闭 #251 后至今无 Execution 产出、无新 `status:review`；复核 #251 仍为 `CLOSED/COMPLETED` + `status:done`，M3 保持 `closed`，`v1.3.0` 仍为 Latest。② **稳态全绿**：HEAD `39231f3f1a1abb7b2cbe225c0696800dbe67862a` 完整 SHA 的 `CI/CD Pipeline` / `Secret Scan` / `Release Please` 三连 success；近 30 run 唯一 failure 为暂缓的 dependabot majors PR 分支（#209，`Lint and Format`），main 无红；OpenWiki 定时更新 success；dependabot / secret-scanning 开放告警均为 0。③ **线上在位**：`/` HTTP 200，单请求 CSP 头/体 nonce 逐字一致（`bs1Gq0lSmO-u_b_fck8paQ`）；zh 看板页 200 渲染快照 `2026/10/20 04:49:14`；最新 deployment `2c488529…` 的 `version_id` 仍为 `35127731-f8db-4910-832a-dac8eb5ee098`（100%）。④ **inbound 无新工作**：`wsyhuat/main` 仍 `f98be0d`，按其改动路径对 main 做内容级 diff 为 0（WORKFLOW §1.6 终判）；`d89b87e` 为更早的已吸收合并提交。⑤ **常驻项不变**：#101 复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN` ⇒ 保持 blocked；#197 维持 needs-info 默认 C；开放 PR 仅 majors #186/#209（D-015 暂缓），无开放 bot PR。⑥ **今日执行队列 = 0（诚实空置）**：无新工作束，M4 继续不创建；下一预期事件为 bot metrics PR 于 **2026-10-21T04:3xZ（UTC）** 前后再生，按常态指令处置。⑦ **流程欠账修复**：第 97 轮漏记 `docs/WORKFLOW.md §7.4`，本轮补记；`STATE.md` / `HANDOFF.md` 仍停留在第 96 轮口径（称「待 Planner 验收 #251」），已列为下一轮 Executor 开工必做项。
 
@@ -24,12 +26,12 @@ M3 稳态运营与 `v1.3.0` 发版工作已于 **2026-10-20 全面闭环**：
 - 线上站点（`huat-fsac.eu.org`）已部署 Version `35127731-f8db-4910-832a-dac8eb5ee098`，四方版本与最新看板快照（`2026/10/20 04:49:14`）全部在位；
 - 核心收口发版单 **#251 独立验收通过并关闭**。
 
-当前项目处于**稳态开放期**（第 98 轮复核无新增工作）：
+当前项目处于**稳态开放期**，但 **2026-10-20T18:30Z 起出现一个 P0 热修**（第 99 轮同日加跑的唯一原因）：
 
-- **今日执行队列 = 0（诚实空置）**：当前无挂起缺陷、无破坏性变更、无待开工任务；
-- **M4 暂不创建**：常驻单（#197 / #101）按 D-020 第 3 条不占 Milestone 计数；待未来出现需要系统排期的真实工作束（新功能需求 / 架构治理任务）再根据具体内容创建 M4；
-- 方向层仍由 **D-017** 维持稳态（用户 2026-10-08 选 A）；braces/audit 豁免链条已永久收敛（D-019 / #244）；
-- **下一预期事件**：bot metrics PR 于 **2026-10-21T04:3xZ（UTC）** 前后再生；Executor 按常态指令处置，不单独建单。
+- **今日执行队列 = 1（#254）**：vite 被 3 条新公告命中（1 high），`pnpm quality:audit` 已实测 exit 1，main 处于「下一次 push 必红」的潜伏状态 —— 必须在所有后续交付之前先修；
+- **M4 暂不创建**：单点热修不构成需要排期的工作束，不为它开空 Milestone；常驻单（#197 / #101）按 D-020 第 3 条不占 Milestone 计数；待未来出现需要系统排期的真实工作束（新功能需求 / 架构治理任务）再根据具体内容创建 M4；
+- 方向层仍由 **D-017** 维持稳态（用户 2026-10-08 选 A）；braces/audit 豁免链条已永久收敛（D-019 / #244），本次同类处置按 **D-021** 走「有补丁即升级、不豁免」；
+- **下一预期事件**：bot metrics PR 于 **2026-10-21T04:3xZ（UTC）** 前后再生；若与 #254 同日出现，**先修 #254 再处置 PR**，不单独建单。
 
 ## 二、当前 Milestone：无（M3 已收口；M4 暂不创建）
 
@@ -44,19 +46,21 @@ M3 稳态运营与 `v1.3.0` 发版工作已于 **2026-10-20 全面闭环**：
 3. #251 验收通过关闭：合并 Release PR #239，完成 `v1.3.0` 发版四方核验与祖先判定，完成生产 Worker 部署与同请求 CSP nonce 验收。
 4. 常态顺手项 #253 合入 `8d0d75a`，数据看板同步上线。
 
-### 2.2 执行队列（第 98 轮：今日可开工 Issue = 0，诚实空置）
+### 2.2 执行队列（第 99 轮：1 个 P0 热修）
 
-（无 ready 任务。维持真实状态，不为凑 2–5 区间制造任务。）
+1. **#254 升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 `quality:audit` 与 main CI 绿**（P0 · ready · 无 milestone）
 
+> **执行顺序**：先 #254（当前唯一阻塞项）→ 完工后刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志 → 最后才看待办的 bot metrics PR。
 > **今日常态顺手项**：当前无开放 bot PR（#253 已处置合入）；下一张预期 **2026-10-21T04:3xZ（UTC）** 再生，届时由 Executor 按长期指令处置（schema 逐键一致 → 合入 → 完整 SHA CI → 视数据变更部署），不单独建单。
-> **勿合 majors #186/#209**（D-015 暂缓）。**#101 保持 blocked**（第 98 轮复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）。
-> **下一轮开工先做**：刷新 `STATE.md` / `HANDOFF.md` 至第 97/98 轮后的现实（#251 已关闭、M3 收官、队列空），并在 `docs/WORKFLOW.md §7.4` 追加本轮执行日志。
+> **勿合 majors #186/#209**（D-015 暂缓）。**#101 保持 blocked**（第 99 轮复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）。
+> **注意**：audit 门禁在 #254 合入前是红的，**不要**在此期间合并任何无关改动到 main（会把无关提交也染红）。
 
 ### 2.3 已知阻塞与依赖
 
 | 项                                      | 状态                              | 需要谁         | 说明                                                                                                                                                                                    |
 | --------------------------------------- | --------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **#101** CI 自动部署                    | `blocked`（P1）                   | **人类**       | 第 98 轮复核 Actions Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`；本地 OAuth 部署可用，不阻塞交付。⚠️ `gh api actions/secrets` 不带 repo 路径返回 404，勿误判。                        |
+| **#254** vite 公告 / audit 门禁         | **P0 · ready**                    | **Executor**   | 3 条新公告（1 high）2026-10-20T18:30–19:52Z 发布；`pnpm quality:audit` exit 1；lock 内 `vite@8.1.5` + `vite@8.3.0` 均受影响；main 下次 push 必红。修复前不合并无关改动。                |
+| **#101** CI 自动部署                    | `blocked`（P1）                   | **人类**       | 第 99 轮复核 Actions Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`；本地 OAuth 部署可用，不阻塞交付。⚠️ `gh api actions/secrets` 不带 repo 路径返回 404，勿误判。                        |
 | **#197** rp Release PR 自助 CI          | `needs-info`（P3，无 milestone）  | 默认 C（不改） | 信号触发型常驻项；用户 2026-10-12 已确认维持手工触发；等发版频率信号或人类意愿。按 D-020 第 3 条不入任何 Milestone。                                                                    |
 | bot metrics 快照（bot 按日再生）        | 常态处置（**当前无开放 bot PR**） | **Executor**   | #215/#216/#217/#226/#232/#238/#241/#248/#250/#252/#253 均已处置合入；下一张预期 `2026-10-21T04:3xZ` 再生。不建单，确认 diff 仅 `project-progress.json` 值漂移且 schema 逐键一致后合入。 |
 | **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08）        | —              | 维持稳态；无新功能启动。                                                                                                                                                                |
@@ -71,6 +75,9 @@ M3 稳态运营与 `v1.3.0` 发版工作已于 **2026-10-20 全面闭环**：
 - **CI 计数口径纪律**：「某 commit 全绿」必须用完整 SHA 的 `actions/runs?head_sha=` 取数；`gh run list` 默认只回 20 条。
 - **部署版本记录口径**：`wrangler deployments list` 的 `id` 是 deployment ID，不是 version ID；最新 deployment `2c488529-411d-4d5f-91d3-5c81d259b692` 的 `versions[0].version_id` = `35127731-f8db-4910-832a-dac8eb5ee098`（100%），线上即为该版本。OAuth 可用。
 - **流程欠账（第 98 轮）**：第 97 轮漏记 `docs/WORKFLOW.md §7.4`，本轮已补；`STATE.md` / `HANDOFF.md` 仍为第 96 轮口径，待下一轮 Executor 刷新。
+- **第 99 轮更正（公告时间窗）**：第 98 轮「dependabot / secret-scanning 开放告警 0、稳态全绿」是其 17:00Z 取证时点的真实快照，但 18:30Z 起的新公告已使其过期——**此后每轮规划把 `pnpm quality:audit` 作为只读复核项**（本轮实证有效：exit 1），不要只信上一轮结论。
+- **Dependabot 安全更新不可依赖（第 99 轮实证）**：run `39486965261`（2026-10-20T19:51Z）以 `security_update_not_possible` 失败，其解析器称 latest-resolvable `8.1.5` / lowest-non-vulnerable `8.1.6`，**未开 PR**；说明此类公告必须人工抬版，不能等 bot。
+- **公告严重度的作用域判断**：本次 3 条均为 `launch-editor`（dev server / Windows 路径），运行时不触达；但 audit 门禁零豁免且已有补丁版本，按 D-021 仍按 P0 修，不因「Windows-only / devDependency」降级或豁免。
 
 ## 三、下一阶段
 
@@ -93,8 +100,8 @@ M3 稳态运营与 `v1.3.0` 发版工作已于 **2026-10-20 全面闭环**：
 
 ## 五、Decision Gate
 
-（当前 pending = 0；D-001..D-020 全部生效。）
+（当前 pending = 0；D-001..D-021 全部生效。）
 
 ## 六、给 Executor 的指令
 
-**今日队列诚实空置（可开工 Issue = 0）**。下一轮开工先刷新 `STATE.md` / `HANDOFF.md`（#251 已关闭、M3 收官、队列空），并在 `docs/WORKFLOW.md §7.4` 追加执行轮日志。若 2026-10-21T04:3xZ（UTC）后再生 bot metrics PR，按常态指令处置（schema 逐键一致 → 合入 → 完整 SHA CI → 视数据变更部署）；勿合 majors #186/#209；#101 维持 blocked。
+**今日队列 = 1：#254（P0）**。开工先领 #254：把 vite 抬到 ≥8.3.3（建议 `pnpm-workspace.yaml` override `"vite@>=8.0.0 <8.3.3": ">=8.3.3"`，D-007 合规；registry latest 8.3.4），跑全部门禁 + `test:e2e`，**零豁免**恢复 audit 绿。完工后刷新 `STATE.md` / `HANDOFF.md`（仍停在第 96 轮口径）并在 `docs/WORKFLOW.md §7.4` 追加执行轮日志。若 `2026-10-21T04:3xZ`（UTC）后再生 bot metrics PR，按常态指令处置（schema 逐键一致 → 合入 → 完整 SHA CI → 视数据变更部署）；勿合 majors #186/#209；#101 维持 blocked。
