@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-19T05:35Z（UTC，`date -u`）· 探测者 `executor-round-92`（第 92 轮：#252 顺手处置合入 `1a3b688` + 部署 Version `33724813` + CSP/看板页复验 PASS；上一轮：第 91 轮 `executor-round-91`）
+> 最近更新：2026-10-20T11:25Z（UTC，`date -u`）· 探测者 `executor-round-96`（第 96 轮：#253 顺手合入 `8d0d75a` + #251 发版合入 `db31f6f` v1.3.0 + 部署 Version `35127731` + CSP/看板页复验 PASS；上一轮：第 92 轮 `executor-round-92`）
 
 ## 1. 工具链（实测）
 
@@ -57,12 +57,15 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 **复确认（2026-10-17T14:1xZ 在 main@`e82adef` 实测，#248 bot 数据快照合入后；证据 `.tmp/gate85/*.log` + CI 按完整 head_sha 取数）**：
 `pnpm deploy:worker` exit 0（含 `pnpm build`；Version `82ae7f68`）· main `CI/CD Pipeline` / `Secret Scan` / `Release Please` 均 **success、0 失败** · CSP **单请求**头/体 nonce 一致 PASS（`5jKMpTnO8HJ9DzZG5reUNA`）· zh 看板页 200 渲染 `数据更新时间: 2026/10/17 04:24:16`、en 看板页 200 渲染 `Updated: 10/17/2026, 4:24:16 AM`（en 真实路径 = `/en/docs-center/运营与协作/项目进度看板/`，**英文 slug 候选全 404**）。全量单测/e2e 未重跑（变更仅数据 JSON 值漂移，与第 68/71/75 轮同类处置先例一致；431/40·168 基线仍有效）。
 
+**复确认（2026-10-20T11:20Z 在 main@`db31f6f` 实测，#253 bot 快照合入 + #251 v1.3.0 发版后；证据 `.tmp/gate96/*.log` + CI 按完整 head_sha 取数）**：
+`pnpm lint` / `format:check` / `tsc` / `test:run`（**431 passed / 40 files**）/ `quality:audit`（0 豁免 exit 0）全通过；main `CI/CD Pipeline` / `Secret Scan` / `Release Please` 均 **success、0 失败**（run 39413404149 / 39413404323 / 39413404110）；`pnpm deploy:worker` exit 0（含 `pnpm build`；Version `35127731-f8db-4910-832a-dac8eb5ee098`）· CSP **单请求**头/体 nonce 一致 PASS（`KGfk-ckH89eVWVAHFWu6FQ`）· zh 看板页 200 渲染 `数据更新时间: 2026/10/20 04:49:14`、en 看板页 200 渲染 `Updated: 10/20/2026, 4:49:14 AM`；tag `v1.3.0` / Release Latest / `package.json` 1.3.0 / `CHANGELOG.md:8` 四方一致。
+
 ## 3. 部署与线上验收
 
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-- 最近一次部署：**Version `33724813-82eb-4baa-9d1c-2d0d1d6d4d03`**（2026-10-19T05:27:00Z，覆盖 #252 数据快照；CSP 同请求头/体 nonce 一致 `YK8d7QhLXz1--2VNLdlIBg`）。
+- 最近一次部署：**Version `35127731-f8db-4910-832a-dac8eb5ee098`**（2026-10-20T11:15:00Z，覆盖 #253 数据快照与 v1.3.0 发版；CSP 同请求头/体 nonce 一致 `KGfk-ckH89eVWVAHFWu6FQ`）。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
 - sitemap 计数必须用 `grep -o '<loc>' | wc -l`（XML 单行，`grep -c` 恒为 1）。
