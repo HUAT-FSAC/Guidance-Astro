@@ -1,45 +1,45 @@
 {
-    "generatedAt": "2026-10-19T04:39:00.131Z",
+    "generatedAt": "2026-10-20T04:49:14.174Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 1,
-        "prCycleTimeDays": 0.74,
+        "issueLeadTimeDays": 0.94,
+        "prCycleTimeDays": 0.73,
         "issueCloseRatePercent": 96.2,
-        "prMergeRatePercent": 68.18,
-        "ciSuccessRatePercent": 66,
+        "prMergeRatePercent": 69.32,
+        "ciSuccessRatePercent": 70,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
-        "backlogIssueCount": 3
+        "backlogIssueCount": 2
     },
     "counts": {
-        "openIssueCount": 4,
+        "openIssueCount": 3,
         "openPullRequestCount": 3,
         "openedIssuesInWindow": 79,
         "closedIssuesInWindow": 76,
         "openedPullRequestsInWindow": 88,
-        "mergedPullRequestsInWindow": 60,
+        "mergedPullRequestsInWindow": 61,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 7
     },
     "samples": {
         "latestIssueUpdatedAt": "2026-10-17T12:31:57.000Z",
-        "latestMergedPullRequestAt": "2026-10-18T11:24:30.000Z"
+        "latestMergedPullRequestAt": "2026-10-19T05:26:21.000Z"
     },
     "summary": {
         "totalIssues": 102,
-        "closedIssues": 98,
-        "openIssues": 4,
-        "ciPassRate": 66
+        "closedIssues": 99,
+        "openIssues": 3,
+        "ciPassRate": 70
     },
     "byStatus": {
         "backlog": 1,
         "ready": 1,
         "inProgress": 0,
         "review": 0,
-        "blocked": 2,
-        "done": 98
+        "blocked": 1,
+        "done": 99
     },
     "byPriority": {
         "p0": 2,
@@ -58,8 +58,8 @@
         {
             "title": "M3 稳态运营（Steady-state Operations）",
             "description": "运行 M1/M2 建成的稳态机器：周期性摄入 minor-and-patch 依赖、按 D-012 发版、majors 显式复核、供应链探针与 audit 豁免到期核对",
-            "status": "in-progress",
-            "completionRate": 93,
+            "status": "completed",
+            "completionRate": 100,
             "dueDate": "2026-11-14"
         }
     ],
@@ -77,20 +77,26 @@
         {
             "type": "issue",
             "title": "复核 duration-budget 每周定时首轮（schedule 事件）真实结果并留痕",
+            "status": "closed",
+            "updatedAt": "2026-10-19T17:26:40.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "按 D-012 在 M3 收口点合并 Release PR #239 发布 v1.3.0 并完成四方核验",
             "status": "open",
-            "updatedAt": "2026-10-19T03:26:55.000Z"
+            "updatedAt": "2026-10-19T17:26:33.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-19T05:26:24.000Z"
         },
         {
             "type": "pr",
             "title": "chore(main): release 1.3.0",
             "status": "open",
             "updatedAt": "2026-10-19T02:48:38.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "按 D-012 在 M3 收口点合并 Release PR #239 发布 v1.3.0 并完成四方核验",
-            "status": "open",
-            "updatedAt": "2026-10-19T02:37:46.000Z"
         },
         {
             "type": "issue",
@@ -115,12 +121,6 @@
             "title": "chore(metrics): update project progress snapshot",
             "status": "merged",
             "updatedAt": "2026-10-18T11:29:21.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-17T16:46:19.000Z"
         }
     ]
 }
