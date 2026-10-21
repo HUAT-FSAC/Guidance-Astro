@@ -6,9 +6,9 @@
 
 ## 今日队列（2026-10-21，给 Executor 的建议顺序）
 
-| #   | 任务                                                                                     | 优先级 | 状态  | 顺序理由                                                                                          |
-| --- | ---------------------------------------------------------------------------------------- | ------ | ----- | ------------------------------------------------------------------------------------------------- |
-| 1   | **#254** 升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 `quality:audit` 与 main CI 绿 | P0     | ready | 唯一阻塞项：audit 门禁已实测 exit 1，main CI 已红；必须先修复并恢复门禁绿，才能进行后续任何交付。 |
+| #   | 任务                                                                                     | 优先级 | 状态      | 顺序理由                                                                                        |
+| --- | ---------------------------------------------------------------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------- |
+| 1   | **#254** 升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 `quality:audit` 与 main CI 绿 | P0     | in-review | 唯一阻塞项已修复交付：PR #256 已合入 `1aa788f`，main CI 全绿，已留 §1.7 执行报告待 Planner 验收 |
 
 > **顺序说明**：当前处于稳态开放期中的 P0 热修阶段。今日可开工 Issue = **1**（#254），不制造任务。
 > **今日常态顺手项（不建单）**：当前开放 bot metrics PR **#255**（2026-10-21T04:44:44Z 生成，files=1，`project-progress.json` 43+/43-，schema 逐键一致）。由 Executor 按长期指令处置（schema 逐键一致 → squash 合入 → 完整 SHA CI → 视数据变更部署）。
@@ -36,22 +36,22 @@
 
 ## 全部开放 Issue
 
-| #    | 标题                                                                          | 标签                                                                | 状态                                                                   | Milestone          |
-| ---- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------ |
-| #254 | 升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 quality:audit 与 main CI 绿 | priority:p0/security/dependencies/area:devops/type:task/risk:medium | **ready**（正文首行 `队列状态：ready`；无依赖）                        | 无                 |
-| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI                            | P3/devops/dependencies/risk:medium/needs-info                       | needs-info（默认 C = 维持手工触发，用户 10-12 确认；信号触发型非饥饿） | **无**             |
-| #101 | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                         | P1/devops/task/risk:medium/blocked                                  | blocked（第 100 轮复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）  | 不在任何 Milestone |
+| #    | 标题                                                                          | 标签                                                                              | 状态                                                                   | Milestone          |
+| ---- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------ |
+| #254 | 升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 quality:audit 与 main CI 绿 | priority:p0/security/dependencies/area:devops/type:task/risk:medium/status:review | **in-review**（PR #256 已合入 `1aa788f`，待 Planner 独立验收关闭）     | 无                 |
+| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI                            | P3/devops/dependencies/risk:medium/needs-info                                     | needs-info（默认 C = 维持手工触发，用户 10-12 确认；信号触发型非饥饿） | **无**             |
+| #101 | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                         | P1/devops/task/risk:medium/blocked                                                | blocked（第 100 轮复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）  | 不在任何 Milestone |
 
 > **Milestone #2（M3）与 Milestone #1（M2）均已关闭**。
 > **当前无开放 Milestone**；M4 暂不创建（单点热修不构成工作束）。
 
 ## 全部开放 PR（非任务，供处置参考）
 
-| #    | 标题                                                          | 性质                | 处置口径                                               |
-| ---- | ------------------------------------------------------------- | ------------------- | ------------------------------------------------------ |
-| #255 | `chore(metrics): update project progress snapshot`            | bot (metrics)       | **今日顺手项**（待 #254 合入后再行 squash 合入并部署） |
-| #209 | `chore(deps): bump the majors group across 1 directory with…` | dependabot (npm)    | 暂缓（D-015）                                          |
-| #186 | `chore(deps): bump the majors group across 1 directory with…` | dependabot (github) | 暂缓（D-015）                                          |
+| #    | 标题                                                          | 性质                | 处置口径                                                             |
+| ---- | ------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
+| #257 | `chore(main): release 1.3.1`                                  | release-please      | **新生成 patch PR**（由 fix(deps) #256 触发，待 Planner 按节奏处置） |
+| #209 | `chore(deps): bump the majors group across 1 directory with…` | dependabot (npm)    | 暂缓（D-015）                                                        |
+| #186 | `chore(deps): bump the majors group across 1 directory with…` | dependabot (github) | 暂缓（D-015）                                                        |
 
 > 开放 PR 共 **3** 张（bot 1 + majors 2）。
 
