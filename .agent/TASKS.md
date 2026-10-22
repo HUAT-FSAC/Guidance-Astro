@@ -7,10 +7,10 @@
 
 ## 今日队列（2026-10-22，给 Executor 的建议顺序）
 
-| #   | 任务                                                                                    | 优先级 | 状态  | 顺序理由                                                                                                          |
-| --- | --------------------------------------------------------------------------------------- | ------ | ----- | ----------------------------------------------------------------------------------------------------------------- |
-| 1   | **#260** 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁 | P0     | ready | 2 条中危公告导致 audit 门禁 exit 1，属项目阻塞（D-021）；上游 4.1.12 已发布，今日首要任务，必须最优先合入恢复全绿 |
-| 2   | **#258** 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定                      | P2     | ready | patch 档（§11.1），**必须在 #260 合入主干恢复 audit 全绿后执行**；rp 届时将追加 #260 的 fix，发版收尾             |
+| #   | 任务                                                                                    | 优先级 | 状态      | 顺序理由                                                                                                          |
+| --- | --------------------------------------------------------------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| 1   | **#260** 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁 | P0     | in-review | 2 条中危公告导致 audit 门禁 exit 1，属项目阻塞（D-021）；上游 4.1.12 已发布，今日首要任务，必须最优先合入恢复全绿 |
+| 2   | **#258** 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定                      | P2     | in-review | patch 档（§11.1），**必须在 #260 合入主干恢复 audit 全绿后执行**；rp 届时将追加 #260 的 fix，发版收尾             |
 
 > **顺序说明**：必须严格按 1 → 2 顺序执行。#260 是前置阻塞，未修复前合并 #257 会导致 main push 潜伏红且发布未修漏洞的版本；#260 合入后 rp 自动更新 PR #257，再执行 #258。
 > **今日常态顺手项（不建单）**：bot metrics PR **#259**（2026-10-22T04:43Z 生成，42+/42- 纯值漂移），排在 #260 / #258 之后处置（schema 逐键一致 → squash 合入 → 完整 SHA CI → 视数据变更部署）。
@@ -32,12 +32,12 @@
 
 ## 全部开放 Issue
 
-| #    | 标题                                                                           | 标签                                                                               | 状态                                                                                           | Milestone |
-| ---- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------- |
-| #260 | 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁 | priority:p0/status:backlog/type:task/area:devops/risk:medium/security/dependencies | **ready**（P0 插队；上游 4.1.12 已发布，零豁免恢复 audit 绿灯）                                | 无        |
-| #258 | 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定                      | priority:p2/status:backlog/type:task/area:devops/risk:low                          | **ready**（patch 档；依赖 #260 合入主干恢复 audit 全绿后合并 + 四方核验）                      | 无        |
-| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI                             | priority:p3/needs-info/area:devops/dependencies/risk:medium                        | needs-info（默认 C = 维持手工触发，用户 2026-10-12 确认；#257 再次实证影响；信号触发型，保留） | **无**    |
-| #101 | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                          | priority:p1/status:backlog/area:devops/type:task/risk:medium/blocked               | blocked（复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）                                   | 无        |
+| #    | 标题                                                                           | 标签                                                                              | 状态                                                                                           | Milestone |
+| ---- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------- |
+| #260 | 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁 | priority:p0/status:review/type:task/area:devops/risk:medium/security/dependencies | **in-review**（PR #261 已合入，主干全绿，待 Planner 验收）                                     | 无        |
+| #258 | 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定                      | priority:p2/status:review/type:task/area:devops/risk:low                          | **in-review**（PR #257 已合入，v1.3.1 已发布，四方核验全过，待 Planner 验收）                  | 无        |
+| #197 | 评估解锁 release-please Release PR 的 PR 级自助 CI                             | priority:p3/needs-info/area:devops/dependencies/risk:medium                       | needs-info（默认 C = 维持手工触发，用户 2026-10-12 确认；#257 再次实证影响；信号触发型，保留） | **无**    |
+| #101 | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                          | priority:p1/status:backlog/area:devops/type:task/risk:medium/blocked              | blocked（复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）                                   | 无        |
 
 > 当前开放 Issue 共 **4** 条（ready 2 + needs-info 1 + blocked 1）。**Milestone #2（M3）与 Milestone #1（M2）均已关闭**；当前无开放 Milestone；M4 暂不创建。
 

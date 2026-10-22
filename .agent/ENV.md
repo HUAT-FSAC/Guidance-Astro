@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-21T12:10Z（UTC，`date -u`）· 探测者 `executor-round-101`（第 101 轮：#254 vite 8.3.5 抬版 + PR #256 合入 `1aa788f` + PR #255 合入 `1d453bf` + 部署 Version `ac0be9c8` + CSP/看板页复验 PASS；上一轮：第 96 轮 `executor-round-96`）
+> 最近更新：2026-10-22T12:45Z（UTC，`date -u`）· 探测者 `executor-round-102`（第 102 轮：#260 vitest 4.1.12 抬版 + PR #261 合入 `aa6517e` + #258 v1.3.1 发版 PR #257 合入 `8dc6ec2` + PR #259 合入 `ec86cb4` + 部署 Version `a8ab6b74` + CSP/看板页复验 PASS；上一轮：第 101 轮 `executor-round-101`）
 
 ## 1. 工具链（实测）
 
@@ -63,12 +63,15 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 **复确认（2026-10-21T12:05Z 在 main@`1d453bf` 实测，#254 落地 + #255 bot 快照合入后；证据 `.tmp/issue-254-report.md` + CI 按完整 head_sha 取数）**：
 `pnpm lint` / `format:check` / `tsc` / `test:run`（**431 passed / 40 files**）/ `quality:audit`（0 豁免 exit 0）全通过；`test:e2e` **36 passed (25.1s)**；`quality:bundle` Total JS **219.56 KB** / Total CSS **250.73 KB**（预算 ≤350 KB / ≤300 KB 全绿）；`dist/client/sitemap-0.xml` = **168 页**；`pnpm why vite` 单一版本 `vite@8.3.5`；main `CI/CD Pipeline` / `Secret Scan` / `Release Please` 在 `1aa788f` 与 `1d453bf` 均 **success、0 失败**（run 39595355667 / 39595355629 / 39595355780 与 39596377602 / 39596377617 / 39596377757）；`pnpm deploy:worker` exit 0（含 `pnpm build`；Version `ac0be9c8-64ef-4aa1-974f-cff4b010d2bc`）· CSP **单请求**头/体 nonce 一致 PASS（`qkh2Ep9SCNBj4_OxCXf7AQ`）· zh 看板页 200 渲染 `数据更新时间: 2026/10/21 04:44:36`、en 看板页 200 渲染 `Updated: 10/21/2026, 4:44:36 AM`；dependabot open alerts 计数 **0**。
 
+**复确认（2026-10-22T12:35Z 在 main@`ec86cb4` 实测，#260 抬版 + #258 v1.3.1 发版 + #259 bot 快照合入后；证据 `.tmp/issue-260-report.md` / `.tmp/issue-258-report.md` + CI 按完整 head_sha 取数）**：
+`pnpm lint` / `format:check` / `tsc` / `test:run`（**431 passed / 40 files**）/ `test:coverage`（Lines **95.25%**）/ `quality:audit`（0 豁免 exit 0）全通过；`test:e2e` **36 passed (24.0s)**；`quality:bundle` Total JS **219.56 KB** / Total CSS **250.73 KB**；`dist/client/sitemap-0.xml` = **168 页**；`pnpm why @vitest/mocker` 与 `vitest` 均单一版本 `4.1.12`；main `CI/CD Pipeline` / `Secret Scan` / `Release Please` 在 `aa6517e`、`8dc6ec2` 与 `ec86cb4` 均 **success、0 失败**（run 39774686569 / 39774686678 / 39774686574、39776488487 / 39776488299 / 39776488379、39778203509 / 39778203502 / 39778203451）；`pnpm deploy:worker` exit 0（含 `pnpm build`；Version `a8ab6b74-a0d7-477b-a499-68056cc87e7e`）· CSP **单请求**头/体 nonce 一致 PASS（`BuJ0yE2QH0WtCNNeguhGjg`）· zh 看板页 200 渲染 `数据更新时间: 2026/10/22 04:42:52`、en 看板页 200 渲染 `Updated: 10/22/2026, 4:42:52 AM`；tag `v1.3.1` / Release Latest / `package.json` 1.3.1 / `CHANGELOG.md:8` 四方一致；dependabot open alerts 计数 **0**。
+
 ## 3. 部署与线上验收
 
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-- 最近一次部署：**Version `ac0be9c8-64ef-4aa1-974f-cff4b010d2bc`**（2026-10-21T12:07:00Z，覆盖 #254 安全补丁与 #255 数据快照；CSP 同请求头/体 nonce 一致 `qkh2Ep9SCNBj4_OxCXf7AQ`）。
+- 最近一次部署：**Version `a8ab6b74-a0d7-477b-a499-68056cc87e7e`**（2026-10-22T12:34:25Z，覆盖 #259 数据快照与此前安全补丁；CSP 同请求头/体 nonce 一致 `BuJ0yE2QH0WtCNNeguhGjg`）。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
 - sitemap 计数必须用 `grep -o '<loc>' | wc -l`（XML 单行，`grep -c` 恒为 1）。
