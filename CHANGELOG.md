@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.3.0...v1.3.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* **deps:** 升级 vite 至 8.3.5 消除 3 条安全公告，恢复 quality:audit 门禁 ([#256](https://github.com/HUAT-FSAC/Guidance-Astro/issues/256)) ([1aa788f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/1aa788fbde9f1146af57581c83eb78ed108b550c)), closes [#254](https://github.com/HUAT-FSAC/Guidance-Astro/issues/254)
+* **deps:** 升级 vitest 及 @vitest/mocker 至 4.1.12 消除 2 条安全公告 ([#261](https://github.com/HUAT-FSAC/Guidance-Astro/issues/261)) ([aa6517e](https://github.com/HUAT-FSAC/Guidance-Astro/commit/aa6517e383e69069f84a0e0ea27c1d27fe0229e1)), closes [#260](https://github.com/HUAT-FSAC/Guidance-Astro/issues/260)
+
 ## [1.3.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.2.2...v1.3.0) (2026-10-20)
 
 
