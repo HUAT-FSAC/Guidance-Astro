@@ -1,50 +1,50 @@
 {
-    "generatedAt": "2026-10-21T04:44:36.692Z",
+    "generatedAt": "2026-10-22T04:42:52.957Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 0.95,
-        "prCycleTimeDays": 0.78,
-        "issueCloseRatePercent": 96.2,
-        "prMergeRatePercent": 76.54,
-        "ciSuccessRatePercent": 68,
+        "prCycleTimeDays": 0.76,
+        "issueCloseRatePercent": 96.25,
+        "prMergeRatePercent": 76.19,
+        "ciSuccessRatePercent": 66,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
-        "backlogIssueCount": 1
+        "backlogIssueCount": 2
     },
     "counts": {
         "openIssueCount": 3,
-        "openPullRequestCount": 2,
-        "openedIssuesInWindow": 79,
-        "closedIssuesInWindow": 76,
-        "openedPullRequestsInWindow": 81,
-        "mergedPullRequestsInWindow": 62,
+        "openPullRequestCount": 3,
+        "openedIssuesInWindow": 80,
+        "closedIssuesInWindow": 77,
+        "openedPullRequestsInWindow": 84,
+        "mergedPullRequestsInWindow": 64,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 10
+        "ciFailedRunsInWindow": 12
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-20T23:26:38.000Z",
-        "latestMergedPullRequestAt": "2026-10-20T11:13:18.000Z"
+        "latestIssueUpdatedAt": "2026-10-21T15:06:38.000Z",
+        "latestMergedPullRequestAt": "2026-10-21T12:01:46.000Z"
     },
     "summary": {
-        "totalIssues": 103,
-        "closedIssues": 100,
+        "totalIssues": 104,
+        "closedIssues": 101,
         "openIssues": 3,
-        "ciPassRate": 68
+        "ciPassRate": 66
     },
     "byStatus": {
-        "backlog": 0,
-        "ready": 2,
+        "backlog": 1,
+        "ready": 1,
         "inProgress": 0,
         "review": 0,
         "blocked": 1,
-        "done": 100
+        "done": 101
     },
     "byPriority": {
-        "p0": 3,
+        "p0": 2,
         "p1": 29,
-        "p2": 25,
+        "p2": 26,
         "p3": 29
     },
     "milestones": [
@@ -76,9 +76,39 @@
     "recentActivity": [
         {
             "type": "issue",
-            "title": "升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 quality:audit 与 main CI 绿",
+            "title": "合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定",
             "status": "open",
-            "updatedAt": "2026-10-20T23:31:08.000Z"
+            "updatedAt": "2026-10-21T15:06:38.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 quality:audit 与 main CI 绿",
+            "status": "closed",
+            "updatedAt": "2026-10-21T15:06:28.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-21T12:01:49.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-21T11:57:45.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(main): release 1.3.1",
+            "status": "open",
+            "updatedAt": "2026-10-21T11:54:05.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "fix(deps): 升级 vite 至 8.3.5 消除 3 条安全公告，恢复 quality:audit 与 main CI 绿",
+            "status": "merged",
+            "updatedAt": "2026-10-21T11:53:44.000Z"
         },
         {
             "type": "issue",
@@ -88,39 +118,9 @@
         },
         {
             "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-20T11:17:22.000Z"
-        },
-        {
-            "type": "pr",
             "title": "chore(main): release 1.3.0",
             "status": "merged",
             "updatedAt": "2026-10-20T11:13:34.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-20T11:07:37.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "复核 duration-budget 每周定时首轮（schedule 事件）真实结果并留痕",
-            "status": "closed",
-            "updatedAt": "2026-10-19T17:26:40.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-19T05:26:24.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
-            "status": "open",
-            "updatedAt": "2026-10-19T02:36:51.000Z"
         }
     ]
 }
