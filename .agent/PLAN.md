@@ -5,7 +5,9 @@
 > **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-021，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
 > ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
 
-**最后核实：** 2026-10-21T15:06Z（`date -u`）｜**核实基线：** `main@1d453bf`（第 101 轮 Execution 收尾提交；与 origin 同步 0/0）｜最近代码 SHA `1aa788f`（vite 8.3.5 安全抬版，PR #256）与 `1d453bf`（bot PR #255 metrics 快照）｜**核实人：** Planning Agent 第 101 轮（日行规划；输入 = 仓库现场 + Issue/PR/CI/部署/线上真实状态；`gh` token 实测有效）
+**最后核实：** 2026-10-22T11:33Z（`date -u`）｜**核实基线：** `main@993607a`（第 101 轮 Planning 收尾提交；与 origin 同步 0/0）｜最近代码 SHA `1aa788f`（vite 8.3.5 安全抬版，PR #256）与 `1d453bf`（bot PR #255 metrics 快照）｜**核实人：** Planning Agent 第 102 轮（日行规划；输入 = 仓库现场 + Issue/PR/CI/部署/线上真实状态；`gh` token 实测有效）
+
+> **第 102 轮判定（2026-10-22 日行规划）：** ① **验收昨日产出**：无新交付需验收（#254 已于第 101 轮规划独立验收关闭，报告失实 0 处；此后 Executor 尚未开工）。② **新事实与阻塞（P0 插队）**：npm/OSV 发布 2 条 `@vitest/mocker` / `vitest` 中危安全公告（`GHSA-qxg6-89mg-rqv8`、`GHSA-xp26-3454-mjgp`），`pnpm quality:audit` 实测 **exit 1**；CI 的 audit job 无路径过滤，main 处于潜伏红。按 **D-021** 新建 **#260（P0 · ready）** 升级至 `4.1.12`，零豁免。③ **今日执行队列（2 项）**：#260（P0 · 首要任务）+ #258（P2 · patch 发版收尾，前置依赖为等待 #260 合并）。④ **顺手项在位**：bot metrics PR **#259** 于 04:43Z 如期生成（42+/42- 纯值漂移），待 Executor 在 #260 / #258 之后处置。⑤ **常驻项与 Milestone**：#101 保持 blocked，#197 保持 needs-info，majors 保持暂缓；M4 暂不创建。
 
 > **第 101 轮判定（2026-10-21 日行规划）：** ① **验收 #254 通过并关闭（报告失实 0 处）**——11 项标准逐条亲跑：`pnpm why vite` 仅单一 `8.3.5`；`pnpm quality:audit` exit 0 且 allowlist 仍 `entries: []`；`git show --name-status 1aa788f` 仅 `pnpm-workspace.yaml` + `pnpm-lock.yaml`（无源码）；完整 SHA `1aa788f…` / `1d453bf…` 的 `CI/CD Pipeline` / `Secret Scan` / `Release Please` 三连 success、dependabot 开放告警 0；最新 deployment `2fb4f335…` → version_id `ac0be9c8`（100%，12:07Z），线上单请求 CSP 头/体 nonce 一致（`JxRgQXlmvuQ6aUWmmBli3Q`）+ `/` 200；Issue 打 `status:done` 并关闭。② **顺手项 #255 复核通过**：`git show --stat 1d453bf` 仅 `project-progress.json` 43+/43-，HEAD^/HEAD 叶键路径集合 44/44 完全一致（0 结构差异），CI 三连绿，已随 `ac0be9c8` 上线。③ **Release PR #257（v1.3.1，patch）建跟进单 #258（P2 · ready）**：rp 于 11:54Z 自动生成，diff 仅 `CHANGELOG.md` + `package.json`；PR checks 未触发（#197 已知 GITHUB_TOKEN 链式抑制），按 `§11.1` patch 档由 Executor 触发 CI 后合并并做四方核验，按 `§11.3` 预期不部署。④ **今日执行队列 = 1（#258）**；M4 仍不创建。⑤ 常驻项：#101 第 101 轮复核 Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN` ⇒ `blocked` 有效；#197 维持 `needs-info` 默认 C（用户 2026-10-12 已确认；信号触发型，不入 Milestone）。⑥ **pending = 0**，本轮未向用户提问。
 
@@ -23,13 +25,13 @@
 
 ## 一、当前方向
 
-M3 稳态运营与 `v1.3.0` 发版已于 **2026-10-20 全面闭环**；2026-10-21 的 P0 依赖热修（vite 3 条公告）已由 **#254 交付并经 Planner 验收关闭**，main / audit / 线上全部恢复全绿：
+M3 稳态运营与 `v1.3.0` 发版已于 **2026-10-20 全面闭环**；2026-10-21 的 P0 依赖热修（vite 3 条公告）已由 **#254 交付并经 Planner 验收关闭**。但 2026-10-22 再次遭遇 npm 安全公告插队：
 
-- **#254 已验收关闭**（`status:done`）：vite 收敛为单一 `8.3.5`、零豁免 `quality:audit` 全绿、双 SHA CI 三连 success、dependabot 开放告警归零；Version `ac0be9c8` 已上线；
-- **当前唯一在办事项 = #258（P2 · ready）**：按 `§11.1` patch 档合并 Release PR **#257** 发布 `v1.3.1`，完成四方核验（`§11.2`）与部署判定（`§11.3`）。安全修复本体已随 `1aa788f` 上线，本单只承担版本收尾；
+- **#260（P0 · ready）安全热修插队**：npm 连发 2 条 `@vitest/mocker` / `vitest` 中危公告（`GHSA-qxg6-89mg-rqv8`、`GHSA-xp26-3454-mjgp`），`pnpm quality:audit` 实测 exit 1；按 D-021 建单插队 P0 升级至 `4.1.12`，零豁免恢复 audit 与 main CI 全绿；
+- **#258（P2 · ready）承接 v1.3.1 patch 发版收尾**：按 `§11.1` patch 档合并 Release PR **#257**。前置依赖更新为等待 #260 合入主干恢复 audit 全绿后执行（避免带漏洞发版；#260 合并后 release-please 将自动追加其 fix 至 PR #257）；
+- **顺手项 PR #259（bot metrics）**：2026-10-22T04:43Z 如期生成，纯值漂移 42+/42-，排在 #260 / #258 之后按常态指令处置，不建单；
 - **M4 暂不创建**：稳态开放期无需要系统排期的新工作束，不为空 Milestone 占位；常驻项（#197 / #101）按 D-020 第 3 条不占 Milestone 计数；
-- 方向层仍由 **D-017** 维持稳态（用户 2026-10-08 选 A）；安全公告处置按 **D-021** 走「有补丁即升级、不豁免」；
-- **顺手项**：当前无开放 bot metrics PR（#255 已合入）；下一张预计 `2026-10-22T04:4xZ` 前后生成，届时按常态指令处置。
+- 方向层仍由 **D-017** 维持稳态（用户 2026-10-08 选 A）；安全公告处置按 **D-021** 走「有补丁即升级、不豁免」。
 
 ## 二、当前 Milestone：无（M3 已收口；M4 暂不创建）
 
@@ -45,26 +47,28 @@ M3 稳态运营与 `v1.3.0` 发版已于 **2026-10-20 全面闭环**；2026-10-2
 4. 常态顺手项 #253 / #255 均合入并上线，数据看板同步。
 5. **#254 P0 热修验收关闭**：vite 8.3.5、audit 零豁免全绿、main CI 恢复；部署 Version `ac0be9c8`。
 
-### 2.2 执行队列（第 101 轮：1 个 patch 发版收尾）
+### 2.2 执行队列（第 102 轮：1 个 P0 安全热修 + 1 个 patch 发版收尾）
 
-1. **#258 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定**（P2 · ready · 无 milestone）
+1. **#260 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁**（P0 · ready · 首要任务 · 无 milestone）
+2. **#258 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定**（P2 · ready · 依赖 #260 合入 · 无 milestone）
 
-> **执行顺序**：先 #258 → 刷新 `STATE.md` / `HANDOFF.md` → 在 `docs/WORKFLOW.md §7.4` 追加执行日志。本轮无其他 ready 任务，**不为填队列制造任务**。
-> **勿合 majors #186/#209**（D-015 暂缓）。**#101 保持 blocked**（第 101 轮复核 Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`）。
-> **发版纪律**：#257 为 patch 档，CI 全绿后即可合并（`§11.1`）；不得手工改版本号 / CHANGELOG / rebase；合并后按 `§11.2` 四方核验 + 祖先判定，按 `§11.3` 判定是否部署（预期不部署）。
-> **顺手项**：当前无开放 bot metrics PR；若下一轮开工时出现新的 bot metrics PR，按常态指令在 #258 之后处置，不建单。
+> **执行顺序**：必须先 #260（恢复 quality:audit 零豁免全绿）→ 再 #258（合并 PR #257 完成发版收尾）→ 再处置顺手项 PR #259（bot metrics 快照）→ 刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志。
+> **勿合 majors #186/#209**（D-015 暂缓）。**#101 保持 blocked**（Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`）。
+> **发版纪律**：#257 为 patch 档，等 #260 合入且 CI 全绿后即可合并（`§11.1`）；不得手工改版本号 / CHANGELOG / rebase；合并后按 `§11.2` 四方核验 + 祖先判定，按 `§11.3` 判定是否部署（预期不部署）。
+> **顺手项**：PR #259 已于 2026-10-22T04:43Z 生成，在 #260 / #258 之后处置，确认 diff 仅 `project-progress.json` 值漂移且 schema 逐键一致后合入，不建单。
 
 ### 2.3 已知阻塞与依赖
 
-| 项                                      | 状态                             | 需要谁         | 说明                                                                                                                                                                                       |
-| --------------------------------------- | -------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **#258** v1.3.1 发版收尾                | **P2 · ready**                   | **Executor**   | Release PR #257（`chore(main): release 1.3.1`，patch）diff 仅 `CHANGELOG.md` + `package.json`；PR checks 未触发（#197 已知问题），需按既有手法触发 CI 后合并；预期无需部署（§11.3）。      |
-| **#101** CI 自动部署                    | `blocked`（P1）                  | **人类**       | 第 101 轮复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；本地 OAuth 部署可用，不阻塞交付。⚠️ `gh api actions/secrets` 不带 repo 路径返回 404，勿误判。                        |
-| **#197** rp Release PR 自助 CI          | `needs-info`（P3，无 milestone） | 默认 C（不改） | 信号触发型常驻项；用户 2026-10-12 已确认维持手工触发；#257 本轮再次实证其影响（PR checks 为空）。未满「连续两个 Milestone 未动」的关闭条件（用户已答复 + 有明确触发信号），继续保留跟踪。  |
-| bot metrics 快照（bot 按日再生）        | 常态处置（当前无开放 bot PR）    | **Executor**   | #215/#216/#217/#226/#232/#238/#241/#248/#250/#252/#253/#255 均已处置合入；下一张预计 2026-10-22T04:4xZ 生成，确认 diff 仅 `project-progress.json` 值漂移且 schema 逐键一致后合入。不建单。 |
-| **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08）       | —              | 维持稳态；无新功能启动。                                                                                                                                                                   |
-| #186/#209 majors PR                     | 暂缓（D-015）                    | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch。                                                                                                                                   |
-| `size:xs` / `update-linked-issues` 权限 | 仓库设置                         | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）。                                                                                          |
+| 项                                      | 状态                             | 需要谁         | 说明                                                                                                                                                                                                      |
+| --------------------------------------- | -------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **#260** vitest 4.1.12 安全抬版         | **P0 · ready**                   | **Executor**   | 2 条中危公告（GHSA-qxg6-89mg-rqv8 / GHSA-xp26-3454-mjgp）；`pnpm quality:audit` exit 1；升级至 4.1.12 零豁免恢复 audit 绿灯；今日首要任务。                                                               |
+| **#258** v1.3.1 发版收尾                | **P2 · ready**                   | **Executor**   | 依赖 #260 合入主干；Release PR #257（`chore(main): release 1.3.1`，patch）diff 仅 `CHANGELOG.md` + `package.json`；PR checks 未触发（#197 已知问题），需按既有手法触发 CI 后合并；预期无需部署（§11.3）。 |
+| **#101** CI 自动部署                    | `blocked`（P1）                  | **人类**       | 复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；本地 OAuth 部署可用，不阻塞交付。⚠️ `gh api actions/secrets` 不带 repo 路径返回 404，勿误判。                                                |
+| **#197** rp Release PR 自助 CI          | `needs-info`（P3，无 milestone） | 默认 C（不改） | 信号触发型常驻项；用户 2026-10-12 已确认维持手工触发；#257 本轮再次实证其影响（PR checks 为空）。未满「连续两个 Milestone 未动」的关闭条件（用户已答复 + 有明确触发信号），继续保留跟踪。                 |
+| **PR #259** bot metrics 快照            | 常态处置（顺手项）               | **Executor**   | 2026-10-22T04:43Z 生成，files=1，diff 仅 `project-progress.json` 纯值漂移 42+/42-；在 #260 / #258 之后按常态指令处置，不建单。                                                                            |
+| **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08）       | —              | 维持稳态；无新功能启动。                                                                                                                                                                                  |
+| #186/#209 majors PR                     | 暂缓（D-015）                    | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch。                                                                                                                                                  |
+| `size:xs` / `update-linked-issues` 权限 | 仓库设置                         | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）。                                                                                                         |
 
 ### 2.4 卫生备注（非任务，不建 Issue）
 
@@ -98,8 +102,13 @@ M3 稳态运营与 `v1.3.0` 发版已于 **2026-10-20 全面闭环**；2026-10-2
 
 ## 五、Decision Gate
 
-（当前 pending = 0；D-001..D-021 全部生效。）#258（v1.3.1 patch 发版）属 `docs/WORKFLOW.md §11.1` 第 1 档 + D-012 授权范围，无需用户裁决；#257 分支由 GITHUB_TOKEN 创建导致 PR checks 为空属 #197 已知问题，处置在既有手工触发手法内。
+（当前 pending = 0；D-001..D-021 全部生效。）#260 属 D-021 安全升级范围（4.x patch 升至 4.1.12，零豁免），无需用户裁决；#258（v1.3.1 patch 发版）属 `docs/WORKFLOW.md §11.1` 第 1 档 + D-012 授权范围，无需用户裁决；#257 分支由 GITHUB_TOKEN 创建导致 PR checks 为空属 #197 已知问题，处置在既有手工触发手法内。
 
 ## 六、给 Executor 的指令
 
-**今日队列 = 1：#258（P2）**。领取后按 `§11.1` patch 档处置 Release PR #257：先取证 diff 仅 `CHANGELOG.md` + `package.json`，用既有手工手法触发 CI（空提交 / 重跑 release-please / update-branch，禁止手工改版本号或 rebase），checks 绿后 squash 合并；随后完成 `§11.2` 四方核验 + 祖先判定与 `§11.3` 部署判定（预期不部署，贴依据）；合并后按完整 SHA 取 CI 三连 success。完工刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志；留 §1.7 全字段报告转 `status:review`，不自行关单。本轮无 bot metrics PR 待处置；若开工时出现，按常态指令在 #258 之后处理。勿合 majors #186/#209；#101 维持 blocked。
+**今日队列 = 2：#260（P0）与 #258（P2）**。
+
+1. **首要任务 #260（P0）**：领取并实施 vitest / @vitest/mocker 4.1.12 安全升级。在 `pnpm-workspace.yaml` overrides 或 `package.json` 调整，刷新 lockfile，核对 `pnpm why` 消除 `<4.1.12` 版本；跑完整 8 项门禁（确保 `quality:audit` 零豁免 exit 0、`test:run` 用例无回归）；以独立分支提 PR，CI 全绿后 squash 合入 main；判定部署（预期无需部署）；留 §1.7 全字段报告转 `status:review`，不自行关单。
+2. **次要任务 #258（P2）**：在 #260 合入主干恢复 audit 全绿后领取。Release PR #257 届时将由 release-please 自动追加 #260 的 fix。按 `§11.1` patch 档处置：取证 diff 仅 CHANGELOG + package.json，用既有手工手法触发 CI，checks 全绿后 squash 合并；执行 `§11.2` 四方核验 + 祖先判定与 `§11.3` 部署判定（预期不部署）；留 §1.7 全字段报告转 `status:review`，不自行关单。
+3. **常态顺手项 PR #259**：在 #260 / #258 之后处置。验证 diff 仅 `project-progress.json` 纯值漂移且 schema 逐键一致，留处置评论后 squash 合入，完整 SHA CI 三连绿，视数据变更判定部署（若部署取单请求 CSP nonce 一致验证）。
+4. **纪律提示**：勿合 majors #186/#209；#101 维持 blocked；完工刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志。
