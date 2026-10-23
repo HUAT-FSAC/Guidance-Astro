@@ -1,15 +1,14 @@
 # STATE
 
-- 更新时间：2026-10-23（Execution 第104轮）
-- 当前任务：无；#266/#264均status:review；下一项#263 ready。
-- 分支：main，8ea6872a85a94cd3ad22881ac506147e33e90385。
-- 已完成：#264 PR269仅README.en.md，中文未改，报告6366320825；14章/4子节/16命令/42本地链接冒烟通过。main Pipeline39961470499 attempt2 success；Secret Scan39961470605与Release Please39961470552 success。attempt1安装浏览器约10分钟，watch600s超时后取消，定点rerun恢复；取消历史保留，不改CI。
-- #266：报告6365784475、更正6365887000；go为routes→本地SSR HTML→addHTMLFile；185routes/18fallback，166有body响应中24 MDX壳，排除后142候选；仅labs/join双语正文query实测，未称生产恢复。隔离产物/进程已清除。
-- 未完成工作：#263清七死字段与推送指南→bot PR267；#262非ready待Planner核准，不自行实施。
-- 队列：ready=1（#263），in-progress=0，in-review=2（#266/#264）；#262backlog，#101blocked、#197needs-info默认C。
-- 新auto-discovered：#268英文season-notes自重定向、#270中文README缺失PNG例图；均待Planner分诊/镜像，未扩围。
-- 最近提交：8ea6872（#264），03996e7（#266记录）。
-- 部署：仍Version a8ab6b74；#264无构建消费者，无需deploy。wrangler whoami本轮OAuth有效；缺k2.read/write为已知告警。
-- inbound：fetch首次TLS失败重试成功；f98be0d/d89b87e七路径diff空，已吸收无新工作。
-- 环境：LSP无server、Python eval不可用、browser helper包装Worker；规避见ENV；不设锁。
-- 今日日报：已写.agent/DIARY/2026-10-23.md，#266及#264历史只追加；#263及最终收尾待追加。
+- 更新时间：2026-10-23（Execution第104轮）
+- 当前任务：无Issue in-progress；#263 blocked，报告6366528058；处理PLAN授权bot metrics PR267中。
+- 分支：main（fcf0393）；#263代码只在agent/issue-263-unused-env，提交5b3fad6e6cb56058808495adbc6040bac3cad019，PR271未合入，保留恢复分支。
+- #263：七字段/模板/推送指南范围完成；无配置build/tsc/SSR及431测试/各门禁通过；PR271所有checks通过，真实gitleaks8.22.1扫678commits/14.56MB无检出。607构建文件中606相同、1生成manifest哈希变化（18本地Wrangler状态文件另排除）；旧模块字节未保存，虽源码有随机key，不能证明唯一差异。按单内停止条款交Planner，不合入/部署、不改框架或业务。
+- 恢复点：先读#263报告的两个单文件SHA与.tmp/issue263-before-hashes.json、.tmp/issue263-after-hashes.json；Planner明确前置后恢复PR271，保存原始模块做受控比较，不能凭总体积或候选原因放行。
+- 已完成：#266status:review（报告6365784475＋更正6365887000，142候选/24MDX壳，未修#262）；#264status:review（PR269→8ea6872，报告6366320825，main CI attempt2 success，旧取消保留）。
+- 队列：ready=0，in-progress=0，in-review=2；blocked=#263/#101，needs-info=#197默认C，#262backlog；新#268/#270待Planner分诊/镜像。
+- bot267：schema通用数组路径63/63无增删，milestones2→3为数据行，dueDate:null由采集器契约允许；update-branch已请求，待checks/merge/mainCI/部署验收。只基于main，不含PR271。
+- 最近提交：fcf0393记录、8ea6872英文README；未合入代码5b3fad6。
+- 部署：仍Version a8ab6b74，本轮尚无部署；OAuth whoami有效。
+- inbound：七路径diff空，f98be0d/d89b87e已吸收无新工作。不设锁；环境限制见ENV。
+- 今日日报：已追加.agent/DIARY/2026-10-23.md到#263条件阻塞；最终bot与交接待追加。

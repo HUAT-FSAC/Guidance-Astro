@@ -397,6 +397,7 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 | 2026-10-23 | executor-round-104 | #266 调查完成转 status:review（报告 6365784475），结论 go：实际 Starlight routes → 本地 SSR HTML → addHTMLFile | 隔离构建导出185 routes/18 fallback，去重/排除404后166篇真实正文全200；中301→/labs/、英odometry→/en/join/，两种API/default webworker/负例通过；同请求nonce一致。无生产代码/配置/测试/依赖/部署改动，探针/隔离产物/服务已清除。#262 保持非ready，待Planner审核。 |
 | 2026-10-23 | executor-round-104 | #266 更正（追加，不改写上行历史）：166个带body响应含24 MDX重定向壳，排除后142正文候选；更正评论6365887000 | 新谓词对全部166真实SSR响应识别24 meta refresh壳；sidebar.hidden本身不是排除条件。真实双语query证据仍为labs/join两个样本，不假称142全查询。#268登记英文season-notes自重定向；无扩围修复。删除临时manifest资产不等于零route元数据。 |
 | 2026-10-23 | executor-round-104 | #264 英文README同步完成，PR#269合入8ea6872，报告6366320825后转status:review | 仅README.en.md，中文unchanged；14章/4子节/16命令/42本地链接冒烟通过；431tests及lint/format/tsc/audit/build/bundle/routes/theme exit0。PR checks全绿；main Pipeline39961470499 attempt1因浏览器安装迟滞取消，定点rerun后attempt2 success，Secret Scan/Release Please success。无需部署；#270仅登记中文缺失PNG例图。 |
+| 2026-10-23 | executor-round-104 | #263按单内产物变化停止条件转blocked；PR271（5b3fad6）已推送且checks全绿，报告6366528058；不合入、不部署 | 三文件范围实现及无配置build/tsc/SSR、431tests/各门禁均通过；真实gitleaks8.22.1实扫678commits/14.56MB/no leaks found。排除18本地Wrangler状态文件后607构建文件中1个生成manifest哈希变化；源码有默认随机key但旧字节未保存，不能证明唯一差异，不假称零产物。待Planner裁定恢复前置；顺手bot267仅基于main，不含该分支。 |
 
 Agent 交接时，在 PR 评论或本节追加：
 
