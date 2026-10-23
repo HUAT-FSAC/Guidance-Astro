@@ -1,114 +1,112 @@
 # PLAN — 项目路线图（Planning Agent 唯一写入点）
 
-> **本文件回答：** 项目现在处于哪个阶段 / 当前 Milestone 要做什么、为什么 / 什么算完成 / 现在有哪些任务、哪些完成、哪些阻塞 / 下一阶段是什么 / 哪些方向已明确放弃。
-> **纪律：** 只写**已核实的事实**与**真实方向**。「未来可能做」不得写成「当前正在做」；旧计划写过的目标不因被写过就仍是事实。**不为填队列制造任务。**
-> **配套文件：** 长期约束读 `.agent/DECISIONS.md`（D-001..D-021，权威定义）；机器现状读 `.agent/STATE.md`；接力上下文读 `.agent/HANDOFF.md`。
-> ⏱ 所有 `.agent` 时间字段一律 `date -u` 的 **UTC**（exec 第 37 轮纠正，勿混用本地时区）。
+> 路线与今日队列的当前快照；任务/验收以 GitHub Issues 为准，长期约束以 `DECISIONS.md` 为准。历史轮次见 Git、Issue 评论与不可变日报，不在路线图重复堆积。
 
-**最后核实：** 2026-10-22T11:33Z（`date -u`）｜**核实基线：** `main@993607a`（第 101 轮 Planning 收尾提交；与 origin 同步 0/0）｜最近代码 SHA `1aa788f`（vite 8.3.5 安全抬版，PR #256）与 `1d453bf`（bot PR #255 metrics 快照）｜**核实人：** Planning Agent 第 102 轮（日行规划；输入 = 仓库现场 + Issue/PR/CI/部署/线上真实状态；`gh` token 实测有效）
+最后核实：2026-10-23（UTC），Planning 第 103 轮。同步基线：`main@b9a782ad5900a406f6e2f5c437e2e1f7b8a256ed`；`fetch --all --prune` + `pull --rebase` 成功，开工树干净、与 origin 同步。
 
-> **第 102 轮判定（2026-10-22 日行规划）：** ① **验收昨日产出**：无新交付需验收（#254 已于第 101 轮规划独立验收关闭，报告失实 0 处；此后 Executor 尚未开工）。② **新事实与阻塞（P0 插队）**：npm/OSV 发布 2 条 `@vitest/mocker` / `vitest` 中危安全公告（`GHSA-qxg6-89mg-rqv8`、`GHSA-xp26-3454-mjgp`），`pnpm quality:audit` 实测 **exit 1**；CI 的 audit job 无路径过滤，main 处于潜伏红。按 **D-021** 新建 **#260（P0 · ready）** 升级至 `4.1.12`，零豁免。③ **今日执行队列（2 项）**：#260（P0 · 首要任务）+ #258（P2 · patch 发版收尾，前置依赖为等待 #260 合并）。④ **顺手项在位**：bot metrics PR **#259** 于 04:43Z 如期生成（42+/42- 纯值漂移），待 Executor 在 #260 / #258 之后处置。⑤ **常驻项与 Milestone**：#101 保持 blocked，#197 保持 needs-info，majors 保持暂缓；M4 暂不创建。
+## 当前方向
 
-> **第 101 轮判定（2026-10-21 日行规划）：** ① **验收 #254 通过并关闭（报告失实 0 处）**——11 项标准逐条亲跑：`pnpm why vite` 仅单一 `8.3.5`；`pnpm quality:audit` exit 0 且 allowlist 仍 `entries: []`；`git show --name-status 1aa788f` 仅 `pnpm-workspace.yaml` + `pnpm-lock.yaml`（无源码）；完整 SHA `1aa788f…` / `1d453bf…` 的 `CI/CD Pipeline` / `Secret Scan` / `Release Please` 三连 success、dependabot 开放告警 0；最新 deployment `2fb4f335…` → version_id `ac0be9c8`（100%，12:07Z），线上单请求 CSP 头/体 nonce 一致（`JxRgQXlmvuQ6aUWmmBli3Q`）+ `/` 200；Issue 打 `status:done` 并关闭。② **顺手项 #255 复核通过**：`git show --stat 1d453bf` 仅 `project-progress.json` 43+/43-，HEAD^/HEAD 叶键路径集合 44/44 完全一致（0 结构差异），CI 三连绿，已随 `ac0be9c8` 上线。③ **Release PR #257（v1.3.1，patch）建跟进单 #258（P2 · ready）**：rp 于 11:54Z 自动生成，diff 仅 `CHANGELOG.md` + `package.json`；PR checks 未触发（#197 已知 GITHUB_TOKEN 链式抑制），按 `§11.1` patch 档由 Executor 触发 CI 后合并并做四方核验，按 `§11.3` 预期不部署。④ **今日执行队列 = 1（#258）**；M4 仍不创建。⑤ 常驻项：#101 第 101 轮复核 Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN` ⇒ `blocked` 有效；#197 维持 `needs-info` 默认 C（用户 2026-10-12 已确认；信号触发型，不入 Milestone）。⑥ **pending = 0**，本轮未向用户提问。
+1. **v1.3.1 安全热修与发版已验收收口**：#260、#258 均独立核对后关闭；不再把已完成任务留在执行队列。
+2. **收敛已有能力与开发入口的事实差距**：昨日新增 #262 搜索失效、#263 无效配置、#264 英文 README 漂移，组成 M4；只修缺陷，不启动新功能（D-017）。
+3. **搜索保留原修复目标，先补工程前置**：SSR 没有可供内置 Pagefind 扫描的静态文档 HTML；#266 交付真实正文输入方案及运行证据，再由 Planner 放行 #262。不能只改 `pagefind:true`，不能未授权隐藏入口。
 
-> **第 100 轮判定（2026-10-21 日行规划）：** ① **验证昨日与最新执行**：第 99 轮建单 #254（P0）后尚无 Execution 产出，`status:review` / `in-progress` 双零；#251 保持 `CLOSED/COMPLETED` + `status:done`；M3 / M2 保持已关闭；`v1.3.0` 仍为 Latest。② **P0 现场与 CI 状态**：`pnpm quality:audit` 实测 exit 1（6 条未覆盖 = 3 GHSA × 2 个 vite 版本）；GitHub Dependabot 告警 #188/#189/#190 全部处于 open 态；HEAD `afde255` 完整 SHA 实测 `CI/CD Pipeline` run 39515308926 failure（Audit 唯一失败），Secret Scan (run 39515308985) / Release Please (run 39515308928) success，验证了 main 的潜伏红已成为真实构建红；Dependabot update 任务再次以 `update_not_possible` 退出（未开 PR），无法依赖。③ **今日执行队列维持 1（#254，P0 · ready）**：唯一阻塞项，Executor 开工首要任务。④ **顺手项在位**：bot metrics PR **#255** 已于 2026-10-21T04:44Z 如期生成（files=1，diff 仅 `project-progress.json` 值漂移 43+/43-，schema 逐键一致），排在 #254 之后处置；切勿在 #254 合入前合并 #255（避免无关提交染红）。⑤ **线上稳态在位**：最新 deployment 仍为 version_id `35127731-f8db-4910-832a-dac8eb5ee098`（100%），线上单请求 CSP 头/体 nonce 逐字一致（`mpCsbMJ7Yv2V1o9U0APO3g`），中英看板页 200；inbound `wsyhuat/main` 仍 `f98be0d` 内容级 diff 为空。⑥ **M4 暂不创建**，常驻单 #197（默认 C）与 #101（blocked）保持现状；pending = 0。
+## 昨日验收与阻塞处置
 
-> **第 99 轮判定（同日加跑，2026-10-21 本地）：** ① **加跑触发＝新事实**：第 98 轮 17:00Z 收尾后，npm 于 **18:30:24Z / 19:48:25Z / 19:51:52Z** 连发 3 条 `launch-editor`/`vite` 公告（`GHSA-587h-7wmj-h5pm` **high**、`GHSA-698v-4r3x-3vcv` medium、`GHSA-r825-w8mm-5pxw` medium）。② **实证 main 潜伏红**：`pnpm quality:audit` 本轮实测 **exit 1**（6 条未覆盖 = 3 GHSA × 2 个 vite 版本）；lock 解析 `vite@8.3.0`（astro / vitest / @astrojs/cloudflare / @cloudflare/vite-plugin）与 `vite@8.1.5`（vite-plugin-purgecss）均在受影响区间；`ci-cd.yml` 的 audit job 无路径过滤 ⇒ 下一次 push（含每轮 `.agent` 提交）必红。第 98 轮「dependabot 开放告警 0 / 稳态全绿」在其取证时点（17:00Z）为真，现已被新公告作废——更正留痕，不回写旧行。③ **建单 #254（P0 · ready · 无 milestone）**：升级 vite 至 ≥8.3.3（registry latest 8.3.4），零豁免；同时记录 Dependabot 安全更新 run `39486965261` **failure**（`security_update_not_possible`：latest-resolvable `8.1.5` / lowest-non-vulnerable `8.1.6` ⇒ 自动化无法自愈，必须人工抬版）与开放告警 #188。④ **验收队列空**：无 `status:review` / `in-progress`；#251 复核 `CLOSED/COMPLETED` + `status:done`；M3 `closed`；`v1.3.0` 仍 Latest；HEAD / 部署 / 线上未变（Version `35127731-f8db-4910-832a-dac8eb5ee098`，单请求 nonce 一致 `qNYK1dXdQVD9zY5yIQyNhQ`）。⑤ **今日执行队列 = 1（#254）**；M4 仍不创建（单点热修无需空 Milestone）。⑥ **立 D-021**：有补丁的安全公告一律升级、不豁免，审计门禁红 = 项目阻塞；semver 兼容范围内的抬版不触发 D-015。⑦ 常驻项：#101 复核 Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`；#197 默认 C；inbound `wsyhuat/main` 7 路径内容级 diff 0；无 LOCK；pending 0、未提问。⑧ bot metrics PR 尚未再生（预期 `2026-10-21T04:3xZ`），到点按 §2.2 常态处置。
+输入：`DIARY/2026-10-22.md`（含追加会话及故障补记），并读 10-21、10-20 日报；昨日日报完整，无需反推。
 
-> **第 98 轮判定：** ① **无新执行轮次可验收**——第 97 轮（2026-10-20T13:39Z）关闭 #251 后至今无 Execution 产出、无新 `status:review`；复核 #251 仍为 `CLOSED/COMPLETED` + `status:done`，M3 保持 `closed`，`v1.3.0` 仍为 Latest。② **稳态全绿**：HEAD `39231f3f1a1abb7b2cbe225c0696800dbe67862a` 完整 SHA 的 `CI/CD Pipeline` / `Secret Scan` / `Release Please` 三连 success；近 30 run 唯一 failure 为暂缓的 dependabot majors PR 分支（#209，`Lint and Format`），main 无红；OpenWiki 定时更新 success；dependabot / secret-scanning 开放告警均为 0。③ **线上在位**：`/` HTTP 200，单请求 CSP 头/体 nonce 逐字一致（`bs1Gq0lSmO-u_b_fck8paQ`）；zh 看板页 200 渲染快照 `2026/10/20 04:49:14`；最新 deployment `2c488529…` 的 `version_id` 仍为 `35127731-f8db-4910-832a-dac8eb5ee098`（100%）。④ **inbound 无新工作**：`wsyhuat/main` 仍 `f98be0d`，按其改动路径对 main 做内容级 diff 为 0（WORKFLOW §1.6 终判）；`d89b87e` 为更早的已吸收合并提交。⑤ **常驻项不变**：#101 复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN` ⇒ 保持 blocked；#197 维持 needs-info 默认 C；开放 PR 仅 majors #186/#209（D-015 暂缓），无开放 bot PR。⑥ **今日执行队列 = 0（诚实空置）**：无新工作束，M4 继续不创建；下一预期事件为 bot metrics PR 于 **2026-10-21T04:3xZ（UTC）** 前后再生，按常态指令处置。⑦ **流程欠账修复**：第 97 轮漏记 `docs/WORKFLOW.md §7.4`，本轮补记；`STATE.md` / `HANDOFF.md` 仍停留在第 96 轮口径（称「待 Planner 验收 #251」），已列为下一轮 Executor 开工必做项。
+| 项目                          | 结论                  | 独立证据                                                                                                                                                                                                                  |
+| ----------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #260：Vitest 安全抬版         | **通过，done/closed** | `aa6517e` 仅依赖三文件；本轮 why mocker/vitest 均单一 4.1.12、audit 零豁免 exit 0、frozen-lockfile exit 0；实跑 431 passed / 40 files；该完整 SHA Pipeline/Secret Scan/Release Please 均 success。验收评论 `6355158457`。 |
+| #258：v1.3.1 发版             | **通过，done/closed** | #257 MERGED → `8dc6ec2`，PR checks success；tag/Latest Release/package/CHANGELOG:8 四方一致；`1aa788f`、`1d453bf`、`aa6517e` 均为 tag 祖先；完整 SHA 三工作流 success。验收评论 `6355159815`。                            |
+| 顺手项 PR #259                | **复核通过**          | `ec86cb4` 仅 metrics JSON 42+/42-；按数组索引展开的 84/84 叶路径一致、结构差异 0；完整 SHA 三工作流 success；已随 Version `a8ab6b74` 上线。                                                                               |
+| #265：Release Please 外部故障 | **恢复，done/closed** | 既有 dispatch 通道重跑 `39883950976`，在 `b9a782a` 上 completed/success，watch exit 0；不改 workflow/凭据。旧 failure 仍保留，恢复评论 `6355168096`。                                                                     |
 
-> **第 97 轮判定：** ① **独立验收 #251 通过并关闭（报告失实 0 处）**——未采信报告文字，八项标准逐条亲跑复核：`milestones/2` 实测 `open=0 state=closed`；`gh pr view 239` 确认 `state=MERGED`、`mergeCommit=db31f6fcd4593f6a56ba6c17c96ba7ee4129d85b`；`gh release list` 首位 `v1.3.0 Latest`、`releases/latest` 确认 `prerelease=false/draft=false`；`git tag -l v1.3.0` 确切命中；`package.json:4` `"version": "1.3.0"`；`CHANGELOG.md:8` 命中 `## [1.3.0]`；`git merge-base --is-ancestor 8d0d75a v1.3.0` 与对 `af74ecd` 均 exit 0；`git show --stat db31f6f` 确认 files=2（14+/1-）；完整 SHA `db31f6f…` CI 三连 success（Pipeline 39413404149 / Secret Scan 39413404323 / Release Please 39413404110）；部署 Version `35127731-f8db-4910-832a-dac8eb5ee098` 实测生效；线上单请求 CSP 头/体 nonce 逐字比对均为 `6FHoAPl_aG7Dn01nC4kLUQ`（matches=true）；中英看板页 200 正常渲染 `2026/10/20 04:49:14`。② **独立核验顺手项 #253**：files=1（29+/29-），44 路径 0 差异，squash 合入 `8d0d75a`，完整 SHA CI 三连 success，已随 Version `35127731` 部署上线。③ **D-020 与 M3 全面闭环**：收口、发版与部署全套完成；#251 已打 `status:done` 标签并显式关闭。④ **M4 暂不创建**：当前无待排期需求，避免空 Milestone 占位；#197（needs-info，默认 C）与 #101（blocked，待人类 Secret）维持常驻；开放 PR 仅剩 majors 2 张（暂缓）。⑤ **今日执行队列 = 0（诚实空置）**：按纪律不为填 2–5 区间制造任务。
+证据瑕疵已在 #260 验收注明：报告未附逐文件哈希清单，**总大小相同不能证明产物字节一致**；不采信该主张。后续实际部署已覆盖修复并通过生产 nonce 验证，因此当前交付无待补部署；不伪造旧哈希或要求重建旧版本。
 
-> **第 95 轮判定：** ① **独立验收 #249 通过并关闭（报告失实 0 处）**——未采信报告文字，四项标准逐条亲跑：`actions/runs/39227547586` 实测 `event=schedule` / `completed` / `success` / `2026-10-19T09:06:16Z` / `workflow_id=385699809`；job `117977412637` 日志实取「阈值 360s/90s、Quality P95=220s 未超标、E2E 24s 未超标、结论: 未超标」四行原文逐字一致；REST 全量 `startswith("[duration-budget]")` 过滤 `count=1`（仅已关 #246，comments=2 未增）；组合分支 #2 执行报告如实写「未覆盖」及原因。② **D-020 收口判据首次实际执行完成**：#249 关闭后 M3 `open_issues` **1→0**（closed=14），Planner 于 **2026-10-19T17:24:43Z** 将 Milestone #2 显式置 `state=closed`；**#251 正文首行已改写为 `ready`**（前置书面证据 = `open=0 state=closed`），今日执行队列 = **1（#251）**。③ **M4 暂不创建**：当前无需要承接的 ready/backlog 工作；#197（needs-info/默认 C）与 #101（blocked/待人类 Secret）按 D-020 第 3 条不进入 Milestone 的 `open` 计数；待发版后出现真实工作束再按内容开新 Milestone。
+本轮生产只读复核：最新 deployment `ff987bdf-9153-4eeb-83ee-24426ac1810c` → Version `a8ab6b74-a0d7-477b-a499-68056cc87e7e`（100%，2026-10-22T12:34:22Z）；首页 200，单请求 CSP 头/体 nonce 均为 `JyPqs2Nc8n9zwlLVAAkCow`。中英真实看板路径均 200，渲染 `2026/10/22 04:42:52` / `10/22/2026, 4:42:52 AM`。Dependabot 开放告警 0。
 
-> **第 93 轮判定：** ① **独立验收第 92 轮顺手项 #252（bot metrics PR）——通过，报告无失实**（逐项亲跑复核）：`git show --stat 1a3b688` 确认 `files=1`（`src/data/metrics/project-progress.json` 38+/38-）；递归对比 52 个 JSON 键路径完全一致（0 结构差异，纯值漂移）；完整 SHA `1a3b68897831e256dbddf99b9ea0b07282ca6305` 的 3 个 workflow 全 success（CI/CD Pipeline run 39204563583、Secret Scan run 39204563672、Release Please run 39204563628）；`wrangler deployments list` 按 `created_on` 降序取最新确认 Version `33724813-82eb-4baa-9d1c-2d0d1d6d4d03`（2026-10-19T05:27:05Z）；线上单请求（`curl -D -o`）CSP 头/体 nonce 逐字一致（`Kvv2tXynVPe1yw4IX4MLhg`）；中英看板页 200 且数据渲染 `2026/10/19 04:39:00`。② **#249 排障完成，恢复 `ready` 放入今日队列**：第 91 轮 Executor 到点 03:23Z 无 schedule run 时如实报告转 `blocked`，并分析早间 4~6h 系统排队延迟，报告失实 = 0。
+## 今日目标（2026-10-23）
 
-## 一、当前方向
+- 给搜索修复交付可实施的工程结论或精确 no-go，不把调查完成写成搜索恢复。
+- 让英文项目入口与中文现行事实一致，不再宣传不可用的搜索、自动部署或未经审计的合规等级。
+- 清理七个无消费者配置字段及矛盾推送指引，不改变真实框架 session、认证或部署。
 
-M3 稳态运营与 `v1.3.0` 发版已于 **2026-10-20 全面闭环**；2026-10-21 的 P0 依赖热修（vite 3 条公告）已由 **#254 交付并经 Planner 验收关闭**。但 2026-10-22 再次遭遇 npm 安全公告插队：
+## 当前 Milestone：M4 开发入口与能力声明一致性（进度：0 / 4）
 
-- **#260（P0 · ready）安全热修插队**：npm 连发 2 条 `@vitest/mocker` / `vitest` 中危公告（`GHSA-qxg6-89mg-rqv8`、`GHSA-xp26-3454-mjgp`），`pnpm quality:audit` 实测 exit 1；按 D-021 建单插队 P0 升级至 `4.1.12`，零豁免恢复 audit 与 main CI 全绿；
-- **#258（P2 · ready）承接 v1.3.1 patch 发版收尾**：按 `§11.1` patch 档合并 Release PR **#257**。前置依赖更新为等待 #260 合入主干恢复 audit 全绿后执行（避免带漏洞发版；#260 合并后 release-please 将自动追加其 fix 至 PR #257）；
-- **顺手项 PR #259（bot metrics）**：2026-10-22T04:43Z 如期生成，纯值漂移 42+/42-，排在 #260 / #258 之后按常态指令处置，不建单；
-- **M4 暂不创建**：稳态开放期无需要系统排期的新工作束，不为空 Milestone 占位；常驻项（#197 / #101）按 D-020 第 3 条不占 Milestone 计数；
-- 方向层仍由 **D-017** 维持稳态（用户 2026-10-08 选 A）；安全公告处置按 **D-021** 走「有补丁即升级、不豁免」。
+GitHub Milestone **#3**，state=open；初始 open=4 / closed=0：#262、#263、#264、#266。进度仅按 Planner 验收关闭计数，不按“已提交报告”计数。
 
-## 二、当前 Milestone：无（M3 已收口；M4 暂不创建）
+计数证据与限制：GraphQL `issues.totalCount=4` 与 REST 按 milestone 查询的成员列表均确认四单 OPEN；但 REST `milestones/3.open_issues` 仍为 **1**（closed=0），两者不一致。上述 **0/4 按逐单真实成员状态计算**，不把汇总字段当作范围或完成证据；收口前须重新核对成员与汇总，禁止据错误计数缩范围或假报归零。
 
-- **Milestone #2（M3 稳态运营）** 已关闭：`open_issues=0` / `closed_issues=14` / `state=closed` / `closed_at=2026-10-19T17:24:43Z`。
-- **Milestone #1（M2 稳态防复发）** 已关闭：`open_issues=0` / `closed_issues=5` / `state=closed`。
-- **当前无开放 Milestone**。
+### 目标与验收
 
-### 2.1 收口与发版结果（已全部达成）
+- #266：查证 SSR-safe 索引正文来源、路由/语言/排除规则，提交有运行证据的唯一推荐或精确 no-go。
+- #262：方案经 Planner 核准后实施，保留原全部生产 AC；真实中英文检索返回正确文档，入口/快捷键/SPA 与索引一致，SSR nonce 不退化。
+- #264：英文 README 的结构、命令、路径、主题与部署事实与中文一致，链接/格式检查通过。
+- #263：模板与声明移除七个死字段，保留可选 Umami，推送指南不再指导缺失功能；build/typecheck/真实 secret scan 证据齐全。
 
-1. #249 验收通过关闭：duration-budget 每周定时首轮 schedule 真实运行验证成功。
-2. M3 `open_issues` 归零，Milestone #2 显式关闭。
-3. #251 验收通过关闭：合并 Release PR #239，完成 `v1.3.0` 发版四方核验与祖先判定，完成生产 Worker 部署与同请求 CSP nonce 验收。
-4. 常态顺手项 #253 / #255 均合入并上线，数据看板同步。
-5. **#254 P0 热修验收关闭**：vite 8.3.5、audit 零豁免全绿、main CI 恢复；部署 Version `ac0be9c8`。
+### 完成信号（Success signal）
 
-### 2.2 执行队列（第 102 轮：1 个 P0 安全热修 + 1 个 patch 发版收尾）
+四单经 Planner 验收关闭，搜索有真实生产查询证据，README 与配置指引无本工作束中的失真声明；Milestone `open_issues=0` 后显式关闭（D-020）。**#266 完成不等于 #262 完成，当前 M4 未收敛。**
 
-1. **#260 升级 vitest / @vitest/mocker 至 ≥4.1.12 消除 2 条公告，恢复 quality:audit 门禁**（P0 · ready · 首要任务 · 无 milestone）
-2. **#258 合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定**（P2 · ready · 依赖 #260 合入 · 无 milestone）
+### 明确非目标（Non-goals）
 
-> **执行顺序**：必须先 #260（恢复 quality:audit 零豁免全绿）→ 再 #258（合并 PR #257 完成发版收尾）→ 再处置顺手项 PR #259（bot metrics 快照）→ 刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志。
-> **勿合 majors #186/#209**（D-015 暂缓）。**#101 保持 blocked**（Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`）。
-> **发版纪律**：#257 为 patch 档，等 #260 合入且 CI 全绿后即可合并（`§11.1`）；不得手工改版本号 / CHANGELOG / rebase；合并后按 `§11.2` 四方核验 + 祖先判定，按 `§11.3` 判定是否部署（预期不部署）。
-> **顺手项**：PR #259 已于 2026-10-22T04:43Z 生成，在 #260 / #258 之后处置，确认 diff 仅 `project-progress.json` 值漂移且 schema 逐键一致后合入，不建单。
+- 不移除搜索、不改全站 SSR/prerender 或 nonce/缓存安全模型，不引入托管搜索、凭据、依赖大版本或 CI 编排变化。
+- 不实施 OAuth/权限/数据库/推送，不改框架 `SESSION`/`ASSETS` bindings。
+- 不扩展站点翻译、不修全部历史文档、不改生成的 `openwiki/`；#101/#197/majors 不计入本 Milestone。
 
-### 2.3 已知阻塞与依赖
+### 执行队列（3 个 ready，建议顺序）
 
-| 项                                      | 状态                             | 需要谁         | 说明                                                                                                                                                                                                      |
-| --------------------------------------- | -------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **#260** vitest 4.1.12 安全抬版         | **P0 · ready**                   | **Executor**   | 2 条中危公告（GHSA-qxg6-89mg-rqv8 / GHSA-xp26-3454-mjgp）；`pnpm quality:audit` exit 1；升级至 4.1.12 零豁免恢复 audit 绿灯；今日首要任务。                                                               |
-| **#258** v1.3.1 发版收尾                | **P2 · ready**                   | **Executor**   | 依赖 #260 合入主干；Release PR #257（`chore(main): release 1.3.1`，patch）diff 仅 `CHANGELOG.md` + `package.json`；PR checks 未触发（#197 已知问题），需按既有手法触发 CI 后合并；预期无需部署（§11.3）。 |
-| **#101** CI 自动部署                    | `blocked`（P1）                  | **人类**       | 复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；本地 OAuth 部署可用，不阻塞交付。⚠️ `gh api actions/secrets` 不带 repo 路径返回 404，勿误判。                                                |
-| **#197** rp Release PR 自助 CI          | `needs-info`（P3，无 milestone） | 默认 C（不改） | 信号触发型常驻项；用户 2026-10-12 已确认维持手工触发；#257 本轮再次实证其影响（PR checks 为空）。未满「连续两个 Milestone 未动」的关闭条件（用户已答复 + 有明确触发信号），继续保留跟踪。                 |
-| **PR #259** bot metrics 快照            | 常态处置（顺手项）               | **Executor**   | 2026-10-22T04:43Z 生成，files=1，diff 仅 `project-progress.json` 纯值漂移 42+/42-；在 #260 / #258 之后按常态指令处置，不建单。                                                                            |
-| **D-017** Q4 方向（是否启动新功能）     | **已裁定 A**（2026-10-08）       | —              | 维持稳态；无新功能启动。                                                                                                                                                                                  |
-| #186/#209 majors PR                     | 暂缓（D-015）                    | —              | standing reminder，占额度 2/10，不阻塞 minor-and-patch。                                                                                                                                                  |
-| `size:xs` / `update-linked-issues` 权限 | 仓库设置                         | 人类（可选）   | 补 `issues: write` 扩大 `pull_request_target` 权限面 / 无失败实证，Agent 不擅动（维持既有结论）。                                                                                                         |
+| 顺序 | Issue                                                    | 优先级 | 交付边界与依赖                                                                                      |
+| ---- | -------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------- |
+| 1    | **#266 确定 SSR-safe 搜索索引输入方案并交付可实施结论**  | P2     | **仅调查，无依赖**；报告真实正文输入与运行证据、收录规则、推荐或 no-go；不改生产代码/配置、不部署。 |
+| 2    | **#264 同步英文 README 的结构与现行部署、能力事实**      | P2     | 无依赖，不等 #262/#263；默认只改英文，中文仅必要链接/格式；不宣传搜索已恢复。                       |
+| 3    | **#263 清理未消费的 OAuth/VAPID 配置字段并纠正推送指南** | P3     | 无依赖；只改模板、七个声明字段与推送指南；不改 README 或其他类型/binding。                          |
 
-### 2.4 卫生备注（非任务，不建 Issue）
+三单均已补齐七项 ready 门禁；D-013 映射为 **Issue 正文首行 ready + status:backlog**。#262 **不是 ready**，不得跳过前置直接实施；#266 转 review 后等下一轮 Planner 审核，不由 Executor 自放行。
 
-- **M4 决策留痕**：暂不创建。M4 内容不预设，避免空 Milestone 或常驻单再次占住收口计数（D-020 第 3 条）。
-- **分支卫生（第 98 轮实测）**：本地 36 条、origin 45 条（含 main），绝大多数为 2026-09-30～10-14 的历史分支；`origin/agent/issue-228-flaky` 对应已关闭 #228，属陈旧残留。没有活跃开发分支；清理涉及远程删除，按 Git 纪律需人类确认，本轮不排期、不建单。第 101 轮执行后 `agent/issue-254-vite-upgrade` 与 `chore/update-metrics` 已在远端删除。
-- **`.agent/LOCK`：不存在**（契约 §1.2 约定不设锁）。
-- **CI 计数口径纪律**：「某 commit 全绿」必须用完整 SHA 的 `actions/runs?head_sha=` 取数；`gh run list` 默认只回 20 条。
-- **部署版本记录口径**：`wrangler deployments list` 的 `id` 是 deployment ID，不是 version ID，且返回未按时间排序。第 101 轮实测最新 deployment `2fb4f335-a2bc-4638-9413-859bba938d6d`（2026-10-21T12:07:33Z）→ `versions[0].version_id` = `ac0be9c8-64ef-4aa1-974f-cff4b010d2bc`（100%），线上即为该版本。OAuth 可用。
-- **Release PR checks 为空是已知现象（非故障）**：release-please 以 `GITHUB_TOKEN` 推分支不会触发 PR 级 workflow（#197 / 第 101 轮 #257 实测 `no checks reported`）。处置走既有手工触发手法，详见 #258。
-- **Dependabot 安全更新不可依赖（第 99 轮实证）**：run `39486965261` 以 `security_update_not_possible` 失败且未开 PR；此类公告必须人工抬版。
-- **公告时间窗**：安全公告可在两轮之间发布；此后每轮规划继续把 `pnpm quality:audit` 作为只读复核项（第 100/101 轮均实测有效）。
+## 已知阻塞与依赖
 
-## 三、下一阶段
+| 项目                    | 状态                          | 处理                                                                                                                                                           |
+| ----------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #262 搜索恢复           | backlog，未过 ready           | 工程前置 #266；原修复 AC 完整保留，不是产品 pending，也不是已修复。若查证必须突破非目标，再携具体取舍转 needs-info。                                           |
+| #101 恢复 CI 自动部署   | blocked / P1，无 milestone    | Secrets REST 仍仅 `CODECOV_TOKEN`、`PROJECT_TOKEN`；用户 10-12 已选单机 OAuth，不重复问。正文旧 CSP 字面判据/Windows-only 说明已纠正，主要 CI 改动不入 ready。 |
+| #197 Release PR 自助 CI | needs-info / P3，无 milestone | 用户已确认默认 C，维持手工触发；与 #265 外部 GraphQL 故障不同。等待频率信号，不自动增加 PAT/App。                                                              |
+| majors PR #186/#209     | 暂缓                          | D-015 standing reminders，不摄入、不关闭、不计入今日队列。                                                                                                     |
 
-`v1.3.0` 已发布；`v1.3.1` patch 收尾由 #258 承接。发版完成后项目回到开放式稳态循环：依赖摄入（D-014/D-015）、发版节奏（D-012）、定时质量机制（duration-budget）继续运转。**M4 暂不创建**——只有当出现需要排期的新工作束（新功能需求 / 多项工程治理任务）时，才按其真实内容开下一个 Milestone；常驻观察项（#197 / #101）不进入任何 Milestone 的 `open` 计数（D-020 第 3 条）。
+## 治理与交接约束
 
-## 四、已明确放弃的方向（不再重新讨论）
+- 开放任务逐项查重：无重复；三条 auto-discovered 已定级、补范围/AC 并纳入 M4；P0=0，P1 仅外部阻塞 #101，无优先级膨胀。
+- in-progress=0、in-review=0，无超过 24h 的执行中断现场可重置；#197 有既有答复与信号，不按普通饥饿项关闭。
+- inbound：`wsyhuat/main` 仍 `f98be0d` / 更早 `d89b87e`；七个改动路径对 main 内容级 diff 空，后者为前者祖先，无新工作。旧移植已记录，不直接 merge fork。
+- 本轮 TASKS 旧镜像缺 #262–#265、旧队列仍含已交付项：以 Issue 为准整体重写。旧 STATE/HANDOFF 现场不改写；按仓库必需回写规则仅附 Planner 接力补记，下一轮 Executor 自行刷新当前快照。ENV/DIARY 不改。
+- 调查不新增永久测试/文档；#263/#264 沿用既有验证。完成留 §1.7 全字段报告转 review，关单归 Planner；`.agent` 与代码分开提交。
+- 若生成 bot metrics PR，先处理上述队列；只在确认纯值变化/schema 不变、checks 通过后常态处置并按站点变更部署。不预先声称当前有 bot PR。
 
-| 方向                                                       | 放弃理由                                               | 依据                     |
-| ---------------------------------------------------------- | ------------------------------------------------------ | ------------------------ |
-| 跟进 Starlight ≥0.42                                       | satteri WASI 破坏 workerd 构建链，等上游               | D-004 / T-026 实测       |
-| `wrangler` semver-major                                    | 精确 pin，major 需人工复核                             | D-003 / `dependabot.yml` |
-| `format:check` 扩到 yml/yaml/astro/mdx                     | hook 未覆盖；`*.astro` 无 prettier parser（已实证）    | 第 24 轮                 |
-| `tsc --noEmit` 纳入 `tests/**`                             | 预防性缺口，当前无实证缺陷，纳入可能连带暴露存量类型错 | 保守原则，已判定         |
-| 逐个合并 dependabot PR                                     | 同 2 文件串行 rebase，且易先合入无用提交               | D-005 + D-009 裁决       |
-| 直接 `merge wsyhuat/main`                                  | fork 落后 main，只取单个 commit，不取分支              | `git diff` 实测          |
-| 追 `@cloudflare/vite-plugin` 最新版                        | peer 逐发布日棘轮；改为锁定 + 人工抬版                 | D-010                    |
-| 把「发现协作方修复」当作用户决策                           | 事实发现与工程判断，Planner 自决并建单是默认           | Planner 职责边界         |
-| 补 `size:xs` / `update-linked-issues` 所需 `issues: write` | 扩大 `pull_request_target` 权限面 / 无失败实证         | 官方警告 / 保守原则      |
-| 自动采纳 majors（actions v7 / TS7 等）                     | D-015 暂缓；采纳属红线相邻，需用户决定                 | D-015                    |
+## 下一阶段
 
-## 五、Decision Gate
+先验收三项今日交付，按 #266 证据使 #262 成为明确可实施修复；若 no-go，保持缺陷未完成并治理真实前置。M4 收口后回到依赖摄入与发版的稳态循环，不自动启动新功能。
 
-（当前 pending = 0；D-001..D-021 全部生效。）#260 属 D-021 安全升级范围（4.x patch 升至 4.1.12，零豁免），无需用户裁决；#258（v1.3.1 patch 发版）属 `docs/WORKFLOW.md §11.1` 第 1 档 + D-012 授权范围，无需用户裁决；#257 分支由 GITHUB_TOKEN 创建导致 PR checks 为空属 #197 已知问题，处置在既有手工触发手法内。
+M3（milestone #2）保持 closed：14/14；M2（#1）保持 closed：5/5。`v1.3.1` 已发布，不重新发同版本。
 
-## 六、给 Executor 的指令
+## 已放弃或暂缓的方向
 
-**今日队列 = 2：#260（P0）与 #258（P2）**。
+- Starlight ≥0.42、wrangler/TS/actions 等 majors 自动摄入：D-003/D-004/D-015。
+- 逐个合并 Dependabot 自动 PR：D-005/D-009/D-014；直接 merge 协作 fork：WORKFLOW §1.6。
+- 为搜索改全站预渲染、只开开关冒充修复、无授权隐藏入口：与既有安全模型/完整验收冲突。
+- 预防性扩展 lint/format/typecheck 门禁、远程历史分支清理：无本轮实证需求或需删除授权，不排期。
 
-1. **首要任务 #260（P0）**：领取并实施 vitest / @vitest/mocker 4.1.12 安全升级。在 `pnpm-workspace.yaml` overrides 或 `package.json` 调整，刷新 lockfile，核对 `pnpm why` 消除 `<4.1.12` 版本；跑完整 8 项门禁（确保 `quality:audit` 零豁免 exit 0、`test:run` 用例无回归）；以独立分支提 PR，CI 全绿后 squash 合入 main；判定部署（预期无需部署）；留 §1.7 全字段报告转 `status:review`，不自行关单。
-2. **次要任务 #258（P2）**：在 #260 合入主干恢复 audit 全绿后领取。Release PR #257 届时将由 release-please 自动追加 #260 的 fix。按 `§11.1` patch 档处置：取证 diff 仅 CHANGELOG + package.json，用既有手工手法触发 CI，checks 全绿后 squash 合并；执行 `§11.2` 四方核验 + 祖先判定与 `§11.3` 部署判定（预期不部署）；留 §1.7 全字段报告转 `status:review`，不自行关单。
-3. **常态顺手项 PR #259**：在 #260 / #258 之后处置。验证 diff 仅 `project-progress.json` 纯值漂移且 schema 逐键一致，留处置评论后 squash 合入，完整 SHA CI 三连绿，视数据变更判定部署（若部署取单请求 CSP nonce 一致验证）。
-4. **纪律提示**：勿合 majors #186/#209；#101 维持 blocked；完工刷新 `STATE.md` / `HANDOFF.md` 并在 `docs/WORKFLOW.md §7.4` 追加执行日志。
+## Decision Gate
+
+pending=0；D-001..D-021 生效。当前工程前置、死配置清理和文档同步均可自行处理；不把查得到的问题交给用户。
+
+## 给 Executor 的指令
+
+按 **#266 → #264 → #263** 执行，各单只消费自身允许文件；#266 仅调查，勿接着自行实施 #262。完成后逐单报告并转 review，刷新 STATE/HANDOFF、追加当日日报与 WORKFLOW §7.4；不关闭任务，不触碰 majors、CI deploy 或既有安全模型。
+
+## 本轮验证证据
+
+- `pnpm quality:audit`、`pnpm why @vitest/mocker`、`pnpm why vitest`、`pnpm install --frozen-lockfile` 均 exit 0；安全版本单一 4.1.12、豁免清单为空。
+- `pnpm test:run` exit 0：Vitest 4.1.12，431 passed / 40 files；jsdom 输出 navigation not implemented 提示，不影响测试通过。
+- 规划文档 Prettier check 通过；Issue 权威断言通过：开放六单、ready 恰为 #266/#264/#263、三个验收/恢复单 CLOSED+done，PLAN/TASKS 顺序一致。
+- `pnpm build` exit 0，输出 `Complete!`、`output:server` 与框架 `SESSION` binding；**不是零警告构建**：有 Astro markdown 管线弃用提示及 Vite `use astro:head-inject` 的 MODULE_LEVEL_DIRECTIVE 警告，完整输出保留于本轮工具记录 `artifact://33`。本轮不改源代码、不压掉警告，也不把它们写成搜索修复证据。
+- 本轮只提交规划/接力文档与 Issue 治理；无站点实现或资产变动，不部署。未重跑 E2E、LHCI、全量 lint/typecheck/bundle/routes/theme；昨日交付的对应完整 SHA CI 已核对，不冒充本轮全套门禁输出。

@@ -18,3 +18,12 @@
 - 已知环境限制：沿用 ENV §4（累计 13 条）。
 - 待 Planner：① 验收关闭 #260 与 #258；② 分诊 #262/#263/#264（是否转 ready）与 #265（Release Please 外部故障，待 GitHub 恢复后重跑/关闭）；③ 下轮整体重写 `TASKS.md` 以镜像新 Issue。
 - 待人类：#101（Secret）。
+
+## Planner 接力补记（2026-10-23，第 103 轮）
+
+> 按仓库强制回写规则仅追加，不覆盖上述 Executor 运行快照；下一轮由 Executor 刷新当前现场。
+
+- #260/#258 已由 Planner 独立验收并关闭；#265 已由 dispatch `39883950976` success 验证恢复并关闭；旧快照中的“待 Planner”三项已处理。
+- 权威队列见 Issue 与整体重写的 TASKS：**#266 → #264 → #263**（ready=3）；#262 backlog 等工程前置，in-review=0、in-progress=0；#101 blocked、#197 默认 C 不变。
+- M4 #3 实际成员四单均 OPEN，进度 0/4；REST 汇总 open_issues=1 与 GraphQL/REST 成员列表不一致，已记 PLAN/TASKS，不能以该汇总字段缩范围或宣告收口。
+- 本轮无代码/配置/部署改动；生产仍 Version `a8ab6b74`，首页/双语看板 200、同请求 CSP nonce 一致，audit 零豁免 exit 0、测试 431/431。正文前部的旧任务/故障状态由本补记更正，不改写历史。
