@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-22T04:42:52.957Z",
+    "generatedAt": "2026-10-23T04:47:39.639Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 0.95,
         "prCycleTimeDays": 0.76,
-        "issueCloseRatePercent": 96.25,
-        "prMergeRatePercent": 76.19,
+        "issueCloseRatePercent": 93.02,
+        "prMergeRatePercent": 79.52,
         "ciSuccessRatePercent": 66,
         "wipIssueCount": 0,
         "reviewIssueCount": 0,
-        "backlogIssueCount": 2
+        "backlogIssueCount": 5
     },
     "counts": {
-        "openIssueCount": 3,
-        "openPullRequestCount": 3,
-        "openedIssuesInWindow": 80,
-        "closedIssuesInWindow": 77,
-        "openedPullRequestsInWindow": 84,
-        "mergedPullRequestsInWindow": 64,
+        "openIssueCount": 6,
+        "openPullRequestCount": 2,
+        "openedIssuesInWindow": 86,
+        "closedIssuesInWindow": 80,
+        "openedPullRequestsInWindow": 83,
+        "mergedPullRequestsInWindow": 66,
         "ciRunsInWindow": 50,
         "ciFailedRunsInWindow": 12
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-21T15:06:38.000Z",
-        "latestMergedPullRequestAt": "2026-10-21T12:01:46.000Z"
+        "latestIssueUpdatedAt": "2026-10-23T01:29:40.000Z",
+        "latestMergedPullRequestAt": "2026-10-22T12:25:19.000Z"
     },
     "summary": {
-        "totalIssues": 104,
-        "closedIssues": 101,
-        "openIssues": 3,
+        "totalIssues": 110,
+        "closedIssues": 104,
+        "openIssues": 6,
         "ciPassRate": 66
     },
     "byStatus": {
-        "backlog": 1,
+        "backlog": 4,
         "ready": 1,
         "inProgress": 0,
         "review": 0,
         "blocked": 1,
-        "done": 101
+        "done": 104
     },
     "byPriority": {
-        "p0": 2,
-        "p1": 29,
-        "p2": 26,
-        "p3": 29
+        "p0": 3,
+        "p1": 23,
+        "p2": 30,
+        "p3": 30
     },
     "milestones": [
         {
@@ -61,6 +61,13 @@
             "status": "completed",
             "completionRate": 100,
             "dueDate": "2026-11-14"
+        },
+        {
+            "title": "M4 开发入口与能力声明一致性",
+            "description": "只收敛已登记的搜索失效、双语 README 与无效环境变量模板，不启动新功能。工作束：#262 搜索恢复、其只读方案调查、#263 配置清理、#264 英文入口同步。完成信号：范围内 Issue 全部经 Planner 验收关闭、开发文档只描述真实能力、搜索生产查询与 SSR nonce 均验证；open_issues=0 后显式关闭。常驻 #101/#197 与 majors 不计入。",
+            "status": "in-progress",
+            "completionRate": 0,
+            "dueDate": null
         }
     ],
     "qualityMetrics": {
@@ -76,51 +83,51 @@
     "recentActivity": [
         {
             "type": "issue",
+            "title": "确定 SSR-safe 搜索索引输入方案并交付可实施结论",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:40:05.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "同步英文 README 的结构与现行部署、能力事实",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:32:13.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "清理未消费的 OAuth/VAPID 配置字段并纠正推送指南",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:32:11.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:29:45.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:28:34.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点",
+            "status": "open",
+            "updatedAt": "2026-10-23T01:28:31.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "⚠️ release-please failed on c6a194b",
+            "status": "closed",
+            "updatedAt": "2026-10-23T01:27:40.000Z"
+        },
+        {
+            "type": "issue",
             "title": "合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定",
-            "status": "open",
-            "updatedAt": "2026-10-21T15:06:38.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "升级 vite 至 ≥8.3.3 消除 3 条公告（1 high），恢复 quality:audit 与 main CI 绿",
             "status": "closed",
-            "updatedAt": "2026-10-21T15:06:28.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-21T12:01:49.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-21T11:57:45.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(main): release 1.3.1",
-            "status": "open",
-            "updatedAt": "2026-10-21T11:54:05.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "fix(deps): 升级 vite 至 8.3.5 消除 3 条安全公告，恢复 quality:audit 与 main CI 绿",
-            "status": "merged",
-            "updatedAt": "2026-10-21T11:53:44.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "按 D-012 在 M3 收口点合并 Release PR #239 发布 v1.3.0 并完成四方核验",
-            "status": "closed",
-            "updatedAt": "2026-10-20T13:39:52.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(main): release 1.3.0",
-            "status": "merged",
-            "updatedAt": "2026-10-20T11:13:34.000Z"
+            "updatedAt": "2026-10-23T01:27:01.000Z"
         }
     ]
 }
