@@ -1,14 +1,16 @@
 # STATE
 
-- 更新时间：2026-10-23（Execution第104轮）
-- 当前任务：无Issue in-progress；#263 blocked，报告6366528058；处理PLAN授权bot metrics PR267中。
-- 分支：main（fcf0393）；#263代码只在agent/issue-263-unused-env，提交5b3fad6e6cb56058808495adbc6040bac3cad019，PR271未合入，保留恢复分支。
-- #263：七字段/模板/推送指南范围完成；无配置build/tsc/SSR及431测试/各门禁通过；PR271所有checks通过，真实gitleaks8.22.1扫678commits/14.56MB无检出。607构建文件中606相同、1生成manifest哈希变化（18本地Wrangler状态文件另排除）；旧模块字节未保存，虽源码有随机key，不能证明唯一差异。按单内停止条款交Planner，不合入/部署、不改框架或业务。
-- 恢复点：先读#263报告的两个单文件SHA与.tmp/issue263-before-hashes.json、.tmp/issue263-after-hashes.json；Planner明确前置后恢复PR271，保存原始模块做受控比较，不能凭总体积或候选原因放行。
-- 已完成：#266status:review（报告6365784475＋更正6365887000，142候选/24MDX壳，未修#262）；#264status:review（PR269→8ea6872，报告6366320825，main CI attempt2 success，旧取消保留）。
-- 队列：ready=0，in-progress=0，in-review=2；blocked=#263/#101，needs-info=#197默认C，#262backlog；新#268/#270待Planner分诊/镜像。
-- bot267：schema通用数组路径63/63无增删，milestones2→3为数据行，dueDate:null由采集器契约允许；update-branch已请求，待checks/merge/mainCI/部署验收。只基于main，不含PR271。
-- 最近提交：fcf0393记录、8ea6872英文README；未合入代码5b3fad6。
-- 部署：仍Version a8ab6b74，本轮尚无部署；OAuth whoami有效。
-- inbound：七路径diff空，f98be0d/d89b87e已吸收无新工作。不设锁；环境限制见ENV。
-- 今日日报：已追加.agent/DIARY/2026-10-23.md到#263条件阻塞；最终bot与交接待追加。
+- 更新时间：2026-10-23T14:20:17.510Z（UTC，Execution第104轮）
+- 当前任务：无in-progress；今日ready=0，#266/#264 status:review，#263 blocked（按单内停止条件）。
+- 分支：main；站点代码基线88d7c28587d6e145bf98689d4d8c9271569da0df，已推送/部署。最近前序记录提交dd3b94e；本轮最终chore(agent)收据补Issue/PR，不在文件自引用commit hash。
+- #266：报告6365784475＋更正6365887000；routes→本地SSR HTML→addHTMLFile go；185routes/18fallback，166带body响应含24 MDX重定向壳，排除后142候选。仅labs/join双语正文query实测，不是#262恢复；探针/隔离产物/进程已清除。
+- #264：PR269→8ea6872，报告6366320825；仅英文README，中文未改，14章/4子节/16命令/42本地链接；main Pipeline39961470499 attempt2 success，旧attempt1因浏览器安装迟滞取消记录保留。单独无需部署。
+- #263：PR271 OPEN，agent/issue-263-unused-env@5b3fad6e6cb56058808495adbc6040bac3cad019已推送；三文件范围实现/无配置SSR/build/tsc/431tests/现有门禁及PR全checks通过；gitleaks8.22.1实扫678commits/14.56MB无检出。607构建文件中1生成manifest哈希变化，旧字节未保存，不能证明唯一差异是默认随机key；按单内条件停止合入/部署，报告6366528058。恢复先看HANDOFF与.tmp/issue263-before-hashes.json、.tmp/issue263-after-hashes.json，待Planner明确前置。
+- bot267：仅metrics JSON，通用数组schema63→63，PR全checks通过；合入88d7c28，完整SHA Pipeline39965727265/Secret Scan39965727360/Release Please39965727335均success。报告6367008610。
+- 生产：Version6c003201-cdd5-40d7-b06c-585acab18867；deploy:worker exit0。首页同请求27个script nonce全与CSP一致，两请求nonce不同；中英看板各200/24 nonce一致，显示04:47:39新快照与M4；实际browser观察/截图通过，tab关闭。此部署不含PR271，搜索仍未修复。
+- 队列权威：GitHub开放Issue8；review2（266/264），blocked2（263/101），needs-info197默认C，backlog262非ready，auto-discovered268/270未分诊。开放PR3（271/209/186），majors暂缓，无新ready。
+- TASKS三单状态已同步；其全部成员/开放PR/旧部署辅助段为Planner开工基线，下一轮整体刷新，不能当作当前权威。
+- inbound：fetch首次wsyhuat TLS失败后重试成功；f98be0d/d89b87e七路径内容级diff空，已吸收无新工作。不设锁。
+- 环境：OAuth whoami有效，k2告警既有；LSP无server、Python eval不可用、browser helper包装Worker，规避见ENV；保留构建警告及失败日志，不改CI/认证/SSR。
+- 未完成工作：#263条件阻塞待Planner处理；#262待核准#266后准入；#268/#270待分诊；无未提交生产实现或运行中的本地服务。
+- 今日日报：已写.agent/DIARY/2026-10-23.md，#266/#264/#263/bot267与收尾仅追加，完整失败/更正保留。HANDOFF终稿、ENV部署与WORKFLOW§7.4已回写；本轮不关Issue。

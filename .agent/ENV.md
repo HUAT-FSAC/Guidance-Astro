@@ -71,7 +71,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-- 最近一次部署：**Version `a8ab6b74-a0d7-477b-a499-68056cc87e7e`**（2026-10-22T12:34:25Z，覆盖 #259 数据快照与此前安全补丁；CSP 同请求头/体 nonce 一致 `BuJ0yE2QH0WtCNNeguhGjg`）。
+- 最近一次部署：**Version `6c003201-cdd5-40d7-b06c-585acab18867`**（2026-10-23，第104轮，PR267→main@88d7c28的数据快照；deploy:worker exit0）。首页同请求27个script nonce均与CSP一致，两请求nonce不同；中英看板200，显示`2026/10/23 04:47:39` / `10/23/2026, 4:47:39 AM`与M4，实际browser已观察/截图。**不包含未合入PR271的#263**。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
 - sitemap 计数必须用 `grep -o '<loc>' | wc -l`（XML 单行，`grep -c` 恒为 1）。
@@ -107,6 +107,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 | Python eval不可用（第104轮）        | Python backend is unavailable in this session                                                                                                                                               | 使用JS eval调用实际Node命令，不把未执行后端当验证通过                                                                       |
 | browser helper包装Worker（第104轮） | Pagefind原生Worker被包装为blob，根相对metadata fetch报Failed to parse URL                                                                                                                   | 工具问题已报告；真实已安装Playwright无包装默认webworker双语query通过，勿为此改生产Pagefind或CSP                             |
 | 主干CI浏览器安装迟滞（第104轮）     | run39961470499的E2E1/2停在Install Playwright browser超过10分钟，其他分片已通过                                                                                                              | 保留第一次取消记录与日志，只重跑该job及下游；不能把取消写成从未失败或改CI来掩盖                                             |
+| 生成manifest非确定性（#263）        | 排除18个本地Wrangler状态文件后607个构建文件有1个manifest哈希差异；Astro默认每build生成AES-GCM key                                                                                           | 不能凭总大小说字节相同，也不能无旧字节断言唯一差异；#263按单内条件blocked，保留哈希清单/PR271，待Planner明确受控比较前置    |
 
 ## 5. 协作约定（本仓库现状 vs 契约）
 
