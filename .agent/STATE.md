@@ -1,29 +1,15 @@
 # STATE
 
-> 事实账本（可机器解析）。「已完成」仅保留最近 20 条，更早的见 git历史。
-
-- 更新时间：2026-10-22T15:37:22Z（UTC，`date -u`）
-- 本轮性质：**Execution 第 102 轮追加会话（空队列巡检）**——无 ready 任务，未领取、无代码变更；完成 HEAD CI / 部署 / 线上 / inbound 巡检与状态回写；另记录 Release Please 外部 GraphQL 故障（自动开 #265），待 Planner 下轮验收 #260/#258 并分诊 #262–#265
-- 当前任务：无（#260 与 #258 处于 `status:review`）
-- 队列状态：`ready` = 0；`status:review` = **2**（#260、#258）；`in-progress` = 0；`blocked` = **#101**（待人类 Secret）；`needs-info` = **#197**（默认 C）；`status:backlog` = **3**（新增 #262/#263/#264，auto-discovered，未达 ready，未领取）
-- 分支：`main`（`e07ce86`，与 origin 同步 0/0）。
-- 最近提交：`c6a194b`（本轮状态回写，.agent/docs）← `e07ce86`（docs(readme)：重写 README 并校正部署与能力描述，人类提交）← `e20d8f8`（第 102 轮执行收尾）← `ec86cb4`（bot PR #259 metrics）← `8dc6ec2`（v1.3.1 release）。
-- ✅ **主干 CI（2026-10-22T15:45Z 实测）**：代码 HEAD `e07ce862afb1632e5edc472138e2131bed172d33` 三连 success（Pipeline 39805123170 / Secret Scan 39805123151 / Release Please 39805123087）；本轮状态提交 `c6a194b28fa2a57fd1c56cce4650c8a2d2286b33` 的 `CI/CD Pipeline`（run 39806697162）/ `Secret Scan`（run 39806697134）success，`Release Please`（run 39806697018）failure——GitHub GraphQL 服务端错误，手动重试 run 39807766411 仍 failure，自动开 **#265**（P1/area:devops），非本提交导致。
-- ✅ **部署稳态**：最新 deployment `created_on=2026-10-22T12:34:22Z` → version_id **`a8ab6b74-a0d7-477b-a499-68056cc87e7e`**（100%）；线上 `/` HTTP 200，单请求 CSP 头/体 nonce 逐字一致 **PASS**（`YDFMRrOl4Jc-UyWwoPs_8Q`）。`e07ce86` 仅改根目录 `README.md`，无构建期消费点（`scripts/` / `astro.config.mjs` / `package.json` 无引用），判定无需部署。
-- **#262/#263/#264 新登记（15:28Z，auto-discovered，status:backlog）**：README 重写会话的后续分诊单——#262 Pagefind 索引缺失（P2）/ #263 `.dev.vars.example` 未使用变量（P3）/ #264 README.en 与中文版失同步（P2）。均无 ready 标记，按契约未领取，待 Planner 下轮定级入队。
-- 开放 PR：majors 2 张（#186/#209，D-015 暂缓）。无 bot PR 待处置。
-- bot/cron 巡检：本轮无新 metrics PR；`Project Automation` 在 issues 事件 2 次失败（`Add to GitHub Project`，run 39805235545 / 39805186054），属账号无 `read:project` 的既有环境限制；`Release Please` 外部 GraphQL 故障见上，已开 #265 并留复核评论 `6344931609`。
-- inbound 巡检：`wsyhuat/main` 仍 `f98be0d`（2026-10-02）；其 7 个改动路径对 main 内容级 diff = 0；`d89b87e` 为 `f98be0d` 祖先（exit 0），无新工作。
-- LOCK：**不存在**（契约 §1.2 约定不设锁）。
-- 已知环境限制：沿用 ENV §4（累计 13 条）。
-- 待 Planner：① 验收关闭 #260 与 #258；② 分诊 #262/#263/#264（是否转 ready）与 #265（Release Please 外部故障，待 GitHub 恢复后重跑/关闭）；③ 下轮整体重写 `TASKS.md` 以镜像新 Issue。
-- 待人类：#101（Secret）。
-
-## Planner 接力补记（2026-10-23，第 103 轮）
-
-> 按仓库强制回写规则仅追加，不覆盖上述 Executor 运行快照；下一轮由 Executor 刷新当前现场。
-
-- #260/#258 已由 Planner 独立验收并关闭；#265 已由 dispatch `39883950976` success 验证恢复并关闭；旧快照中的“待 Planner”三项已处理。
-- 权威队列见 Issue 与整体重写的 TASKS：**#266 → #264 → #263**（ready=3）；#262 backlog 等工程前置，in-review=0、in-progress=0；#101 blocked、#197 默认 C 不变。
-- M4 #3 实际成员四单均 OPEN，进度 0/4；REST 汇总 open_issues=1 与 GraphQL/REST 成员列表不一致，已记 PLAN/TASKS，不能以该汇总字段缩范围或宣告收口。
-- 本轮无代码/配置/部署改动；生产仍 Version `a8ab6b74`，首页/双语看板 200、同请求 CSP nonce 一致，audit 零豁免 exit 0、测试 431/431。正文前部的旧任务/故障状态由本补记更正，不改写历史。
+- 更新时间：2026-10-23（Execution 第104轮）
+- 当前任务：无；#266/#264均status:review；下一项#263 ready。
+- 分支：main，8ea6872a85a94cd3ad22881ac506147e33e90385。
+- 已完成：#264 PR269仅README.en.md，中文未改，报告6366320825；14章/4子节/16命令/42本地链接冒烟通过。main Pipeline39961470499 attempt2 success；Secret Scan39961470605与Release Please39961470552 success。attempt1安装浏览器约10分钟，watch600s超时后取消，定点rerun恢复；取消历史保留，不改CI。
+- #266：报告6365784475、更正6365887000；go为routes→本地SSR HTML→addHTMLFile；185routes/18fallback，166有body响应中24 MDX壳，排除后142候选；仅labs/join双语正文query实测，未称生产恢复。隔离产物/进程已清除。
+- 未完成工作：#263清七死字段与推送指南→bot PR267；#262非ready待Planner核准，不自行实施。
+- 队列：ready=1（#263），in-progress=0，in-review=2（#266/#264）；#262backlog，#101blocked、#197needs-info默认C。
+- 新auto-discovered：#268英文season-notes自重定向、#270中文README缺失PNG例图；均待Planner分诊/镜像，未扩围。
+- 最近提交：8ea6872（#264），03996e7（#266记录）。
+- 部署：仍Version a8ab6b74；#264无构建消费者，无需deploy。wrangler whoami本轮OAuth有效；缺k2.read/write为已知告警。
+- inbound：fetch首次TLS失败重试成功；f98be0d/d89b87e七路径diff空，已吸收无新工作。
+- 环境：LSP无server、Python eval不可用、browser helper包装Worker；规避见ENV；不设锁。
+- 今日日报：已写.agent/DIARY/2026-10-23.md，#266及#264历史只追加；#263及最终收尾待追加。

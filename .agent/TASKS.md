@@ -5,11 +5,11 @@
 
 ## 今日队列（2026-10-23，3 项，建议顺序）
 
-| 顺序 | Issue / 任务                                                                                                   | 优先级 | 状态  | 依赖与完成边界                                                                                                       |
-| ---- | -------------------------------------------------------------------------------------------------------------- | ------ | ----- | -------------------------------------------------------------------------------------------------------------------- |
-| 1    | [#266 确定 SSR-safe 搜索索引输入方案并交付可实施结论](https://github.com/HUAT-FSAC/Guidance-Astro/issues/266)  | P2     | ready | 无依赖；仅调查，报告真实正文来源/路由收录/最小运行证据/唯一推荐或精确 no-go，不改生产代码、不部署，不等于修复 #262。 |
-| 2    | [#264 同步英文 README 的结构与现行部署、能力事实](https://github.com/HUAT-FSAC/Guidance-Astro/issues/264)      | P2     | ready | 无依赖，不等搜索/配置任务；以中文为基线，默认只改英文；中文仅必要链接/纯格式，不重写人类正文。                       |
-| 3    | [#263 清理未消费的 OAuth/VAPID 配置字段并纠正推送指南](https://github.com/HUAT-FSAC/Guidance-Astro/issues/263) | P3     | ready | 无依赖；方案 A 已定，只改模板、七个声明字段与推送指南，不改 README/真实 binding/其他类型。                           |
+| 顺序 | Issue / 任务                                                                                                   | 优先级 | 状态      | 依赖与完成边界                                                                                                                      |
+| ---- | -------------------------------------------------------------------------------------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | [#266 确定 SSR-safe 搜索索引输入方案并交付可实施结论](https://github.com/HUAT-FSAC/Guidance-Astro/issues/266)  | P2     | in-review | go：真实 SSR HTML + addHTMLFile；166带body响应含24 MDX重定向壳，排除后142候选；报告6365784475及更正6365887000。未修复#262、无部署。 |
+| 2    | [#264 同步英文 README 的结构与现行部署、能力事实](https://github.com/HUAT-FSAC/Guidance-Astro/issues/264)      | P2     | in-review | PR#269→8ea6872；中文未改，14章/4子节/16命令/42本地链接；main CI attempt2全绿，报告6366320825，无需部署。                            |
+| 3    | [#263 清理未消费的 OAuth/VAPID 配置字段并纠正推送指南](https://github.com/HUAT-FSAC/Guidance-Astro/issues/263) | P3     | ready     | 无依赖；方案 A 已定，只改模板、七个声明字段与推送指南，不改 README/真实 binding/其他类型。                                          |
 
 三项均已完成目标、范围/非目标、依赖、无产品未决、可测 AC、红线、陌生工程师可开工七项门禁。**#262 不在今日队列**；#266 报告先交 Planner，Executor 不得自行放行后续实施。
 
@@ -17,14 +17,14 @@
 
 | Issue | 标题                                            | 优先级 / 风险 | 状态及实际标签                                                                  | Milestone / 下一步                                                      |
 | ----- | ----------------------------------------------- | ------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| #266  | 确定 SSR-safe 搜索索引输入方案并交付可实施结论  | P2 / low      | ready；status:backlog、type:task、area:frontend                                 | M4 #3；今日第 1 项                                                      |
-| #264  | 同步英文 README 的结构与现行部署、能力事实      | P2 / low      | ready；status:backlog、documentation、area:docs、auto-discovered                | M4 #3；今日第 2 项                                                      |
+| #266  | 确定 SSR-safe 搜索索引输入方案并交付可实施结论  | P2 / low      | in-review；status:review、type:task、area:frontend                              | M4 #3；报告6365784475＋更正6365887000，待Planner审核后放行#262          |
+| #264  | 同步英文 README 的结构与现行部署、能力事实      | P2 / low      | in-review；status:review、documentation、area:docs、auto-discovered             | M4 #3；报告6366320825，待Planner验收                                    |
 | #263  | 清理未消费的 OAuth/VAPID 配置字段并纠正推送指南 | P3 / low      | ready；status:backlog、type:tech-debt、area:devops、auto-discovered             | M4 #3；今日第 3 项                                                      |
 | #262  | 站内搜索：Pagefind 索引未生成                   | P2 / medium   | **backlog，非 ready**；status:backlog、type:bug、area:frontend、auto-discovered | M4 #3；依赖 #266 结论由 Planner 核准，原生产修复 AC 完整保留            |
 | #197  | 评估 Release PR 的 PR 级自助 CI                 | P3 / medium   | needs-info；area:devops、type:task、dependencies                                | 无；用户 10-12 已确认 C，不改 workflow，等待发版频率信号                |
 | #101  | 恢复 CI 自动部署，消除单机 OAuth 单点           | P1 / medium   | blocked；status:backlog、area:devops、type:task                                 | 无；Secret 仍缺，用户已确认单机部署；正文旧 CSP/Windows-only 说明已纠正 |
 
-计数：ready=3，未准入 backlog=1，blocked=1，needs-info=1；in-progress=0，in-review=0；开放 P0=0，P1=1（外部阻塞 #101）。不把 backlog 标签本身当可领取。
+计数：ready=1（#263），未准入 backlog=1，blocked=1，needs-info=1；in-progress=0，in-review=2（#266/#264）；开放 P0=0，P1=1（外部阻塞 #101）。另建#268/#270仅auto-discovered，待Planner刷新镜像。
 
 ### Milestone 核实
 
