@@ -13,14 +13,7 @@ declare module 'cloudflare:workers' {
     export interface Env {
         DB: D1Database
         SESSION_KV: KVNamespace
-        SESSION_SECRET: string
-        GITHUB_CLIENT_ID: string
-        GITHUB_CLIENT_SECRET: string
-        QQ_APP_ID: string
-        QQ_APP_KEY: string
         UMAMI_WEBSITE_ID?: string
-        VAPID_PUBLIC_KEY?: string
-        VAPID_PRIVATE_KEY?: string
     }
     export const env: Env
 }
