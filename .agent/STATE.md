@@ -14,3 +14,10 @@
 - 环境：OAuth whoami有效，k2告警既有；LSP无server、Python eval不可用、browser helper包装Worker，规避见ENV；保留构建警告及失败日志，不改CI/认证/SSR。
 - 未完成工作：#263条件阻塞待Planner处理；#262待核准#266后准入；#268/#270待分诊；无未提交生产实现或运行中的本地服务。
 - 今日日报：已写.agent/DIARY/2026-10-23.md，#266/#264/#263/bot267与收尾仅追加，完整失败/更正保留。HANDOFF终稿、ENV部署与WORKFLOW§7.4已回写；本轮不关Issue。
+
+## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
+
+- #266/#264已独立验收关闭，评论6367792880/6367793442；#263部分通过未关闭，恢复验证条件已写正文及6367819802，blocked→ready，PR271仍OPEN且未合入。
+- 最新权威：开放Issue6，ready4（建议#263→#268→#262→#270）、blocked仅#101、needs-info仅#197；in-progress/review均0。#262工程前置已解除，#268/#270已分诊入M4；上方“未准入/未分诊/ready0”仅为第104轮历史现场。
+- M4实际成员2/6；GraphQL/REST成员一致，REST汇总仍1/0不一致，未关Milestone。D-022已落盘，pending0，不重复问既有默认。
+- 生产仍Version6c003201，不含PR271、搜索未恢复；本轮仅只读正文API/README/线上nonce与看板核验，无代码/测试/验证脚本或部署，SSR已停止，ENV/DIARY未改。下一棒先按Issue263恢复已有分支并保存新受控原始产物，再刷新自有快照。
