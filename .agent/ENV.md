@@ -1,7 +1,7 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-22T12:45Z（UTC，`date -u`）· 探测者 `executor-round-102`（第 102 轮：#260 vitest 4.1.12 抬版 + PR #261 合入 `aa6517e` + #258 v1.3.1 发版 PR #257 合入 `8dc6ec2` + PR #259 合入 `ec86cb4` + 部署 Version `a8ab6b74` + CSP/看板页复验 PASS；上一轮：第 101 轮 `executor-round-101`）
+> 最近更新：2026-10-23（Execution 第104轮）；命令与运行证据见当日日报及Issue报告。当前本地基线431 tests/40 files，bundle JS219.56KB/CSS250.73KB；生产部署版本在§3记录，未因文档或声明清理自动宣称已部署。
 
 ## 1. 工具链（实测）
 
@@ -103,11 +103,15 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 | Actions workflow_id 取数不过滤      | `gh api "…/actions/runs?workflow_id=<name>"` 返回全仓 1286+ 条 run（不过滤）                                                                                                                | 须先 `…/actions/workflows` 拿数字 id（duration-budget = `385699809`），再查 `…/workflows/<id>/runs`                         |
 | jq 对不存在键渲染 null              | `--jq '.due_date'` 得到 `null` 不能证明字段无值（真实键名是 `due_on`）                                                                                                                      | 断言字段为空前先 `--jq 'keys'` 确认真实键名；跨源比对（REST vs GraphQL）终判                                                |
 | GitHub Actions schedule 系统性延迟  | `schedule:` 定时任务不会在准点准刻触发（早间 UTC 任务实测排队延迟 4~6 小时）                                                                                                                | stale 03:00 实际 07:36-08:30Z，metrics 00:15 实际 04:24-04:52Z；勿因刚过 cron 未见 run 误判为机制被删除或失效               |
+| LSP未配置server（第104轮）          | `xd://lsp status` 返回 No language servers configured for this project                                                                                                                      | 已安装类型声明引用核对使用grep后配合tsc；不能假称已执行LSP references                                                       |
+| Python eval不可用（第104轮）        | Python backend is unavailable in this session                                                                                                                                               | 使用JS eval调用实际Node命令，不把未执行后端当验证通过                                                                       |
+| browser helper包装Worker（第104轮） | Pagefind原生Worker被包装为blob，根相对metadata fetch报Failed to parse URL                                                                                                                   | 工具问题已报告；真实已安装Playwright无包装默认webworker双语query通过，勿为此改生产Pagefind或CSP                             |
+| 主干CI浏览器安装迟滞（第104轮）     | run39961470499的E2E1/2停在Install Playwright browser超过10分钟，其他分片已通过                                                                                                              | 保留第一次取消记录与日志，只重跑该job及下游；不能把取消写成从未失败或改CI来掩盖                                             |
 
 ## 5. 协作约定（本仓库现状 vs 契约）
 
 - **分支策略**：按契约 §1.7 用 `agent/issue-<N>-<slug>`。（历史分支为 `fix/…`、`docs/…` 等旧风格，不追溯改名。）
-- **`LOCK_TTL_MINUTES`**：30（默认）。LOCK 为 JSON：`owner` / `acquired_at` / `issue` / `heartbeat_at`。当前**无 LOCK**（2026-10-17 复核不存在）。
+- **串行约定**：Planner/Executor不并发，不设锁；开工`.agent/`目录无LOCK。历史LOCK残留仅记录并提示删除，不获取/释放，不沿用旧TTL协议。
 - **标签体系（2026-10-17 `gh label list` 全量实测，**已修正此前"标签不存在"的过期结论**）** —— 标签归 Planner 管理，Executor 不自行创建，只做映射并上报：
 
 | 契约标签                 | 本仓库实际用法（实测存在）                                                                                                                                                                                                                                                       |
