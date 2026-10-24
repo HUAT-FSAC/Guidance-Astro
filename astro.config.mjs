@@ -7,6 +7,7 @@ import starlight from '@astrojs/starlight'
 import sidebar from './.config/sidebar.mjs'
 import filterKnownBuildWarnings from './src/integrations/filter-known-build-warnings'
 import dedupeCss from './src/integrations/dedupe-css'
+import searchRoutes from './src/integrations/search-routes'
 import {
     collectContentPagePaths,
     collectNonIndexablePagePaths,
@@ -159,6 +160,9 @@ export default defineConfig({
     integrations: [
         filterKnownBuildWarnings(),
         dedupeCss(),
+        // 构建期搜索路由清单（#262 / D-022）：仅在 build 注入 /_search-manifest.json，
+        // 索引由 scripts/search/build-index.ts 在 astro build 之后生成到 dist/client/pagefind。
+        searchRoutes(),
         starlight({
             title: '东风 HUAT 无人驾驶车队',
             prerender: false,
@@ -365,6 +369,8 @@ export default defineConfig({
             components: {
                 Header: './src/components/overrides/Header.astro',
                 Hero: './src/components/overrides/Hero.astro',
+                // 搜索弹窗生命周期修复（#262）：SPA 导航后重新初始化 PagefindUI 并清理监听
+                Search: './src/components/overrides/Search.astro',
                 // 添加图片灯箱等全局功能
                 PageFrame: './src/components/overrides/PageFrame.astro',
                 // 自定义内容区域，添加阅读进度和编辑链接
