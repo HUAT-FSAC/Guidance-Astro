@@ -307,6 +307,15 @@
 - 快捷键使 `dialog.open=true` 不等于用户能看见、输入与查询；窄屏原AC不得降为内部状态断言。整改归 #279；#262 保留原九项完整验收责任，父子不重复实现，不因索引样本可用就关闭。
 - 这是已确认收录/可用性契约的执行纠偏，不是新产品取舍、不扩大翻译或权限范围，故不新增用户问题，不允许先发 minor 再补原AC。
 
+## 本轮决策核查（第110轮，2026-10-25）
+
+**pending=0；D-001..D-022 全部生效。本轮无需要用户回答的新问题，不重复询问已确认默认项。**
+
+- **跨日现场与验收**：自昨日第109轮（`1024167`，2026-10-24T15:33Z）完成第108轮产出验收后，Execution Agent 尚未开启新会话，当前 `in-review=0`。第109轮对 #270（done/closed）、PR276（已上线）、PR274（`1.4.0` minor 持合）及 #262（不通过退回 `in-progress`，拆出 #279/#281）的结论全部保持有效；#262 退回仅约 1.2 小时，不构成 24 小时疑似中断。
+- **今日队列保持 2 个 ready**：`#279`（P1，恢复窄屏搜索可见入口与完整查询交互）→ `#281`（P2，修正搜索清单为真实 Starlight 路由并收录不同名英文正文），父单 `#262`（P2，`in-progress`）保留原九项 AC 整体验收责任。M4 真实成员进度仍为 `5 / 8`（REST 与 GraphQL 成员列表一致为 5 closed / 3 open；REST milestone 汇总仍为 `open=2, closed=5`，不据此缩范围或提前关 M4）。
+- **既有默认与阻塞复核**：本轮重查 `actions/secrets`（首跑瞬时 `EOF`，重跑确认仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`），`#101` 维持 `blocked` 与单机 OAuth 默认 B；`#197` 维持 `needs-info` 与默认 C（手工触发 Release PR CI）；`#280` 维持 `blocked`（可选 Projects 的 `PROJECT_TOKEN` 独立凭据域，Projects 非任务 SSOT，不扩权、不改 workflow）；`PR #186/#209` majors 按 D-015 暂缓；Q4 按 D-017 不启动新功能。
+- **证据闭环**：补验第109轮未等待的 `1024167c150b628b165ba47a96ddafeddecd85ee` 远端 CI，Pipeline `40107528344` / Release Please `40107528322` / Secret Scan `40107528321` 全部 `completed/success`；本轮 `pnpm quality:audit` exit 0（0 豁免）、`supply-chain-watch` exit 0、Dependabot/Secret scanning 告警均 0；strip 本地 proxy 后 `wrangler deployments list` 确认生产仍为 `027692c7`（100%），首页两次单请求各 27 个 `<script nonce>` 与同请求 CSP 一致且跨请求不同（`I1SggrbOB8ogfVFXUH_pdw` / `GoMabhgcrtwvm-wWA6lvzg`）。无代码/测试修改，无新部署。
+
 ## 本轮决策核查（第109轮，2026-10-24）
 
 **pending=0；D-001..D-022继续生效。无需要用户立即拍板的事项；下方第105/107轮及“未决”日期小节均为历史核查，不覆盖本轮事实。**

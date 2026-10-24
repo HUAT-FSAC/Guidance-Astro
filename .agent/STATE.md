@@ -38,3 +38,10 @@
 - M4实际5closed/3open（262/279/281），合计8；REST与GraphQL成员一致，REST汇总2open/5closed仍不符；保持OPEN。PR274已为1.4.0 minor，继续持合，不按旧1.3.2 patch指令合入。
 - #280 P3/blocked、无milestone，PROJECT_TOKEN独立于197的release令牌，未授权不补凭据/改权限/workflow；101 blocked默认B、197 needs-info默认C、majors暂缓。开放Issue6、PR3，review0，pending0。
 - 基线main@ac6b6d0，部署027692c7（100%）未变；本轮只读生产双语查询/点击、高亮/负例、看板、两请求nonce与私有缓存、真实英文误排对照；15条现有单测与README Prettier通过，无代码/测试/验证脚本/新部署。ENV/DIARY未改，inbound七路径diff空。
+
+## Planner 第110轮接力补记（2026-10-25；按仓库强制规则仅追加，不覆盖Executor现场）
+
+- 自第109轮（`1024167`）后尚无新 Execution 会话运行，`in-review=0`。已补验 `1024167c150b628b165ba47a96ddafeddecd85ee` 远端三工作流（Pipeline `40107528344` / Release Please `40107528322` / Secret Scan `40107528321`）全 success；`pnpm quality:audit` 零豁免 exit 0，告警 0。
+- 今日（2026-10-25）ready 队列不变：**#279（P1 窄屏可见检索）→ #281（P2 真实 Starlight 路由与英文正文收录）**；父单 **#262** 保持 `in-progress`（距第109轮退回约 1.2h，非中断），待两子单交付后追加原报告更正与原九项 AC 完整重验报告再转 `status:review`（不自行 close）。
+- M4 实际成员仍为 **5 / 8**（done=#266/#264/#263/#268/#270，open=#262/#279/#281；REST 汇总仍失真报 2/5），保持 OPEN；PR274（`1.4.0` minor）继续持合。`#101` blocked（Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）、`#197` needs-info 默认 C、`#280` blocked（独立 `PROJECT_TOKEN` 域）、majors PR186/209 暂缓，`pending=0`。
+- 生产仍为 Version `027692c7`（strip 本地 proxy 后 `wrangler deployments list` 核实 100%），本轮两次单请求首页 27 个 script nonce 与同请求 CSP 一致（`I1SggrbOB8ogfVFXUH_pdw` / `GoMabhgcrtwvm-wWA6lvzg`）、`/_search-manifest.json` 404。下一棒开工请整体重写本文件顶部过时的第108轮现场并新建 `.agent/DIARY/2026-10-25.md`。
