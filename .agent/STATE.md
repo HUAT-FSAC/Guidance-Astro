@@ -30,3 +30,11 @@
 - **验收结果**：#272/#263/#268 全部通过并关闭（评论6383838267/6383840571/6383842437，status:done）。#263 两处执行层扩展获采纳：A/A 证实的 assets 顺序归一化（原始产物留存 .tmp/issue263-{aa1,aa2,b}-*）；audit 红与 PR 无关性成立（PR273 先行修复后最终 checks 绿）。M4 实际 **4/6**（done=#266/#264/#263/#268，open=#262/#270）；REST 汇总计数仍失真，未关 Milestone。
 - **今日队列**：#262 恢复（in-progress）→ #270（ready）+ 常态 PR274（release 1.3.2 patch 档）/PR276（bot metrics）合入后一次 deploy:worker。开放 Issue 4、开放 PR 4（274/276/209/186）；#271/#273/#275 已合入。pending=0，无新用户问题。
 - 生产 Version 596a1212，首页 nonce 头体一致、英文 season-notes 正文在位（refresh=0）；**搜索仍未修复**。inbound：wsyhuat/main 无新提交（f98be0d/d89b87e 已吸收）。ENV/DIARY 未改；本轮仅只读验证，无代码/测试/部署。
+
+## Planner 第109轮接力补记（2026-10-24；按仓库强制规则仅追加，不覆盖Executor现场）
+
+- 上方第108轮“搜索已恢复/无in-progress/验收后6项收口”已过期：#270通过关闭（6386000882）；#262原AC3窄屏与真实routes/英文收录不通过，且部分勾选失实（6386001757），review→in-progress。桌面样本/nonce通过不能代替全部原AC，旧日报不改写，需追加更正。
+- 今日两个ready：#279 P1可见窄屏检索→#281 P2实际Starlight routes与英文正文收录；两单是唯一实现切片，#262保留原九AC整体验收责任，不重复实现。两子单交付后在262追加完整重验报告再转review，Executor不自行close。
+- M4实际5closed/3open（262/279/281），合计8；REST与GraphQL成员一致，REST汇总2open/5closed仍不符；保持OPEN。PR274已为1.4.0 minor，继续持合，不按旧1.3.2 patch指令合入。
+- #280 P3/blocked、无milestone，PROJECT_TOKEN独立于197的release令牌，未授权不补凭据/改权限/workflow；101 blocked默认B、197 needs-info默认C、majors暂缓。开放Issue6、PR3，review0，pending0。
+- 基线main@ac6b6d0，部署027692c7（100%）未变；本轮只读生产双语查询/点击、高亮/负例、看板、两请求nonce与私有缓存、真实英文误排对照；15条现有单测与README Prettier通过，无代码/测试/验证脚本/新部署。ENV/DIARY未改，inbound七路径diff空。
