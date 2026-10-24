@@ -122,7 +122,7 @@ UMAMI_WEBSITE_ID=your-umami-website-id
 
 ```mdx
 import { Image } from 'astro:assets'
-import simulationNode from '../../assets/docs/2025/simulation/仿真-启动节点.png'
+import simulationNode from '../../assets/docs/2025/simulation/仿真-启动节点.webp'
 
 <Image src={simulationNode} alt="仿真节点启动界面" />
 ```
