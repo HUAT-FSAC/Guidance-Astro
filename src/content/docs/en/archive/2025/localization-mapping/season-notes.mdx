@@ -1,10 +1,85 @@
 ---
-title: Redirecting to Season Notes
-sidebar:
-  hidden: true
+title: Season Notes
+description: Defense Q&A records and optimization ideas from the 2024 and 2025 localization and mapping seasons.
 ---
 
-<meta http-equiv="refresh" content="0;url=/en/archive/2025/localization-mapping/season-notes/" />
-<script>window.location.replace('/en/archive/2025/localization-mapping/season-notes/')</script>
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components'
 
-If you are not redirected automatically, open [Season Notes](/en/archive/2025/localization-mapping/season-notes/).
+## 2024 Season
+
+**Lead**: [LOGIC-XYZ (MiZoReCanvas)](https://github.com/LOGIC-XYZ)
+
+### Defense record
+
+- INS accuracy and error measurement (roll, pitch, velocity, and position accuracy)
+- Cost trade-offs (LiDAR, INS, camera)
+- Multi-sensor fusion
+- Why choose EKF instead of alternatives such as UKF
+- What happens when the camera fails (cone reflective strips missing), the LiDAR fails, or the INS fails
+- How to handle a failure in a middle frame
+- Differences between simulation and reality (steering angle, coordinates)
+- Differences between mapping and reality
+
+---
+
+## 2025 Season
+
+**Lead**: [LOGIC-XYZ (MiZoReCanvas)](https://github.com/LOGIC-XYZ)
+
+### Defense record
+
+- Mapping accuracy: cone accuracy and vehicle pose accuracy — how to evaluate them, and with what data
+- Loop-closure detection approach
+- Failure of any single sensor or of multiple sensors (LiDAR, camera, integrated INS)
+
+<Aside type="note">
+The rules actually require entering EBS when sensors fail, but a corresponding scheme can still be designed.
+</Aside>
+
+- Equipment cost trade-offs (LiDAR, INS, camera)
+- For the 2025 season roll-up banner, the judges noted that the text descriptions were a bit sparse
+
+---
+
+## Season exchanges
+
+### South China University of Technology
+
+Last year, their defense also asked about multi-sensor fusion and sensor failure in extreme environments.
+
+This year they tried a constraint approach similar to factor-graph optimization, which demands a lot of compute. They suggested starting local optimization before all cones are scanned to reduce the compute requirement.
+
+### Tongji University
+
+This year, their defense asked about relocalization.
+
+Their mapping approach is registration-based mapping: matching against their map.
+
+---
+
+## Optimization ideas
+
+<CardGrid>
+  <Card title="Fix first-frame cone coordinates" icon="approve-check">
+    Fix the cone coordinates detected in the first frame and never update them afterwards. The figure-eight track only needs those six cones, and the earliest detections are the most accurate.
+  </Card>
+  <Card title="Trajectory visualization" icon="seti:image">
+    Visualize the vehicle's driving trajectory.
+  </Card>
+  <Card title="State equation optimization" icon="setting">
+    Try using Kalman filters to set up three state equations for the three track segments — straight-line acceleration, high-speed tracking, and the figure-eight skidpad — with nonlinearity increasing gradually.
+  </Card>
+  <Card title="Time synchronization" icon="rocket">
+    The defense mentioned that time-synchronized point-cloud distortion compensation showed little noticeable effect. The judges said the front-end filtering may simply be too good, but it is still needed. On the hard-sync side, wire RS-232 & PPS to the LiDAR.
+  </Card>
+</CardGrid>
+
+<Aside type="tip">
+Or try factor-graph optimization — there are no concrete ideas yet, so feel free to keep exploring.
+</Aside>
+
+---
+
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/en/archive/2025/localization-mapping/" style="color: var(--sl-color-accent);">← Back to the localization and mapping module</a>
+</div>
