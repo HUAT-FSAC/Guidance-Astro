@@ -5,23 +5,23 @@
 
 ## 今日队列（2026-10-24，2 项任务 + 2 项常态顺带，建议顺序）
 
-| 顺序 | Issue / 任务                                                                                        | 优先级 | 状态        | 依赖与交付边界                                                                                                                                                                                                |
-| ---- | --------------------------------------------------------------------------------------------------- | ------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | [#262 恢复现有站内搜索](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262)                     | P2     | in-progress | 第106轮领取后会话中断；**工作区有未提交 WIP（分支 agent/issue-262-search-index@65ae62f），原样保留待恢复**。按 D-022 与 Issue 完整 AC 实施，全门禁+生产双语查询/快捷键/SPA/排除/清理/预算/nonce 后转 review。 |
-| 2    | [#270 修正中文 README 例图为现有 WebP 资产](https://github.com/HUAT-FSAC/Guidance-Astro/issues/270) | P3     | ready       | 无依赖；只将中文示例扩展名改为现有 WebP，不重写人类正文、不改图片，根 README 无需部署。                                                                                                                       |
-| 3    | PR [#274](https://github.com/HUAT-FSAC/Guidance-Astro/pull/274) release 1.3.2                       | 常态   | 待处理      | patch 档（§11.1，仅 CHANGELOG.md+package.json）；先触发 checks（GITHUB_TOKEN 链式抑制，#197 既有 update-branch 手法），CI 绿后 admin squash 合入（D-002），§11.2 四方核验。                                   |
-| 4    | PR [#276](https://github.com/HUAT-FSAC/Guidance-Astro/pull/276) bot metrics                         | 常态   | 待处理      | 通用数组键路径/schema 契约核查 + checks 绿后合入；与 #274 合并后一次 `deploy:worker` + 线上 nonce/看板验收。                                                                                                  |
+| 顺序 | Issue / 任务                                                                                        | 优先级 | 状态      | 依赖与交付边界                                                                                                                                                              |
+| ---- | --------------------------------------------------------------------------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | [#262 恢复现有站内搜索](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262)                     | P2     | in-review | 第108轮完成：PR277 squash 合入 main `8767c8f`，部署 Version `5ab53eaa`；生产双语查询/nonce/清单不可达 12/12 通过；报告 6384695511。                                         |
+| 2    | [#270 修正中文 README 例图为现有 WebP 资产](https://github.com/HUAT-FSAC/Guidance-Astro/issues/270) | P3     | in-review | 第108轮完成：PR278 squash 合入 main `569d178`，仅 README.md 一行 .png→.webp；报告 6384762718。                                                                              |
+| 3    | PR [#274](https://github.com/HUAT-FSAC/Guidance-Astro/pull/274) release 1.3.2                       | 常态   | 待处理    | patch 档（§11.1，仅 CHANGELOG.md+package.json）；先触发 checks（GITHUB_TOKEN 链式抑制，#197 既有 update-branch 手法），CI 绿后 admin squash 合入（D-002），§11.2 四方核验。 |
+| 4    | PR [#276](https://github.com/HUAT-FSAC/Guidance-Astro/pull/276) bot metrics                         | 常态   | 待处理    | 通用数组键路径/schema 契约核查 + checks 绿后合入；与 #274 合并后一次 `deploy:worker` + 线上 nonce/看板验收。                                                                |
 
 ## 全部开放 Issue（4 项）
 
-| Issue | 优先级 / 风险 | 状态及实际标签                                                            | Milestone / 下一步                                                               |
-| ----- | ------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| #262  | P2 / medium   | in-progress；status:in-progress、type:bug、area:frontend、auto-discovered | M4 #3；10:48 领取后会话中断，WIP 在本地分支未推送；恢复现场续做，完成转 review。 |
-| #270  | P3 / low      | ready；status:backlog、documentation、area:docs、auto-discovered          | M4 #3；仅例图扩展名，与英文已存在 WebP 示例对齐（分诊评论 6367869389）。         |
-| #101  | P1 / medium   | blocked；type:task、area:devops                                           | 无 milestone；Secret 仍缺，维持用户已确认单机 OAuth 默认 B；不恢复 CI deploy。   |
-| #197  | P3 / medium   | needs-info；type:task、area:devops、dependencies                          | 无 milestone；用户已确认默认 C，维持手工 CI 触发，等频率信号，不重复问 PAT/App。 |
+| Issue | 优先级 / 风险 | 状态及实际标签                                                      | Milestone / 下一步                                                               |
+| ----- | ------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| #262  | P2 / medium   | in-review；status:review、type:bug、area:frontend、auto-discovered  | M4 #3；PR277→`8767c8f` 已合入并部署 5ab53eaa，生产验收 12/12，待 Planner 验收。  |
+| #270  | P3 / low      | in-review；status:review、documentation、area:docs、auto-discovered | M4 #3；PR278→`569d178` 已合入，待 Planner 验收。                                 |
+| #101  | P1 / medium   | blocked；type:task、area:devops                                     | 无 milestone；Secret 仍缺，维持用户已确认单机 OAuth 默认 B；不恢复 CI deploy。   |
+| #197  | P3 / medium   | needs-info；type:task、area:devops、dependencies                    | 无 milestone；用户已确认默认 C，维持手工 CI 触发，等频率信号，不重复问 PAT/App。 |
 
-统计：ready=1，in-progress=1，in-review=0，blocked=1，needs-info=1；无未分诊 auto-discovered。开放 P0=0，P1=1（仅外部阻塞 #101）。本轮关闭 #272/#263/#268（status:done）。
+统计：ready=0，in-progress=0，in-review=2，blocked=1，needs-info=1；无未分诊 auto-discovered。开放 P0=0，P1=1（仅外部阻塞 #101）。
 
 ## 本轮验收（第107轮，2026-10-24）
 
