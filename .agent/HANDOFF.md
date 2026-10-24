@@ -80,3 +80,13 @@ Planner先读当日日报（含追加），验收#266/#264，处理#263条件阻
 - M4由原4成员扩为6个真实缺陷/前置，done2/open4；REST汇总仍1/0与成员不一致，收口需复核，不虚报归零。开放Issue6、PR3（271恢复，186/209暂缓），in-progress/review均0；#101blocked/#197needs-info默认不变，无新用户pending。
 - PR267已复核（6367796421），Version6c003201及双语看板04:47:39/M4真实在位；本轮首页27script nonce与CSP一致。当前生产不含PR271且搜索未修复。只读SSR正文API及README检查已运行，无新生产实现/部署/截图，SSR服务已停；ENV/DIARY未改。
 - PLAN/TASKS已按权威Issue整体刷新，DECISIONS新增D-022；完成请逐单全字段报告转review、追加日报、刷新自有STATE/HANDOFF，关单仍归Planner。
+
+## Planner 第107轮接力补记（2026-10-24；仓库要求的追加记录）
+
+上方第104轮交接原文与第105轮补记保留；以下为其后实际发生与治理结果，不替Executor重写现场。
+
+- **第106轮执行（2026-10-24 上午）已交付三项并于 #262 中断**：#272 审计门禁修复（PR273→161ab70，纯锁文件+1行override）；#263 恢复 PR271 并按 A/A+A/B 受控比较合入 c2933cd（正常 merge main 后 squash，未重写历史）；#268 英文 season-notes 恢复（PR275→65ae62f）并部署 Version 596a1212。10:48 领取 #262 后会话中断，**未建 2026-10-24 日报、未刷新 STATE/HANDOFF**——下一棒第一步：新建 `.agent/DIARY/2026-10-24.md` 补全天记录（追加式），再续做 #262。
+- **第107轮验收（Planner）**：#272/#263/#268 全部通过关闭（6383838267/6383840571/6383842437）。#263 的 assets 顺序归一化扩展获采纳——第105轮"仅归一key"口径经 A/A 证实在本工具链不可满足，以 A/A 自然波动为基线、其余逐字节比较才是前置本意；原始产物与比较器在 `.tmp/issue263-{aa1,aa2,b}-*`。audit 红与 PR 无关性成立，不判失实。
+- **#262 现场**：工作区未提交 WIP（astro.config.mjs/package.json/scripts/search//src/integrations/search-*）+ 本地分支 `agent/issue-262-search-index`@65ae62f（未推送）。HEAD 已在 main（含第107轮 .agent 提交）；恢复时先 `git pull --rebase`，读现场与 Issue AC 续做，全门禁+生产双语查询/快捷键/SPA/排除/清理/预算/nonce 全 AC 后转 review。
+- **今日队列**：#262（in-progress，恢复）→ #270（ready，中文例图 WebP）+ 常态 PR274（release 1.3.2，patch 档：先 update-branch 触发 checks，CI 绿后合入+§11.2 四方核验）与 PR276（metrics：schema 核查后合入）；两者合并后一次 deploy:worker + 线上 nonce 验收。
+- 最新权威：开放 Issue 4（#262 in-progress / #270 ready / #101 blocked / #197 needs-info），开放 PR 4（274/276/209/186）；M4 实际 4/6（REST 汇总计数仍失真，未关 Milestone）。pending=0；#101/#197/majors 沿既有默认。生产 Version 596a1212，搜索仍未修复；inbound 无新工作。
