@@ -1,5 +1,7 @@
 ---
-import Search from '@astrojs/starlight/components/Search.astro';
+// 使用本站的 Search 覆盖（#262）：直接引上游组件会绕过 starlight components.Search
+// 覆盖，导致 SPA 导航后 PagefindUI 不再初始化
+import Search from './Search.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { getNavItems, isEnglishPath } from '../../utils/navigation';

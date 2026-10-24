@@ -38,7 +38,7 @@
     "scripts": {
         "dev": "astro dev",
         "start": "astro dev",
-        "build": "astro build",
+        "build": "astro build && node scripts/search/build-index.ts",
         "deploy:worker": "pnpm build && wrangler deploy --config dist/server/wrangler.json",
         "patch:cf-pages": "node scripts/patch-cf-pages.mjs",
         "preview": "astro preview",
