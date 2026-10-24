@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.3.1...v1.4.0) (2026-10-24)
+
+
+### Features
+
+* **search:** rebuild Pagefind index from real SSR output ([#262](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262)) ([#277](https://github.com/HUAT-FSAC/Guidance-Astro/issues/277)) ([8767c8f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/8767c8f5b3dcbaf95b7ba149359d5720c1aab1bc))
+
+
+### Bug Fixes
+
+* **deps:** bump zod, fast-uri and undici to patched releases ([161ab70](https://github.com/HUAT-FSAC/Guidance-Astro/commit/161ab708ac4a1a5c7d542d4d8715eed0d4e5742d)), closes [#272](https://github.com/HUAT-FSAC/Guidance-Astro/issues/272)
+
 ## [1.3.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.3.0...v1.3.1) (2026-10-22)
 
 
