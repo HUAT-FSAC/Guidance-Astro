@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-23T04:47:39.639Z",
+    "generatedAt": "2026-10-24T04:34:53.513Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.95,
-        "prCycleTimeDays": 0.76,
-        "issueCloseRatePercent": 93.02,
-        "prMergeRatePercent": 79.52,
-        "ciSuccessRatePercent": 66,
-        "wipIssueCount": 0,
-        "reviewIssueCount": 0,
-        "backlogIssueCount": 5
+        "issueLeadTimeDays": 0.94,
+        "prCycleTimeDays": 0.72,
+        "issueCloseRatePercent": 92.13,
+        "prMergeRatePercent": 79.78,
+        "ciSuccessRatePercent": 64,
+        "wipIssueCount": 1,
+        "reviewIssueCount": 2,
+        "backlogIssueCount": 1
     },
     "counts": {
-        "openIssueCount": 6,
-        "openPullRequestCount": 2,
-        "openedIssuesInWindow": 86,
-        "closedIssuesInWindow": 80,
-        "openedPullRequestsInWindow": 83,
-        "mergedPullRequestsInWindow": 66,
+        "openIssueCount": 7,
+        "openPullRequestCount": 3,
+        "openedIssuesInWindow": 89,
+        "closedIssuesInWindow": 82,
+        "openedPullRequestsInWindow": 89,
+        "mergedPullRequestsInWindow": 71,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 12
+        "ciFailedRunsInWindow": 11
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-23T01:29:40.000Z",
-        "latestMergedPullRequestAt": "2026-10-22T12:25:19.000Z"
+        "latestIssueUpdatedAt": "2026-10-22T15:28:36.000Z",
+        "latestMergedPullRequestAt": "2026-10-24T02:44:02.000Z"
     },
     "summary": {
-        "totalIssues": 110,
-        "closedIssues": 104,
-        "openIssues": 6,
-        "ciPassRate": 66
+        "totalIssues": 113,
+        "closedIssues": 106,
+        "openIssues": 7,
+        "ciPassRate": 64
     },
     "byStatus": {
-        "backlog": 4,
-        "ready": 1,
-        "inProgress": 0,
-        "review": 0,
+        "backlog": 1,
+        "ready": 2,
+        "inProgress": 1,
+        "review": 2,
         "blocked": 1,
-        "done": 104
+        "done": 106
     },
     "byPriority": {
         "p0": 3,
-        "p1": 23,
-        "p2": 30,
-        "p3": 30
+        "p1": 20,
+        "p2": 31,
+        "p3": 31
     },
     "milestones": [
         {
@@ -64,7 +64,7 @@
         },
         {
             "title": "M4 开发入口与能力声明一致性",
-            "description": "只收敛已登记的搜索失效、双语 README 与无效环境变量模板，不启动新功能。工作束：#262 搜索恢复、其只读方案调查、#263 配置清理、#264 英文入口同步。完成信号：范围内 Issue 全部经 Planner 验收关闭、开发文档只描述真实能力、搜索生产查询与 SSR nonce 均验证；open_issues=0 后显式关闭。常驻 #101/#197 与 majors 不计入。",
+            "description": "收敛已有搜索、开发配置与双语入口事实，不启动新功能。成员：#266 SSR-safe索引方案（已验收）、#264英文README（已验收）、#263七个死字段/推送指南、#262搜索恢复、#268既有英文season-notes正文自环修复、#270中文README例图。完成信号：六成员全部由Planner验收关闭，生产中英文正文检索/入口与SSR nonce验证、开发指引和既有英文内容入口真实一致；按D-020核实open归零后显式关闭。常驻#101/#197、majors不计入。本轮实际成员done2/open4（GraphQL/REST成员一致）；REST汇总计数异常不能用于缩范围或假报收口。",
             "status": "in-progress",
             "completionRate": 0,
             "dueDate": null
@@ -83,51 +83,51 @@
     "recentActivity": [
         {
             "type": "issue",
-            "title": "确定 SSR-safe 搜索索引输入方案并交付可实施结论",
+            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
             "status": "open",
-            "updatedAt": "2026-10-23T01:40:05.000Z"
+            "updatedAt": "2026-10-24T02:48:06.000Z"
         },
         {
             "type": "issue",
-            "title": "同步英文 README 的结构与现行部署、能力事实",
+            "title": "恢复英文 season-notes 的真实正文并消除自重定向",
             "status": "open",
-            "updatedAt": "2026-10-23T01:32:13.000Z"
+            "updatedAt": "2026-10-24T02:46:54.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "docs(en): restore real Season Notes content",
+            "status": "merged",
+            "updatedAt": "2026-10-24T02:44:05.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
+            "status": "open",
+            "updatedAt": "2026-10-24T02:35:55.000Z"
         },
         {
             "type": "issue",
             "title": "清理未消费的 OAuth/VAPID 配置字段并纠正推送指南",
             "status": "open",
-            "updatedAt": "2026-10-23T01:32:11.000Z"
+            "updatedAt": "2026-10-24T02:31:29.000Z"
         },
         {
-            "type": "issue",
-            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
+            "type": "pr",
+            "title": "chore(config): remove unused OAuth and push settings",
+            "status": "merged",
+            "updatedAt": "2026-10-24T02:31:10.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(main): release 1.3.2",
             "status": "open",
-            "updatedAt": "2026-10-23T01:29:45.000Z"
+            "updatedAt": "2026-10-24T02:26:55.000Z"
         },
         {
             "type": "issue",
-            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
+            "title": "[auto-discovered] 审计门禁被 9 条新上游公告打红（zod/undici/fast-uri，均有修复版），阻塞一切 PR 合并与 main CI",
             "status": "open",
-            "updatedAt": "2026-10-23T01:28:34.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点",
-            "status": "open",
-            "updatedAt": "2026-10-23T01:28:31.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "⚠️ release-please failed on c6a194b",
-            "status": "closed",
-            "updatedAt": "2026-10-23T01:27:40.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "合并 Release PR #257 发布 v1.3.1 并完成四方核验与部署判定",
-            "status": "closed",
-            "updatedAt": "2026-10-23T01:27:01.000Z"
+            "updatedAt": "2026-10-24T02:26:53.000Z"
         }
     ]
 }
