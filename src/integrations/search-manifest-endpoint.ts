@@ -10,6 +10,7 @@
  *   不进入发布资产，也不进入 sitemap（注入路由不在 docs 内容页清单内）。
  */
 import type { APIRoute } from 'astro'
+import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 
 import { classifyRoutes } from './search-manifest-filter'
@@ -19,7 +20,7 @@ export const prerender = true
 export const GET: APIRoute = async () => {
     const docs = await getCollection('docs')
     const classified = classifyRoutes(
-        docs.map((entry) => ({
+        docs.map((entry: CollectionEntry<'docs'>) => ({
             id: entry.id,
             draft: entry.data.draft === true,
             pagefind: entry.data.pagefind !== false,
