@@ -1,6 +1,6 @@
 # TASKS — Issue 本地镜像
 
-> 同步：2026-10-25，Planning 第110轮（CST 2026-10-25 / UTC 2026-10-24T16:37Z）；GitHub Issues 可读写，依据真实状态**整体重写**，无降级。基线 `main@1024167c150b628b165ba47a96ddafeddecd85ee`。
+> 同步：2026-10-25，Planning 第111轮（CST 2026-10-25 21:55 / UTC 2026-10-25T13:55Z）；GitHub Issues 可读写，依据真实状态**整体重写**，无降级。基线 `main@36f7331ecc5d0fd6c27bd314b4d5cd75b150ecd0`。
 > D-013 映射：`ready` = `status:backlog` + 正文首行 `队列状态：ready`；`in-progress` = `status:in-progress`；`in-review` = `status:review`；`done` = `status:done`；`blocked` / `needs-info` 直接使用对应标签且不并挂 `status:backlog`。
 
 ## 今日队列（2026-10-25，2 个 ready，建议顺序）
@@ -16,18 +16,18 @@
 
 ## 全部开放 Issue（6 项）
 
-| Issue | 优先级 / 风险 | 状态与标签                                                                        | Milestone / 下一步                                                                                             |
-| ----- | ------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| #279  | P1 / low      | ready；`status:backlog`、`type:bug`、`area:frontend`、`auto-discovered`           | M4 #3；今日队列第 1 位（窄屏可见检索 UI 整改，父单 #262）。                                                    |
-| #281  | P2 / medium   | ready；`status:backlog`、`type:bug`、`area:frontend`                              | M4 #3；今日队列第 2 位（真实 Starlight 路由与英文正文收录整改，父单 #262）。                                   |
-| #262  | P2 / medium   | in-progress；`status:in-progress`、`type:bug`、`area:frontend`、`auto-discovered` | M4 #3；首次验收不通过退回（距今约 1.2h，非中断）；待 #279/#281 完成后追加更正与原九项 AC 重验报告再转 review。 |
-| #101  | P1 / medium   | blocked；`blocked`、`type:task`、`area:devops`                                    | 无 milestone；`CLOUDFLARE_API_TOKEN` 仍未配置，维持单机 OAuth 默认 B，不恢复 CI deploy。                       |
-| #197  | P3 / medium   | needs-info；`needs-info`、`type:task`、`area:devops`、`dependencies`              | 无 milestone；用户已确认默认 C（手工触发 Release PR CI），持续观察发版频率，不重复提问。                       |
-| #280  | P3 / medium   | blocked；`blocked`、`type:task`、`area:devops`、`auto-discovered`                 | 无 milestone；可选 Projects 的 `PROJECT_TOKEN` 凭据阻塞，与 #197 独立；未获授权不改凭据/权限/workflow。        |
+| Issue | 优先级 / 风险 | 状态与标签                                                                        | Milestone / 下一步                                                                                              |
+| ----- | ------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| #279  | P1 / low      | ready；`status:backlog`、`type:bug`、`area:frontend`、`auto-discovered`           | M4 #3；今日队列第 1 位（窄屏可见检索 UI 整改，父单 #262）。                                                     |
+| #281  | P2 / medium   | ready；`status:backlog`、`type:bug`、`area:frontend`                              | M4 #3；今日队列第 2 位（真实 Starlight 路由与英文正文收录整改，父单 #262）。                                    |
+| #262  | P2 / medium   | in-progress；`status:in-progress`、`type:bug`、`area:frontend`、`auto-discovered` | M4 #3；首次验收不通过退回（距今约 22.4h，非中断）；待 #279/#281 完成后追加更正与原九项 AC 重验报告再转 review。 |
+| #101  | P1 / medium   | blocked；`blocked`、`type:task`、`area:devops`                                    | 无 milestone；`CLOUDFLARE_API_TOKEN` 仍未配置，维持单机 OAuth 默认 B，不恢复 CI deploy。                        |
+| #197  | P3 / medium   | needs-info；`needs-info`、`type:task`、`area:devops`、`dependencies`              | 无 milestone；用户已确认默认 C（手工触发 Release PR CI），持续观察发版频率，不重复提问。                        |
+| #280  | P3 / medium   | blocked；`blocked`、`type:task`、`area:devops`、`auto-discovered`                 | 无 milestone；可选 Projects 的 `PROJECT_TOKEN` 凭据阻塞，与 #197 独立；未获授权不改凭据/权限/workflow。         |
 
 统计：`ready = 2`，`in-progress = 1`，`in-review = 0`，`blocked = 2`，`needs-info = 1`；`P0 = 0`，`P1 = 2`（#279 与外部阻塞 #101）。无未定级 `auto-discovered`，无被重置或关闭的 `in-progress` 现场。
 
-## 本轮验收与核实（第110轮，2026-10-25）
+## 本轮验收与核实（第111轮，2026-10-25）
 
 自昨日第109轮（`1024167`，2026-10-24T15:33Z）完成第108轮产出验收后，尚无新的 Execution 会话运行，当前 `in-review = 0`。昨日第109轮验收结论持续有效：
 
@@ -45,20 +45,19 @@
     - REST `milestones` 汇总字段本轮仍为 `open=2, closed=5`（漏计 1 个 open），以真实成员状态为准，不缩范围、不提前关 M4。
 - **M2 #1 / M3 #2**：均 `closed`（`open=0`）。`#101`、`#197`、`#280` 与 majors PR 不计入 M4。
 
-## 开放 PR（3 张）
+## 开放 PR（4 张）
 
-| PR   | 当前处置                                                                                                                               |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| #274 | `chore(main): release 1.4.0`（minor，head `00414fa`，`mergeState=BEHIND`，checks=0）；M4 实际收口并显式关闭前持合。                    |
-| #209 | npm majors（TS 7.0.2 / vitest 5.0.5），按 D-015 暂缓，保持 open 作 standing reminder，不摄入。                                         |
-| #186 | github_actions majors（checkout v7 / setup-node v7 / create-pull-request v8），按 D-015 暂缓，保持 open 作 standing reminder，不摄入。 |
-
-若今日定时任务新生成 bot metrics PR，Executor 按常态规则（schema 核查 + CI 全绿合入 + 部署验证）顺手处理。
+| PR   | 当前处置                                                                                                                                                                                             |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #282 | `chore(metrics): update project progress snapshot`（head `5216fc82`，`mergeState=BLOCKED`，checks=0）；schema 63 路径完全一致，按既有常态顺手处置（update-branch 触发 checks 绿后合入 + 部署验证）。 |
+| #274 | `chore(main): release 1.4.0`（minor，head `00414fa`，`mergeState=BEHIND`，checks=0）；M4 实际收口并显式关闭前持合。                                                                                  |
+| #209 | npm majors（TS 7.0.2 / vitest 5.0.5），按 D-015 暂缓，保持 open 作 standing reminder，不摄入。                                                                                                       |
+| #186 | github_actions majors（checkout v7 / setup-node v7 / create-pull-request v8），按 D-015 暂缓，保持 open 作 standing reminder，不摄入。                                                               |
 
 ## 环境与线上基线（2026-10-25 实测）
 
-- **主干 CI**：`main@1024167c150b628b165ba47a96ddafeddecd85ee` 的 `CI/CD Pipeline`（`40107528344`）、`Release Please`（`40107528322`）、`Secret Scan`（`40107528321`）全部 `completed/success`（补齐第109轮未等待的远端 CI 证据）。
+- **主干 CI**：`main@36f7331ecc5d0fd6c27bd314b4d5cd75b150ecd0` 的 `CI/CD Pipeline`（`40113127406`）、`Release Please`（`40113127453`）、`Secret Scan`（`40113127408`）全部 `completed/success`；定时任务 `OpenWiki Update`（`40195570871`）亦 `success`。
 - **安全与审计**：`pnpm quality:audit` exit 0（0 豁免）；Dependabot 开放告警 `0`、Secret scanning 开放告警 `0`。
-- **生产部署**：`env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy ./node_modules/.bin/wrangler deployments list --config dist/server/wrangler.json` 确认当前 100% 流量仍为 Version `027692c7-dbb3-4abc-81d8-e5b86c9f33f6`（`2026-10-24T13:31:39.989Z`；未 strip 本地 proxy 时首跑因 OAuth 刷新连接受阻报 exit 1，strip 后即刻通过）。
-- **线上探针**：`https://huat-fsac.eu.org/` 两次独立单请求均 HTTP 200、`cache-control: private, no-cache, must-revalidate`，各 27 个 `<script nonce>` 与同请求 CSP 头一致（`I1SggrbOB8ogfVFXUH_pdw` / `GoMabhgcrtwvm-wWA6lvzg`）且两次不同；`/_search-manifest.json` → `404`、`/pagefind/pagefind.js` → `200`、`/en/archive/2025/planning-control/control-fundamentals/` → `200`。
+- **生产部署**：`env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy ./node_modules/.bin/wrangler deployments list --config dist/server/wrangler.json` 确认当前 100% 流量仍为 Version `027692c7-dbb3-4abc-81d8-e5b86c9f33f6`（`2026-10-24T13:31:39.989Z`）。
+- **线上探针**：`https://huat-fsac.eu.org/` 两次独立单请求均 HTTP 200、`cache-control: private, no-cache, must-revalidate`，各 27 个 `<script nonce>` 与同请求 CSP 头一致（`wXsjcF_8aJVDESD0JIVXjA` / `cBWJDCMNo5ABR3eYIdp1qA`）且两次不同；`/_search-manifest.json` → `404`、`/pagefind/pagefind.js` → `200`、`/en/archive/2025/planning-control/control-fundamentals/` → `200`。
 - **接力要求**：Executor 今日开工后须用最新现场整体重写 `STATE.md` / `HANDOFF.md`（清理第108轮残留的“无 in-progress / 搜索已恢复 / 6/6 收口”过时描述），并新建 `.agent/DIARY/2026-10-25.md`。
