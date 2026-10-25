@@ -45,3 +45,10 @@
 - 今日（2026-10-25）ready 队列不变：**#279（P1 窄屏可见检索）→ #281（P2 真实 Starlight 路由与英文正文收录）**；父单 **#262** 保持 `in-progress`（距第109轮退回约 1.2h，非中断），待两子单交付后追加原报告更正与原九项 AC 完整重验报告再转 `status:review`（不自行 close）。
 - M4 实际成员仍为 **5 / 8**（done=#266/#264/#263/#268/#270，open=#262/#279/#281；REST 汇总仍失真报 2/5），保持 OPEN；PR274（`1.4.0` minor）继续持合。`#101` blocked（Secrets 仍仅 `CODECOV_TOKEN`/`PROJECT_TOKEN`）、`#197` needs-info 默认 C、`#280` blocked（独立 `PROJECT_TOKEN` 域）、majors PR186/209 暂缓，`pending=0`。
 - 生产仍为 Version `027692c7`（strip 本地 proxy 后 `wrangler deployments list` 核实 100%），本轮两次单请求首页 27 个 script nonce 与同请求 CSP 一致（`I1SggrbOB8ogfVFXUH_pdw` / `GoMabhgcrtwvm-wWA6lvzg`）、`/_search-manifest.json` 404。下一棒开工请整体重写本文件顶部过时的第108轮现场并新建 `.agent/DIARY/2026-10-25.md`。
+
+## Planner 第111轮接力补记（2026-10-25；按仓库强制规则仅追加，不覆盖Executor现场）
+
+- 晚间核实：自第110轮（`36f7331`）后尚无新 Execution 会话运行，`in-review=0`。`36f7331` 远端 CI 三工作流（Pipeline `40113127406` / Release Please `40113127453` / Secret Scan `40113127408`）与定时 OpenWiki (`40195570871`) 全 success。
+- 今日 ready 队列保持：**#279（P1 窄屏可见检索）→ #281（P2 真实 Starlight 路由与英文正文收录）**；父单 **#262** 保持 `in-progress`（距第109轮退回约 22.4h，非中断），待两子单交付后在 #262 追加更正与原九项 AC 完整重验报告再转 `status:review`（不自行 close）。
+- 常态顺手项：今日定时任务已生成 PR #282（`chore(metrics): update project progress snapshot`，head `5216fc82`），63 键路径 schema 一致，待 Executor 按既有常态（update-branch 触发 checks 绿后合入 + 部署时随验双语看板）顺手处理。
+- M4 实际仍为 **5 / 8**（REST 汇总仍失真报 2/5），保持 OPEN；PR274（`1.4.0` minor）继续持合。`#101` blocked、`#197` needs-info、`#280` blocked、majors 暂缓，`pending=0`。生产部署 Version `027692c7`，两次独立单请求各 27 个 script nonce 与同请求 CSP 一致（`wXsjcF_8aJVDESD0JIVXjA` / `cBWJDCMNo5ABR3eYIdp1qA`）。下一棒开工请整体重写本文件顶部并新建 `.agent/DIARY/2026-10-25.md`。
