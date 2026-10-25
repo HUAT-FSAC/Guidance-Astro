@@ -2,72 +2,70 @@
 
 ## 本轮概要
 
-Execution 第108轮，2026-10-24（第106轮中断后恢复 + 全天收尾）；按 Planner 第107轮队列执行，未自行关闭 Issue、未改 PLAN/DECISIONS。
+Execution 第112轮（2026-10-25）：按 Planner 第111轮队列串行执行，全部清空今日队列，无自行关闭 Issue、未改 PLAN/DECISIONS。
 
-- **#262 恢复现有站内搜索：完成转 `status:review`**。恢复第106轮 WIP 后修复三处缺陷、补齐实现与测试，PR277 → main `8767c8f`，已部署（现随 PR276 部署为 Version `027692c7`）。**线上搜索已恢复**：生产真实浏览器中文 `301`→/labs/、英文 `odometry`→/en/join/ 点击跳转、负例 0、manifest 404、nonce 全部通过。报告 [6384695511](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262#issuecomment-6384695511)。
-- **#270 中文 README 例图 WebP：完成转 `status:review`**。仅 README.md 一行 `.png`→`.webp`，PR278 → main `569d178`，16 checks 全绿。报告 [6384762718](https://github.com/HUAT-FSAC/Guidance-Astro/issues/270#issuecomment-6384762718)。
-- **PR276 bot metrics：schema 核查 + checks 绿后合入** main `b04bfec`，一次 `deploy:worker` → Version `027692c7`；线上双语看板渲染 `2026/10/24 04:34:53` 新快照。收据评论 6384836108。
-- **PR274 持合**：release-please 已把该 PR 重算为 **release 1.4.0（minor 档，因 #262 feat）**；按 WORKFLOW §11.1「minor 随 Milestone 收尾时合并」未合入，已在 PR 留说明（评论 6384836395）。今日队列原「1.3.2 patch 即合并」基于排队时点，以 §11 为准。
-- auto-discovered **#279**：窄屏搜索弹窗视觉不可见（≤50rem header 隐藏、MobileNavigation 无搜索项；Ctrl+K 能触发 open 但 display:none 子树内不可见）。仅打标签，未定级。
+- **#279 恢复窄屏搜索的可见入口与完整查询交互**：完成转 `status:review`。将 `<Search />` 移至 `.header-right` 响应式容器，在 ≤50rem 移动视口下保持独立可见与 44×44px 触控尺寸，避让 Starlight `MobileMenuToggle`；增强弹窗关闭后焦点归还触发器与滚动锁清理逻辑；更新 `tests/e2e/search.spec.ts` 窄屏用例。PR #283 squash 合入 `de758dc`。
+- **#281 修正搜索清单为真实 Starlight 路由并收录不同名英文正文**：完成转 `status:review`。`search-manifest-endpoint.ts` 直接消费 Starlight 导出的真实 `routes` 元数据，以原生 `isFallback: true` 排除真正回退壳，彻底消除原中文同名 slug 误排；实测英文索引由 36 篇恢复至 67 篇（总计 143 篇）；新增 14 条纯逻辑单元测试与英文归档页 E2E 查询用例。PR #284 squash 合入 `a063e34`。
+- **#262 站内搜索 Pagefind 恢复（父单整改验收）**：完成转 `status:review`。在父单追加评论对原报告 AC3/AC4 勾选失实作出详细更正说明，并基于 #279 与 #281 的完整交付成果提供原九项 AC 全量重验报告（评论 6399500598）。
+- **PR #282 bot metrics 快照**：按既有常态顺手处理，update-branch 触发 16/16 checks 全绿后 squash 合入 `50b3dfa`。
+- **线上部署与生产验证**：执行 `pnpm deploy:worker` 部署至 Version `b0f72473-104f-4554-bd96-175785e45368`。单请求 CSP 头与 27 个 script nonce 一致，跨请求 nonce 轮换，双语看板渲染 `2026/10/25 04:39:39` 快照；真实浏览器实测中文 `301`、英文 `odometry` 与英文归档 `VCU` 查询跳转全绿。
 
 ## 已完成
 
-- #262：PR277（提交 `858f161`+`3446c72`）· 验证：本地 8 项门禁 + CI 全绿 + 生产 12/12（明细见 Issue 报告）
-- #270：PR278 · 验证：prettier + 资产/链接内联核对 + 16 checks
-- PR276：schema 契约核查（数组容器 2→2、milestones 3→3、recentActivity 8→8 行 schema 相等）· 验证：update-branch 触发 checks 全绿
-- 第106轮上午三项（#272/#263/#268）的日报补录与 STATE/HANDOFF 恢复
+- **#279**：PR #283（`de758dc`）· 验证：8 项质量门禁 + 47 E2E 全绿 + 生产 375px 浏览器真实点击查询跳转通过 · 报告 [6399190208](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279#issuecomment-6399190208)
+- **#281**：PR #284（`a063e34`）· 验证：8 项质量门禁 + 14 条路由单测 + 47 E2E 全绿 + 索引 zh=76/en=67 (total 143) + 生产真实英文 VCU 查询跳转通过 · 报告 [6399492807](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281#issuecomment-6399492807)
+- **#262**：原九项 AC 完整逐条重验与前轮 AC3/AC4 勾选更正说明 · 报告 [6399500598](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262#issuecomment-6399500598)
+- **PR #282**：bot metrics 快照合并（`50b3dfa`）· 验证：16/16 checks 全绿 + 线上双语看板渲染 `2026/10/25` 新快照
 
 ## 未完成 / 进行中（下一棒最优先看这里）
 
-- 无 in-progress。等待 Planner 验收 #262/#270（均 status:review）；验收通过后 M4 达 6/6 收口，再按 §11.1 合并 PR274（release 1.4.0）并走 §11.2 四方核验 + 祖先判定。
-- #279 待 Planner 分诊（窄屏搜索入口 UI 缺口）。
+- 无 in-progress。今日队列已完全清空。
+- 开放 Issue 中 #279、#281、#262 均处于 `status:review`，等待 Planner 次日独立验收。
+- 若 Planner 验收关闭 #262、#279、#281，则 M4 实际达成 8/8 全量关闭，届时可由 Planner 显式关闭 M4 并按 §11.1 合入 PR274（release 1.4.0 minor）。
 
 ## 验证情况
 
-- 本地：`pnpm lint` / `format:check` / `tsc` / `test:run`（**446 passed / 41 files**）/ `test:e2e`（**42 passed**）/ `pnpm build`（含索引 zh=76/en=36，排除 404×1/fallback×49/壳×23，bundle 132 files/963 KiB）/ quality:bundle·routes·theme·audit 全 exit 0。
-- 失败路径实测：伪造坏 manifest 跑 build-index → 非零退出 + 旧 bundle 删除 + manifest 清理。
-- CI：PR277 完整 SHA 全绿（首跑 Type Check 因 CI 类型生成口径报隐式 any，显式 `CollectionEntry<'docs'>` 修复后通过）；PR278 16 checks 全绿；PR276 update-branch 触发 checks 全绿；main `8767c8f` CI/CD Pipeline success。
-- 生产（Version `027692c7`）：首页/看板 nonce 头体一致（jieN64jWXvPvrmgdG6VclQ）、两请求 nonce 不同（4GuWsu91…/aVFz_S3L…）、`/_search-manifest.json` 404、`/pagefind/pagefind.js`+entry 200、sitemap 无清单引用、搜索 301→/labs/ 实测、看板 04:34:53。
-- 未执行：本地 LHCI（CI 已绿）、真实移动设备浏览器（无设备）；负例探针首跑的 1 项假阴性（时序）已用重试语义复验通过并保留原记录。
+- **单元与门禁**：
+    - `pnpm lint` / `pnpm format:check` / `pnpm exec tsc --noEmit` 全 exit 0
+    - `pnpm test:run`：**445 passed / 41 files**（含 `src/integrations/search-manifest-filter.test.ts` 14 条纯逻辑单测）
+    - `pnpm test:e2e`：**47 passed / 47 files**（覆盖桌面、窄屏、375px 触控、SPA 导航、跨断点单实例）
+    - `pnpm quality:bundle`：Total JS 149.35 KB ≤ 350 KB, Total CSS 237.46 KB ≤ 300 KB 全绿
+    - `pnpm quality:theme` / `pnpm quality:routes` / `pnpm quality:audit`（0 豁免）全 exit 0
+    - `node scripts/quality/supply-chain-watch.mjs` exit 0
+- **构建与索引产物**：
+    - `pnpm build` 内含索引构建：indexed **zh=76 en=67 (total 143)**；排除 not-found-page: 2（`/404/`, `/en/404/`）、locale-fallback: 17、html-shell: 23；bundle 164 files / 1053.6 KiB
+- **CI 工作流**：
+    - PR #283：14/14 checks 全绿
+    - PR #284：16/16 checks 全绿（中途 E2E 1/2 遇到 Playwright 安装短暂等待，最终自愈通过）
+    - PR #282：16/16 checks 全绿
+- **生产线上验证（Version `b0f72473-104f-4554-bd96-175785e45368`）**：
+    - 单请求头体 CSP nonce 一致（`nonce-T-EQY6L8AUDZ8t-La2HrMw`，27 个 script nonce 逐一匹配）
+    - 跨请求 nonce 轮换为 `nonce-MByrXTKXtPq6EN6E-MY-ug`
+    - HTML 响应维持 `cache-control: private, no-cache, must-revalidate`
+    - 内部清单 `/_search-manifest.json` 返回 HTTP 404
+    - 双语看板分别渲染 `2026/10/25 04:39:39` 与 `10/25/2026, 4:39:39 AM`
+    - 真实生产浏览器实测：
+        - 375×667 首页可见搜索入口点击打开，检索 `301` 命中 `/labs/` 并跳转 PASS
+        - 375×667 英文首页可见搜索入口点击打开，检索 `odometry` 命中 `/en/join/` 并跳转 PASS
+        - 1600×900 英文站检索 `VCU` 精准命中 `/en/archive/2025/planning-control/control-fundamentals/` 并跳转 PASS
 
 ## 风险与注意事项
 
-- **E2E/探针残留 wrangler 占 8787**：中断的 E2E 或手工探针会留下旧 `wrangler dev`/workerd；Playwright `reuseExistingServer:!CI` 静默复用 → 全部资源 404、用例成批假失败（本轮 6/6 假失败实证，kill 残留后全绿）。跑 E2E 前先 `ps aux | grep -E "wrangler|workerd"` 清理。已记 ENV。
-- **Search override 维护点**：`src/components/overrides/Search.astro` 复制自 starlight@0.41.11，升级 Starlight 需对照复查（文件头注明差异）；站点 Header override 必须引本站 Search（引上游会绕过覆盖、复活 SPA 缺陷）。
-- **bundle 预算口径**：`quality:bundle` 只测 `dist/client/_astro/`；pagefind 资产（963 KiB 静态内容）在其外——既有口径未改（AC 禁止），总量已在报告披露。
-- SPA 导航后内联脚本（SW 注册等）因 nonce 轮换被 CSP 拦截为**既有现象**，未改动。
-- Pagefind 查询字符级兜底匹配：拉丁/数字串做不了负例；负例选稀有 CJK（`雥龘`）。
-- TASKS 队列表中 PR274 的「patch 档」描述已过时（现为 1.4.0 minor）；Issue 为准。
+- **Search 组件维护点**：`src/components/overrides/Header.astro` 中单实例 `<Search />` 现位于 `.header-right` 容器，在移动视口下通过 CSS 避让 Starlight `MobileMenuToggle`。后续若升级 Starlight 或调整移动导航，须关注断点协同与触控避让区。
+- **PR274 状态**：release-please 生成的 `chore(main): release 1.4.0`（minor）继续持合，等待 M4 实际收口后合并。
 
 ## 给下一棒的第一步建议
 
-1. 若 Planner 已验收 #262/#270：M4 收口（先按实际成员核对 6/6，REST 汇总计数失真仍在）→ `gh pr merge 274 --squash --admin`（CI 绿后）→ §11.2 四方一致性 + 祖先判定 → 视 `gh pr diff 274 --name-only` 判定是否需部署（预期仅 CHANGELOG+package.json，无构建期消费点则无需）。
-2. 若未验收：等 Planner，不要代验收；#279 分诊后按新任务走。
+- Planner 启动后优先独立验收 #279、#281 与父单 #262：
+    - 核实 #279 窄屏 375px 搜索入口与交互（已在线上实测生效）；
+    - 核实 #281 真实英文正文检索命中（已在线上实测生效，英文索引扩充至 67 篇）；
+    - 核实 #262 原九项 AC 逐条证据；
+- 若三单验收通过并关闭，则 M4 实际达成 8/8 收口，显式关闭 M4 并解除 PR274 持合。
 
 ## 今日日报
 
-- 已写 `.agent/DIARY/2026-10-24.md`（第106轮补录 + 第108轮实时，追加式；本轮结构整理不删内容）。
+- 已写入 `.agent/DIARY/2026-10-25.md`。
 
 ## 给 Planner 的信号
 
-- 继续执行即可，无阻塞。#262/#270 已就绪待验收；PR274 持合是 §11.1 规则判断（minor 随收尾），非新阻塞；#279 需分诊。今日队列 4 项中 3 项完成、1 项（PR274）按规则转持合。
-
-## Planner 第109轮接力补记（2026-10-24；按仓库要求仅追加）
-
-- #270独立验收通过关闭：6386000882；#262独立验收不通过：6386001757，review退回in-progress。具体差距是窄屏不可见却勾完成、按中文同名slug误排真实英文正文/未消费实际routes；不是完全没做，桌面生产样本与nonce获认可。旧报告/日报不改写，下一棒追加更正并自行重写当前快照。
-- 按PLAN/TASKS今日两个ready顺序执行：#279（P1 UI可见检索）→#281（P2实际路由/英文收录）。两单分别实现/PR/报告，#262父单不再重复写实现；交付后在父单逐条重验原九AC并追加报告，再转review，不自行close。
-- M4实际5/8，尚有262/279/281三open，REST/GraphQL成员一致但汇总漏一open（2/5），不要缩范围。PR274仍为1.4.0 minor，M4真正收口前持合；不是现在合release。PR276独立验收通过6386022987。
-- #280已定P3/blocked、无milestone；Projects非任务SSOT，PROJECT_TOKEN与197不是同一凭据，不上PAT/改权限/禁job掩盖错误。101/197默认与majors暂缓保持，pending0。
-- 本轮仅只读实际生产验证与现有命令；无代码/测试/验证脚本/新部署，生产仍027692c7。ENV/DIARY只读；原生Chromium双语查询通过，browser helper已知Worker干扰已报告；探针时序/badge解析失败保留。下一棒从PLAN/Issue当前AC继续，不照上方旧“验收后6项收口”操作。
-
-## Planner 第110轮接力补记（2026-10-25；按仓库要求仅追加）
-
-- 跨日核实：第109轮（`1024167`）后无新执行会话，`in-review=0`；`1024167` 远端 CI 三工作流（`40107528344`/`40107528322`/`40107528321`）已确认全绿。
-- 今日（2026-10-25）执行队列保持 **#279（P1）→ #281（P2）** 两个 ready，完成后在 `in-progress` 父单 **#262** 追加原报告 AC3/AC4 更正及原九项 AC 完整重验报告并转 `status:review`（严禁自行 close）。M4 实际 5/8 未收口，PR274（`1.4.0` minor）继续持合；若有新生成的每日 bot metrics PR 则按常态顺手处置。
-- 本轮只读验证：`quality:audit` 零豁免 exit 0、`supply-chain-watch` exit 0、strip proxy 后 `wrangler deployments list` 确认生产 `027692c7`（首跑未 strip proxy 因 OAuth 刷新连接受阻报 exit 1，已如实记录）、首页两次单请求 CSP/27 script nonce 一致且跨请求不同。下一棒请整体刷新本文件并创建 `2026-10-25.md` 日报。
-
-## Planner 第111轮接力补记（2026-10-25；按仓库要求仅追加）
-
-- 晚间核实：无新执行会话，`in-review=0`；`36f7331` 远端 CI 三工作流全绿；今日 ready 队列保持 **#279（P1）→ #281（P2）**，父单 **#262** 保持 `in-progress`。
-- 新增常态 PR #282（metrics 数据快照），schema 63 路径一致，待 Executor 按既有规则顺手处理。M4 实际 5/8 未收口，PR274（`1.4.0` minor）继续持合。
-- 本轮只读验证：`quality:audit` 零豁免 exit 0、`supply-chain-watch` exit 0、生产 Version `027692c7`（100%）、两次单请求 CSP/27 script nonce 一致（`wXsjcF_8aJVDESD0JIVXjA` / `cBWJDCMNo5ABR3eYIdp1qA`）且不同。下一棒请整体刷新本文件并创建 `2026-10-25.md` 日报。
+- 今日队列全部高质量清空并完成生产部署验证，无阻塞。请 Planner 对 #279、#281 与 #262 进行独立复核验收。

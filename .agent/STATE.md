@@ -1,20 +1,20 @@
 # STATE
 
-- 更新时间：2026-10-24T14:0xZ（UTC，Execution 第108轮收尾）
-- 当前任务：无 in-progress；#262 与 #270 均 status:review 待 Planner 验收；PR274（release 1.4.0 minor）按 §11.1 持合至 M4 收尾。
-- 分支：main；基线 `b04bfec`（含 #262 搜索恢复、#270 README webp、PR276 metrics 快照与本轮 .agent 同步），已推送。生产 Version `027692c7-dbb3-4abc-81d8-e5b86c9f33f6`（deploy:worker exit0，含搜索索引）。
-- #262：PR277 squash 合入 `8767c8f`（提交 858f161+3446c72）；本地门禁全绿（lint/format/tsc、test:run 446/41、e2e 42、quality 4 项、CI 全绿）；索引 zh=76/en=36、排除 404×1/fallback×49/壳×23；生产验收 12/12（双语正文词点击跳转、负例 0、manifest 404、nonce 头体一致、两请求不同、sitemap 168）；报告 6384695511。搜索已恢复。
-- #270：PR278 squash 合入 `569d178`，仅 README.md 一行 .png→.webp；16 checks 全绿；报告 6384762718。根 README 非站点输入，未部署。
-- PR276：schema 核查（数组容器 2→2、milestones 3→3、recentActivity 8→8 行 schema 相等）+ update-branch 触发 checks 绿后合入 `b04bfec`；合入收据评论 6384836108。
-- PR274：已被 release-please 重算为 **release 1.4.0（minor）**，按 WORKFLOW §11.1 持合至 M4 收尾（M4 还差 #262/#270 验收）；PR 说明评论 6384836395。
-- auto-discovered：#279 窄屏搜索弹窗视觉不可见（仅标签，未定级）。
-- 队列权威：开放 Issue 5（#262 review、#270 review、#101 blocked、#197 needs-info、#279 未分诊）；开放 PR 3（274 持合、209/186 majors 暂缓）。
-- M4：done 4（#266/#264/#263/#268）+ open 2（#262/#270 均 review）；验收后 6/6 可收口（REST 汇总计数失真仍在）。
-- 生产：Version `027692c7`；首页/看板 nonce 头体一致（jieN64jWXvPvrmgdG6VclQ）、双语看板渲染 `2026/10/24 04:34:53` 新快照、搜索 301→/labs/ 实测通过、`/_search-manifest.json` 404、`/pagefind/pagefind.js` 200。
-- inbound：`wsyhuat/main` 仍 f98be0d/d89b87e（已吸收；本轮内容级复核为 fork 滞后与 `.agent`/CI 变体，非待移植工作）。不设锁。
-- 环境：新增坑位已记 ENV——E2E/探针残留 wrangler 占 8787 会静默复用旧 build（本轮 6 用例假失败实证，清理后全绿）；docsLoader 的 en 首页 id 是 `en`；Pagefind 查询字符级兜底匹配（拉丁/数字串做不了负例，用 `雥龘`）。
-- 未完成工作：无 in-progress；等待 Planner 验收 #262/#270 后收口 M4 并合 PR274。
-- 今日日报：已写 `.agent/DIARY/2026-10-24.md`（第106轮补录 + 第108轮实时，追加式）。
+- 更新时间：2026-10-25T15:35Z（UTC，Execution 第112轮收尾）
+- 当前任务：无 in-progress；今日队列 #279（窄屏搜索可见性）、#281（真实 Starlight 路由与英文正文收录）均完成转 `status:review`；父单 #262 已补全原九项 AC 全量重验报告转 `status:review`；PR #282 已 squash 合入主干并部署；PR274（release 1.4.0 minor）按 §11.1 持合至 M4 收尾。
+- 分支：main；基线 `50b3dfa`（已推送）。生产 Version `b0f72473-104f-4554-bd96-175785e45368`（deploy:worker exit 0，含全量 143 篇搜索索引）。
+- #279：PR283 squash 合入 `de758dc`；单实例 `<Search />` 移至 `.header-right`，移动视口独立可见且 44×44px 触控，避让 `MobileMenuToggle`；Esc/取消按钮释放滚动锁并返回焦点；E2E 47 条全绿；报告 6399190208。
+- #281：PR284 squash 合入 `a063e34`；消费 Starlight `routes` 元数据，以原生 `isFallback: true` 排除真正回退壳，收录 31 篇不同名英文正文（索引从 zh=76/en=36 恢复至 zh=76/en=67，总计 143 篇）；报告 6399492807。
+- #262：在父单追加 AC3/AC4 更正说明及原九项 AC 全量重验报告（评论 6399500598），转 `status:review` 待 Planner 验收（不自行 close）。
+- PR282：已 update-branch 并触发 checks 全绿，合入 `50b3dfa`，双语看板渲染 `2026/10/25 04:39:39` 新快照。
+- PR274：release 1.4.0（minor），按 WORKFLOW §11.1 维持持合状态。
+- 队列权威：开放 Issue 6（#279 review、#281 review、#262 review、#101 blocked、#197 needs-info、#280 blocked）；开放 PR 3（274 持合、209/186 majors 暂缓）。
+- M4：实际 5 closed（#266/#264/#263/#268/#270）+ 3 review（#262/#279/#281）；待 Planner 验收关闭后达 8/8 显式收口。
+- 生产：Version `b0f72473`；单请求 CSP 头 nonce 与 27 个 script nonce 一致（`nonce-T-EQY6L8AUDZ8t-La2HrMw`）、两请求 nonce 轮换（`nonce-MByrXTKXtPq6EN6E-MY-ug`）、HTML 私有缓存维持；中文 301→/labs/、英文 odometry→/en/join/ 与英文归档 VCU→/en/archive/2025/planning-control/control-fundamentals/ 实测全部通过；`/_search-manifest.json` 404。
+- inbound：`wsyhuat/main` 仍为已吸收之 `f98be0d`。
+- 未完成工作：无 in-progress；今日队列全部清空。
+- 今日日报：已写 `.agent/DIARY/2026-10-25.md`。
+- 已知环境限制：无新限制。
 
 ## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
 

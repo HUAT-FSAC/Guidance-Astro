@@ -5,10 +5,10 @@
 
 ## 今日队列（2026-10-25，2 个 ready，建议顺序）
 
-| 顺序 | Issue                                                                                                              | 优先级 / 状态 | 依赖与交付边界                                                                                                                     |
-| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | [#279 恢复窄屏搜索的可见入口与完整查询交互](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279)                | P1 / ready    | 无硬依赖；#262 原 AC3 整改。单实例 Search 离开隐藏 nav，触屏可见入口/可见输入/正文结果/点击/关闭/焦点/SPA 重开；更新窄屏 E2E。     |
-| 2    | [#281 修正搜索清单为真实Starlight路由并收录不同名英文正文](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281) | P2 / ready    | #266 已 done；与 #279 无硬依赖。消费实际 Starlight routes/entryMeta/isFallback，移除中文同名 slug 推导；生产查询验证英文正文命中。 |
+| 顺序 | Issue                                                                                                              | 优先级 / 状态  | 依赖与交付边界                                                                                                                                     |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | [#279 恢复窄屏搜索的可见入口与完整查询交互](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279)                | P1 / in-review | 无硬依赖；#262 原 AC3 整改。单实例 Search 离开隐藏 nav，触屏可见入口/可见输入/正文结果/点击/关闭/焦点/SPA 重开；更新窄屏 E2E。PR #283 已合入。     |
+| 2    | [#281 修正搜索清单为真实Starlight路由并收录不同名英文正文](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281) | P2 / in-review | #266 已 done；与 #279 无硬依赖。消费实际 Starlight routes/entryMeta/isFallback，移除中文同名 slug 推导；生产查询验证英文正文命中。PR #284 已合入。 |
 
 - 两任务完整范围、明确不包含、依赖、验收标准与测试要求见各自 Issue 正文，均通过 4.2 七条 ready 门禁，无产品 pending 或 §1.10 红线变更。
 - 两单分别建分支、提 PR、留 §1.7 执行报告并转 `status:review`；允许在两 PR 均合入后合并执行一次 `pnpm deploy:worker`，但各自生产验收标准不可省略。
@@ -16,16 +16,16 @@
 
 ## 全部开放 Issue（6 项）
 
-| Issue | 优先级 / 风险 | 状态与标签                                                                        | Milestone / 下一步                                                                                              |
-| ----- | ------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| #279  | P1 / low      | ready；`status:backlog`、`type:bug`、`area:frontend`、`auto-discovered`           | M4 #3；今日队列第 1 位（窄屏可见检索 UI 整改，父单 #262）。                                                     |
-| #281  | P2 / medium   | ready；`status:backlog`、`type:bug`、`area:frontend`                              | M4 #3；今日队列第 2 位（真实 Starlight 路由与英文正文收录整改，父单 #262）。                                    |
-| #262  | P2 / medium   | in-progress；`status:in-progress`、`type:bug`、`area:frontend`、`auto-discovered` | M4 #3；首次验收不通过退回（距今约 22.4h，非中断）；待 #279/#281 完成后追加更正与原九项 AC 重验报告再转 review。 |
-| #101  | P1 / medium   | blocked；`blocked`、`type:task`、`area:devops`                                    | 无 milestone；`CLOUDFLARE_API_TOKEN` 仍未配置，维持单机 OAuth 默认 B，不恢复 CI deploy。                        |
-| #197  | P3 / medium   | needs-info；`needs-info`、`type:task`、`area:devops`、`dependencies`              | 无 milestone；用户已确认默认 C（手工触发 Release PR CI），持续观察发版频率，不重复提问。                        |
-| #280  | P3 / medium   | blocked；`blocked`、`type:task`、`area:devops`、`auto-discovered`                 | 无 milestone；可选 Projects 的 `PROJECT_TOKEN` 凭据阻塞，与 #197 独立；未获授权不改凭据/权限/workflow。         |
+| Issue | 优先级 / 风险 | 状态与标签                                                                 | Milestone / 下一步                                                                                      |
+| ----- | ------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| #279  | P1 / low      | in-review；`status:review`、`type:bug`、`area:frontend`、`auto-discovered` | M4 #3；今日队列第 1 位（窄屏可见检索 UI 整改，已由 PR #283 交付并上线）。                               |
+| #281  | P2 / medium   | in-review；`status:review`、`type:bug`、`area:frontend`                    | M4 #3；今日队列第 2 位（真实 Starlight 路由与英文正文收录整改，已由 PR #284 交付并上线）。              |
+| #262  | P2 / medium   | in-review；`status:review`、`type:bug`、`area:frontend`、`auto-discovered` | M4 #3；整改子单 #279/#281 完成，已在父单追加更正说明与原九项 AC 全量重验报告转 review。                 |
+| #101  | P1 / medium   | blocked；`blocked`、`type:task`、`area:devops`                             | 无 milestone；`CLOUDFLARE_API_TOKEN` 仍未配置，维持单机 OAuth 默认 B，不恢复 CI deploy。                |
+| #197  | P3 / medium   | needs-info；`needs-info`、`type:task`、`area:devops`、`dependencies`       | 无 milestone；用户已确认默认 C（手工触发 Release PR CI），持续观察发版频率，不重复提问。                |
+| #280  | P3 / medium   | blocked；`blocked`、`type:task`、`area:devops`、`auto-discovered`          | 无 milestone；可选 Projects 的 `PROJECT_TOKEN` 凭据阻塞，与 #197 独立；未获授权不改凭据/权限/workflow。 |
 
-统计：`ready = 2`，`in-progress = 1`，`in-review = 0`，`blocked = 2`，`needs-info = 1`；`P0 = 0`，`P1 = 2`（#279 与外部阻塞 #101）。无未定级 `auto-discovered`，无被重置或关闭的 `in-progress` 现场。
+统计：`ready = 0`，`in-progress = 0`，`in-review = 3`，`blocked = 2`，`needs-info = 1`；`P0 = 0`，`P1 = 1`（外部阻塞 #101）。无未定级 `auto-discovered`，无进行中 `in-progress` 现场。
 
 ## 本轮验收与核实（第111轮，2026-10-25）
 
