@@ -83,6 +83,16 @@ export default defineConfig({
         build: {
             cssCodeSplit: true,
         },
+        resolve: {
+            alias: {
+                '@astrojs/starlight/utils/routing': fileURLToPath(
+                    new URL(
+                        './node_modules/@astrojs/starlight/utils/routing/index.ts',
+                        import.meta.url
+                    )
+                ),
+            },
+        },
         plugins: [
             purgecss({
                 content: [
