@@ -18,13 +18,23 @@
  */
 
 export interface SearchManifestRoute {
-    /** 归一化后的 Starlight id（根 index 为空串；英文条目带 `en/` 前缀） */
+    /** 归一化后的 Starlight 路由 id（根 index 为空串；英文条目带 `en/` 前缀；Starlight 自动生成 fallback） */
     id: string
-    draft: boolean
-    /** 与 Page.astro 谓词同义：frontmatter 未显式 false 即视为可收录 */
-    pagefind: boolean
-    /** 仅作信息披露列，不参与过滤 */
-    sidebarHidden: boolean
+    /** 是否为 Starlight 为缺少翻译的多语言条目生成的 fallback 路由 */
+    isFallback?: boolean
+    locale?: string
+    draft?: boolean
+    pagefind?: boolean
+    sidebarHidden?: boolean
+    entry?: {
+        data?: {
+            draft?: boolean
+            pagefind?: boolean
+            sidebar?: {
+                hidden?: boolean
+            }
+        }
+    }
 }
 
 export type SearchLocale = 'zh' | 'en'
@@ -48,9 +58,12 @@ export interface ClassifiedSearchRoutes {
     excluded: SearchExcluded[]
 }
 
-/** 归一化 id → 页面 URL（目录式尾斜杠，段级编码交给请求方）；根 index 空串映射为 `/` */
+/** 归一化 id → 页面 URL（目录式尾斜杠，段级编码交给请求方）；根 index 空串映射为 `/`，英文空串/en 映射为 `/en/` */
 export function routeUrl(id: string): string {
-    return id ? `/${id}/` : '/'
+    if (!id || id === 'index') return '/'
+    if (id === 'en' || id === 'en/index') return '/en/'
+    const trimmed = id.replace(/^\/+|\/+$/g, '')
+    return `/${trimmed}/`
 }
 
 /** URL 段级编码（保留 `/`，中文段转百分号编码），供实际 HTTP 请求使用 */
@@ -61,59 +74,43 @@ export function encodedRouteUrl(url: string): string {
         .join('/')
 }
 
-export function routeLocale(id: string): SearchLocale {
-    return id === 'en' || id.startsWith('en/') ? 'en' : 'zh'
+export function routeLocale(route: { id: string; locale?: string } | string): SearchLocale {
+    if (typeof route === 'string') {
+        return route === 'en' || route.startsWith('en/') ? 'en' : 'zh'
+    }
+    return route.locale === 'en' || route.id === 'en' || route.id.startsWith('en/') ? 'en' : 'zh'
 }
 
-/** Starlight 的根 index 归一化：`index` 与空串是同一个路由；英文首页 `en/index`
- * 同样折叠为空串（其 URL 由 locale 决定为 `/en/`，collection id 里没有独立路由）
- * ——注意 docsLoader 对 `en/index.mdx` 生成的 collection id 是 `en`（剥离 index 段），
- * 而非 `en/index`。 */
-const normalizeId = (id: string): string => (id === 'index' || id === 'en' ? '' : id)
-
-/** locale + 归一化 id → 页面 URL（英文空串 = `/en/`） */
-const routeUrlFor = (locale: SearchLocale, id: string): string =>
-    id ? `/${id}/` : locale === 'en' ? '/en/' : '/'
-
-/** 按生产语义把原始 docs 条目清单分类为「收录候选」与「排除项」。 */
+/** 按 Starlight 生产语义把实际路由清单分类为「收录候选」与「排除项」。 */
 export function classifyRoutes(routes: readonly SearchManifestRoute[]): ClassifiedSearchRoutes {
-    // locale 必须取自原始 id（en/index 折叠为空串后不能再由 id 前缀判定）
-    const normalized = routes.map((route) => ({
-        ...route,
-        locale: routeLocale(route.id),
-        id: normalizeId(route.id),
-    }))
-    const zhIds = new Set(
-        normalized.filter((route) => route.locale === 'zh').map((route) => route.id)
-    )
-    // 英文对应对以「非 draft 英文条目」为准：draft 的 en 文件不生成路由，
-    // 其 slug 仍由默认语言 fallback 补位
-    const enIds = new Set(
-        normalized.filter((route) => route.locale === 'en' && !route.draft).map((route) => route.id)
-    )
     const candidates: SearchCandidate[] = []
     const excluded: SearchExcluded[] = []
     const seen = new Set<string>()
 
-    for (const route of normalized) {
-        const locale = route.locale
-        const url = routeUrlFor(locale, route.id)
+    for (const route of routes) {
+        const locale = routeLocale(route)
+        const url = routeUrl(route.id)
+        const draft = route.entry?.data?.draft === true || route.draft === true
+        const pagefind = route.entry?.data?.pagefind !== false && route.pagefind !== false
+        const is404 = route.id === '404' || route.id.endsWith('/404')
+        const isFallback = route.isFallback === true
+
         const exclude = (reason: SearchExclusionReason) =>
             excluded.push({ id: route.id, locale, url, reason })
 
-        if (route.draft) {
+        if (draft) {
             exclude('draft')
             continue
         }
-        if (!route.pagefind) {
+        if (!pagefind) {
             exclude('pagefind-false')
             continue
         }
-        if (route.id === '404' || route.id.endsWith('/404')) {
+        if (is404) {
             exclude('not-found-page')
             continue
         }
-        if (locale === 'en' && !zhIds.has(route.id === '' ? '' : route.id.slice('en/'.length))) {
+        if (isFallback) {
             exclude('locale-fallback')
             continue
         }
@@ -122,21 +119,6 @@ export function classifyRoutes(routes: readonly SearchManifestRoute[]): Classifi
         if (seen.has(key)) continue
         seen.add(key)
         candidates.push({ id: route.id, locale, url })
-    }
-
-    // fallback 派生：Starlight 会为每个非 draft 默认语言条目生成 /en/<id>/ fallback 路由
-    // （外壳 lang=en、正文 zh-CN）。collection 清单本身不含这些行，但这些 URL 生产中真实
-    // 存在，按 D-022 显式登记为排除项，保证清单可完整解释「为什么 /en/labs/ 不入索引」。
-    for (const id of zhIds) {
-        if (enIds.has(id ? `en/${id}` : '')) continue
-        const source = normalized.find((route) => route.locale === 'zh' && route.id === id)
-        if (!source || source.draft) continue
-        excluded.push({
-            id: id ? `en/${id}` : 'en',
-            locale: 'en',
-            url: id ? `/en/${id}/` : '/en/',
-            reason: 'locale-fallback',
-        })
     }
 
     return { candidates, excluded }
