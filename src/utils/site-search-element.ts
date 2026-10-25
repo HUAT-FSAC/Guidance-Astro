@@ -77,6 +77,7 @@ class SiteSearchElement extends HTMLElement {
             document.removeEventListener('astro:page-load', this.pageLoadListener)
             this.pageLoadListener = null
         }
+        document.body.toggleAttribute('data-search-modal-open', false)
     }
 
     private bindModalControls(): void {
@@ -88,19 +89,23 @@ class SiteSearchElement extends HTMLElement {
 
         const closeModal = () => dialog.close()
 
+        let isNavigating = false
         /** 弹窗打开期间点击链接或弹窗外区域时关闭 */
         const onClick = (event: MouseEvent) => {
-            const isLink = 'href' in (event.target || {})
-            if (
-                isLink ||
-                (document.body.contains(event.target as Node) &&
-                    !dialogFrame.contains(event.target as Node))
-            ) {
+            const target = event.target as Element | null
+            const isLink = Boolean(target?.closest('a[href]'))
+            if (isLink) {
+                isNavigating = true
+                closeModal()
+                return
+            }
+            if (target && document.body.contains(target) && !dialogFrame.contains(target)) {
                 closeModal()
             }
         }
 
         const openModal = (event?: MouseEvent) => {
+            isNavigating = false
             dialog.showModal()
             document.body.toggleAttribute('data-search-modal-open', true)
             this.querySelector('input')?.focus()
@@ -115,6 +120,10 @@ class SiteSearchElement extends HTMLElement {
         dialog.addEventListener('close', () => {
             document.body.toggleAttribute('data-search-modal-open', false)
             window.removeEventListener('click', onClick)
+            if (!isNavigating) {
+                openBtn.focus()
+            }
+            isNavigating = false
         })
 
         // Ctrl/Cmd+K 切换弹窗；监听持有本实例引用，断开连接时一并移除
