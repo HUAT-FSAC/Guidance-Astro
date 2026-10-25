@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-24T04:34:53.513Z",
+    "generatedAt": "2026-10-25T04:39:39.481Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.94,
-        "prCycleTimeDays": 0.72,
-        "issueCloseRatePercent": 92.13,
-        "prMergeRatePercent": 79.78,
-        "ciSuccessRatePercent": 64,
+        "issueLeadTimeDays": 0.95,
+        "prCycleTimeDays": 0.7,
+        "issueCloseRatePercent": 93.48,
+        "prMergeRatePercent": 80.22,
+        "ciSuccessRatePercent": 66,
         "wipIssueCount": 1,
-        "reviewIssueCount": 2,
-        "backlogIssueCount": 1
+        "reviewIssueCount": 0,
+        "backlogIssueCount": 2
     },
     "counts": {
-        "openIssueCount": 7,
+        "openIssueCount": 6,
         "openPullRequestCount": 3,
-        "openedIssuesInWindow": 89,
-        "closedIssuesInWindow": 82,
-        "openedPullRequestsInWindow": 89,
-        "mergedPullRequestsInWindow": 71,
+        "openedIssuesInWindow": 92,
+        "closedIssuesInWindow": 86,
+        "openedPullRequestsInWindow": 91,
+        "mergedPullRequestsInWindow": 73,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 11
+        "ciFailedRunsInWindow": 9
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-22T15:28:36.000Z",
-        "latestMergedPullRequestAt": "2026-10-24T02:44:02.000Z"
+        "latestIssueUpdatedAt": "2026-10-24T15:25:43.000Z",
+        "latestMergedPullRequestAt": "2026-10-24T13:30:42.000Z"
     },
     "summary": {
-        "totalIssues": 113,
-        "closedIssues": 106,
-        "openIssues": 7,
-        "ciPassRate": 64
+        "totalIssues": 116,
+        "closedIssues": 110,
+        "openIssues": 6,
+        "ciPassRate": 66
     },
     "byStatus": {
-        "backlog": 1,
-        "ready": 2,
+        "backlog": 2,
+        "ready": 1,
         "inProgress": 1,
-        "review": 2,
-        "blocked": 1,
-        "done": 106
+        "review": 0,
+        "blocked": 2,
+        "done": 110
     },
     "byPriority": {
         "p0": 3,
-        "p1": 20,
-        "p2": 31,
-        "p3": 31
+        "p1": 18,
+        "p2": 32,
+        "p3": 32
     },
     "milestones": [
         {
@@ -64,9 +64,9 @@
         },
         {
             "title": "M4 开发入口与能力声明一致性",
-            "description": "收敛已有搜索、开发配置与双语入口事实，不启动新功能。成员：#266 SSR-safe索引方案（已验收）、#264英文README（已验收）、#263七个死字段/推送指南、#262搜索恢复、#268既有英文season-notes正文自环修复、#270中文README例图。完成信号：六成员全部由Planner验收关闭，生产中英文正文检索/入口与SSR nonce验证、开发指引和既有英文内容入口真实一致；按D-020核实open归零后显式关闭。常驻#101/#197、majors不计入。本轮实际成员done2/open4（GraphQL/REST成员一致）；REST汇总计数异常不能用于缩范围或假报收口。",
+            "description": "收敛已有搜索、开发配置与双语入口事实，不启动新功能。实际八成员：#266/#264/#263/#268/#270已由Planner验收关闭；#262为搜索完整AC验收父单（第109轮不通过、in-progress），#279窄屏可见检索、#281真实Starlight路由/英文收录为唯一整改实现子任务（ready）。父子分工不重复实现，不降低原AC。进度按REST成员列表+GraphQL双源核实为5closed/3open。完成信号：八成员全经Planner验收关闭，生产双语正文检索/窄屏可见交互/真实路由收录与SSR nonce保持一致，核实实际open归零后显式关闭，方可合PR274 minor。#101/#197/#280与majors不计入。原六成员汇总曾恢复正常；新增整改子任务后REST汇总又为2open/5closed而实际3/5，不能据此漏父单或缩范围。",
             "status": "in-progress",
-            "completionRate": 0,
+            "completionRate": 71,
             "dueDate": null
         }
     ],
@@ -83,51 +83,51 @@
     "recentActivity": [
         {
             "type": "issue",
+            "title": "修正搜索清单为真实 Starlight 路由并收录不同名英文正文",
+            "status": "open",
+            "updatedAt": "2026-10-24T15:34:00.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "恢复窄屏搜索的可见入口与完整查询交互",
+            "status": "open",
+            "updatedAt": "2026-10-24T15:33:58.000Z"
+        },
+        {
+            "type": "issue",
             "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
             "status": "open",
-            "updatedAt": "2026-10-24T02:48:06.000Z"
+            "updatedAt": "2026-10-24T15:33:57.000Z"
         },
         {
             "type": "issue",
-            "title": "恢复英文 season-notes 的真实正文并消除自重定向",
+            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
             "status": "open",
-            "updatedAt": "2026-10-24T02:46:54.000Z"
+            "updatedAt": "2026-10-24T15:28:45.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点",
+            "status": "open",
+            "updatedAt": "2026-10-24T15:28:44.000Z"
         },
         {
             "type": "pr",
-            "title": "docs(en): restore real Season Notes content",
+            "title": "chore(main): release 1.4.0",
+            "status": "open",
+            "updatedAt": "2026-10-24T15:28:41.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
             "status": "merged",
-            "updatedAt": "2026-10-24T02:44:05.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
-            "status": "open",
-            "updatedAt": "2026-10-24T02:35:55.000Z"
+            "updatedAt": "2026-10-24T15:28:39.000Z"
         },
         {
             "type": "issue",
-            "title": "清理未消费的 OAuth/VAPID 配置字段并纠正推送指南",
+            "title": "跟踪可选 Projects 自动登记的 PROJECT_TOKEN 凭据阻塞",
             "status": "open",
-            "updatedAt": "2026-10-24T02:31:29.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(config): remove unused OAuth and push settings",
-            "status": "merged",
-            "updatedAt": "2026-10-24T02:31:10.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "chore(main): release 1.3.2",
-            "status": "open",
-            "updatedAt": "2026-10-24T02:26:55.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[auto-discovered] 审计门禁被 9 条新上游公告打红（zod/undici/fast-uri，均有修复版），阻塞一切 PR 合并与 main CI",
-            "status": "open",
-            "updatedAt": "2026-10-24T02:26:53.000Z"
+            "updatedAt": "2026-10-24T15:27:51.000Z"
         }
     ]
 }
