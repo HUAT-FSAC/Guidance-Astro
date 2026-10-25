@@ -122,6 +122,49 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await expect(page).toHaveURL(/\/en\/join\/$/)
         expect(failures).toEqual([])
     })
+    test('真实英文文档（不同名 slug）正文词命中并跳转，真正 fallback 不入英文索引（#281）', async ({
+        page,
+    }) => {
+        const failures = trackPagefindFailures(page)
+        await page.setViewportSize({ width: 1600, height: 900 })
+        await page.goto('/en/')
+        await openSearchModal(page)
+
+        // 真实英文文档 control-fundamentals 独特正文词 "VCU"
+        await searchFor(page, 'VCU')
+        const resultLinks = page.locator('site-search .pagefind-ui__result-link')
+        await expect(resultLinks.first()).toBeVisible({ timeout: 20_000 })
+        const hrefs = await resultLinks.evaluateAll((links) =>
+            links.map((link) => link.getAttribute('href'))
+        )
+        expect(hrefs).toContain('/en/archive/2025/planning-control/control-fundamentals/')
+
+        // 正文词 excerpt 高亮
+        const controlExcerpt = page
+            .locator('site-search .pagefind-ui__result', {
+                has: page.locator(
+                    'a[href="/en/archive/2025/planning-control/control-fundamentals/"]'
+                ),
+            })
+            .locator('.pagefind-ui__result-excerpt mark')
+            .first()
+        await expect(controlExcerpt).toContainText('VCU')
+
+        // 英文搜索结果绝不混入中文 fallback 路径
+        expect(hrefs.some((h) => h?.includes('/控制/'))).toBe(false)
+        expect(hrefs.some((h) => h?.includes('/记录/'))).toBe(false)
+
+        // 点击跳转到目标英文文档
+        await page
+            .locator(
+                'site-search .pagefind-ui__result-link[href="/en/archive/2025/planning-control/control-fundamentals/"]'
+            )
+            .click()
+        await expect(page).toHaveURL(
+            /\/en\/archive\/2025\/planning-control\/control-fundamentals\/$/
+        )
+        expect(failures).toEqual([])
+    })
 
     test('负例查询不返回任何结果', async ({ page }) => {
         await page.setViewportSize({ width: 1600, height: 900 })
