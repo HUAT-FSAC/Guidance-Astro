@@ -1,110 +1,98 @@
 # PLAN — 项目路线图（Planning Agent 唯一写入点）
 
-> 当前路线与队列快照；任务/验收以 GitHub Issues 为准，长期约束以 `DECISIONS.md` 为准。历史见 Git、Issue 评论与不可变日报。
+> 路线与队列快照；任务/验收以 GitHub Issues 为准，长期约束以 `DECISIONS.md` 为准。历史见 Git、Issue 评论与不可变日报。
 
-最后核实：2026-10-25，Planning 第111轮（CST 2026-10-25 21:55 / UTC 2026-10-25T13:55Z）。同步基线 `main@36f7331ecc5d0fd6c27bd314b4d5cd75b150ecd0`；`git fetch --all --prune`、`git pull --rebase` 成功，开工工作区干净。`wsyhuat/main` 仍 `f98be0d`/`d89b87e`；`f98be0d` 七个改动路径内容级 diff 为空（已由既有移植/squash `6a80906` 吸收），无新入站工作，不 merge fork。
+最后核实：2026-10-26，Planning 第113轮。开工 `main@60144174dfe92067b83e98ad09ed732c005a5337`，工作区干净；fetch / pull --rebase 成功。fork inbound 仍 `f98be0d/d89b87e`，七个路径内容级 diff 空（已由 `6a80906` 吸收），无新待移植工作，不 merge fork。
 
 ## 当前方向
 
-1. 推进 #262 验收暴露的两个原范围整改子任务：窄屏可见检索（#279，P1）与真实 Starlight 路由/英文不同名正文收录（#281，P2），完成后在父单 #262 汇总原九项 AC 重验证据并转 review。
-2. M4 保持开放（实际进度 5/8）、PR274 的 `1.4.0` minor 继续持合；完成全部原 AC 并由 Planner 验收关闭后再收口 M4，不为发版缩减范围。
-3. 保持 Worker SSR、每请求 nonce、私有 HTML 缓存、现有 CI/预算/权限边界；Q4 不启动新功能（D-017）。
+1. 收敛搜索原范围的最后生命周期缺口：首次加载异步初始化重入会在单一外壳内创建两个 PagefindUI。#287 唯一实现，#279/#262 仅保留父验收责任，不重复开发。
+2. M4 实际 **6/9**，保持 OPEN；PR274 `1.4.0` minor 继续持合。#281 索引收录已独立验收通过，不回退已完成成果，不为发版缩减原九项 AC。
+3. 只读调查 #286 的 CI 浏览器安装/调度长尾；不把耗时位置等同根因、不擅自改主要 CI/CD。维持 Worker SSR、nonce、私有 HTML 缓存与 D-017 Q4 稳态方向。
 
-## 本轮验收与跨日现场核实（2026-10-25，第111轮）
+## 昨日验收（2026-10-25 日报 → 第113轮）
 
-输入：`.agent/DIARY/2026-10-24.md`、`.agent/DIARY/2026-10-23.md`、`.agent/DIARY/2026-10-22.md` 及 `STATE.md`/`HANDOFF.md`。
+输入：`.agent/DIARY/2026-10-25.md`、`2026-10-24.md`、STATE/HANDOFF/ENV，随后核对执行报告、关键 diff、完整 SHA CI 与生产真实浏览器。昨日日报存在，无需反推替代。
 
-- **无新待验收（`in-review = 0`）**：自昨日第109轮规划落盘（`1024167`，2026-10-24T23:33+08:00 / 15:33Z）及今日第110轮跨日核实（`36f7331`）以来，Execution Agent 尚未启动新会话，仓库无新代码提交、无新 `status:review` 任务、亦无 `2026-10-25.md` 日报（符合先 Planning 后 Execution 的每日串行节奏）。
-- **昨日（2026-10-24）产出状态保持不变**：
-    - 第106轮三项（#272 / #263 / #268）已于第107轮独立验收关闭。
-    - 第108轮产出已于第109轮完成独立验收：#270 通过关闭（[6386000882](https://github.com/HUAT-FSAC/Guidance-Astro/issues/270#issuecomment-6386000882)）；PR276 通过上线（[6386022987](https://github.com/HUAT-FSAC/Guidance-Astro/pull/276#issuecomment-6386022987)）；PR274 `1.4.0` minor 持合判断正确（[6386023211](https://github.com/HUAT-FSAC/Guidance-Astro/pull/274#issuecomment-6386023211)）；**#262 不通过且报告部分勾选失实**（[6386001757](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262#issuecomment-6386001757)），已退回 `status:in-progress` 并拆出 #279 与 #281 两个独立实现切片。
-- **第110轮远端 CI 证据闭环**：完整 SHA `36f7331ecc5d0fd6c27bd314b4d5cd75b150ecd0` 的 `CI/CD Pipeline`（run `40113127406`）、`Release Please`（run `40113127453`）、`Secret Scan`（run `40113127408`）、`Close Stale`（run `40175727424`）、`OpenWiki Update`（run `40195570871`）全部 `completed/success`。
-- **未触发疑似中断**：#262 由第109轮于 `2026-10-24T15:26Z` 退回 `in-progress`，距本轮约 22.4 小时（未达 24 小时无日报更新阈值），保持原状态等待本轮后的 Execution 会话执行 #279 → #281。
-- **捕获常态 PR #282**：今日定时工作流（run `40162674353`）生成 PR #282（`chore(metrics): update project progress snapshot`，head `5216fc82`，`src/data/metrics/project-progress.json` +51/-51），63 键路径 schema 契约一致，核定为常态顺手处置项。
+- **#281 通过关闭**：[6417321248](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281#issuecomment-6417321248)。真实 routes/isFallback 生效；14 条纯行为单测本轮通过。生产 VCU 命中 `/en/archive/2025/planning-control/control-fundamentals/`，正文“maintain VCU communication”高亮并点击正确；中文 301、英文 odometry 与负例未退化。
+- **#279 部分通过，review → in-progress**：[6417355478](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279#issuecomment-6417355478)。可见入口、真实双语检索、SPA 与关闭行为认可；但原生首次加载 `site-search=1 / #starlight__search=1 / PagefindUI=2`，两个 input 均可见。现有 `.first()` 与仅外壳计数漏检，剩余实现拆 #287。
+- **#262 第二次部分通过，review → in-progress**：[6417363659](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262#issuecomment-6417363659)。AC2/4/7/8 通过，AC5 接受既有构建/失败路径记录；AC1/3/6/9 尚有共享 UI/回归完整性差距。按连续两次规则拆成初始化单一窄切片，不让 Executor 第三次宽泛盲试，也不改旧日报美化历史。
+- **PR282 交付认可**：`50b3dfa` 仅 metrics 数据 +51/-51，64 键路径（含根）一致，已随 Version `b0f72473` 上线。该 SHA Pipeline cancelled，最终 `6014417` Pipeline success；不声称每个中间 SHA 都全绿。
 
-## 今日目标（2026-10-25）
+## 今日目标（2026-10-26）
 
-- **#279**：触屏/窄屏用户能从可见入口打开、输入、查看正文结果并跳转；快捷键、SPA 导航重开、焦点返回与滚动锁释放不退化，更新窄屏 E2E 为真实可见交互断言。
-- **#281**：构建清单消费实际 Starlight `routes` 元数据（`id`/`locale`/`entryMeta`/`isFallback`），真实英文不同名 slug（如 `control-fundamentals`、`simulation-platforms`）不再被误排为 fallback；生产正文查询证明覆盖恢复。
-- **#262 收口重验**：#279 与 #281 分别提交 PR、留 §1.7 报告并转 `status:review` 后，在父单 #262 追加对原报告 AC3/AC4 的更正及原九项 AC 完整重验报告，再将 #262 转 `status:review`（Executor 绝不自行 close）。
+- #287：初始化重入、await 期间容器失效与 SPA 后重建有明确不重复的行为保证；真实浏览器查询前断言一个 UI / 可见输入，修复后部署并给父单追加证据。
+- #286：对四个 CI 长尾样本给出有原始日志支撑的归因或明确未知，重跑现有只读时长采样，提出监测/后续任务，不实施 workflow 改造。
 
-## 当前 Milestone：M4 开发入口与能力声明一致性（进度：5 / 8）
+## 当前 Milestone：M4 开发入口与能力声明一致性（进度：6 / 9）
 
-GitHub Milestone #3，`state=open`。实际八成员由 REST 成员列表与 GraphQL 双源核对一致：
+GitHub Milestone #3，`state=OPEN`。REST 成员列表与 GraphQL 双源一致：
 
-- **已完成（5）**：#266、#264、#263、#268、#270（均 `CLOSED` / `status:done`）。
-- **未完成（3）**：#262（`in-progress` 验收父单）、#279（`ready` UI 整改）、#281（`ready` 索引路由整改）。
-- **计数限制**：本轮 REST `milestones` 汇总仍返回 `open_issues=2, closed_issues=5`，较真实成员少计 1 个 open；继续以双源逐单成员列表（3 open / 5 closed）为准，不因汇总失真漏算父单或提前宣布收口。
+- **done（6）**：#266、#264、#263、#268、#270、#281。
+- **open（3）**：#262 / #279（in-progress 验收父单）、#287（ready 唯一实现切片）。
+- REST milestone 汇总历史漏计成员，不能拿汇总当唯一证据；按逐单真实状态计数。本轮新增 #287 为原搜索范围整改，并非扩展新功能。
 
 ### 目标与验收
 
-- #262 原九项 AC 全部保留。#279 负责唯一 UI 整改实现；#281 负责唯一索引输入整改实现；#262 作为整体验收父单，不重复开第三套实现。
-- 实际生产浏览器验证中文 `301 → /labs/`、英文 `odometry → /en/join/` 及真实英文 archive 页独特正文词；可见输入、excerpt/高亮、点击跳转、负例、SPA 重开与窄屏可见入口均须有真实证据。
-- 真 fallback / 重定向壳 / 草稿 / `pagefind:false` / 404 按实际元数据排除；真实不同名英文正文不能因缺同名中文文件而排除。保持索引失败非零退出、旧 bundle 不可误用、临时清单与 SSR 快照不发布、原预算与每请求 nonce 不退化。
+- #262 原九项 AC 保留；真实路由/英文不同名正文成果已获验收，剩余初始化只由 #287 实现。
+- 首次加载与实际 SPA 后，中英/桌面/窄屏既有入口可用且有效容器恰好一个 PagefindUI / 可见输入；真实正文查询、excerpt 高亮、点击、负例、焦点/滚动锁与跨断点不退化。
+- 索引 API 失败非零、旧 bundle 不可误用、清单/HTML 不发布、原门禁/预算/SSR nonce 与私有缓存边界维持；绿色 build 或 `.first()` 样本成功不能替代完整可用性。
 
 ### 完成信号（Success signal）
 
-八成员全部由 Planner 独立验收关闭，实际 open 归零，再显式置 M4 `state=closed`（D-020），之后才允许合并 PR274（`release 1.4.0` minor）。**当前 5 / 8，未收敛。**
+#287 交付并由 Planner 验收关闭，#279 剩余 AC 与 #262 原九项追加重验通过关闭；九成员实际 open 归零，再显式关闭 M4（D-020），才解除 PR274 持合。**当前未收敛。**
 
 ### 明确非目标（Non-goals）
 
-- 不隐藏/删除搜索，不改 SSR/prerender/认证/权限/SESSION/ASSETS/nonce/CSP/缓存；不加 provider/依赖/服务/凭据。
-- 不改 CI 编排或预算阈值，不扩大翻译/历史内容整治，不自动摄入 majors（PR186/209）。
-- 不实施可选 Projects 配置修复（#280）；不以禁用 job 掩盖 `Bad credentials`。
+- 不隐藏/删除搜索，不补全站翻译，不改变 SSR/认证/权限/SESSION/ASSETS/CSP/缓存，不新增 provider/服务/凭据/依赖。
+- 不改 CI 编排、runner、缓存策略或预算阈值，不以禁用 job 掩盖凭据错误；#286 只调查，不计 M4。
+- 不摄入 majors PR186/209，不实施可选 Projects 配置修复（#280），不启动 M5 或 Q4 新功能。
 
-### 执行队列（给 Executor 的建议顺序，保持 2 个 ready）
+### 执行队列（2 个 ready，建议顺序）
 
-| 顺序 | 任务                                                                                                               | 优先级 | 依赖与边界                                                                                            |
-| ---- | ------------------------------------------------------------------------------------------------------------------ | ------ | ----------------------------------------------------------------------------------------------------- |
-| 1    | [#279 恢复窄屏搜索的可见入口与完整查询交互](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279)                | P1     | ready；无硬依赖。现有 Search 单实例脱离隐藏 nav、适配可见触屏入口，不复制 UI/ID/监听；更新窄屏 E2E。  |
-| 2    | [#281 修正搜索清单为真实Starlight路由并收录不同名英文正文](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281) | P2     | ready；#266 已 done，与 #279 无硬依赖。消费真实 Starlight routes 元数据，移除手写同名中文 slug 推导。 |
+1. **[#287 消除搜索异步初始化重入导致的重复 PagefindUI](https://github.com/HUAT-FSAC/Guidance-Astro/issues/287)**（P1，low，M4）：无硬依赖。先锁定真实异步重入边界，最小实例级防重入/失效处理与有区分力回归，再真实生产验收。
+2. **[#286 调查 Quality 时长告警中的浏览器安装与调度长尾](https://github.com/HUAT-FSAC/Guidance-Astro/issues/286)**（P2，low，无 milestone）：无硬依赖。读取四个离群 run 原始日志与现有 `--dry-run`，报告根因/未知及建议，绝不先改 CI。
 
-- 两任务均通过 4.2 七条 ready 门禁，独立分支 / PR / 报告；允许在两 PR 均合入 main 后合并执行一次 `pnpm deploy:worker`，但两单与父单 #262 的生产验收证据均不得省略。
-- **#262 为 `in-progress` 验收父单**，不计为第三个独立实现任务；两子单完成后在 #262 追加更正与原九项 AC 重验报告并转 `status:review`。
-- **常态顺手项 PR #282**：今日定时任务已生成 PR #282（`chore(metrics): update project progress snapshot`，head `5216fc82`，`src/data/metrics/project-progress.json` +51/-51）。只读核验 63 键路径 schema 完全一致（数组容器长度与根结构相等），待 Executor 按既有规则（update-branch 触发 checks 绿后合入 + 部署时随验双语看板）顺手处置，不占 ready 队列名额。
+- 两单均通过七条 ready 门禁。#279/#262 是验收父单，不计第三/第四份实现容量，下一棒只领取 #287 实施，不重复开分支。
+- **常态顺手项 PR285**：仅 metrics JSON +35/-35，head `426c81a65d1f5949b2884250fb2a60d308aebec1`，64 键路径（含根）一致，checks=0 / BLOCKED；沿既有 update-branch → checks 绿 → 合入 → 部署/双语看板验收，不占 ready 名额。
 
 ## 已知阻塞与依赖
 
-| 项目      | 实际状态                      | 处理                                                                                                                |
-| --------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| #262      | in-progress / P2 / M4         | 验收父单保留原九项 AC；整改实现由 #279 / #281 唯一承担，两子单交付后追加更正与重验报告再转 review。                 |
-| #101      | blocked / P1 / 无milestone    | 本轮复核 Actions Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；维持单机 OAuth 默认 B，生产 `027692c7` 在位。      |
-| #197      | needs-info / P3 / 无milestone | 用户已确认默认 C（手工触发 Release PR CI）；PR274（`00414fa`）checks 仍为 0，待 M4 收口后用既有手工触发方式处理。   |
-| #280      | blocked / P3 / 无milestone    | 可选 Projects 的 `PROJECT_TOKEN` 凭据阻塞；与 #197 非同一凭据域，Projects 非任务 SSOT，未获授权不改 workflow/凭据。 |
-| PR274     | minor 持合                    | `chore(main): release 1.4.0`（minor）；按 WORKFLOW §11.1 / D-020 等 M4 实际 8/8 收口并显式关闭后再合并。            |
-| PR186/209 | majors 暂缓                   | D-015 standing reminders（actions v7/v8 与 TS7/vitest5）；不摄入、不关闭、不计今日容量。                            |
-| PR282     | 常态 metrics 顺手项           | head `5216fc82`，`mergeState=BLOCKED`；schema 63 路径一致已验证，待 update-branch 触发 checks 绿后合入。            |
+- **#262 / #279**：待 #287 单一整改完成，分别补原 AC 证据后 review；本轮从 review 退回，不是重置 Executor 原有进行中现场。
+- **#101**：blocked，Secrets 仍仅 CODECOV_TOKEN / PROJECT_TOKEN；默认 B 单机 OAuth 可用，不恢复 CI deploy。
+- **#197**：needs-info，用户已确认默认 C 手工触发 Release PR CI；保留常驻观察，不重复提问。
+- **#280**：blocked，可选 Projects 的独立凭据域；Projects 非任务 SSOT，不扩权、不禁 job。
+- **PR274**：`1.4.0` minor 继续持合，[本轮说明 6417370626](https://github.com/HUAT-FSAC/Guidance-Astro/pull/274#issuecomment-6417370626)。#286 不计 M4，但 #287 原范围差距必须解决。
+- **PR186 / PR209**：D-015 majors standing reminders，保持暂缓，不算饥饿积压而自动关闭。
 
 ## 治理与 Executor 信号回应
 
-- 开放 Issue 6：ready=2（#279、#281）、in-progress=1（#262）、blocked=2（#101、#280）、needs-info=1（#197）、in-review=0。P0=0，P1=2（#279 与常驻外部阻塞 #101），队列容量与优先级完全合规。
-- 开放 PR 4：PR282（常态 metrics，待 update-branch）、PR274（minor 持合）、PR209/186（majors 暂缓）。
-- 2026-10-24 日报中 Executor 的全部信号（#262/#270 待验收、PR274 minor 持合、auto-discovered #279/#280 分诊）已于第109轮逐条回应并落盘，本轮复核无新增未回应信号。
-- Executor 的 `STATE.md` / `HANDOFF.md` 顶部仍停留在第108轮收尾口径（写有“搜索已恢复 / 无 in-progress / 验收后 6/6 可收口”），待今日 Execution 会话启动后由 Executor 自行整体刷新；Planner 仅在文件末尾追加接力补记，不覆盖 Executor 现场。
+- 开放 Issue 7：ready=2、in-progress=2、in-review=0、blocked=2、needs-info=1；P0=0。P1 今日只实施 #287，#279 是验收父单、#101 是外部常驻阻塞，不重复计算容量。
+- 全部开放项已检查重复、依赖/范围/可测 AC、优先级、阻塞与方向冲突；无未分诊 auto-discovered。#286 补 P2/low 与只读调查门禁，不因告警自动执行高风险 CI 修改。
+- 日报“等待三单验收”已逐项回应；“M4 8/8 即收口”未采纳，因独立发现重复 UI，新增窄任务后真实为 6/9。已完成的路由修复予以关闭，不将整个昨日产出一概否定。
+- 不改日报/ENV；按仓库强制规则仅向 STATE/HANDOFF 追加接力补记，下一棒自行刷新顶部执行快照。Issue 与 TASKS 冲突以 Issue 为准。
 
 ## 下一阶段
 
-#279、#281 与父单 #262 经 Planner 独立验收通过关闭后，按 D-020 显式关闭 M4，再按 WORKFLOW §11.1 / §11.2 / §11.3 触发 PR274 CI、合并发布 `v1.4.0` 并完成四方一致性与祖先判定。当前不建 M5、不启动新功能（D-017）。
+M4 三个剩余成员独立验收并显式关闭后，由 Executor 按 §11.1/§11.2/§11.3 完成 PR274 CI、minor 合并、四方一致性、全 M4 合入提交祖先判定与部署必要性判断。当前不创建依赖未满足的 ready 发版任务，不启动 M5。
 
 ## 已放弃的方向
 
-- 以 `dialog.open=true` 替代窄屏用户可见可操作的搜索验收，或以固定页面计数常量宣称搜索完成。
-- 由 `getCollection` + 中文同名文件推断英文 fallback、复制路由算法或把不同语言 slug 字面差异当成 fallback。
-- 未获授权隐藏搜索、改全站预渲染、扩大翻译/权限/CI、自动摄入 majors。
+- 以一个 `site-search` 外壳、唯一 ID 或 `.first()` 查询成功推断内部 UI 唯一。
+- 因局部通过就采纳日报建议提前关闭 M4 / 发布 minor；第三次宽泛重试搜索而不拆小边界。
+- 直接把时长异常当 E2E 测试回退，或凭耗时位置推断安装根因后擅自修改 CI。
 
 ## Decision Gate
 
-`pending = 0`；D-001..D-022 全部生效。本轮无需要用户拍板的新问题，不重复询问已确认默认项（#101 默认 B、#197 默认 C、D-015 majors 暂缓、D-017 Q4 稳态）。
+`pending=0`，D-001..D-022 继续生效；无新长期产品取舍，不重复询问已确认默认。重复初始化是原功能低风险可回滚修复，#286 是只读调查，不授权突破红线。
+
+## 本轮验证边界
+
+- 本轮实跑：14 条路由行为单测、零豁免 audit；原生生产 301/odometry/VCU 查询与点击、负例 0、SPA 重开、Esc 事件完成后焦点/滚动锁。截图 `.tmp/planner113-en-search.png` 清楚显示第二输入框；helper Worker 报错已反馈，原生无 pageerror。
+- 只读核验：两个代码合入完整 SHA 的 CI 三工作流 success，最终 `6014417` Pipeline `40207745649` success；`50b3dfa` Pipeline cancelled 如实保留。部署当前 `b0f72473-104f-4554-bd96-175785e45368` 100%；两次首页 27 script nonce 全部头体一致且跨请求不同，私有缓存不变、清单 404、索引 entry 200、sitemap 无清单。
+- #286 已定位 668s/572s/599s 安装 step 与一例跨 job 启动长间隙，尚未逐份读安装日志定位底层原因，交 Executor 完成实际调查，不把推断冒充结论。
+- 无代码/测试/验证脚本、合并或部署动作；未重跑全量单测/E2E/LHCI，采用已核实远端门禁与本轮真实表面证据。`pnpm format:check` 修正 TASKS 四行列表缩进后 exit 0；`pnpm build` exit 0，实际索引 zh=76/en=67（143 篇），排除 404×2/fallback×17/HTML 壳×23，164 文件/1054.2 KiB。保留 markdown 弃用与 Vite directive 警告完整输出（本会话 artifact://30），不称零警告，不以 build 绿色覆盖双 UI 差距。
 
 ## 给 Executor 的指令
 
-按顺序执行 #279 → #281（独立分支/PR/§1.7报告），部署后在 #262 追加原报告更正与原九项 AC 完整重验报告并将三单均置 `status:review`（严禁自行 close）。M4 未经 Planner 显式关闭前不得合并 PR274；开工后用真实状态刷新 `STATE.md`/`HANDOFF.md`/`TASKS.md`，并在 `.agent/DIARY/2026-10-25.md` 记录今日执行情况。
-
-## 本轮验证边界（第111轮只读核验）
-
-- **远端 CI 与告警**：完整 SHA `36f7331ecc5d0fd6c27bd314b4d5cd75b150ecd0` 三工作流（Pipeline `40113127406` / Release Please `40113127453` / Secret Scan `40113127408`）及 OpenWiki Update（`40195570871`）全部 `completed/success`；Dependabot open alerts = `0`、Secret scanning open alerts = `0`。
-- **本地只读门禁与探针**：`pnpm quality:audit` → exit 0（`✅ audit clean`，0 豁免）；`node scripts/quality/supply-chain-watch.mjs` → exit 0（提示 `@cloudflare/vite-plugin` 上游 `1.65.0` / peer `wrangler ^4.152.0`，按 D-010 维持锁定）。
-- **部署与线上核验**：`env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy ./node_modules/.bin/wrangler deployments list --config dist/server/wrangler.json` 确认当前 100% 生产版本仍为 `027692c7-dbb3-4abc-81d8-e5b86c9f33f6`（`2026-10-24T13:31:39.989Z`）。`gh api actions/secrets` 确认仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`。
-- **生产 HTTP / CSP nonce**：两次独立单请求取样 `https://huat-fsac.eu.org/` 均 HTTP 200，`cache-control: private, no-cache, must-revalidate`，各 27 个 `<script nonce>` 与同请求 CSP 头完全一致（`wXsjcF_8aJVDESD0JIVXjA`、`cBWJDCMNo5ABR3eYIdp1qA`）且两次不同；`/_search-manifest.json` → `404`、`/pagefind/pagefind.js` → `200`、`/en/archive/2025/planning-control/control-fundamentals/` → `200`。
-- **PR #282 契约核验**：`src/data/metrics/project-progress.json` 63 键路径完全匹配，数组容器长度与根结构相等。
-- **未重跑项**：自 `36f7331` 起零代码变更，未重复运行本地全量 `build` / `test:run` / `test:e2e` / `LHCI`，无代码或测试修改，无新部署。
+先 #287 后 #286；#287 是唯一搜索实现，交付后补 #279 剩余 AC 与 #262 原九项重验再转 review，三单均不得自行关闭。开工刷新自有 STATE/HANDOFF，追加当日日报；M4 未经 Planner 显式关闭前不得合并 PR274。
