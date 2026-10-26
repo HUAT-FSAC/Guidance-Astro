@@ -1,20 +1,16 @@
 # STATE
 
-- 更新时间：2026-10-25T15:35Z（UTC，Execution 第112轮收尾）
-- 当前任务：无 in-progress；今日队列 #279（窄屏搜索可见性）、#281（真实 Starlight 路由与英文正文收录）均完成转 `status:review`；父单 #262 已补全原九项 AC 全量重验报告转 `status:review`；PR #282 已 squash 合入主干并部署；PR274（release 1.4.0 minor）按 §11.1 持合至 M4 收尾。
-- 分支：main；基线 `50b3dfa`（已推送）。生产 Version `b0f72473-104f-4554-bd96-175785e45368`（deploy:worker exit 0，含全量 143 篇搜索索引）。
-- #279：PR283 squash 合入 `de758dc`；单实例 `<Search />` 移至 `.header-right`，移动视口独立可见且 44×44px 触控，避让 `MobileMenuToggle`；Esc/取消按钮释放滚动锁并返回焦点；E2E 47 条全绿；报告 6399190208。
-- #281：PR284 squash 合入 `a063e34`；消费 Starlight `routes` 元数据，以原生 `isFallback: true` 排除真正回退壳，收录 31 篇不同名英文正文（索引从 zh=76/en=36 恢复至 zh=76/en=67，总计 143 篇）；报告 6399492807。
-- #262：在父单追加 AC3/AC4 更正说明及原九项 AC 全量重验报告（评论 6399500598），转 `status:review` 待 Planner 验收（不自行 close）。
-- PR282：已 update-branch 并触发 checks 全绿，合入 `50b3dfa`，双语看板渲染 `2026/10/25 04:39:39` 新快照。
-- PR274：release 1.4.0（minor），按 WORKFLOW §11.1 维持持合状态。
-- 队列权威：开放 Issue 6（#279 review、#281 review、#262 review、#101 blocked、#197 needs-info、#280 blocked）；开放 PR 3（274 持合、209/186 majors 暂缓）。
-- M4：实际 5 closed（#266/#264/#263/#268/#270）+ 3 review（#262/#279/#281）；待 Planner 验收关闭后达 8/8 显式收口。
-- 生产：Version `b0f72473`；单请求 CSP 头 nonce 与 27 个 script nonce 一致（`nonce-T-EQY6L8AUDZ8t-La2HrMw`）、两请求 nonce 轮换（`nonce-MByrXTKXtPq6EN6E-MY-ug`）、HTML 私有缓存维持；中文 301→/labs/、英文 odometry→/en/join/ 与英文归档 VCU→/en/archive/2025/planning-control/control-fundamentals/ 实测全部通过；`/_search-manifest.json` 404。
-- inbound：`wsyhuat/main` 仍为已吸收之 `f98be0d`。
-- 未完成工作：无 in-progress；今日队列全部清空。
-- 今日日报：已写 `.agent/DIARY/2026-10-25.md`。
-- 已知环境限制：无新限制。
+- 更新时间：2026-10-27（当地执行日期，Execution第114轮；命令时间均记UTC）
+- 当前任务：#287实现与部署已交付，连同父单#279/#262转review；三份报告均为部分完成，快捷键关闭缺口#289明确保留。下一项#286尚未领取。
+- 分支：main；PR288 squash `26f333a557a3273af2880d455bcc0b5bde375083`（已推送）；实现分支已删。
+- 未完成工作：今日队列#286只读CI长尾调查；#289仅auto-discovered待Planner定级，不擅自实施。
+- 最近提交：`26f333a fix(search): prevent reentrant Pagefind UI initialization (#288)`；PR285 metrics `42ba32c` 同步部署。
+- 生产：Version `33fc8efa-9cea-4770-b77e-e974c3225542`；375px中英301/odometry、1600px英文VCU、SPA/负例/单UI/input、Esc/Cancel焦点和锁、跨断点通过；Ctrl/Meta+k opens=true/closes=false，#289已登记，不能称全量验收。
+- 验证：445单测/41文件、50E2E、完整本地12-run LHCI、lint/format/tsc/audit/bundle/routes/theme通过；完整PR head `cd030d7` Pipeline40365080259 success；完整main `26f333a` Pipeline40367299500/Secret Scan40367299498/Release Please40367299630 success。
+- 安全/发布：两请求各27script nonce均与CSP一致且不同，HTML private；清单404，索引入口/entry200；双语metrics显示2026-10-26 04:45:13。构建仍143篇；完整日志/截图/JSON `.tmp/issue287/`。
+- 报告：#287=6422829560、#279=6422830204、#262=6422830912；状态先Issue后TASKS同步；不close。M4仍OPEN、PR274持合。
+- inbound：`wsyhuat/main` 的 `f98be0d/d89b87e` 已由 `6a80906` 吸收，本轮七路径内容级diff空；不merge fork。无LOCK。
+- 今日日报：会话收尾追加 `.agent/DIARY/2026-10-27.md`；环境限制LSP未配置，已如实用浏览器与tsc验证；保留markdown/Vite/LHCI warn。
 
 ## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
 

@@ -1,10 +1,9 @@
 # ENV — 运行环境说明（唯一写入者：Execution Agent）
 
 > 命令全部来自实际探测（`package.json` scripts / CI 配置 / 本会话真实执行）。未亲测的条目标注「未知」，不编造。
-> 最近更新：2026-10-25（Execution 第112轮）；当前本地基线 **445 tests / 41 files · e2e 47 · 索引 zh=76/en=67 (total 143)**，生产部署版本在§3记录。
+> 最近更新：2026-10-27（Execution 第114轮）；当前实测 **445 tests / 41 files · e2e 50 · 索引 zh=76/en=67 (total 143)**。绿色门禁不代表全部产品 AC 通过，既有快捷键关闭缺口见 #289。
 
-**复确认（2026-10-25T15:3xZ 在 main@`50b3dfa` 实测，#279/#281/PR282 合入后；证据 `.tmp/issue279/*` 与 Issue 报告 6399190208 / 6399492807 / 6399500598）**：
-`pnpm lint` / `format:check` / `tsc` / `test:run`（**445 passed / 41 files**）/ `quality:bundle`（Total JS 149.35 KB / CSS 237.46 KB，预算内）/ `quality:routes` / `quality:theme` / `quality:audit`（0 豁免）全 exit 0；`test:e2e` **47 passed**；`dist/client/sitemap-0.xml` = **168 页**；`pnpm build` 内含 build-index：indexed **zh=76 en=67 (total 143)**，排除 404×2/locale-fallback×17/html-shell×23，bundle 164 files / 1053.6 KiB，languages=[en, zh-cn]。`pnpm deploy:worker` exit 0（Version `b0f72473`）；线上首页/看板 nonce 头体一致（`nonce-T-EQY6L8AUDZ8t-La2HrMw`）、双语看板渲染 `2026/10/25 04:39:39` 新快照、生产搜索 301→/labs/、odometry→/en/join/、VCU→/en/archive/2025/planning-control/control-fundamentals/ 实测通过、`/_search-manifest.json` 404。
+**复确认（第114轮，main@`26f333a` 部署后）**：本轮 lint / format:check / tsc / test:run（445/41）/ audit（零豁免）exit 0；build、bundle（JS149.43KB/CSS237.46KB）、theme、routes、全 E2E（50 passed）exit 0；完整本地 LHCI（4 URL×3次，12 runs）exit 0，保留 color-contrast / INP auditRan / TTI / LCP / FCP 的 warn，未降阈值。生产 Version `33fc8efa-9cea-4770-b77e-e974c3225542`；原生 Chromium 窄屏中英及桌面英文 301/odometry/VCU、高亮/点击、同document SPA、单UI/input、负例、Esc/Cancel焦点与滚动锁通过；Ctrl/Cmd+K 可打开但不能再次关闭，#289 待 Planner 分诊，不称完全验收。双语 metrics 显示 2026-10-26 04:45:13 快照；两请求各27script nonce与各自CSP一致且跨请求不同，HTML private。完整构建警告与证据 `.tmp/issue287/`。
 
 ## 1. 工具链（实测）
 
@@ -74,7 +73,7 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 - wrangler OAuth **在本机（Linux）已登录可用**：`wrangler whoami` → 账号 `Iridite` / `bfdcbff6cfe16d2b9bd657593ba88f5f`（与 `wrangler.json` 的 `account_id` 一致）。凭据路径 `/home/kerwin/.config/.wrangler/config/default.toml`。
     - ⚠️ 2026-10-17 实测：OAuth token **缺 `k2.read` / `k2.write` scope**，`wrangler whoami` 会打 WARNING —— 与 Worker 部署无关，**属正常**（同轮 `pnpm deploy:worker` exit 0 已证）。
     - 裸 shell 里 `wrangler` 不在 PATH，但它是项目 devDependency：用 `./node_modules/.bin/wrangler …` 或走 `pnpm deploy:worker`。
-- 最近一次部署：**Version `b0f72473-104f-4554-bd96-175785e45368`**（2026-10-25，第112轮，main@50b3dfa 含 #279 窄屏搜索可见性、#281 真实 Starlight 路由收录与 PR282 bot metrics 快照；deploy:worker exit0，含完整 143 篇搜索索引）。线上验收：首页/看板 nonce 头体一致（T-EQY6L8AUDZ8t-La2HrMw）、双语看板渲染 `2026/10/25 04:39:39` 新快照、生产搜索 301→/labs/、odometry→/en/join/ 与 VCU→/en/archive/2025/planning-control/control-fundamentals/ 实测通过、`/_search-manifest.json` 404、`/pagefind/pagefind.js` 200。
+- 最近一次部署：**Version `33fc8efa-9cea-4770-b77e-e974c3225542`**（2026-10-27，第114轮，main@`26f333a`，含 #287 初始化重检修复与 PR285 metrics；deploy:worker exit 0，完整143篇索引）。生产单UI/input、双语正文查询、不同slug英文VCU、SPA/负例、nonce与私有缓存通过；快捷键再次关闭仍失败，独立 #289 不隐去。双语看板显示 `2026/10/26 04:45:13` / `10/26/2026, 4:45:13 AM`；`/_search-manifest.json` 404，pagefind入口及entry 200。
 - ⚠️ build 期索引（#262）：`pnpm build` = `astro build && node scripts/search/build-index.ts`（本地 wrangler dev 127.0.0.1:**8788**，约 +60s）；失败非零并删除旧 pagefind bundle；`preview:ssr` 仍用 8787。
 - 部署验收判据（#171 已修正）：`curl -sI https://huat-fsac.eu.org/ | grep -qiE "content-security-policy:.*nonce-"`；**更强**：同一请求下响应头 `'nonce-X'` 与 HTML `nonce="X"` 相等。
 - ⚠️ 字面串 `content-security-policy: nonce-` **永不匹配**（nonce 在 `script-src` 内），不得据此判定部署失败。
