@@ -1,43 +1,43 @@
 {
-    "generatedAt": "2026-10-25T04:39:39.481Z",
+    "generatedAt": "2026-10-26T04:45:13.391Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
         "issueLeadTimeDays": 0.95,
-        "prCycleTimeDays": 0.7,
+        "prCycleTimeDays": 0.68,
         "issueCloseRatePercent": 93.48,
-        "prMergeRatePercent": 80.22,
-        "ciSuccessRatePercent": 66,
-        "wipIssueCount": 1,
-        "reviewIssueCount": 0,
-        "backlogIssueCount": 2
+        "prMergeRatePercent": 80.85,
+        "ciSuccessRatePercent": 60,
+        "wipIssueCount": 0,
+        "reviewIssueCount": 3,
+        "backlogIssueCount": 0
     },
     "counts": {
         "openIssueCount": 6,
         "openPullRequestCount": 3,
         "openedIssuesInWindow": 92,
         "closedIssuesInWindow": 86,
-        "openedPullRequestsInWindow": 91,
-        "mergedPullRequestsInWindow": 73,
+        "openedPullRequestsInWindow": 94,
+        "mergedPullRequestsInWindow": 76,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 9
+        "ciFailedRunsInWindow": 8
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-24T15:25:43.000Z",
-        "latestMergedPullRequestAt": "2026-10-24T13:30:42.000Z"
+        "latestIssueUpdatedAt": "2026-10-22T15:28:36.000Z",
+        "latestMergedPullRequestAt": "2026-10-25T15:30:42.000Z"
     },
     "summary": {
         "totalIssues": 116,
         "closedIssues": 110,
         "openIssues": 6,
-        "ciPassRate": 66
+        "ciPassRate": 60
     },
     "byStatus": {
-        "backlog": 2,
+        "backlog": 0,
         "ready": 1,
-        "inProgress": 1,
-        "review": 0,
+        "inProgress": 0,
+        "review": 3,
         "blocked": 2,
         "done": 110
     },
@@ -82,52 +82,52 @@
     },
     "recentActivity": [
         {
-            "type": "issue",
-            "title": "修正搜索清单为真实 Starlight 路由并收录不同名英文正文",
+            "type": "pr",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
             "status": "open",
-            "updatedAt": "2026-10-24T15:34:00.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "恢复窄屏搜索的可见入口与完整查询交互",
-            "status": "open",
-            "updatedAt": "2026-10-24T15:33:58.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
-            "status": "open",
-            "updatedAt": "2026-10-24T15:33:57.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
-            "status": "open",
-            "updatedAt": "2026-10-24T15:28:45.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点",
-            "status": "open",
-            "updatedAt": "2026-10-24T15:28:44.000Z"
+            "updatedAt": "2026-10-26T01:11:58.000Z"
         },
         {
             "type": "pr",
-            "title": "chore(main): release 1.4.0",
+            "title": "chore(deps): bump the majors group across 1 directory with 3 updates",
             "status": "open",
-            "updatedAt": "2026-10-24T15:28:41.000Z"
+            "updatedAt": "2026-10-26T01:05:54.000Z"
         },
         {
             "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
             "status": "merged",
-            "updatedAt": "2026-10-24T15:28:39.000Z"
+            "updatedAt": "2026-10-25T15:30:46.000Z"
         },
         {
             "type": "issue",
-            "title": "跟踪可选 Projects 自动登记的 PROJECT_TOKEN 凭据阻塞",
+            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
             "status": "open",
-            "updatedAt": "2026-10-24T15:27:51.000Z"
+            "updatedAt": "2026-10-25T15:26:29.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "修正搜索清单为真实 Starlight 路由并收录不同名英文正文",
+            "status": "open",
+            "updatedAt": "2026-10-25T15:25:45.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(main): release 1.4.0",
+            "status": "open",
+            "updatedAt": "2026-10-25T15:23:33.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "fix(search): consume real Starlight routes and index English documents with distinct slugs",
+            "status": "merged",
+            "updatedAt": "2026-10-25T15:23:03.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "恢复窄屏搜索的可见入口与完整查询交互",
+            "status": "open",
+            "updatedAt": "2026-10-25T14:57:53.000Z"
         }
     ]
 }
