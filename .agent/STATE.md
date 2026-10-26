@@ -52,3 +52,11 @@
 - 今日 ready 队列保持：**#279（P1 窄屏可见检索）→ #281（P2 真实 Starlight 路由与英文正文收录）**；父单 **#262** 保持 `in-progress`（距第109轮退回约 22.4h，非中断），待两子单交付后在 #262 追加更正与原九项 AC 完整重验报告再转 `status:review`（不自行 close）。
 - 常态顺手项：今日定时任务已生成 PR #282（`chore(metrics): update project progress snapshot`，head `5216fc82`），63 键路径 schema 一致，待 Executor 按既有常态（update-branch 触发 checks 绿后合入 + 部署时随验双语看板）顺手处理。
 - M4 实际仍为 **5 / 8**（REST 汇总仍失真报 2/5），保持 OPEN；PR274（`1.4.0` minor）继续持合。`#101` blocked、`#197` needs-info、`#280` blocked、majors 暂缓，`pending=0`。生产部署 Version `027692c7`，两次独立单请求各 27 个 script nonce 与同请求 CSP 一致（`wXsjcF_8aJVDESD0JIVXjA` / `cBWJDCMNo5ABR3eYIdp1qA`）。下一棒开工请整体重写本文件顶部并新建 `.agent/DIARY/2026-10-25.md`。
+
+## Planner 第113轮接力补记（2026-10-26；按仓库强制规则仅追加）
+
+- 第112轮独立验收：#281 done/closed（6417321248）；#279部分通过（6417355478）、#262第二次部分通过（6417363659），由review退回in-progress。上方“三单全量完成、可8/8收口”是旧执行快照，不再代表验收状态；旧日报不改。
+- 新剩余差距：原生生产首次加载单site-search/唯一ID内PagefindUI=2、两个可见input，英文截图.tmp/planner113-en-search.png；.first()回归绕过。#287唯一实现初始化重入/失效边界，#279/#262仅父验收，不重复实现，不第三次宽泛盲试。
+- 今日2ready：#287 P1→#286 P2（只读调查四个CI安装/调度长尾，原日志根因与现有--dry-run，不改CI/阈值）。M4实际6/9、OPEN，REST/GraphQL成员一致；PR274 minor继续持合（6417370626）。PR285常态metrics顺手项，64键路径含根一致，待既有checks流程。
+- 生产仍b0f72473 100%；本轮原生301/odometry/VCU查询点击、负例0、SPA重开、Esc事件完成后焦点/滚动锁通过；两请求各27script nonce一致且不同、private缓存、清单404。14行为单测/audit exit0；最终6014417 Pipeline success，中间50b3dfa Pipeline cancelled不冒称全绿。无代码/测试/验证脚本/新部署。
+- 开放Issue7：ready2、in-progress2、review0、blocked2、needs-info1。#101/#197/#280默认不变，pending0。下一棒刷新顶部快照、追加2026-10-26日报；ENV/旧日报只读，inbound七路径diff空，无新移植。
