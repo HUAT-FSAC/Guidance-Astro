@@ -39,30 +39,95 @@ function trackSearchConsoleErrors(page: Page): string[] {
     return errors
 }
 
-/** 打开搜索弹窗：桌面优先点真实按钮（覆盖鼠标入口），按钮不可见时用 Ctrl+K */
+/** 实际入口必须唯一、可见；打开后先验内部 UI 唯一性，再允许查询。 */
 async function openSearchModal(page: Page): Promise<void> {
-    const button = page.locator('site-search button[data-open-modal]').first()
-    if (await button.isVisible().catch(() => false)) {
-        await button.click()
-    } else {
-        await page.keyboard.press('Control+K')
-    }
-    await expect(page.locator('site-search .pagefind-ui__search-input').first()).toBeVisible({
+    const button = page.locator('site-search button[data-open-modal]')
+    await expect(button).toHaveCount(1)
+    await expect(button).toBeVisible()
+    await button.click()
+    await expectSingleSearchUI(page)
+}
+
+async function expectSingleSearchUI(page: Page): Promise<void> {
+    await expect(page.locator('site-search .pagefind-ui')).toHaveCount(1, {
         timeout: 30_000,
     })
+    await expect(page.locator('site-search .pagefind-ui__search-input')).toHaveCount(1)
+    await expect(page.locator('site-search .pagefind-ui__search-input')).toBeVisible()
 }
 
 async function searchFor(page: Page, query: string): Promise<void> {
-    await page.locator('site-search .pagefind-ui__search-input').first().fill(query)
+    await expectSingleSearchUI(page)
+    await page.locator('site-search .pagefind-ui__search-input').fill(query)
 }
 
 test.describe('站内搜索（#262 索引恢复）', () => {
+    test('异步 UI 加载期间 page-load 重入仍只有一个可查询输入（#287）', async ({ page }) => {
+        const { promise: pending, resolve: release } = Promise.withResolvers<void>()
+        const { promise: loading, resolve: requested } = Promise.withResolvers<void>()
+        await page.route('**/pagefind/pagefind-ui.js', async (route) => {
+            requested()
+            await pending
+            await route.continue()
+        })
+        await page.goto('/', { waitUntil: 'domcontentloaded' })
+        await loading
+        // 保持真实脚本在途，让两个生命周期入口都跨过构造器加载的 await。
+        await page.evaluate(async () => {
+            document.dispatchEvent(new Event('astro:page-load'))
+            const idle = Promise.withResolvers<void>()
+            requestIdleCallback(() => idle.resolve())
+            await idle.promise
+        })
+        release()
+        await openSearchModal(page)
+        await searchFor(page, '301')
+        await expect(page.locator('site-search a[href="/labs/"]')).toBeVisible({
+            timeout: 20_000,
+        })
+    })
+
+    for (const replacement of ['container', 'element'] as const) {
+        test(`加载期间替换 ${replacement} 不写入旧容器且新容器可查询（#287）`, async ({ page }) => {
+            const { promise: pending, resolve: release } = Promise.withResolvers<void>()
+            const { promise: loading, resolve: requested } = Promise.withResolvers<void>()
+            await page.route('**/pagefind/pagefind-ui.js', async (route) => {
+                requested()
+                await pending
+                await route.continue()
+            })
+            await page.goto('/', { waitUntil: 'domcontentloaded' })
+            await loading
+            const obsolete = await page.locator('#starlight__search').elementHandle()
+            await page.evaluate(async (kind) => {
+                const old = document.querySelector(
+                    kind === 'element' ? 'site-search' : '#starlight__search'
+                )!
+                old.replaceWith(old.cloneNode(true))
+                document.dispatchEvent(new Event('astro:page-load'))
+                const idle = Promise.withResolvers<void>()
+                requestIdleCallback(() => idle.resolve())
+                await idle.promise
+            }, replacement)
+            release()
+            await openSearchModal(page)
+            await searchFor(page, '301')
+            await expect(page.locator('site-search a[href="/labs/"]')).toBeVisible({
+                timeout: 20_000,
+            })
+            // 持有旧 DOM 引用，检查真正过时的目标，不只检查当前页面。
+            expect(
+                await obsolete!.evaluate((target) => target.querySelectorAll('.pagefind-ui').length)
+            ).toBe(0)
+        })
+    }
+
     test('生产 Pagefind 入口资源可达，UI 初始化无相关网络/控制台错误', async ({ page }) => {
         const failures = trackPagefindFailures(page)
         const consoleErrors = trackSearchConsoleErrors(page)
         await page.goto('/')
         // PagefindUI 初始化后会在弹窗容器内渲染 .pagefind-ui 结构，等价于 pagefind.js 已加载执行
-        await expect(page.locator('site-search .pagefind-ui').first()).toBeAttached({
+        await expect(page.locator('site-search .pagefind-ui')).toBeAttached({
             timeout: 30_000,
         })
         // 入口脚本与索引元数据作为真实生产资源直接可达
@@ -78,7 +143,7 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.setViewportSize({ width: 1600, height: 900 })
         await page.goto('/')
         await page.keyboard.press('Control+K')
-        await expect(page.locator('site-search .pagefind-ui__search-input').first()).toBeVisible({
+        await expect(page.locator('site-search .pagefind-ui__search-input')).toBeVisible({
             timeout: 30_000,
         })
         await searchFor(page, '301')
@@ -98,7 +163,7 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.setViewportSize({ width: 1600, height: 900 })
         await page.goto('/en/')
         await page.keyboard.press('Control+K')
-        await expect(page.locator('site-search .pagefind-ui__search-input').first()).toBeVisible({
+        await expect(page.locator('site-search .pagefind-ui__search-input')).toBeVisible({
             timeout: 30_000,
         })
         await searchFor(page, 'odometry')
@@ -184,7 +249,7 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.locator('a[href="/docs-center/"]').first().click()
         await expect(page).toHaveURL(/\/docs-center\/$/)
         await page.keyboard.press('Control+K')
-        await expect(page.locator('site-search .pagefind-ui__search-input').first()).toBeVisible({
+        await expect(page.locator('site-search .pagefind-ui__search-input')).toBeVisible({
             timeout: 30_000,
         })
         await searchFor(page, '301')
@@ -202,12 +267,12 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.setViewportSize({ width: 375, height: 667 })
         await page.goto('/')
 
-        const searchBtn = page.locator('site-search button[data-open-modal]').first()
+        const searchBtn = page.locator('site-search button[data-open-modal]')
         await expect(searchBtn).toBeVisible()
         await expect(searchBtn).toHaveAttribute('aria-label', '搜索')
 
         await searchBtn.click()
-        const searchInput = page.locator('site-search .pagefind-ui__search-input').first()
+        const searchInput = page.locator('site-search .pagefind-ui__search-input')
         await expect(searchInput).toBeVisible({ timeout: 30_000 })
         await expect(searchInput).toBeFocused()
 
@@ -230,12 +295,12 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.setViewportSize({ width: 375, height: 667 })
         await page.goto('/en/')
 
-        const searchBtn = page.locator('site-search button[data-open-modal]').first()
+        const searchBtn = page.locator('site-search button[data-open-modal]')
         await expect(searchBtn).toBeVisible()
         await expect(searchBtn).toHaveAttribute('aria-label', 'Search')
 
         await searchBtn.click()
-        const searchInput = page.locator('site-search .pagefind-ui__search-input').first()
+        const searchInput = page.locator('site-search .pagefind-ui__search-input')
         await expect(searchInput).toBeVisible({ timeout: 30_000 })
         await expect(searchInput).toBeFocused()
 
@@ -262,8 +327,8 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await page.setViewportSize({ width: 375, height: 667 })
         await page.goto('/')
 
-        const searchBtn = page.locator('site-search button[data-open-modal]').first()
-        const dialog = page.locator('site-search dialog').first()
+        const searchBtn = page.locator('site-search button[data-open-modal]')
+        const dialog = page.locator('site-search dialog')
 
         // 按钮点击打开 + 滚动锁生效
         await searchBtn.click()
@@ -271,7 +336,7 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await expect(page.locator('body')).toHaveAttribute('data-search-modal-open', '')
 
         // 取消按钮关闭 + 滚动锁释放 + 焦点返回触发器
-        await page.locator('site-search button[data-close-modal]').first().click()
+        await page.locator('site-search button[data-close-modal]').click()
         await expect(dialog).not.toHaveAttribute('open', '')
         await expect(page.locator('body')).not.toHaveAttribute('data-search-modal-open')
         await expect(searchBtn).toBeFocused()
@@ -296,11 +361,11 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await expect(page).toHaveURL(/\/2024-learning-roadmap\/$/)
 
         // 导航后窄屏搜索入口依然可见且可交互
-        const searchBtn = page.locator('site-search button[data-open-modal]').first()
+        const searchBtn = page.locator('site-search button[data-open-modal]')
         await expect(searchBtn).toBeVisible()
         await searchBtn.click()
 
-        const searchInput = page.locator('site-search .pagefind-ui__search-input').first()
+        const searchInput = page.locator('site-search .pagefind-ui__search-input')
         await expect(searchInput).toBeVisible({ timeout: 30_000 })
         await searchFor(page, '301')
         await expect(page.locator('site-search .pagefind-ui__result-link').first()).toHaveAttribute(
@@ -321,6 +386,8 @@ test.describe('站内搜索（#262 索引恢复）', () => {
             await expect(openBtn).toHaveCount(1)
             await expect(openBtn).toBeVisible()
             await expect(page.locator('#starlight__search')).toHaveCount(1)
+            await openSearchModal(page)
+            await page.keyboard.press('Escape')
         }
     })
 })

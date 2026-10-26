@@ -5,7 +5,8 @@
  * - 上游把 PagefindUI 初始化挂在 window DOMContentLoaded 上，ClientRouter（astro:transitions）
  *   的客户端导航不会再次触发该事件，SPA 导航后搜索弹窗内没有输入框；
  * - 上游从不移除 window 级监听，旧实例在导航后持续泄漏，且其 showModal 会因元素脱离文档抛错。
- * 这里改为 connectedCallback 内按实例初始化、disconnectedCallback 清理监听，
+ * 这里改为 connectedCallback 内按实例初始化、disconnectedCallback 清理监听；
+ * 每次异步加载恢复后重新核对当前容器与已有 UI，避免生命周期重入及过时目标写入。
  * PagefindUI 从 /pagefind/ 检索 bundle 自带的运行时脚本加载（与索引同源发布，无新增依赖）。
  */
 
@@ -155,7 +156,15 @@ class SiteSearchElement extends HTMLElement {
             const freshTarget = this.querySelector('#starlight__search')
             if (!freshTarget || freshTarget.querySelector('.pagefind-ui')) return
             const PagefindUI = await loadPagefindUI()
-            if (!PagefindUI || !this.isConnected) return
+            // connectedCallback 与 astro:page-load 可同时等待同一个脚本；
+            // await 后容器可能已替换，或另一回调已完成初始化。检查与构造必须同步相邻。
+            if (
+                !PagefindUI ||
+                !this.isConnected ||
+                this.querySelector('#starlight__search') !== freshTarget ||
+                freshTarget.querySelector('.pagefind-ui')
+            )
+                return
 
             let translations: Record<string, string> = {}
             try {
