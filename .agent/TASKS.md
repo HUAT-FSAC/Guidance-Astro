@@ -3,12 +3,12 @@
 > 同步：2026-10-26，Planning 第113轮；GitHub Issues 可读写，依据本轮真实状态**整体重写**，无降级。开工基线 `main@60144174dfe92067b83e98ad09ed732c005a5337`，fetch / pull --rebase 成功。
 > D-013 映射：`ready` = `status:backlog` + 正文首行 `队列状态：ready`；`in-progress` = `status:in-progress`；`in-review` = `status:review`；`done` = `status:done`；`blocked` / `needs-info` 不并挂 backlog。
 
-## 今日队列（2026-10-26，2 个 ready）
+## 今日队列（2026-10-26规划；执行后2项均in-review，ready=0）
 
 1. **[#287 消除搜索异步初始化重入导致的重复 PagefindUI](https://github.com/HUAT-FSAC/Guidance-Astro/issues/287)** — P1 / in-review / low / M4（初始化交付；快捷键关闭差距 #289，部分完成报告 6422829560）。
     - 无硬依赖；#279/#262 唯一剩余实现切片。首次加载、异步重入及容器替换后保证一个有效 UI / 可见输入；更新现有真实行为回归，不以 `.first()`、隐藏或删重复 DOM 掩盖。
     - 原生生产浏览器验证 375px 中英查询、1600px VCU、负例、SPA、焦点/滚动锁与跨断点；完整 CI、部署与 nonce 验收。交付后在 #279 补剩余 AC、#262 补原九项重验，再分别转 review；Executor 不自行 close。
-2. **[#286 调查 Quality 时长告警中的浏览器安装与调度长尾](https://github.com/HUAT-FSAC/Guidance-Astro/issues/286)** — P2 / ready / low / 无 milestone。
+2. **[#286 调查 Quality 时长告警中的浏览器安装与调度长尾](https://github.com/HUAT-FSAC/Guidance-Astro/issues/286)** — P2 / in-review / low / 无 milestone（只读调查完成，报告6422982170）。
     - 无硬依赖，与 #287 独立；只读四个离群 run 的原始安装/调度日志与现有 `check-duration-budget.mjs --dry-run`。输出可证实根因、证据缺口及监测/后续修复建议，不修改 CI、缓存、依赖或阈值。
     - 不计 M4 搜索功能验收，不为单点调查新建 M5；由 Planner 验收后关单。
 
@@ -17,14 +17,14 @@
 ## 全部开放 Issue（7 项）
 
 - **#287**：P1 / in-review / low；PR288→`26f333a` 已部署，初始化回归/生产单UI通过；原AC3快捷键关闭独立缺口#289，部分完成报告6422829560。
-- **#286**：P2 / ready / low；无 milestone，今日第 2 位，只读安装/调度长尾调查，保留原始自动告警与 `flaky` 标签。
+- **#286**：P2 / in-review / low；四个离群原日志与默认20样本dry-run调查完成，报告6422982170；无代码/CI变更、不自行close。
 - **#279**：P1 / in-review / low；追加报告6422830204，单UI/窄屏/查询/SPA通过，快捷键关闭差距#289明确保留，不自行close。
 - **#262**：P2 / in-review / medium；原九项追加重验及重复UI更正报告6422830912；保留快捷键关闭差距#289与未重跑API失败路径边界，不全勾。
 - **#101**：P1 / blocked / medium；无 milestone。Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；默认 B 单机 OAuth 部署，未经授权不恢复 CI deploy。
 - **#197**：P3 / needs-info / medium；无 milestone。用户已确认默认 C，维持手工触发 Release PR CI，常驻观察、不重复提问。
 - **#280**：P3 / blocked / medium；无 milestone。可选 Projects 的独立 `PROJECT_TOKEN` 凭据域，未授权不改权限/凭据/workflow；Projects 非任务 SSOT。
 
-统计（原七单状态镜像）：ready=1、in-progress=0、in-review=3、blocked=2、needs-info=1；本轮新发现 #289 仅 auto-discovered，待 Planner 分诊刷新镜像。不重复计算父子实施容量。
+统计（原七单状态镜像）：ready=0、in-progress=0、in-review=4、blocked=2、needs-info=1；本轮新发现 #289 仅 auto-discovered，待 Planner 分诊刷新镜像。不重复计算父子实施容量。
 
 ## 昨日验收（第112轮执行产出 → 第113轮独立核验）
 
