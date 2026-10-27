@@ -25,7 +25,7 @@ HUAT FSAC（湖北汽车工业学院方程式赛车队 / 东风 HUAT 无人驾�
 
 - **Cloudflare Workers SSR**：`output: 'server'` + `@astrojs/cloudflare`，HTML 由 Worker 运行时生成。
 - **中英双语**：默认中文内容位于 `src/content/docs/`，英文内容位于 `src/content/docs/en/`，共用 Starlight 导航与 i18n 字符串。
-- **站内搜索**：Pagefind 全文索引在构建期由真实 SSR 渲染页生成，支持中英文正文检索，`Ctrl/Cmd+K` 呼出。首次加载与 SPA 导航均保持每个有效容器一个搜索 UI；回归覆盖脚本加载期间重入与容器替换。
+- **站内搜索**：Pagefind 全文索引在构建期由真实 SSR 渲染页生成，支持中英文正文检索，`Ctrl/Cmd+K` 呼出并可再次按下关闭。首次加载与 SPA 导航均保持每个有效容器一个搜索 UI；回归覆盖脚本加载期间重入与容器替换。
 - **交互式实验室**：场景预设、子系统流水线、遥测指标、赛道回放与中英双语界面。
 - **PWA**：`manifest.json`、Service Worker 与离线页，支持安装和离线访问。
 - **主题系统**：亮/暗模式，以及经典蓝、电竞蓝、赛道红、科技紫、极速绿 5 套主题色。

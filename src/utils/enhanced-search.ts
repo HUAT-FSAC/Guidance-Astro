@@ -1,6 +1,9 @@
 /**
  * 增强搜索功能
  * 整合 Pagefind、搜索历史和快捷键
+ *
+ * 快捷键归属：Ctrl/Cmd+K 由 <site-search> 元素独占（src/utils/site-search-element.ts），
+ * 本模块只保留 '/' 快捷键与搜索历史/建议/高亮等辅助能力。
  */
 
 import {
@@ -284,15 +287,15 @@ function escapeHtml(text: string): string {
 
 /**
  * 初始化搜索快捷键
+ *
+ * Ctrl/Cmd+K 归 <site-search> 元素独占（见 src/utils/site-search-element.ts）：
+ * 它按 dialog.open 状态切换开关，关闭时归还焦点并释放滚动锁，是弹窗的唯一所有者。
+ * 本模块曾另在 document 层拦截 Ctrl/Cmd+K 并 stopPropagation，使 window 层的切换
+ * 监听收不到事件（document 先于 window 冒泡），弹窗只能开不能关（#289）。
+ * 因此这里不再处理 Ctrl/Cmd+K，只保留与之不冲突的 '/' 快捷键。
  */
 export function initSearchShortcut(): () => void {
     const handleKeyDown = (e: KeyboardEvent) => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-            e.preventDefault()
-            e.stopPropagation()
-            openSearch()
-        }
-
         if (e.key === '/' && !isInputElement(e.target as HTMLElement)) {
             e.preventDefault()
             openSearch()

@@ -127,9 +127,14 @@ class SiteSearchElement extends HTMLElement {
             isNavigating = false
         })
 
-        // Ctrl/Cmd+K 切换弹窗；监听持有本实例引用，断开连接时一并移除
+        // Ctrl/Cmd+K 切换弹窗；监听持有本实例引用，断开连接时一并移除。
+        // key 大小写不敏感：真实键盘 Ctrl+K 给出 'k'，带 Shift 的组合键给出 'K'，
+        // 两者都应触发（#289 之前由增强搜索的 toLowerCase 判断覆盖，现由本元素独占）。
         this.keydownListener = (event: KeyboardEvent) => {
-            if ((event.metaKey === true || event.ctrlKey === true) && event.key === 'k') {
+            if (
+                (event.metaKey === true || event.ctrlKey === true) &&
+                event.key.toLowerCase() === 'k'
+            ) {
                 if (dialog.open) {
                     closeModal()
                 } else {
