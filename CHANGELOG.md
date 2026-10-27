@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.3.1...v1.4.0) (2026-10-27)
+
+
+### Features
+
+* **search:** rebuild Pagefind index from real SSR output ([#262](https://github.com/HUAT-FSAC/Guidance-Astro/issues/262)) ([#277](https://github.com/HUAT-FSAC/Guidance-Astro/issues/277)) ([8767c8f](https://github.com/HUAT-FSAC/Guidance-Astro/commit/8767c8f5b3dcbaf95b7ba149359d5720c1aab1bc))
+
+
+### Bug Fixes
+
+* **deps:** bump zod, fast-uri and undici to patched releases ([161ab70](https://github.com/HUAT-FSAC/Guidance-Astro/commit/161ab708ac4a1a5c7d542d4d8715eed0d4e5742d)), closes [#272](https://github.com/HUAT-FSAC/Guidance-Astro/issues/272)
+* **search:** consume real Starlight routes and index English documents with distinct slugs ([#284](https://github.com/HUAT-FSAC/Guidance-Astro/issues/284)) ([a063e34](https://github.com/HUAT-FSAC/Guidance-Astro/commit/a063e34efe627d9c13e61f5bb7f9bd422307aded)), closes [#281](https://github.com/HUAT-FSAC/Guidance-Astro/issues/281)
+* **search:** prevent reentrant Pagefind UI initialization ([#288](https://github.com/HUAT-FSAC/Guidance-Astro/issues/288)) ([26f333a](https://github.com/HUAT-FSAC/Guidance-Astro/commit/26f333a557a3273af2880d455bcc0b5bde375083))
+* **search:** restore visible search entry and full interaction on narrow viewports ([#283](https://github.com/HUAT-FSAC/Guidance-Astro/issues/283)) ([de758dc](https://github.com/HUAT-FSAC/Guidance-Astro/commit/de758dc7942ca4c39c0a93a349958df3e09ed342)), closes [#279](https://github.com/HUAT-FSAC/Guidance-Astro/issues/279)
+* **search:** 让 Ctrl/Cmd+K 真正切换搜索弹窗（[#289](https://github.com/HUAT-FSAC/Guidance-Astro/issues/289)） ([#291](https://github.com/HUAT-FSAC/Guidance-Astro/issues/291)) ([54cdf01](https://github.com/HUAT-FSAC/Guidance-Astro/commit/54cdf011032305fd5b232c102201b22671a4acbb))
+
 ## [1.3.1](https://github.com/HUAT-FSAC/Guidance-Astro/compare/v1.3.0...v1.3.1) (2026-10-22)
 
 
