@@ -352,6 +352,64 @@ test.describe('站内搜索（#262 索引恢复）', () => {
         await expect(page.locator('body')).not.toHaveAttribute('data-search-modal-open')
     })
 
+    test('Ctrl/Cmd+K 再次按下关闭搜索弹窗、释放滚动锁并把焦点还给触发器（#289）', async ({
+        page,
+    }) => {
+        const pageErrors: string[] = []
+        page.on('pageerror', (error) => pageErrors.push(error.message))
+        await page.setViewportSize({ width: 1600, height: 900 })
+        await page.goto('/')
+        // 先等 Pagefind UI 就绪，使断言针对弹窗生命周期而非索引加载时序
+        await expect(page.locator('site-search .pagefind-ui')).toBeAttached({ timeout: 30_000 })
+
+        const searchBtn = page.locator('site-search button[data-open-modal]')
+        const dialog = page.locator('site-search dialog')
+        const searchInput = page.locator('site-search .pagefind-ui__search-input')
+
+        // 第一次 Ctrl+K 打开
+        await page.keyboard.press('Control+K')
+        await expect(dialog).toHaveAttribute('open', '')
+        await expect(page.locator('body')).toHaveAttribute('data-search-modal-open', '')
+        await expect(searchInput).toBeVisible({ timeout: 30_000 })
+        await expect(searchInput).toBeFocused()
+
+        // 第二次 Ctrl+K 关闭：#289 缺口（增强搜索在 document 层拦截，window 层切换收不到事件）
+        await page.keyboard.press('Control+K')
+        await expect(dialog).not.toHaveAttribute('open', '')
+        await expect(page.locator('body')).not.toHaveAttribute('data-search-modal-open')
+        await expect(searchBtn).toBeFocused()
+
+        // 第三次 Ctrl+K 重新打开，切换双向可用
+        await page.keyboard.press('Control+K')
+        await expect(dialog).toHaveAttribute('open', '')
+        await expect(searchInput).toBeVisible({ timeout: 30_000 })
+
+        // Cmd/Meta+K 关闭同一弹窗
+        await page.keyboard.press('Meta+K')
+        await expect(dialog).not.toHaveAttribute('open', '')
+        await expect(page.locator('body')).not.toHaveAttribute('data-search-modal-open')
+        await expect(searchBtn).toBeFocused()
+        // 关闭路径不得抛出未捕获异常
+        expect(pageErrors).toEqual([])
+    })
+
+    test('SPA 导航后 Ctrl+K 仍可开关搜索弹窗且监听不重复（#289）', async ({ page }) => {
+        await page.setViewportSize({ width: 1600, height: 900 })
+        await page.goto('/')
+        await expect(page.locator('site-search .pagefind-ui')).toBeAttached({ timeout: 30_000 })
+
+        // 客户端 SPA 导航
+        await page.locator('a[href="/docs-center/"]').first().click()
+        await expect(page).toHaveURL(/\/docs-center\/$/)
+
+        const dialog = page.locator('site-search dialog')
+        await page.keyboard.press('Control+K')
+        await expect(dialog).toHaveAttribute('open', '')
+        await page.keyboard.press('Control+K')
+        await expect(dialog).not.toHaveAttribute('open', '')
+        await expect(page.locator('body')).not.toHaveAttribute('data-search-modal-open')
+    })
+
     test('窄屏 SPA 导航后通过可见入口重开并完成查询（#279）', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 667 })
         await page.goto('/')
