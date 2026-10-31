@@ -1,49 +1,49 @@
 {
-    "generatedAt": "2026-10-27T05:02:32.243Z",
+    "generatedAt": "2026-10-31T05:38:47.753Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.96,
-        "prCycleTimeDays": 0.67,
-        "issueCloseRatePercent": 98.86,
-        "prMergeRatePercent": 81.25,
-        "ciSuccessRatePercent": 58,
+        "issueLeadTimeDays": 0.98,
+        "prCycleTimeDays": 0.64,
+        "issueCloseRatePercent": 110.14,
+        "prMergeRatePercent": 100,
+        "ciSuccessRatePercent": 56,
         "wipIssueCount": 0,
-        "reviewIssueCount": 4,
+        "reviewIssueCount": 5,
         "backlogIssueCount": 0
     },
     "counts": {
-        "openIssueCount": 8,
-        "openPullRequestCount": 3,
-        "openedIssuesInWindow": 88,
-        "closedIssuesInWindow": 87,
-        "openedPullRequestsInWindow": 96,
-        "mergedPullRequestsInWindow": 78,
+        "openIssueCount": 9,
+        "openPullRequestCount": 4,
+        "openedIssuesInWindow": 69,
+        "closedIssuesInWindow": 76,
+        "openedPullRequestsInWindow": 77,
+        "mergedPullRequestsInWindow": 77,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 8
+        "ciFailedRunsInWindow": 6
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-26T13:34:35.000Z",
-        "latestMergedPullRequestAt": "2026-10-26T17:02:30.000Z"
+        "latestIssueUpdatedAt": "2026-10-26T17:00:37.000Z",
+        "latestMergedPullRequestAt": "2026-10-27T11:39:19.000Z"
     },
     "summary": {
-        "totalIssues": 119,
+        "totalIssues": 120,
         "closedIssues": 111,
-        "openIssues": 8,
-        "ciPassRate": 58
+        "openIssues": 9,
+        "ciPassRate": 56
     },
     "byStatus": {
         "backlog": 0,
         "ready": 2,
         "inProgress": 0,
-        "review": 4,
+        "review": 5,
         "blocked": 2,
         "done": 111
     },
     "byPriority": {
         "p0": 3,
-        "p1": 16,
+        "p1": 15,
         "p2": 33,
         "p3": 32
     },
@@ -82,52 +82,52 @@
     },
     "recentActivity": [
         {
-            "type": "issue",
-            "title": "消除搜索异步初始化重入导致的重复 PagefindUI",
-            "status": "open",
-            "updatedAt": "2026-10-26T23:21:30.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "调查 Quality 时长告警中的浏览器安装与调度长尾",
-            "status": "open",
-            "updatedAt": "2026-10-26T23:21:27.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
-            "status": "open",
-            "updatedAt": "2026-10-26T17:26:51.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "恢复窄屏搜索的可见入口与完整查询交互",
-            "status": "open",
-            "updatedAt": "2026-10-26T17:26:48.000Z"
-        },
-        {
             "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-26T17:21:12.000Z"
+            "status": "open",
+            "updatedAt": "2026-10-30T05:46:46.000Z"
         },
         {
             "type": "issue",
             "title": "[auto-discovered] 搜索已打开时 Ctrl/Cmd+K 被增强搜索拦截而无法关闭",
             "status": "open",
-            "updatedAt": "2026-10-26T17:21:10.000Z"
+            "updatedAt": "2026-10-27T11:49:57.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
+            "status": "open",
+            "updatedAt": "2026-10-27T11:48:31.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "恢复窄屏搜索的可见入口与完整查询交互",
+            "status": "open",
+            "updatedAt": "2026-10-27T11:48:29.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[auto-discovered] 客户端导航后新页面内联脚本被当前文档 CSP 拦截",
+            "status": "open",
+            "updatedAt": "2026-10-27T11:48:20.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "chore(metrics): update project progress snapshot",
+            "status": "merged",
+            "updatedAt": "2026-10-27T11:39:22.000Z"
         },
         {
             "type": "pr",
             "title": "chore(main): release 1.4.0",
             "status": "open",
-            "updatedAt": "2026-10-26T17:18:31.000Z"
+            "updatedAt": "2026-10-27T11:26:15.000Z"
         },
         {
             "type": "pr",
-            "title": "fix(search): prevent reentrant Pagefind UI initialization",
+            "title": "fix(search): make Ctrl/Cmd+K toggle the search dialog",
             "status": "merged",
-            "updatedAt": "2026-10-26T17:17:59.000Z"
+            "updatedAt": "2026-10-27T11:25:37.000Z"
         }
     ]
 }
