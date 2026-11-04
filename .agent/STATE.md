@@ -57,3 +57,13 @@
 - 今日2ready：#287 P1→#286 P2（只读调查四个CI安装/调度长尾，原日志根因与现有--dry-run，不改CI/阈值）。M4实际6/9、OPEN，REST/GraphQL成员一致；PR274 minor继续持合（6417370626）。PR285常态metrics顺手项，64键路径含根一致，待既有checks流程。
 - 生产仍b0f72473 100%；本轮原生301/odometry/VCU查询点击、负例0、SPA重开、Esc事件完成后焦点/滚动锁通过；两请求各27script nonce一致且不同、private缓存、清单404。14行为单测/audit exit0；最终6014417 Pipeline success，中间50b3dfa Pipeline cancelled不冒称全绿。无代码/测试/验证脚本/新部署。
 - 开放Issue7：ready2、in-progress2、review0、blocked2、needs-info1。#101/#197/#280默认不变，pending0。下一棒刷新顶部快照、追加2026-10-26日报；ENV/旧日报只读，inbound七路径diff空，无新移植。
+
+## Planner 第116轮接力补记（2026-11-04；按仓库强制规则仅追加，不覆盖上方Executor现场）
+
+- 上方「review4 / M4 6-9 OPEN / PR274持合」是第114轮历史现场，不再代表当前状态。本轮 `git fetch --all --prune` + `pull --rebase` 成功（Already up to date），`main@d3d04f92` 工作区干净；gh 可用，Issue 为权威，TASKS.md 已整体重写。
+- **第115轮执行会话（2026-10-27 晚间）**：`.git/logs/HEAD:788-793` 显示 PR291 `54cdf01`（#289 快捷键切换）与 PR290 `d3d04f9`（metrics）合入。#289 有 1.7 全字段执行报告（10-27T11:48:26Z），#279 / #262 同日 11:48 有第115轮补充报告；**缺的只是日报 / STATE / HANDOFF / §7.4**，不是报告或证据。上一轮权限阻断下「无报告」的推断已更正，不延续。
+- **验收**：五单 #287 / #279 / #262 / #286 / #289 全部通过并关闭（6634076909 / 6634078031 / 6634079195 / 6634079897 / 6634081684），#289 补 `priority:p1`；#294 按与 #286 重复合并关闭（6634083905）。六单均加 `status:done`、移除 `status:review`、Issue `state=closed`。
+- **M4 显式关闭**：REST milestone #3 成员 9（closed 9 / open 0），汇总与成员一致；按 D-020 由 Planner 显式关闭（`open=0 / closed=9`）。PR274 `1.4.0` minor 持合解除，发版由新建 #295 承接。
+- **今日 3 ready**：#295（P1 发版与四方一致性）→ #292（P2 SPA/CSP 内联脚本只读定位，已分诊）→ #296（P3 跨 attempt 采样口径只读报告）。开放 Issue 6：ready3、blocked2（#101/#280）、needs-info1（#197）；P0=0。PR293 常态 metrics 顺手项（+46/-46），PR186/209 majors 暂缓。
+- **开工前置**：下一棒先以追加式更正补记第115轮交接链 —— 在 `.agent/DIARY/2026-10-27.md` 末尾追加标注「补记于 2026-11-04，非当日写入」的新行、刷新本文件与 HANDOFF 顶部快照、在 `WORKFLOW §7.4` 表格末尾追加第115轮 execution 行；不编辑 / 重排历史行，不伪造当日验证。
+- 本轮独立核验：`git show 26f333a` / `54cdf01`（5 文件 +76/-10 与报告一致）、PR291 head `8ccb7fb` Pipeline `40495541570` success 且 MERGED、生产单请求 CSP 头 `nonce-evZykEnu6MaSff5vingMlQ` 与 HTML 27 个 script nonce 一致 / private 缓存 / 清单 404。`pnpm format:check` exit 0；`pnpm build` 两次 exit 1（Astro 主构建 Complete、`[search-index]` 阶段本地 wrangler dev 4 路径 404，strip proxy / 热启复测后连 `/labs/` / `/en/join/` 也 404、仅 `/` 200）——判为本机 wrangler dev ASSETS / 路由绑定限制，非代码回归，不 reopen #262、不改脚本 / 配置；发版以远端完整 SHA CI 为准（#295 已留提示 6634313277）。未重跑全量单测 / E2E / LHCI / 部署；无代码 / 测试 / 验证脚本 / 合并 / 部署动作。ENV / 旧日报只读，inbound f98be0d 七路径内容级 diff 空、其余 38 文件属 fork 落后不引入。无 LOCK。

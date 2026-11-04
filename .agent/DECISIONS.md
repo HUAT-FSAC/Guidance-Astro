@@ -307,6 +307,19 @@
 - 快捷键使 `dialog.open=true` 不等于用户能看见、输入与查询；窄屏原AC不得降为内部状态断言。整改归 #279；#262 保留原九项完整验收责任，父子不重复实现，不因索引样本可用就关闭。
 - 这是已确认收录/可用性契约的执行纠偏，不是新产品取舍、不扩大翻译或权限范围，故不新增用户问题，不允许先发 minor 再补原AC。
 
+## 本轮决策核查（第116轮，2026-11-04）
+
+**pending=0；D-001..D-022 继续生效。无新用户问题，不新增仅属任务细节的长期决策编号。**
+
+- **权威来源与上一轮推断更正**：gh 可用（repo / workflow / read:org / gist），Issue 为权威，`TASKS.md` 从真实 Issue 整体重写。上一轮因 `Bash` / `Write` / `Edit` 被 `dontAsk` 拒绝只能读陈旧 `TASKS.md`，据此推断「#289 无报告、无验收证据、M4 9/10 OPEN」；本轮 `gh` 核实后更正：#289 有 1.7 全字段执行报告（Execution 第115轮，10-27T11:48:26Z）、#279 / #262 有第115轮补充报告、#289 已是 `status:review`、PR291 已合入并部署。**「报告缺失 / 交接断链无报告」不成立**，真实缺口只是日报 / STATE / HANDOFF / §7.4 未追加。旧推断不延续、不改写旧日报；此更正本身即「查得到的不问」的落实。
+- **五单独立验收通过并关闭**：#286（只读调查交付认可，P95=729s>360 与底层根因未知保留）、#287（初始化重入切片，`git show` 核实 await 后同步重检）、#279（AC3 由 #289 补齐）、#262（原九项 AC3 转通过，其余八项沿用已认可证据）、#289（1.7 报告 / diff / CI / 生产证据充分，补 P1）。验收 comment 6634076909 / 6634078031 / 6634079195 / 6634079897 / 6634081684。连续两次部分通过后的最后缺口由单一窄任务消除，不第三次宽泛重试（§3.6），不为发版缩减原九项 AC。
+- **#289 流程裁定**：原为 `auto-discovered` 未分诊，由 Executor 依据已由 Planner 批准的 #279 AC3 自行准入实施。因缺口属实现层、低风险可回滚、且报告明确记录理由并请 Planner 复核，**认可实施并补定级 P1**；但记录为流程提醒 —— 后续 `auto-discovered` 须先经 Planner 分诊再进 ready，不得先实施后补分诊。不追加 M4 成员，不扩大已冻结的九成员范围。
+- **M4 显式关闭与发版解禁**：REST milestone #3 成员 9（closed 9 / open 0），汇总与成员一致；按 D-020 由 Planner 显式 `PATCH state=closed`。#292 与 #287 / #289 改动无关、不在原九项 AC，不并入完成信号；M4 内无新的不一致，可诚实说已收敛。PR274 `1.4.0` minor 持合解除，按 §11.1 minor 随 Milestone、发版时机不请示（§1.7），由新建 #295 承接。
+- **两个新 auto-discovered 治理**：#294（duration-budget 定时告警，P95=632s>360）与 #286 实质相同，按重复互链后关闭被合并者，**不按「抖动」轻率消除真实告警**，也不新建重复实施单；#292（SPA 导航内联脚本被当前文档 CSP 拦截）分诊 P2 / ready，范围严格限定为只读定位脚本清单 / 影响面 / ≥2 修法方向，零代码变更。新建 #296（P3）承接 #286 的跨 attempt 采样口径只读澄清。
+- **#292 红线边界**：修法涉及 CSP / 内联脚本安全策略（`script-src` 放宽 `unsafe-inline`、新增 nonce / hash 放行、改 ClientRouter 脚本注入），属 §1.10 红线相邻。本轮只批准只读定位；任何修法须另轮由 Planner 决策、必要时按 6.2 问用户，绝不「先让 Executor 试试看」。
+- **既有默认不变**：#101 blocked 默认 B、#197 needs-info 默认 C（#295 发版沿用手工触发 Release PR CI，不擅自改 PR 级 CI）、#280 blocked 独立 Projects 凭据域、D-015 majors 暂缓、D-017 Q4 不启动新功能。#295 不摄入 PR186 / PR209，#296 不实施受控安装环境 / 包源改造（触发条件记入 AC 但不入 ready）。
+- **证据与边界**：本轮实跑 fetch / pull、git show / diff、gh Issue / PR / CI 读写、curl 单请求生产头体 nonce 比对（`evZykEnu6MaSff5vingMlQ`，27 script nonce 一致，private 缓存，清单 404）、`pnpm format:check`（exit 0）与 `pnpm build`（两次 exit 1，如实保留）；未重跑全量单测 / E2E / LHCI / 部署，采用已核实远端门禁 `40495541570` success 与真实生产表面证据。**本地 build 失败归因**：Astro 主构建 Complete，但 `[search-index]` 阶段本地 wrangler dev 对 4 个路径返回 404，strip proxy 与热启复测后连 `/labs/` / `/en/join/` 也 404、仅 `/` 200；sitemap 含这些 URL、生产正常、PR291 CI 含 Build success ⇒ 本机 wrangler dev 的 ASSETS / 路由绑定限制，非代码回归，**不据此 reopen #262、不改 `scripts/search/build-index.ts` 或任何配置**。发版以远端完整 SHA CI 为准（已写入 #295 开工提示）。inbound 七路径内容级 diff 空、其余 38 文件差异属 fork 落后，不反向引入。无代码 / 测试 / 验证脚本、无合并或部署动作。
+
 ## 本轮决策核查（第113轮，2026-10-26）
 
 **pending=0；D-001..D-022 继续生效。无新用户问题，不新增仅属任务细节的长期决策编号。**
