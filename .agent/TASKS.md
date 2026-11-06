@@ -5,15 +5,15 @@
 
 ## 今日队列（2026-11-04 规划；3 个 ready）
 
-1. **[#295 执行 M4 收口后的 release 1.4.0 minor 发版与四方一致性核验](https://github.com/HUAT-FSAC/Guidance-Astro/issues/295)** — P1 / ready / low / 无 milestone。
+1. **[#295 执行 M4 收口后的 release 1.4.0 minor 发版与四方一致性核验](https://github.com/HUAT-FSAC/Guidance-Astro/issues/295)** — P1 / blocked（外部安全门禁拦截，评论 6688407297）/ low / 无 milestone。
     - 无硬依赖（M4 已显式关闭、PR274 持合已解除）。按 §11.1 / §11.2 合入 PR274 → 完整 SHA CI 全绿 → tag / Release Latest / package.json / CHANGELOG.md 四方一致 → 全 M4 合入提交祖先判定 → 部署必要性判断 → 同一请求 CSP 头体 nonce 一致与双语看板验收。
     - 明确不包含：版本号以外的代码 / 依赖 / CI / 缓存 / 凭据改动；不用 `Closes` / `Fix` 关键字（D-006）；不摄入 majors、不启动 M5；沿用 #197 默认 C 手工触发 Release PR CI。
     - 验收标准逐条可判定，见 Issue 正文；不自行 close，转 `in-review`。
-2. **[#292 客户端导航后新页面内联脚本被当前文档 CSP 拦截](https://github.com/HUAT-FSAC/Guidance-Astro/issues/292)** — P2 / ready / low / 无 milestone / `auto-discovered`（来源保留）。
+2. **[#292 客户端导航后新页面内联脚本被当前文档 CSP 拦截](https://github.com/HUAT-FSAC/Guidance-Astro/issues/292)** — P2 / in-review（只读定位完成，评论 6688629454）/ low / 无 milestone / `auto-discovered`（来源保留）。
     - 无硬依赖。只读定位：按 sha256 反查被拦截内联脚本清单、确认 SPA 导航后哪些初始化逻辑确实没跑、给出 ≥2 修法方向及各自影响与推荐 / 默认方案，但**不实施**。
     - 明确不包含：不修改代码 / 配置 / CSP 头 / 脚本注入 / ClientRouter / 依赖；不放宽 `unsafe-inline`、不新增 nonce / hash 放行（§1.10 红线相邻，另轮决策）；不扩围修搜索或导航；零代码变更（`git diff` 为空）。
     - 原 Issue 正文已补分诊段与逐条 AC（本轮 `gh issue edit` 整体改写正文，首行「队列状态：ready」）；不自行 close。
-3. **[#296 明确 Quality 时长采集器的跨 attempt 采样口径并出只读对照报告](https://github.com/HUAT-FSAC/Guidance-Astro/issues/296)** — P3 / ready / low / 无 milestone。
+3. **[#296 明确 Quality 时长采集器的跨 attempt 采样口径并出只读对照报告](https://github.com/HUAT-FSAC/Guidance-Astro/issues/296)** — P3 / in-review（只读对照完成，评论 6688733164）/ low / 无 milestone。
     - 无硬依赖（#286 / #294 已关闭）。只跑现有 `node scripts/quality/check-duration-budget.mjs --dry-run`，定义「端到端恢复墙钟」与「单 attempt 关键路径」双口径、给出 P95 对照并引用 #294 的 632s 样本，如实报告仍超标。
     - 明确不包含：不改脚本 / `.github/workflows/**` / 缓存 / 阈值 360 / 90 / 样本数 / 依赖 / 凭据；不实施受控安装环境或包源改造；不把恢复墙钟写成单 attempt 排队；零代码变更。
     - 验收标准逐条可判定，见 Issue 正文；不自行 close。
