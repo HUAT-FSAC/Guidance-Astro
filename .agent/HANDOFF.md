@@ -9,6 +9,7 @@ Execution 第118轮（2026-11-17）。**今日队列为空、无现场可恢复*
 - **现场核查**：`git fetch --all --prune` 成功、`HEAD=origin/main=b04c3e6f413e02f2c4804ea78a06c7da2d11df0f`（无新提交）；真实 Issue 巡检确认无合法 ready（D-013 映射：`status:backlog` + 正文首行「队列状态：ready」）—— #295 / #292 / #296 虽保留首行 ready 字样，但标签分别为 `blocked` / `status:review` / `status:review`，以标签为准；#297（`auto-discovered`，第116轮明确规定须先经 Planner 分诊）、#299（bot 时长告警）均未分诊。
 - **只读复核（关键新事实）**：audit 门禁由第117轮的 2 条通告变为 **3 条**（新增 astro `GHSA-r3h5-4585-7x3w`，patched ≥7.4.7）；npm registry 实测上游修复版已全部发布（glob 14.0.6 / rimraf 6.1.4、minimatch 11.0.9 / @eslint/config-array 0.23.6 / eslint 10.15.0、astro 7.4.7 即 PR300）⇒ 按 D-021「有补丁即升级、不豁免」，#297 正文建议的带期豁免路径已不再必要，且其证据已过期。
 - **交接回写**：STATE 顶部快照刷新（历史追加节原样保留）、本文件整体重写、`docs/WORKFLOW.md:§7.4` 追加 `executor-round-118` 行、新建 `.agent/DIARY/2026-11-17.md`。
+- **收尾提交**：`6162dbf` @ main（`chore(agent)`，仅 `.agent/` 与 §7.4 文档）已 push；此后按追加式补记把推送与 CI 复核结果写入日报与 STATE / HANDOFF。
 
 ## 未完成 / 进行中（下一棒最优先看这里）
 
@@ -29,13 +30,16 @@ Execution 第118轮（2026-11-17）。**今日队列为空、无现场可恢复*
 - `gh api .../actions/runs?head_sha=<完整SHA>` → 退出码 0 · main `CI/CD Pipeline` `42245424825` = failure（10-30 起既有 audit 红，非本轮引入）
 - `curl -s -D .tmp/exec118-headers.txt -o .tmp/exec118-body.html https://huat-fsac.eu.org/` → 退出码 0 · **同一请求** CSP `'nonce-xevWu1bMWsh8Xk10By5BLg'` 与 HTML 27 个 `script nonce` 完全一致、`cache-control: private, no-cache, must-revalidate`
 - `git diff --stat main wsyhuat/main -- <路径>` → 退出码 0 · `.nvmrc` / `mise.toml` 差异为空；两个 workflow 差异为 fork 侧旧 action 版本（对落后，不引入）；`src/utils/toast.ts` 仅 fork 侧存在；inbound `f98be0d` / `d89b87e` 为已知 squash 吸收误报
-- `pnpm exec prettier --check docs/WORKFLOW.md .agent/STATE.md .agent/HANDOFF.md` → 退出码 0（写入前基线；写入后复检见本轮收尾）
-- **未执行**：全量单测 / E2E / lint / typecheck / build / bundle / theme / routes / 部署 —— 本轮零代码变更、无就绪任务，不冒称重跑全量门禁；生产 nonce 为现状核验，**不是**部署验收（本轮只有文档变更，不触发 AGENTS.md 的部署义务）。
+- `pnpm exec prettier --check docs/WORKFLOW.md .agent/STATE.md .agent/HANDOFF.md` → 退出码 0（写入前基线）；`pnpm format:check` → 退出码 0；`git diff --check` → 退出码 0
+- `git push origin HEAD` → 退出码 0 · `b04c3e6`→`6162dbf`，GitHub 回显 admin bypass（PR 要求与 `quality-gate` 检查被绕过）
+- `gh api .../actions/runs/44104863406/jobs` → 退出码 0 · run `44104863406` = `completed/failure`，12 job 中仅 `Audit Dependencies` failure；Lint / Tests / Type Check / Build / Preview Build / E2E(1/2,2/2) / LHCI / Budget / Quality Gate 全 success；`Secret Scan` 与 `Release Please` 同 SHA success
+- `gh run view 44104863406 --log` → 退出码 0 · 失败日志 `❌ 3 advisory not covered by the allowlist`（glob / minimatch / astro），与本地门禁一致
+- **本地未执行**：全量单测 / E2E / lint / typecheck / build / bundle / theme / routes / 部署 —— 本轮零代码变更、无就绪任务；**远端 CI 已对本提交实跑**上述门禁且除 audit 外全通过，不把远端结果冒充本地实跑。生产 nonce 为现状核验，**不是**部署验收（本轮只有文档变更，不触发 AGENTS.md 的部署义务）。
 
 ## 风险与注意事项
 
 1. **#297 证据过期、处置路线应改变**：正文与第117轮报告均写「2 条通告、建议带期豁免」，但现为 3 条且上游补丁已发布；按 D-021 应走「有补丁即升级、不豁免」。分诊时请优先核查 astro 7.4.7（PR300，minor）、rimraf 6.1.4（patch）、eslint 10.15.0（minor）的兼容性与 Node engines，勿盲合 PR300 或沿用旧豁免建议；D-015 只约束 majors 组。
-2. **5 张开放 PR 全 BLOCKED、主干 CI 红**：#295 发版、`PR293` 常态 metrics、`PR300` astro 安全修复、`PR298` / `PR186` majors 均被同一 audit 门禁拦住；这不是本轮提交造成的，无需回滚。
+2. **5 张开放 PR 全 BLOCKED、主干 CI 红**：#295 发版、`PR293` 常态 metrics、`PR300` astro 安全修复、`PR298` / `PR186` majors 均被同一 audit 门禁拦住。主干在本轮之前（`b04c3e6`，run `42245424825`）已 failure，本轮文档提交 `6162dbf`（run `44104863406`）复现同一失败且其余 job 全绿 ⇒ revert 不会让主干变绿、修它需依赖变更（属未分诊的 ready 缺口），故本轮不回滚、不改门禁。
 3. **外来 WIP 归属未知**：Node 24 改动可能与依赖升级意图相关，但没有任何任务载体佐证；它同时让 `git pull --rebase` 报错。未经确认不得纳入任何提交或发版。
 4. **生产站点健康但本轮未部署**：`docs/WORKFLOW.md` 与 `.agent/` 变更不影响线上 SSR 产物；不执行 `pnpm deploy:worker`，不把 curl 现状核验冒充部署验收。
 5. `.agent/LOCK` 不存在（无需提示删除）；`.agent/PLAN.md` / `DECISIONS.md` 只读未动。
