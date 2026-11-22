@@ -2,7 +2,7 @@
 
 ## 本轮概要
 
-Execution 第119轮：GitHub Issue 为权威，领取唯一准入任务 [#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)。任务分支 `agent/issue-297-audit-deps`，实现 `1504753bc402a66db815bf059f8d42edd2f9a254` 已推送并开 [PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314)。尚未合并，不发版、不部署。
+GitHub Issue 为权威。Execution 第119轮交付 [#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)；`1504753bc402a66db815bf059f8d42edd2f9a254` 已推送为 [PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314)。顺序执行复核时有 21 个开放 Issue（10 backlog、6 blocked、3 review、1 needs-info、1 未分诊），`ready=0`、`in-progress=0`；无新任务认领、合并、发版或部署。
 
 ## 已完成
 
@@ -11,7 +11,7 @@ Execution 第119轮：GitHub Issue 为权威，领取唯一准入任务 [#297](h
 
 ## 未完成 / 进行中（下一棒最优先看这里）
 
-- #297 已转 `in-review`，PR #314 等独立 Reviewer。#306 以 #297 依赖和 Node 基线落地为前置，仍 blocked；#295 / #101 仍 blocked，PR #274 / #300 未合入。
+- #297 已转 `in-review`。PR #314 已请求 `wsyhuat` 审查，仍 `REVIEW_REQUIRED`，无批准，主干要求至少 1 位独立 Reviewer。#306 以 #297 依赖和 Node 基线落地为前置；#302 排在 #306 后。#295 / #101 仍 blocked，PR #274 / #300 未合入。
 - #292 / #296 待 Planner 验收；#303 还等 #292，#307 等 #302。其余架构项为 backlog 并非 ready；没有越过队列领取。`TASKS.md` 的旧镜像只补 #297 状态，整体刷新归 Planner。
 
 ## 验证情况
