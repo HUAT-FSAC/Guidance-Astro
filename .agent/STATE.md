@@ -1,12 +1,12 @@
 # STATE
 
-- 更新时间：2026-11-22T12:05:43+08:00，顺序执行复核
-- 当前任务：[#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)（in-review，未关闭）；GitHub 开放 Issue 21 个，`ready=0`、`in-progress=0`
-- 分支：`agent/issue-297-audit-deps`（独立工作树 `../Guidance-Astro-issue-297`）
-- 未完成工作：[PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314) [CI 全绿](https://github.com/HUAT-FSAC/Guidance-Astro/actions/runs/44982778242)，已请求有写权限的 `wsyhuat` 审查，GitHub `REVIEW_REQUIRED`、批准 0/1。#306 等该批落地，#302 排在 #306 后；#295、#101 仍 blocked。
-- 最近提交：`1504753bc402a66db815bf059f8d42edd2f9a254`，已推送任务分支。
-- 今日日报：已写 `.agent/DIARY/2026-11-22.md`；本轮记录独立发布在 `agent/execution-round-119`，不推进主干。
-- 已知环境限制：共享工作区有既有 Node/CI 与规划记录改动，未编辑、暂存或提交；从干净的 `origin/main@26de9c7` 建立任务与记录工作树。`wsyhuat/main` 的 `f98be0d` 已吸收于 `6a80906`（七路径内容差异为空），`d89b87e` 为旧合流，不移植。
+- 更新时间：2026-11-22T13:08:58+08:00（Execution 第120轮）
+- 当前任务：[#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)（in-review，未关闭）；GitHub 开放 Issue 21 个，`ready=0`、`in-progress=0`。
+- 分支：任务 `agent/issue-297-audit-deps`；交接 `agent/execution-round-119`（两者均在独立工作树）。
+- 未完成工作：[PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314) 的检查全部通过或按条件跳过；GitHub 仍报 `REVIEW_REQUIRED / BLOCKED`，已请求 `wsyhuat`，批准 0/1。#306 仍 blocked；#302 仍 backlog；#295 发版不在本轮授权内。
+- 最近任务提交：`1504753bc402a66db815bf059f8d42edd2f9a254`，已推送，未合入。
+- 今日日报：已在 `.agent/DIARY/2026-11-22.md` 追加本轮记录。
+- 已知环境限制：主干 `26de9c7` 的 CI `44106294755` 仍为 failure。共享工作区 9 个既有改动未触碰；主工作树未执行 rebase，独立交接分支 `git pull --rebase` 成功，已同步。
 
 ## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
 
