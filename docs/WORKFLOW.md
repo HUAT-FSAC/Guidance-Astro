@@ -418,6 +418,9 @@ pnpm quality:audit     # 依赖审计门禁（见下）——取代旧的 `pnpm 
 | 2026-11-22 | executor-round-119 | 复核串行执行队列 | GitHub 开放 Issue 21 个，ready=0、in-progress=0；PR #314 的独立审查已请求，批准 0/1；#306 等依赖批次合入，不越过 blocked 或 backlog。只读复核，不合并或部署。 |
 | 2026-11-22 | executor-round-120 | 复核 #297 合入门禁，无新任务认领 | `ready=0`、`in-progress=0`；PR #314 检查退出 0，仍 `REVIEW_REQUIRED`，批准 0/1；主干 `26de9c7` 的 CI `44106294755` 仍 failure。#306 未解阻；只回写独立记录分支，无代码、合并、发版或部署。 |
 | 2026-11-22 | executor-round-121 | 复核 #297 审批与主干审计，无新任务认领 | 21 个开放 Issue，`ready=0`、`in-progress=0`。PR #314 检查退出 0，审批 0/1，已请求 `wsyhuat`。主干 `26de9c7` 的运行 `44106294755` 仅 `Audit Dependencies` 失败。#306 仍 blocked，本轮只回写交接与日报。 |
+| 2026-11-22 | executor-round-121 | GitHub 网络阻塞后离线核对队列 | 代理 socket 被拒，直接连接也失败。离线任务镜像与第120轮交接无可确认领取项。缓存入站两条沿用内容判定。共享工作区既有改动保留，本轮记录在 .tmp/execution-round-121，远端同步受阻。 |
+| 2026-11-22 | executor-round-122 | 重试 #297 / PR #314 和开放队列 | GitHub API、fetch 和 pull 仍受网络限制，GitHub 插件尚未安装。沿用离线交接，无可确认领取项；缓存入站两条无新证据，记录留在隔离交接分支。 |
+| 2026-11-22 | executor-round-123 | 补记两次离线会话并更正在线复核轮次 | 上方「复核 #297 审批与主干审计」一行的 executor-round-121 更正为 executor-round-123。第121、122轮原始协作记录已补入本节，日报按追加规则同步。PR #314 审批仍 0/1，#306 仍 blocked。 |
 
 Agent 交接时，在 PR 评论或本节追加：
 
