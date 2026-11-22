@@ -1,11 +1,14 @@
 ---
 // Starlight Search 组件覆盖（#262）：模板与样式复制自 @astrojs/starlight@0.41.11
-// components/Search.astro，行为差异只在脚本生命周期——上游把 PagefindUI 初始化挂在
+// components/Search.astro。上游把 PagefindUI 初始化挂在
 // window DOMContentLoaded 且从不清理 window 监听，ClientRouter 的 SPA 导航后弹窗内
 // 没有输入框、旧实例监听持续泄漏。逻辑实现见 src/utils/site-search-element.ts。
 // 上游升级时需对照原件复查本文件（差异点：trailingSlash 本站固定 always，无需
 // data-strip-trailing-slash；pagefindUserConfig 在 pagefind:false 下为空对象，省略导入）。
 import { Icon } from '@astrojs/starlight/components'
+import { getLocaleFromPath, getTranslations } from '../../utils/i18n'
+
+const { searchLoadError, searchRetry } = getTranslations(getLocaleFromPath(Astro.url.pathname)).docs
 
 const pagefindTranslations = {
     placeholder: Astro.locals.t('search.label'),
@@ -41,6 +44,12 @@ const dataAttributes: DOMStringMap = { 'data-translations': JSON.stringify(pagef
                 ) : (
                     <div class="search-container">
                         <div id="starlight__search" />
+                        <div data-search-recovery hidden>
+                            <p id="site-search-load-error" role="alert">{searchLoadError}</p>
+                            <button type="button" data-search-retry aria-describedby="site-search-load-error">
+                                {searchRetry}
+                            </button>
+                        </div>
                     </div>
                 )
             }
@@ -164,6 +173,24 @@ const dataAttributes: DOMStringMap = { 'data-translations': JSON.stringify(pagef
             background: transparent;
             cursor: pointer;
             color: var(--sl-color-text-accent);
+        }
+
+        [data-search-recovery] {
+            padding-inline-end: 4rem;
+        }
+
+        button[data-search-retry] {
+            margin-block-start: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--sl-color-text-accent);
+            border-radius: 0.25rem;
+            color: var(--sl-color-text-accent);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        button[data-search-retry][aria-disabled='true'] {
+            cursor: wait;
         }
 
         #starlight__search {
