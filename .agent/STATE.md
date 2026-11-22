@@ -1,12 +1,12 @@
 # STATE
 
-- 更新时间：2026-11-17T14:41:42Z（UTC；Execution 第118轮收尾补记）
-- 当前任务：无 —— GitHub Issue 权威巡检 ready=0 / in-progress=0 / review=2（#292、#296）/ blocked=3（#295、#101、#280）/ needs-info=1（#197）/ 未分诊=2（#297、#299）；按 2.1.3 安静收尾
-- 分支：main @ `6162dbf`（= origin/main，已 push；admin bypass）
-- 未完成工作：无任务执行、零代码变更；**外来 4 个未提交改动**（`.nvmrc`、`mise.toml`、`.github/workflows/collect-metrics.yml`、`.github/workflows/openwiki-update.yml`，Node 22→24，mtime 2026-11-17 13:24–13:25Z）来源不明，按 2.1.4 绕开：未提交、未 stash、未 checkout、未 reset
-- 最近提交：`6162dbf` @ main（`chore(agent)` 第118轮文档交接，已 push）；本轮无生产代码变更
-- 今日日报：已写（.agent/DIARY/2026-11-17.md，含推送后 CI 复核追加节）
-- 已知环境限制：① `node scripts/quality/audit-gate.mjs` exit 1，现为 **3 条**通告（新增 astro GHSA-r3h5-4585-7x3w）；main `CI/CD Pipeline` `42245424825` 与本轮 `44104863406` 均 failure（仅 `Audit Dependencies`，其余 job 全 success）、5 张开放 PR 全 BLOCKED（PR300 仅 `Audit Dependencies` fail）；② `git pull --rebase` exit 128（外来 WIP 未提交），HEAD 与 origin/main 相同故未阻塞同步；③ 本机 build 的 `[search-index]` 阶段 wrangler dev 绑定限制（历史已知，本轮未复跑）。
+- 更新时间：2026-11-22T11:59:44+08:00，Execution 第119轮
+- 当前任务：[#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)（in-review，未关闭）；GitHub `ready=0`、`in-progress=0`
+- 分支：`agent/issue-297-audit-deps`（独立工作树 `../Guidance-Astro-issue-297`）
+- 未完成工作：[PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314) [CI 全绿](https://github.com/HUAT-FSAC/Guidance-Astro/actions/runs/44982778242)，等独立 Reviewer；#306、#295、#101 仍 blocked。本轮无合入、发版或部署。
+- 最近提交：`1504753bc402a66db815bf059f8d42edd2f9a254`，已推送任务分支。
+- 今日日报：已写 `.agent/DIARY/2026-11-22.md`；本轮记录独立发布在 `agent/execution-round-119`，不推进主干。
+- 已知环境限制：共享工作区有既有 Node/CI 与规划记录改动，未编辑、暂存或提交；从干净的 `origin/main@26de9c7` 建立任务与记录工作树。`wsyhuat/main` 的 `f98be0d` 已吸收于 `6a80906`（七路径内容差异为空），`d89b87e` 为旧合流，不移植。
 
 ## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
 

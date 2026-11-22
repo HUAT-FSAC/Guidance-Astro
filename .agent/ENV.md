@@ -136,3 +136,9 @@ pnpm deploy:worker           # 本机部署（= pnpm build && wrangler deploy --
 
 - 代码 commit 用 conventional commits + 正文 `Refs #<N>`；`.agent/` 与 `WORKFLOW §7.4` 记录单独 `chore(agent):`（D-008 允许直推 main）。
 - **合并 PR 时不使用 `Closes/Fix:` 关键字**（`fix: #N` 会被 GitHub 自动关单，绕过 Planner 验收，违反 D-006）。
+
+## #297 隔离验证环境（2026-11-22）
+
+- 任务分支使用 Node `22.23.4` / pnpm `11.22.0`。从 npm 的 `node-linux-x64@22.23.4` 提取项目内二进制，SHA-512 与 registry integrity 相符；未全局安装。使用 `export PATH="$PWD/.tmp/issue297/package/bin:$PATH"`；远端 CI 从 `.nvmrc` 读取相同 pin。
+- `pnpm install --frozen-lockfile` 与 `pnpm quality:audit` 在该环境分别退出 0，审计零豁免；以上是任务分支实测，不代表 `main` 已升级。
+- 本轮本地预览只用 `pnpm build` 的索引子进程（8788）与 `pnpm preview:ssr`（8787）；运行时剥离代理变量，不调用生产发布命令。

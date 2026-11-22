@@ -3,6 +3,10 @@
 > 同步：2026-11-04，Planning 第116轮；**GitHub Issues 可读写，为唯一权威**，本文件按本轮真实 Issue 状态**整体重写**（非增量打补丁），无降级。开工基线 `main@d3d04f92aa5405cbf1512318edbf88edd0beb560`，fetch / pull --rebase 成功，工作区干净。
 > D-013 映射：`ready` = `status:backlog` + 正文首行「队列状态：ready」；`in-progress` = `status:in-progress`；`in-review` = `status:review`；`done` = `status:done`；`blocked` / `needs-info` 不并挂 backlog。`open` / `closed` 是 Issue 自身开闭状态，不在状态标签集合内。
 
+## Executor 状态同步（2026-11-22）
+
+- [#297 安全依赖批次](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297) — P0 / in-review，[PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314) CI 全绿，未合入。该任务不在下方旧规划镜像中；其余条目由 Planner 下轮整体刷新。
+
 ## 今日队列（2026-11-04 规划；3 个 ready）
 
 1. **[#295 执行 M4 收口后的 release 1.4.0 minor 发版与四方一致性核验](https://github.com/HUAT-FSAC/Guidance-Astro/issues/295)** — P1 / blocked（外部安全门禁拦截，评论 6688407297）/ low / 无 milestone。
