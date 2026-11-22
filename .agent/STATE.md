@@ -1,12 +1,13 @@
 # STATE
 
-- 更新时间：2026-11-22T13:08:58+08:00（Execution 第120轮）
-- 当前任务：[#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297)（in-review，未关闭）；GitHub 开放 Issue 21 个，`ready=0`、`in-progress=0`。
-- 分支：任务 `agent/issue-297-audit-deps`；交接 `agent/execution-round-119`（两者均在独立工作树）。
-- 未完成工作：[PR #314](https://github.com/HUAT-FSAC/Guidance-Astro/pull/314) 的检查全部通过或按条件跳过；GitHub 仍报 `REVIEW_REQUIRED / BLOCKED`，已请求 `wsyhuat`，批准 0/1。#306 仍 blocked；#302 仍 backlog；#295 发版不在本轮授权内。
+- 更新时间：2026-11-22T21:52:49+08:00（Execution 第121轮）
+- 当前任务：无进行中任务。GitHub 开放 Issue 21 个，`ready=0`、`in-progress=0`。#292、#296、#297 待审。
+- 分支：任务 `agent/issue-297-audit-deps`，交接 `agent/execution-round-119`。
+- 未完成工作：PR #314 检查通过，独立审批 0/1，已请求 `wsyhuat`。#306 仍 blocked。
 - 最近任务提交：`1504753bc402a66db815bf059f8d42edd2f9a254`，已推送，未合入。
-- 今日日报：已在 `.agent/DIARY/2026-11-22.md` 追加本轮记录。
-- 已知环境限制：主干 `26de9c7` 的 CI `44106294755` 仍为 failure。共享工作区 9 个既有改动未触碰；主工作树未执行 rebase，独立交接分支 `git pull --rebase` 成功，已同步。
+- 今日日报：已在 `.agent/DIARY/2026-11-22.md` 追加第121轮。
+- 已知环境限制：普通沙箱无法连接 GitHub，以授权的网络访问完成核对。主干 `26de9c7` 的 CI `44106294755` 仍在 Audit Dependencies 失败。
+- 入站巡检：`origin/main` 无新提交。fork 的 `f98be0d` 七路径与主干相同，已吸收于 `6a80906`。`d89b87e` 的剩余差异来自 fork 落后。两端指标快照分支例行更新，未摄入。
 
 ## Planner 第105轮接力补记（2026-10-23；仅追加，不覆盖上方Executor现场）
 
