@@ -2,7 +2,7 @@
 
 ## 本轮概要
 
-Execution 第121轮核对了 GitHub 上全部 21 个开放 Issue。当前没有 `ready` 或 `in-progress` 任务。本轮完成队列复核和交接。
+Execution 第123轮恢复联网并核对了 GitHub 上全部 21 个开放 Issue。当前没有 `ready` 或 `in-progress` 任务。本轮完成队列复核和交接。
 
 ## 已完成
 
@@ -25,13 +25,15 @@ Execution 第121轮核对了 GitHub 上全部 21 个开放 Issue。当前没有 
 - 主工作树开工时有 9 个既有修改。使用独立记录工作树 `agent/execution-round-119`，主工作树未 rebase。两个工作树均无 `.agent/LOCK`。
 - `TASKS.md` 已记录 #297 待审，旧队列由 Planner 在下轮整体刷新。未发重复审批请求或 Issue 评论。
 
+- 第121、122轮曾因网络限制留在 `.tmp/execution-round-121` 隔离副本。原日报和两条协作日志已补回记录分支，隔离副本仍保留原始提交 `478f4d2`。
+
 ## 给下一棒的第一步建议
 
 复查 #314 的审批及合入状态。合入后核对主干对应提交的审计结果，再按 Planner 队列领取 #306。
 
 ## 今日日报
 
-- 已在 `.agent/DIARY/2026-11-22.md` 追加第121轮。
+- 已在 `.agent/DIARY/2026-11-22.md` 追加在线复核的轮次更正及第121、122轮离线日报。
 
 ## 给 Planner 的信号
 
