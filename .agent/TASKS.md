@@ -1,74 +1,61 @@
-# TASKS — GitHub Issue 本地镜像（只读）
+# TASKS — GitHub Issue 本地镜像
 
-> 同步：2026-11-04，Planning 第116轮；**GitHub Issues 可读写，为唯一权威**，本文件按本轮真实 Issue 状态**整体重写**（非增量打补丁），无降级。开工基线 `main@d3d04f92aa5405cbf1512318edbf88edd0beb560`，fetch / pull --rebase 成功，工作区干净。
-> D-013 映射：`ready` = `status:backlog` + 正文首行「队列状态：ready」；`in-progress` = `status:in-progress`；`in-review` = `status:review`；`done` = `status:done`；`blocked` / `needs-info` 不并挂 backlog。`open` / `closed` 是 Issue 自身开闭状态，不在状态标签集合内。
+> 同步日期 2026-11-23。以 GitHub Issues 为权威。本文件根据验收及治理后的完整清单整体生成。
+> D-013：`ready` 使用 `status:backlog` 和正文首行「队列状态：ready」。`in-review` 对应 `status:review`。
 
-## 今日队列（2026-11-04 规划；3 个 ready）
+## 今日队列（2026-11-23）
 
-1. **[#295 执行 M4 收口后的 release 1.4.0 minor 发版与四方一致性核验](https://github.com/HUAT-FSAC/Guidance-Astro/issues/295)** — P1 / blocked（外部安全门禁拦截，评论 6688407297）/ low / 无 milestone。
-    - 无硬依赖（M4 已显式关闭、PR274 持合已解除）。按 §11.1 / §11.2 合入 PR274 → 完整 SHA CI 全绿 → tag / Release Latest / package.json / CHANGELOG.md 四方一致 → 全 M4 合入提交祖先判定 → 部署必要性判断 → 同一请求 CSP 头体 nonce 一致与双语看板验收。
-    - 明确不包含：版本号以外的代码 / 依赖 / CI / 缓存 / 凭据改动；不用 `Closes` / `Fix` 关键字（D-006）；不摄入 majors、不启动 M5；沿用 #197 默认 C 手工触发 Release PR CI。
-    - 验收标准逐条可判定，见 Issue 正文；不自行 close，转 `in-review`。
-2. **[#292 客户端导航后新页面内联脚本被当前文档 CSP 拦截](https://github.com/HUAT-FSAC/Guidance-Astro/issues/292)** — P2 / in-review（只读定位完成，评论 6688629454）/ low / 无 milestone / `auto-discovered`（来源保留）。
-    - 无硬依赖。只读定位：按 sha256 反查被拦截内联脚本清单、确认 SPA 导航后哪些初始化逻辑确实没跑、给出 ≥2 修法方向及各自影响与推荐 / 默认方案，但**不实施**。
-    - 明确不包含：不修改代码 / 配置 / CSP 头 / 脚本注入 / ClientRouter / 依赖；不放宽 `unsafe-inline`、不新增 nonce / hash 放行（§1.10 红线相邻，另轮决策）；不扩围修搜索或导航；零代码变更（`git diff` 为空）。
-    - 原 Issue 正文已补分诊段与逐条 AC（本轮 `gh issue edit` 整体改写正文，首行「队列状态：ready」）；不自行 close。
-3. **[#296 明确 Quality 时长采集器的跨 attempt 采样口径并出只读对照报告](https://github.com/HUAT-FSAC/Guidance-Astro/issues/296)** — P3 / in-review（只读对照完成，评论 6688733164）/ low / 无 milestone。
-    - 无硬依赖（#286 / #294 已关闭）。只跑现有 `node scripts/quality/check-duration-budget.mjs --dry-run`，定义「端到端恢复墙钟」与「单 attempt 关键路径」双口径、给出 P95 对照并引用 #294 的 632s 样本，如实报告仍超标。
-    - 明确不包含：不改脚本 / `.github/workflows/**` / 缓存 / 阈值 360 / 90 / 样本数 / 依赖 / 凭据；不实施受控安装环境或包源改造；不把恢复墙钟写成单 attempt 排队；零代码变更。
-    - 验收标准逐条可判定，见 Issue 正文；不自行 close。
+1. [#306](https://github.com/HUAT-FSAC/Guidance-Astro/issues/306)（P2）补 Astro locals 和现有 CI Type Check。前置 #297 已关闭，Node 固定为 `22.23.4`。同步中英 README，使用临时模板错误证明检查会失败并在交付前移除探针。
+2. [#303](https://github.com/HUAT-FSAC/Guidance-Astro/issues/303)（P2）修复整页 SSR 404 与错误回退的 nonce 和缓存。前置 #292 已关闭，使用生产形态本地 SSR 验证响应头体、缓存、状态及回归路径。
 
-**开工前置（不占 ready 名额，Executor 自有文件）**：补记 Execution 第115轮交接链 —— 在 `.agent/DIARY/2026-10-27.md` 末尾追加明确标注「补记于 2026-11-04，非当日写入」的新行；刷新 STATE / HANDOFF 顶部执行快照；在 `WORKFLOW §7.4` 表格末尾追加第115轮 execution 行（Planner 第116轮行已由本轮追加）。不编辑 / 重排历史行、不伪造当日验证、不替 Planner 改 PLAN / DECISIONS。
+已有执行现场按原分支恢复：#305 / PR #315、#312 / PR #316、#313 / PR #317。三单均已部分验收，续补评论中的完整门禁与审查证据。
 
-三单均通过七条 ready 门禁（目标明确、范围清楚、依赖满足、无未决产品取舍、AC 逐条可判定、不触红线、无需凭空发明决策）；P1 仅 1 个，与今日执行容量匹配。
+## 全部开放 Issue（19 项）
 
-## 全部开放 Issue（6 项）
+ready 2，in-progress 3，in-review 0，blocked 4，needs-info 1，backlog 9。
 
-- **#295**：P1 / ready / low；M4 收口发版，本轮新建。
-- **#292**：P2 / ready / low / `auto-discovered`；SPA/CSP 内联脚本只读定位，本轮分诊。
-- **#296**：P3 / ready / low / `area:quality`；跨 attempt 采样口径只读报告，本轮新建。
-- **#101**：P1 / blocked / medium；无 milestone。Secrets 仍仅 `CODECOV_TOKEN` / `PROJECT_TOKEN`；默认 B 单机 OAuth 部署，未经授权不恢复 CI deploy。
-- **#197**：P3 / needs-info / medium；无 milestone。用户已确认默认 C，维持手工触发 Release PR CI，常驻观察、不重复提问。
-- **#280**：P3 / blocked / medium；无 milestone。可选 Projects 的独立 `PROJECT_TOKEN` 凭据域，未授权不改权限 / 凭据 / workflow；Projects 非任务 SSOT。
+| Issue                                                          | 标题                                                                                                      | 状态        | 优先级 | Milestone | 下一步或阻塞                                                         |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------- | ------ | --------- | -------------------------------------------------------------------- |
+| [#101](https://github.com/HUAT-FSAC/Guidance-Astro/issues/101) | [Task] 恢复 CI 自动部署，消除单机 wrangler OAuth 单点                                                     | blocked     | P2     | —         | 单机 OAuth 默认 B，自动部署待外部凭据及独立授权。                    |
+| [#197](https://github.com/HUAT-FSAC/Guidance-Astro/issues/197) | 评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制） | needs-info  | P3     | —         | 用户已确认默认 C，沿用既有手工触发方式，常驻观察。                   |
+| [#280](https://github.com/HUAT-FSAC/Guidance-Astro/issues/280) | 跟踪可选 Projects 自动登记的 PROJECT_TOKEN 凭据阻塞                                                       | blocked     | P3     | —         | 可选 Projects 的独立 PROJECT_TOKEN 失效记录，等待凭据所有者处理。    |
+| [#295](https://github.com/HUAT-FSAC/Guidance-Astro/issues/295) | 执行 M4 收口后的 release 1.4.0 minor 发版与四方一致性核验                                                 | blocked     | P2     | —         | 主干审计已恢复；PR #274 当前 head 无检查，待完整门禁与单独发版授权。 |
+| [#299](https://github.com/HUAT-FSAC/Guidance-Astro/issues/299) | [duration-budget] 跟踪 main 流水线 Quality 阶段时长超标                                                   | backlog     | P3     | —         | 活动告警入口。最近 20 样本 P95 473s > 360s，继续积累新窗口。         |
+| [#301](https://github.com/HUAT-FSAC/Guidance-Astro/issues/301) | [ARCH-002/P1] 隔离本地预览、测试 Worker 与生产发布                                                        | backlog     | P1     | —         | 预览误指向生产路径，后续排期；外部部署与资源变更需独立授权。         |
+| [#302](https://github.com/HUAT-FSAC/Guidance-Astro/issues/302) | [ARCH-003/P1] 统一新闻发布模型，修复中英文首页与新闻入口                                                  | backlog     | P1     | M5        | 优先修复新闻入口与草稿可访问问题，待 #306 验收后按既有顺序准入。     |
+| [#303](https://github.com/HUAT-FSAC/Guidance-Astro/issues/303) | [ARCH-004/P2] 统一 SSR 404 与错误回退的 CSP nonce 和 HTML 缓存契约                                        | ready       | P2     | M5        | 今日第 2。#292 定位已验收，限定整页 SSR 错误响应与缓存。             |
+| [#304](https://github.com/HUAT-FSAC/Guidance-Astro/issues/304) | [ARCH-005/P2] 确保 Service Worker 的 Pagefind 与可替换媒体随版本更新                                      | backlog     | P2     | M5        | 待 #305 和 #303 稳定后处理，覆盖同浏览器 A/B 缓存更新和离线降级。    |
+| [#305](https://github.com/HUAT-FSAC/Guidance-Astro/issues/305) | [ARCH-006/P2] Pagefind 首次失败后支持同文档重试与恢复                                                     | in-progress | P2     | M5        | 沿用 PR #315。当前主干补审计、完整 CI 与独立审查。                   |
+| [#306](https://github.com/HUAT-FSAC/Guidance-Astro/issues/306) | [ARCH-008/P2] 修正 Astro locals 类型并将 astro check 纳入 CI                                              | ready       | P2     | M5        | 今日第 1。#297 已验收，沿用 Node 22.23.4，补模板检查和双语声明。     |
+| [#307](https://github.com/HUAT-FSAC/Guidance-Astro/issues/307) | [ARCH-007/P2] 以真实可索引路由生成 sitemap 并修正双语互链                                                 | blocked     | P2     | M5        | 硬依赖 #302 发布契约；保留兼容跳转和真实搜索行为。                   |
+| [#308](https://github.com/HUAT-FSAC/Guidance-Astro/issues/308) | [ARCH-009/P2] 测量并优化移动首页 LCP 关键路径                                                             | backlog     | P2     | —         | 待 #301，复测移动首页 LCP 基线后定位关键路径。                       |
+| [#309](https://github.com/HUAT-FSAC/Guidance-Astro/issues/309) | [ARCH-010/P2] 以稳定赛季和车型 ID 共享技术参数与赛绩                                                      | backlog     | P2     | —         | 先核实 2024 赛季车辆与字段统计口径，再安排数据整合。                 |
+| [#310](https://github.com/HUAT-FSAC/Guidance-Astro/issues/310) | [ARCH-011A/P2] 将 Starlight 私有路由与 Pagefind 解析依赖收拢                                              | backlog     | P2     | —         | 依赖基线已就绪，按建议等 #307 路由契约稳定并串行搜索改动。           |
+| [#311](https://github.com/HUAT-FSAC/Guidance-Astro/issues/311) | [ARCH-011B/P2] 验证 CSS 去重不改变层叠并收敛产物后处理                                                    | backlog     | P2     | —         | 后续验证 CSS 产物层叠顺序、主题与视觉表现。                          |
+| [#312](https://github.com/HUAT-FSAC/Guidance-Astro/issues/312) | [ARCH-012/P3] 修正逐页 canonical/OG URL 与双语实验室元数据                                                | in-progress | P3     | —         | 沿用 PR #316。当前主干补审计、完整 CI、双语新闻和独立审查。          |
+| [#313](https://github.com/HUAT-FSAC/Guidance-Astro/issues/313) | [ARCH-013/P3] 修正 Web Vitals 观察、清理与上报生命周期                                                    | in-progress | P3     | —         | 沿用 PR #317。当前主干补审计、完整 CI 与独立审查，维持生产上报开关。 |
+| [#318](https://github.com/HUAT-FSAC/Guidance-Astro/issues/318) | 恢复客户端导航后的文档阅读进度                                                                            | backlog     | P2     | —         | 从 #292 拆出现场已证实的阅读进度回归，保持 CSP 与导航策略。          |
 
-统计：ready=3、in-progress=0、in-review=0、blocked=2、needs-info=1；P0=0，P1=2（其中 #101 为外部常驻阻塞，不占执行容量），P2=1，P3=3。
+## 本轮验收
 
-## 本轮关闭（7 项）
+- [#292](https://github.com/HUAT-FSAC/Guidance-Astro/issues/292#issuecomment-7091142388)。只读定位通过，整页响应交 #303，阅读进度交 #318。
+- [#296](https://github.com/HUAT-FSAC/Guidance-Astro/issues/296#issuecomment-7091143110)。双口径报告通过，持续告警交 #299。
+- [#297](https://github.com/HUAT-FSAC/Guidance-Astro/issues/297#issuecomment-7091143764)。通过，依赖审计零豁免，PR #314 已合入。
+- [#305](https://github.com/HUAT-FSAC/Guidance-Astro/issues/305#issuecomment-7091144536)。部分通过，退回 PR #315 补门禁和审查。
+- [#312](https://github.com/HUAT-FSAC/Guidance-Astro/issues/312#issuecomment-7091145209)。部分通过，退回 PR #316 补门禁和审查。
+- [#313](https://github.com/HUAT-FSAC/Guidance-Astro/issues/313#issuecomment-7091145886)。部分通过，退回 PR #317 补门禁和审查。
 
-- **#287** — 通过关闭，验收 6634076909。异步初始化重入 / 过时容器切片 AC 满足；快捷键差距转 #289。
-- **#279** — 通过关闭，验收 6634078031。AC3 由 #289 补齐，原 AC1/AC2/AC4–AC7 既有结论保留。
-- **#262** — 通过关闭，验收 6634079195。原九项 AC3 由不通过转通过，其余八项沿用已认可证据，AC5 未破坏产物重跑如实保留；九项无剩余差距。
-- **#286** — 通过关闭，验收 6634079897。只读调查交付认可；P95=729s>360 与底层根因未知如实保留，无 CI / 阈值改动。
-- **#289** — 通过关闭并补 `priority:p1`，验收 6634081684。1.7 报告齐全、diff 与报告一致、PR291 CI / 生产证据充分；认可 Executor 自行准入但记录流程提醒（后续 auto-discovered 须先分诊），不追加 M4 成员。
-- **#294** — 按重复合并关闭，分诊 6634083905。与 #286 同一 APT 传输长尾，P95=632s>360 属持续现象，不按抖动轻率消除。
-- **Milestone #3（M4）** — 2026-11-04 由 Planner 显式关闭（D-020），REST 返回 `open=0 / closed=9`。PR274 持合解除。
+## 里程碑和关联 PR
 
-以上六单均已加 `status:done`、移除 `status:review`（#294 保留原 `flaky` 等标签），Issue `state=closed`；验收结论写在各自 Issue comment。旧日报与既有报告未改写。
+- M4（GitHub #3）已关闭，9/9。M5（GitHub #4）1/7，开放 6 个成员。进度来自逐个列举现有成员。
+- PR #274 暂缓；PR #300 已关闭，其 Astro 补丁由 #314 承接；PR #314 已合入。恢复已有实现时，以 PR 当前完整 head 的检查为准。
 
-## 昨日验收（第114 / 115轮 → 第116轮）
+### 开放 PR（7 张）
 
-- 输入：`.agent/DIARY/2026-10-27.md`（第114轮）、#289 执行报告（Execution 第115轮，2026-10-27T11:48:26Z）、#279 / #262 同日第115轮补充报告、五份 review 报告、`git show` diff、完整 SHA CI、生产真实表面证据。**2026-10-28 → 11-03 无日报、无 Planning 轮次**，按 §2 第 2 步以 git log / Issue comment / STATE / HANDOFF 反推；上一轮「报告缺失」的推断已由真实 Issue 状态更正。
-- 无「报告失实」：五份报告均主动写明部分完成 / 调查完成并保留 #289 差距；第115轮补充报告逐条回填 AC3 且明确「Executor 不自行 close」，与代码事实一致。
-- 独立核验：`git show 26f333a` / `54cdf01`（5 文件 +76/-10，与报告一致）；PR291 head `8ccb7fb` Pipeline `40495541570` success、PR291 MERGED（mergeCommit `54cdf01`）；生产单请求 CSP 头 `nonce-evZykEnu6MaSff5vingMlQ` 与 HTML 27 个 script nonce 一致、`private, no-cache, must-revalidate`、清单 404。
-- 收敛判定：局部结论已定，M4 内无新的不一致；#292 与 #287 / #289 改动无关、不在原九项 AC，不并入完成信号。可诚实说 M4 已收敛，故显式关闭。
-
-## Milestone 与发版
-
-- **M4 #3：9 / 9，CLOSED**（2026-11-04 Planner 显式关闭）。成员逐单：done=#266/#264/#263/#268/#270/#281/#287/#279/#262，open=0；REST 汇总与成员一致。D-020 完成信号达成。
-- **M2 / M3**：既有 closed；#101 / #197 / #280 / #292 / #294 / #295 / #296 不计 M4。
-- **PR274 `release 1.4.0` minor：持合解除**，由 #295 按 §11 承接（发版时机不请示，§1.7）。合入后须做四方一致性、祖先判定与部署必要性判断。
-
-## 开放 PR（4 张）
-
-- **PR293**：常态 metrics 顺手项，仅 `src/data/metrics/project-progress.json` +46/-46，`generatedAt` `2026-11-04T06:19:04.273Z`，键路径与类型不变。按 update-branch → checks 绿 → 合入流程，不占今日 ready 名额。
-- **PR274**：`1.4.0` minor 持合已解除，由 #295 合入。
-- **PR186 / PR209**：majors 按 D-015 暂缓，保留 open standing reminders，不自动摄入、不计今日容量。
-
-## 本轮证据与验证边界
-
-- 实跑（只读 / 验证类）：`git fetch --all --prune`、`git pull --rebase`（Already up to date）、`git status --short`（空）、`git log`、`git show`、`git diff --stat`、`gh issue list/view/api/edit/create/comment`、`gh pr view/diff`、`gh run view 40495541570`、`curl` 单请求生产头体比对、`pnpm exec prettier --check` 基线。
-- inbound：`HEAD..wsyhuat/main` 报 `f98be0d` / `d89b87e`（squash 吸收后的已知误报，吸收 commit `6a80906`）；f98be0d 声称的七个路径内容级 `git diff --stat main wsyhuat/main` 为**空**，确认已吸收。全仓 38 文件差异来自 d89b87e 旧批次 fork 落后主干（如 `src/utils/toast.ts` 在 fork 侧仍存在），属「对落后」而非分叉，不反向引入、不 merge fork。
-- **`pnpm format:check` exit 0；`pnpm build` 两次均 exit 1（如实保留）**：Astro 主构建 `Complete`，但 `[search-index]` 阶段本地 wrangler dev 对 `/archive/2025/`、`/about-fs/`、`/archive/2025/electrical/`、`/archive/2024/2024-learning-roadmap/` 返回 404，脚本按设计删除旧 pagefind bundle 与清单；strip proxy 后 404 依旧，无残留 wrangler / workerd 进程；手动热启后仅 `/` 200、连 `/labs/` / `/en/join/` 也 404。`dist/client` 仅 offline.html（SSR）、sitemap 含上述 URL、生产正常、PR291 CI（含 Build）success ⇒ 本机 wrangler dev 的 ASSETS / 路由绑定限制，非代码回归，不 reopen #262、不改脚本 / 配置。已在 #295 留开工提示（6634313277）：发版以远端完整 SHA CI 为准，本机再失败按 AGENTS.md 重试一次、仍失败显式告知用户，不静默跳过部署。
-- 未执行：全量单测 / E2E / LHCI、部署、`wrangler deployments list`；采用已核实远端门禁与本轮真实生产表面证据，不冒称本轮重跑全量门禁。`.tmp/issue286/` / `issue287/` / `issue289/` 原始日志已不在磁盘，依赖其内容的结论标注「据既有记录」。
-- GraphQL 首次 `gh label list` 因本地代理 `127.0.0.1:7890` 超时，strip proxy 后所有 `gh` 写操作成功；不把首次失败写成成功。
-- 本轮不写代码、测试或验证脚本，不替 Executor 合并 PR / 部署；DIARY / ENV 只读，STATE / HANDOFF 仅按仓库强制规则追加接力补记。
+- [#186](https://github.com/HUAT-FSAC/Guidance-Astro/pull/186) chore(deps): bump the majors group across 1 directory with 3 updates
+- [#274](https://github.com/HUAT-FSAC/Guidance-Astro/pull/274) chore(main): release 1.4.0
+- [#293](https://github.com/HUAT-FSAC/Guidance-Astro/pull/293) chore(metrics): update project progress snapshot
+- [#298](https://github.com/HUAT-FSAC/Guidance-Astro/pull/298) chore(deps): bump the majors group across 1 directory with 4 updates
+- [#315](https://github.com/HUAT-FSAC/Guidance-Astro/pull/315) fix(search): recover from Pagefind UI load failures (#305)
+- [#316](https://github.com/HUAT-FSAC/Guidance-Astro/pull/316) fix(seo): align page and lab metadata with canonical URLs (#312)
+- [#317](https://github.com/HUAT-FSAC/Guidance-Astro/pull/317) fix(vitals): finalize one sample per document and score CLS windows (#313)

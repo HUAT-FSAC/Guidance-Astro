@@ -67,7 +67,7 @@ flowchart LR
 
 ### Requirements
 
-- Node.js >= 22 (the repository pins `22.23.2`; see [`.nvmrc`](./.nvmrc))
+- Node.js ≥ 22.23.4 (the repository pins `22.23.4`; see [`.nvmrc`](./.nvmrc))
 - pnpm `11.22.0` (see the `packageManager` field)
 - Wrangler is installed as a development dependency (currently `4.147.0`) and is used for local SSR preview and deployment
 
