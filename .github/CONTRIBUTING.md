@@ -46,7 +46,7 @@
 
 ### 环境要求
 
-- **Node.js** 22.23.2（`package.json:engines` 要求 `>=22.0.0`）
+- **Node.js** 22.23.4（`package.json:engines` 要求 `>=22.23.4`）
 - **pnpm** 11.22.0（`packageManager: pnpm@11.22.0`，见 `pnpm-lock.yaml`）
 - **Git** 2.0.0 或更高版本
 
