@@ -4,7 +4,7 @@ The official website and technical documentation platform for HUAT FSAC, the For
 
 [![CI](https://github.com/HUAT-FSAC/Guidance-Astro/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/HUAT-FSAC/Guidance-Astro/actions/workflows/ci-cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D22-339933)](./.nvmrc)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.23.4-339933)](./.nvmrc)
 [![pnpm](https://img.shields.io/badge/pnpm-11.22.0-blue)](https://pnpm.io)
 [![Deploy](https://img.shields.io/badge/deploy-Cloudflare%20Workers-orange)](https://huat-fsac.eu.org)
 
@@ -45,7 +45,7 @@ The site is both the team's public portal and a technical reference for members 
 | Styling                     | Plain CSS and CSS custom properties; self-hosted fonts        |
 | Testing                     | Vitest 4.1, Playwright 1.63                                   |
 | Code quality                | ESLint 10, Prettier 3, Husky 9, commitlint 21, lint-staged 17 |
-| Runtime and package manager | Node.js >= 22, pnpm 11.22                                     |
+| Runtime and package manager | Node.js >= 22.23.4, pnpm 11.22                                |
 | Analytics                   | Umami (optional)                                              |
 
 ## Architecture
