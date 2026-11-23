@@ -67,7 +67,7 @@ flowchart LR
 
 ### 环境要求
 
-- Node.js >= 22（仓库固定为 `22.23.2`，见 [`.nvmrc`](./.nvmrc)）
+- Node.js ≥ 22.23.4（仓库固定为 `22.23.4`，见 [`.nvmrc`](./.nvmrc)）
 - pnpm `11.22.0`（见 `packageManager`）
 - Wrangler 已作为开发依赖安装（当前 `4.147.0`），本地 SSR 预览与部署时需要
 
