@@ -7,14 +7,14 @@
 
 ## 1. 工具链（实测）
 
-| 项                 | 值                                                                                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 仓库 / 主干        | `HUAT-FSAC/Guidance-Astro` · `main`                                                                                                                     |
-| Node               | v22.23.2（`.nvmrc` = 22，`engines` ≥22.0.0）                                                                                                            |
-| pnpm               | 11.22.0（`packageManager` 字段锁定；**禁用 npm/yarn**）                                                                                                 |
-| pnpm 是否在裸 PATH | **否**。同命令内 `export PATH="$HOME/.local/share/mise/installs/pnpm/11:$HOME/.local/share/mise/installs/node/22/bin:$PATH"` 或用 `mise exec -- pnpm …` |
-| 其他远端           | `wsyhuat` = 协作方 fork（**每轮必须 inbound 巡检**，见 `WORKFLOW §1.6`）                                                                                |
-| gh 可用性与 scope  | 账号 `zhangjszs`；scopes = `repo` `workflow` `read:org` `gist` ⇒ **无 `read:project`**，GitHub Projects 不可验证                                        |
+| 项                 | 值                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| 仓库 / 主干        | `HUAT-FSAC/Guidance-Astro` · `main`                                                                              |
+| Node               | v22.23.4（`.nvmrc` 固定 22.23.4，`engines` ≥22.23.4）                                                            |
+| pnpm               | 11.22.0（`packageManager` 字段锁定；**禁用 npm/yarn**）                                                          |
+| pnpm 是否在裸 PATH | **否**。已安装相应版本时使用 `mise exec -- pnpm …`，或先将项目版本的 Node 与 pnpm 加入 PATH。                    |
+| 其他远端           | `wsyhuat` = 协作方 fork（**每轮必须 inbound 巡检**，见 `WORKFLOW §1.6`）                                         |
+| gh 可用性与 scope  | 账号 `zhangjszs`；scopes = `repo` `workflow` `read:org` `gist` ⇒ **无 `read:project`**，GitHub Projects 不可验证 |
 
 ## 2. 门禁命令（与 CI 同款，逐项需取真实退出码）
 
