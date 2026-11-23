@@ -34,6 +34,7 @@ async function readMetadata(page: Page, path: string) {
 for (const [zh, en] of [
     ['/', '/en/'],
     ['/join/', '/en/join/'],
+    ['/news/new-car-development/', '/en/news/new-car-development/'],
     ['/showcase-dashboard/', '/en/showcase-dashboard/'],
 ]) {
     test(`SSR canonical, social URL and language alternates match for ${zh}`, async ({ page }) => {
