@@ -212,22 +212,21 @@ jobs:
                   name: dist
                   path: dist
 
+            - name: Check Lighthouse credential isolation
+              run: node scripts/quality/check-lhci-credentials.mjs
+
             # LHCI 分档：PR 只跑首页 1 URL x 1 次（约 15~30s），main/push 全量 4 URL x 3 次
             - name: Run Lighthouse CI (PR fast lane)
               if: github.event_name == 'pull_request'
               run: |
                   pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.pr.json
                   pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.pr.json
-              env:
-                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
             - name: Run Lighthouse CI (full suite)
               if: github.event_name != 'pull_request'
               run: |
                   pnpm dlx @lhci/cli@0.15.1 collect --config=.config/lighthouserc.json
                   pnpm dlx @lhci/cli@0.15.1 assert --config=.config/lighthouserc.json
-              env:
-                  LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
     # 聚合 job：job id 必须保持 quality-gate（分支保护 required check context），
     # 本身不跑测试，只等三个并行 job 全绿。
