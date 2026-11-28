@@ -1,0 +1,24 @@
+---
+import { getLocaleFromPath } from '../utils/i18n'
+
+// 给 Astro 一个明确的 500 回退，避免文档通配路由把异常作为缺页返回。
+Astro.response.status = 500
+const isEnglish = getLocaleFromPath(Astro.url.pathname) === 'en'
+const title = isEnglish ? 'Internal server error' : '服务器内部错误'
+---
+
+<!doctype html>
+<html lang={isEnglish ? 'en' : 'zh-CN'}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+    </head>
+    <body>
+        <main>
+            <h1>500 · {title}</h1>
+            <p>{isEnglish ? 'Please try again later.' : '请稍后重试。'}</p>
+            <a href={isEnglish ? '/en/' : '/'}>{isEnglish ? 'Return home' : '返回首页'}</a>
+        </main>
+    </body>
+</html>
