@@ -1,0 +1,48 @@
+---
+import { getEntry } from 'astro:content'
+import { htmlRedirectShell } from '../../integrations/search-manifest-filter'
+
+const { head, isFallback } = Astro.locals.starlightRoute
+type HeadTag = (typeof head)[number]
+
+function isLanguageAlternate({ tag, attrs }: HeadTag): boolean {
+    return tag === 'link' && attrs?.rel === 'alternate' && typeof attrs.hreflang === 'string'
+}
+
+const alternates = head.filter(isLanguageAlternate)
+const translatedLinks = new Set<HeadTag>()
+if (!isFallback) {
+    // Starlight can route untranslated URLs using the default entry. Require an
+    // authored entry for each advertised translation.
+    await Promise.all(
+        alternates
+            .filter(({ attrs }) => attrs?.hreflang !== 'x-default')
+            .map(async (link) => {
+                const href = link.attrs?.href
+                if (typeof href !== 'string') return
+                const pathname = decodeURI(new URL(href).pathname)
+                const id = pathname.replace(/^\/|\/$/g, '') || 'index'
+                const entry = await getEntry('docs', id)
+                if (!entry || entry.data.draft) return
+
+                // Existing legacy URLs start with refresh markup before their fallback text.
+                const body = entry.body?.trimStart() ?? ''
+                if (body.startsWith('<meta ') && htmlRedirectShell(body)) return
+                translatedLinks.add(link)
+            })
+    )
+}
+
+const verified = [...translatedLinks]
+const hasTranslations = verified.length > 1
+const headTags = head.filter((link) => {
+    if (!isLanguageAlternate(link)) return true
+    if (!hasTranslations) return false
+    if (link.attrs?.hreflang === 'x-default') {
+        return verified.some(({ attrs }) => attrs?.href === link.attrs?.href)
+    }
+    return translatedLinks.has(link)
+})
+---
+
+{headTags.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}

@@ -13,6 +13,7 @@ import {
     collectNonIndexablePagePaths,
 } from './src/integrations/sitemap-paths'
 import { siteRedirects } from './src/config/redirects'
+import { brandMetadata } from './src/config/brand-metadata'
 import purgecss from 'vite-plugin-purgecss'
 
 /** 站点正式域名（`site` 与 sitemap 的 `customPages` 共用同一来源） */
@@ -207,15 +208,8 @@ export default defineConfig({
                 {
                     tag: 'meta',
                     attrs: {
-                        property: 'og:url',
-                        content: 'https://huat-fsac.eu.org',
-                    },
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
                         property: 'og:image',
-                        content: 'https://huat-fsac.eu.org/og-image.jpg',
+                        content: new URL(brandMetadata.imagePath, SITE_URL).href,
                     },
                 },
                 /* 补齐 og:image 的尺寸与替代文本：
@@ -225,28 +219,28 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: {
                         property: 'og:image:width',
-                        content: '1200',
+                        content: brandMetadata.imageWidth,
                     },
                 },
                 {
                     tag: 'meta',
                     attrs: {
                         property: 'og:image:height',
-                        content: '630',
+                        content: brandMetadata.imageHeight,
                     },
                 },
                 {
                     tag: 'meta',
                     attrs: {
                         property: 'og:image:alt',
-                        content: 'HUAT FSAC 东风 HUAT 无人驾驶车队',
+                        content: brandMetadata.imageAlt.zh,
                     },
                 },
                 {
                     tag: 'meta',
                     attrs: {
                         property: 'og:site_name',
-                        content: 'HUAT FSAC',
+                        content: brandMetadata.siteName,
                     },
                 },
                 {
@@ -260,7 +254,7 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: {
                         name: 'twitter:image',
-                        content: 'https://huat-fsac.eu.org/og-image.jpg',
+                        content: new URL(brandMetadata.imagePath, SITE_URL).href,
                     },
                 },
                 // 性能优化：DNS 预解析
@@ -377,6 +371,7 @@ export default defineConfig({
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             // 自定义组件覆盖
             components: {
+                Head: './src/components/overrides/Head.astro',
                 Header: './src/components/overrides/Header.astro',
                 Hero: './src/components/overrides/Hero.astro',
                 // 搜索弹窗生命周期修复（#262）：SPA 导航后重新初始化 PagefindUI 并清理监听
