@@ -1,51 +1,51 @@
 {
-    "generatedAt": "2026-10-27T05:02:32.243Z",
+    "generatedAt": "2026-11-28T07:46:18.053Z",
     "repository": "HUAT-FSAC/Guidance-Astro",
     "windowDays": 30,
     "status": "ok",
     "metrics": {
-        "issueLeadTimeDays": 0.96,
-        "prCycleTimeDays": 0.67,
-        "issueCloseRatePercent": 98.86,
-        "prMergeRatePercent": 81.25,
-        "ciSuccessRatePercent": 58,
-        "wipIssueCount": 0,
-        "reviewIssueCount": 4,
-        "backlogIssueCount": 0
+        "issueLeadTimeDays": 12.79,
+        "prCycleTimeDays": 0.53,
+        "issueCloseRatePercent": 45,
+        "prMergeRatePercent": 11.11,
+        "ciSuccessRatePercent": 18,
+        "wipIssueCount": 1,
+        "reviewIssueCount": 5,
+        "backlogIssueCount": 9
     },
     "counts": {
-        "openIssueCount": 8,
-        "openPullRequestCount": 3,
-        "openedIssuesInWindow": 88,
-        "closedIssuesInWindow": 87,
-        "openedPullRequestsInWindow": 96,
-        "mergedPullRequestsInWindow": 78,
+        "openIssueCount": 20,
+        "openPullRequestCount": 10,
+        "openedIssuesInWindow": 20,
+        "closedIssuesInWindow": 9,
+        "openedPullRequestsInWindow": 9,
+        "mergedPullRequestsInWindow": 1,
         "ciRunsInWindow": 50,
-        "ciFailedRunsInWindow": 8
+        "ciFailedRunsInWindow": 13
     },
     "samples": {
-        "latestIssueUpdatedAt": "2026-10-26T13:34:35.000Z",
-        "latestMergedPullRequestAt": "2026-10-26T17:02:30.000Z"
+        "latestIssueUpdatedAt": "2026-11-27T08:02:37.000Z",
+        "latestMergedPullRequestAt": "2026-11-22T16:35:48.000Z"
     },
     "summary": {
-        "totalIssues": 119,
-        "closedIssues": 111,
-        "openIssues": 8,
-        "ciPassRate": 58
+        "totalIssues": 140,
+        "closedIssues": 120,
+        "openIssues": 20,
+        "ciPassRate": 18
     },
     "byStatus": {
-        "backlog": 0,
-        "ready": 2,
-        "inProgress": 0,
-        "review": 4,
-        "blocked": 2,
-        "done": 111
+        "backlog": 9,
+        "ready": 1,
+        "inProgress": 1,
+        "review": 5,
+        "blocked": 4,
+        "done": 120
     },
     "byPriority": {
         "p0": 3,
-        "p1": 16,
-        "p2": 33,
-        "p3": 32
+        "p1": 13,
+        "p2": 37,
+        "p3": 31
     },
     "milestones": [
         {
@@ -65,8 +65,15 @@
         {
             "title": "M4 开发入口与能力声明一致性",
             "description": "收敛已有搜索、开发配置与双语入口事实，不启动新功能。实际八成员：#266/#264/#263/#268/#270已由Planner验收关闭；#262为搜索完整AC验收父单（第109轮不通过、in-progress），#279窄屏可见检索、#281真实Starlight路由/英文收录为唯一整改实现子任务（ready）。父子分工不重复实现，不降低原AC。进度按REST成员列表+GraphQL双源核实为5closed/3open。完成信号：八成员全经Planner验收关闭，生产双语正文检索/窄屏可见交互/真实路由收录与SSR nonce保持一致，核实实际open归零后显式关闭，方可合PR274 minor。#101/#197/#280与majors不计入。原六成员汇总曾恢复正常；新增整改子任务后REST汇总又为2open/5closed而实际3/5，不能据此漏父单或缩范围。",
+            "status": "completed",
+            "completionRate": 100,
+            "dueDate": null
+        },
+        {
+            "title": "M5 站点正确性与验证基线",
+            "description": "消除已证实的依赖审计、模板类型、SSR 错误页、新闻发布与索引陈旧问题。成员 #297、#302–#307。GitHub 成员验收关闭归零后由 Planner 显式收口。",
             "status": "in-progress",
-            "completionRate": 67,
+            "completionRate": 14,
             "dueDate": null
         }
     ],
@@ -82,52 +89,52 @@
     },
     "recentActivity": [
         {
-            "type": "issue",
-            "title": "消除搜索异步初始化重入导致的重复 PagefindUI",
-            "status": "open",
-            "updatedAt": "2026-10-26T23:21:30.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "调查 Quality 时长告警中的浏览器安装与调度长尾",
-            "status": "open",
-            "updatedAt": "2026-10-26T23:21:27.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "[Bug] 站内搜索: Pagefind 索引未生成，Search UI 打开后无法加载",
-            "status": "open",
-            "updatedAt": "2026-10-26T17:26:51.000Z"
-        },
-        {
-            "type": "issue",
-            "title": "恢复窄屏搜索的可见入口与完整查询交互",
-            "status": "open",
-            "updatedAt": "2026-10-26T17:26:48.000Z"
-        },
-        {
             "type": "pr",
             "title": "chore(metrics): update project progress snapshot",
-            "status": "merged",
-            "updatedAt": "2026-10-26T17:21:12.000Z"
+            "status": "open",
+            "updatedAt": "2026-11-27T08:29:13.000Z"
+        },
+        {
+            "type": "pr",
+            "title": "fix(ci): remove unused Lighthouse App credentials (#321)",
+            "status": "open",
+            "updatedAt": "2026-11-27T08:03:09.000Z"
         },
         {
             "type": "issue",
-            "title": "[auto-discovered] 搜索已打开时 Ctrl/Cmd+K 被增强搜索拦截而无法关闭",
+            "title": "[Security/P1] 移除 Lighthouse CI 非必要凭据依赖",
             "status": "open",
-            "updatedAt": "2026-10-26T17:21:10.000Z"
+            "updatedAt": "2026-11-27T08:03:04.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "评估解锁 release-please Release PR 的 PR 级自助 CI（当前靠手工 update-branch 绕过 GITHUB_TOKEN 链式抑制）",
+            "status": "open",
+            "updatedAt": "2026-11-24T13:24:43.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "跟踪可选 Projects 自动登记的 PROJECT_TOKEN 凭据阻塞",
+            "status": "open",
+            "updatedAt": "2026-11-24T13:24:41.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[duration-budget] 跟踪 main 流水线 Quality 阶段时长超标",
+            "status": "open",
+            "updatedAt": "2026-11-23T13:16:35.000Z"
+        },
+        {
+            "type": "issue",
+            "title": "[ARCH-004/P2] 统一 SSR 404 与错误回退的 CSP nonce 和 HTML 缓存契约",
+            "status": "open",
+            "updatedAt": "2026-11-23T04:59:00.000Z"
         },
         {
             "type": "pr",
-            "title": "chore(main): release 1.4.0",
+            "title": "fix(ssr): preserve the error response contract (#303)",
             "status": "open",
-            "updatedAt": "2026-10-26T17:18:31.000Z"
-        },
-        {
-            "type": "pr",
-            "title": "fix(search): prevent reentrant Pagefind UI initialization",
-            "status": "merged",
-            "updatedAt": "2026-10-26T17:17:59.000Z"
+            "updatedAt": "2026-11-23T04:54:49.000Z"
         }
     ]
 }
