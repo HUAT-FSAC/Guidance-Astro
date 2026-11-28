@@ -163,6 +163,8 @@
     "docs": {
         "title": "Documentation",
         "searchDocs": "Search docs...",
+        "searchLoadError": "Search is temporarily unavailable.",
+        "searchRetry": "Retry",
         "noResults": "No results found",
         "lastUpdated": "Last updated",
         "editThisPage": "Edit this page",

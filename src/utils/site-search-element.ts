@@ -19,41 +19,56 @@ const BUNDLE_UI_SCRIPT = '/pagefind/pagefind-ui.js'
 /** 检索 bundle 自带的默认 UI 样式，与 UI 脚本同版本 */
 const BUNDLE_UI_CSS = '/pagefind/pagefind-ui.css'
 
-let uiConstructorPromise: Promise<PagefindUIConstructor | null> | null = null
-let uiCssInjected = false
-
-/** 加载 bundle 自带的 PagefindUI（IIFE，挂到 window.PagefindUI），失败时返回 null 并记录 */
-function loadPagefindUI(): Promise<PagefindUIConstructor | null> {
-    uiConstructorPromise ??= (async () => {
-        try {
-            await import(/* @vite-ignore */ BUNDLE_UI_SCRIPT)
-            const constructor = (window as { PagefindUI?: PagefindUIConstructor }).PagefindUI
-            if (!constructor)
-                throw new Error('window.PagefindUI missing after loading bundle script')
-            return constructor
-        } catch (error) {
-            console.error('[site-search] failed to load Pagefind UI from search bundle:', error)
+/** 共享在途请求和成功结果。失败后等待用户重试，避免生命周期回调重复请求。 */
+function retryableResource<T>(url: string, load: () => Promise<T>) {
+    let request: Promise<T | null> | undefined
+    let failed = false
+    return (retry: boolean) => {
+        if (request && !(retry && failed)) return request
+        failed = false
+        request = load().catch((error: unknown) => {
+            failed = true
+            console.error(`[site-search] failed to load ${url}:`, error)
             return null
-        }
-    })()
-    return uiConstructorPromise
+        })
+        return request
+    }
 }
 
-/** 把 bundle 的 UI 样式包进 starlight.core 层注入（与上游 @import 同层，保证站点覆盖规则仍然生效） */
-async function injectBundleUiCss(): Promise<void> {
-    if (uiCssInjected) return
-    uiCssInjected = true
-    try {
-        const response = await fetch(BUNDLE_UI_CSS)
-        if (!response.ok) throw new Error(`HTTP ${response.status}`)
-        const css = await response.text()
-        const style = document.createElement('style')
-        style.dataset.siteSearchUiCss = ''
-        style.textContent = `@layer starlight.core { ${css} }`
-        document.head.appendChild(style)
-    } catch (error) {
-        console.error('[site-search] failed to load Pagefind UI stylesheet:', error)
-    }
+const loadPagefindUI = retryableResource(
+    BUNDLE_UI_SCRIPT,
+    () =>
+        new Promise<PagefindUIConstructor>((resolve, reject) => {
+            // PagefindUI 是 IIFE。经典脚本可以重试同一 URL，避开浏览器缓存的模块加载失败。
+            const script = document.createElement('script')
+            script.src = BUNDLE_UI_SCRIPT
+            script.onload = () => {
+                script.remove()
+                const constructor = (window as { PagefindUI?: PagefindUIConstructor }).PagefindUI
+                if (constructor) resolve(constructor)
+                else reject(new Error('window.PagefindUI missing after loading bundle script'))
+            }
+            script.onerror = () => {
+                script.remove()
+                reject(new Error('Script request failed'))
+            }
+            document.head.appendChild(script)
+        })
+)
+
+const loadBundleUiCss = retryableResource(BUNDLE_UI_CSS, async () => {
+    const response = await fetch(BUNDLE_UI_CSS)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    return response.text()
+})
+
+function ensureBundleUiCss(css: string): void {
+    // ClientRouter 会替换 head。用已缓存的 CSS 恢复原层叠，避免重新请求。
+    if (document.head.querySelector('style[data-site-search-ui-css]')) return
+    const style = document.createElement('style')
+    style.dataset.siteSearchUiCss = ''
+    style.textContent = `@layer starlight.core { ${css} }`
+    document.head.appendChild(style)
 }
 
 class SiteSearchElement extends HTMLElement {
@@ -62,10 +77,10 @@ class SiteSearchElement extends HTMLElement {
 
     connectedCallback(): void {
         this.bindModalControls()
-        void this.initPagefindUI()
+        this.initPagefindUI()
         // ClientRouter 导航可能保留本元素但清空其渲染内容（也可能整体替换元素）；
         // astro:page-load 在两种情况下都会触发，作为 UI 重建的兜底时机
-        this.pageLoadListener = () => void this.initPagefindUI()
+        this.pageLoadListener = () => this.initPagefindUI()
         document.addEventListener('astro:page-load', this.pageLoadListener)
     }
 
@@ -86,6 +101,7 @@ class SiteSearchElement extends HTMLElement {
         const closeBtn = this.querySelector<HTMLButtonElement>('button[data-close-modal]')
         const dialog = this.querySelector('dialog')
         const dialogFrame = this.querySelector('.dialog-frame')
+        const retryBtn = this.querySelector<HTMLButtonElement>('[data-search-retry]')
         if (!openBtn || !closeBtn || !dialog || !dialogFrame) return
 
         const closeModal = () => dialog.close()
@@ -109,7 +125,10 @@ class SiteSearchElement extends HTMLElement {
             isNavigating = false
             dialog.showModal()
             document.body.toggleAttribute('data-search-modal-open', true)
-            this.querySelector('input')?.focus()
+            const input = this.querySelector<HTMLInputElement>('.pagefind-ui__search-input')
+            const visibleRetry = retryBtn?.closest('[hidden]') ? null : retryBtn
+            const focusTarget = input ?? visibleRetry
+            focusTarget?.focus()
             event?.stopPropagation()
             window.addEventListener('click', onClick)
         }
@@ -117,6 +136,14 @@ class SiteSearchElement extends HTMLElement {
         openBtn.addEventListener('click', openModal)
         openBtn.disabled = false
         closeBtn.addEventListener('click', closeModal)
+        if (retryBtn) {
+            retryBtn.onclick = () => {
+                const target = this.querySelector('#starlight__search')
+                if (!target || retryBtn.getAttribute('aria-disabled') === 'true') return
+                retryBtn.setAttribute('aria-disabled', 'true')
+                void this.renderPagefindUI(target, true)
+            }
+        }
 
         dialog.addEventListener('close', () => {
             document.body.toggleAttribute('data-search-modal-open', false)
@@ -146,47 +173,54 @@ class SiteSearchElement extends HTMLElement {
         window.addEventListener('keydown', this.keydownListener)
     }
 
-    private async initPagefindUI(): Promise<void> {
+    private initPagefindUI(): void {
         if (import.meta.env.DEV) return
-        const target = this.querySelector('#starlight__search')
-        if (!target || target.querySelector('.pagefind-ui')) return
-
-        void injectBundleUiCss()
         const onIdle =
             window.requestIdleCallback ??
             ((callback: IdleRequestCallback) => setTimeout(callback, 1))
-        onIdle(async () => {
-            // 导航可能已让本实例脱离文档； detached 容器不值得初始化
-            if (!this.isConnected) return
-            const freshTarget = this.querySelector('#starlight__search')
-            if (!freshTarget || freshTarget.querySelector('.pagefind-ui')) return
-            const PagefindUI = await loadPagefindUI()
-            // connectedCallback 与 astro:page-load 可同时等待同一个脚本；
-            // await 后容器可能已替换，或另一回调已完成初始化。检查与构造必须同步相邻。
-            if (
-                !PagefindUI ||
-                !this.isConnected ||
-                this.querySelector('#starlight__search') !== freshTarget ||
-                freshTarget.querySelector('.pagefind-ui')
-            )
-                return
-
-            let translations: Record<string, string> = {}
-            try {
-                translations = JSON.parse(this.dataset.translations || '{}')
-            } catch {
-                /* 翻译数据损坏时退回 UI 内置文案 */
-            }
-
-            new PagefindUI({
-                element: freshTarget,
-                baseUrl: import.meta.env.BASE_URL,
-                bundlePath: import.meta.env.BASE_URL.replace(/\/$/, '') + '/pagefind/',
-                showImages: false,
-                translations,
-                showSubResults: true,
-            })
+        onIdle(() => {
+            const target = this.querySelector('#starlight__search')
+            if (this.isConnected && target) void this.renderPagefindUI(target)
         })
+    }
+
+    private async renderPagefindUI(target: Element, retry = false): Promise<void> {
+        const [PagefindUI, css] = await Promise.all([loadPagefindUI(retry), loadBundleUiCss(retry)])
+        // 导航可能已替换容器。多个生命周期回调可共享请求，但只有第一个回调构造 UI。
+        if (!this.isConnected || this.querySelector('#starlight__search') !== target) return
+        if (css !== null) ensureBundleUiCss(css)
+        if (target.querySelector('.pagefind-ui')) return
+
+        const recovery = this.querySelector<HTMLElement>('[data-search-recovery]')
+        const retryBtn = recovery?.querySelector<HTMLButtonElement>('[data-search-retry]')
+        const openDialog = this.querySelector('dialog[open]')
+        const activeElement = document.activeElement
+        const moveFocus = openDialog && (activeElement === openDialog || activeElement === retryBtn)
+
+        retryBtn?.removeAttribute('aria-disabled')
+        const ready = PagefindUI !== null && css !== null
+        if (recovery) recovery.hidden = ready
+        if (!ready) {
+            if (moveFocus) retryBtn?.focus()
+            return
+        }
+
+        let translations: Record<string, string> = {}
+        try {
+            translations = JSON.parse(this.dataset.translations || '{}')
+        } catch {
+            /* 翻译数据损坏时退回 UI 内置文案 */
+        }
+
+        new PagefindUI({
+            element: target,
+            baseUrl: import.meta.env.BASE_URL,
+            bundlePath: import.meta.env.BASE_URL.replace(/\/$/, '') + '/pagefind/',
+            showImages: false,
+            translations,
+            showSubResults: true,
+        })
+        if (moveFocus) target.querySelector('input')?.focus()
     }
 }
 

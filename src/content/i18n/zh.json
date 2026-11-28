@@ -163,6 +163,8 @@
     "docs": {
         "title": "文档中心",
         "searchDocs": "搜索文档...",
+        "searchLoadError": "搜索暂时无法加载。",
+        "searchRetry": "重试",
         "noResults": "未找到相关文档",
         "lastUpdated": "最后更新",
         "editThisPage": "编辑此页",
