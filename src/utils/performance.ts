@@ -10,6 +10,10 @@
  * ```
  */
 
+import { createClsTracker, type LayoutShiftSample } from './layout-shift'
+
+let initialized = false
+
 /**
  * 性能指标类型
  */
@@ -65,7 +69,8 @@ function reportToUmami(metric: PerformanceMetric): void {
 
     if (umami?.track) {
         umami.track(`web-vital-${metric.name.toLowerCase()}`, {
-            value: Math.round(metric.value),
+            value:
+                metric.name === 'CLS' ? Number(metric.value.toFixed(4)) : Math.round(metric.value),
             rating: metric.rating,
             navigationType: metric.navigationType || 'navigate',
         })
@@ -93,112 +98,77 @@ function logMetric(metric: PerformanceMetric): void {
     }
 }
 
-/**
- * 监听 First Contentful Paint (FCP)
- */
-function observeFCP(callback: (metric: PerformanceMetric) => void): void {
-    if (typeof PerformanceObserver === 'undefined') return
-
-    try {
-        const observer = new PerformanceObserver((list) => {
-            const entries = list.getEntriesByName('first-contentful-paint')
-            if (entries.length > 0) {
-                const entry = entries[0]
-                const value = entry.startTime
-                callback({
-                    name: 'FCP',
-                    value,
-                    rating: getRating('FCP', value),
-                })
-                observer.disconnect()
-            }
-        })
-        observer.observe({ type: 'paint', buffered: true })
-    } catch {
-        // Safari 等不支持的浏览器
+function observeEntries(
+    type: string,
+    collect: (entries: readonly PerformanceEntry[]) => void
+): PerformanceObserver | undefined {
+    if (
+        typeof PerformanceObserver === 'undefined' ||
+        !PerformanceObserver.supportedEntryTypes.includes(type)
+    ) {
+        return undefined
     }
+
+    const observer = new PerformanceObserver((list) => collect(list.getEntries()))
+    observer.observe({ type, buffered: true })
+    return observer
 }
 
-/**
- * 监听 Largest Contentful Paint (LCP)
- */
-function observeLCP(callback: (metric: PerformanceMetric) => void): void {
-    if (typeof PerformanceObserver === 'undefined') return
-
-    try {
-        let lastValue = 0
-        const observer = new PerformanceObserver((list) => {
-            const entries = list.getEntries()
-            const lastEntry = entries[entries.length - 1]
-            if (lastEntry) {
-                lastValue = lastEntry.startTime
-            }
-        })
-        observer.observe({ type: 'largest-contentful-paint', buffered: true })
-
-        // 在页面可见性变化或卸载时报告
-        const reportLCP = () => {
-            if (lastValue > 0) {
-                callback({
-                    name: 'LCP',
-                    value: lastValue,
-                    rating: getRating('LCP', lastValue),
-                })
-                observer.disconnect()
-            }
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                reportLCP()
-            }
-        })
-        window.addEventListener('pagehide', reportLCP, { once: true })
-    } catch {
-        // 不支持的浏览器
+function observeDocument(report: (metric: PerformanceMetric) => void): void {
+    const emit = (name: PerformanceMetric['name'], value: number) => {
+        report({ name, value, rating: getRating(name, value) })
     }
-}
 
-/**
- * 监听 Cumulative Layout Shift (CLS)
- */
-function observeCLS(callback: (metric: PerformanceMetric) => void): void {
-    if (typeof PerformanceObserver === 'undefined') return
-
-    try {
-        let clsValue = 0
-        const observer = new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-                const layoutShift = entry as PerformanceEntry & {
-                    hadRecentInput?: boolean
-                    value?: number
-                }
-                if (!layoutShift.hadRecentInput && layoutShift.value) {
-                    clsValue += layoutShift.value
-                }
-            }
-        })
-        observer.observe({ type: 'layout-shift', buffered: true })
-
-        // 在页面卸载时报告
-        const reportCLS = () => {
-            callback({
-                name: 'CLS',
-                value: clsValue,
-                rating: getRating('CLS', clsValue),
-            })
-            observer.disconnect()
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                reportCLS()
-            }
-        })
-        window.addEventListener('pagehide', reportCLS, { once: true })
-    } catch {
-        // 不支持的浏览器
+    let fcpReported = false
+    const collectFcp = (entries: readonly PerformanceEntry[]) => {
+        const firstPaint = entries.find(({ name }) => name === 'first-contentful-paint')
+        if (!firstPaint || fcpReported) return
+        fcpReported = true
+        fcpObserver?.disconnect()
+        emit('FCP', firstPaint.startTime)
     }
+    const fcpObserver = observeEntries('paint', collectFcp)
+
+    let lcp: number | undefined
+    const collectLcp = (entries: readonly PerformanceEntry[]) => {
+        lcp = entries.at(-1)?.startTime ?? lcp
+    }
+    const lcpObserver = observeEntries('largest-contentful-paint', collectLcp)
+
+    let cls = 0
+    const trackCls = createClsTracker()
+    const collectCls = (entries: readonly PerformanceEntry[]) => {
+        cls = trackCls(entries as readonly (PerformanceEntry & LayoutShiftSample)[])
+    }
+    const clsObserver = observeEntries('layout-shift', collectCls)
+
+    let finished = false
+    const onVisibilityChange = () => {
+        if (document.visibilityState === 'hidden') finish()
+    }
+    const finish = () => {
+        if (finished) return
+        finished = true
+        document.removeEventListener('visibilitychange', onVisibilityChange)
+        window.removeEventListener('pagehide', finish)
+
+        const pendingFcp = fcpObserver?.takeRecords() ?? []
+        collectLcp(lcpObserver?.takeRecords() ?? [])
+        collectCls(clsObserver?.takeRecords() ?? [])
+        fcpObserver?.disconnect()
+        lcpObserver?.disconnect()
+        clsObserver?.disconnect()
+
+        collectFcp(pendingFcp)
+        if (lcp !== undefined) emit('LCP', lcp)
+        if (clsObserver) emit('CLS', cls)
+    }
+
+    // Each document sends one sample at its first hide or pagehide.
+    // An SPA swap or BFCache restore retains the same sample identity.
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('pagehide', finish)
+    onVisibilityChange()
 }
 
 /**
@@ -212,7 +182,7 @@ function observeTTFB(callback: (metric: PerformanceMetric) => void): void {
             'navigation'
         )[0] as PerformanceNavigationTiming
         if (navEntry) {
-            const value = navEntry.responseStart - navEntry.requestStart
+            const value = navEntry.responseStart
             callback({
                 name: 'TTFB',
                 value,
@@ -252,6 +222,9 @@ export function initPerformanceMonitor(
         logToConsole?: boolean
     } = {}
 ): void {
+    if (typeof window === 'undefined' || initialized) return
+    initialized = true
+
     const {
         onMetric,
         reportToAnalytics = true,
@@ -264,20 +237,15 @@ export function initPerformanceMonitor(
         if (onMetric) onMetric(metric)
     }
 
-    // 在页面加载完成后开始监控
-    if (typeof window !== 'undefined') {
-        if (document.readyState === 'complete') {
-            startObserving()
-        } else {
-            window.addEventListener('load', startObserving, { once: true })
-        }
+    function startObserving() {
+        observeTTFB(handleMetric)
+        observeDocument(handleMetric)
     }
 
-    function startObserving() {
-        observeFCP(handleMetric)
-        observeLCP(handleMetric)
-        observeCLS(handleMetric)
-        observeTTFB(handleMetric)
+    if (document.readyState === 'complete') {
+        startObserving()
+    } else {
+        window.addEventListener('load', startObserving, { once: true })
     }
 }
 

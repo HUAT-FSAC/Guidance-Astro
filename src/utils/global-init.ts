@@ -42,15 +42,6 @@ export function initGlobalFeatures(): void {
 
     // 延迟加载非关键功能
     setTimeout(() => {
-        // 初始化性能监控
-        import('./performance').then(({ initPerformanceMonitor }) => {
-            initPerformanceMonitor({
-                reportToAnalytics: true,
-                logToConsole: import.meta.env.DEV,
-            })
-        })
-
-        // 初始化分析跟踪
         import('./analytics').then(({ initAnalytics }) => {
             initAnalytics()
         })
@@ -83,6 +74,13 @@ export function setupGlobalInit(): void {
 
     // Astro 页面导航
     document.addEventListener('astro:page-load', init)
+
+    // 性能观察绑定文档生命周期，SPA 换页沿用同一份采样。
+    setTimeout(() => {
+        import('./performance').then(({ initPerformanceMonitor }) => {
+            initPerformanceMonitor({ reportToAnalytics: true, logToConsole: import.meta.env.DEV })
+        })
+    }, 500)
 }
 
 // 自动执行初始化
