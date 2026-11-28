@@ -46,6 +46,9 @@ jobs:
             - name: Run type check
               run: pnpm exec tsc --noEmit
 
+            - name: Check Astro templates
+              run: pnpm exec astro check
+
     test:
         name: Tests
         runs-on: ubuntu-latest

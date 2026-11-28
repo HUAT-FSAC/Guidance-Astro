@@ -15,7 +15,7 @@ export const transformHtml = defineMiddleware(async (context, next) => {
     }
 
     const html = await response.text()
-    const nonce = (context.locals as Record<string, unknown>).cspNonce as string | undefined
+    const nonce = context.locals.cspNonce
     const body = pruneRouteCss(injectNonceIntoHtml(html, nonce || ''), context.url.pathname)
 
     return new Response(body, {

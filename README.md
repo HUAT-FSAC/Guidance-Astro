@@ -4,7 +4,7 @@ HUAT FSAC（湖北汽车工业学院方程式赛车队 / 东风 HUAT 无人驾�
 
 [![CI](https://github.com/HUAT-FSAC/Guidance-Astro/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/HUAT-FSAC/Guidance-Astro/actions/workflows/ci-cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D22-339933)](./.nvmrc)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.23.4-339933)](./.nvmrc)
 [![pnpm](https://img.shields.io/badge/pnpm-11.22.0-blue)](https://pnpm.io)
 [![Deploy](https://img.shields.io/badge/deploy-Cloudflare%20Workers-orange)](https://huat-fsac.eu.org)
 
@@ -45,7 +45,7 @@ HUAT FSAC（湖北汽车工业学院方程式赛车队 / 东风 HUAT 无人驾�
 | 样式     | 原生 CSS + CSS 自定义属性；字体自托管                         |
 | 测试     | Vitest 4.1、Playwright 1.63                                   |
 | 代码质量 | ESLint 10、Prettier 3、Husky 9、commitlint 21、lint-staged 17 |
-| 运行时   | Node.js >= 22、pnpm 11.22                                     |
+| 运行时   | Node.js >= 22.23.4、pnpm 11.22                                |
 | 分析     | Umami（可选）                                                 |
 
 ## 架构

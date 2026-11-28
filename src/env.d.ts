@@ -4,6 +4,13 @@
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 
+import type { StarlightTranslationKey, StarlightTranslations } from './content.config'
+
+interface StarlightTranslator {
+    (key: StarlightTranslationKey): string
+    all(): StarlightTranslations
+}
+
 // 静态构建模式：使用内联类型声明替代 @cloudflare/workers-types
 // 避免 workers-types 与 DOM 类型的冲突
 type D1Database = unknown
@@ -21,6 +28,8 @@ declare module 'cloudflare:workers' {
 declare global {
     namespace App {
         interface Locals {
+            // Starlight middleware 在文档路由提供的 UI 翻译。
+            t: StarlightTranslator
             user?: {
                 id: string
                 username: string

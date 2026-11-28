@@ -6,6 +6,6 @@ import { applyStandardHeaders } from '../config/security'
  */
 export const applySecurityHeaders = defineMiddleware(async (context, next) => {
     const response = await next()
-    const nonce = (context.locals as Record<string, unknown>).cspNonce as string | undefined
+    const nonce = context.locals.cspNonce
     return applyStandardHeaders(response, context.url.pathname, nonce)
 })
